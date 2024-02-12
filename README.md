@@ -6,7 +6,13 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of hubEnsemblesManuscript is to …
+The goal of hubEnsemblesManuscript is to store the analysis and
+associated data for a paper on the
+[hubEnsembles](https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsembles)
+package that demonstrates its utility for ensembling model outputs
+through standard implementation of common methods. The hubEnsembles
+package is part of [the hubverse
+project](https://hubdocs.readthedocs.io/en/latest/).
 
 ## Installation
 
@@ -18,19 +24,17 @@ You can install the development version of hubEnsemblesManuscript from
 devtools::install_github("Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript")
 ```
 
+<!--
 ## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
+&#10;This is a basic example which shows you how to solve a common problem:
+&#10;
+```r
 #library(hubEnsemblesManuscript)
 ## basic example code
 ```
-
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
-
-``` r
+&#10;What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+&#10;
+```r
 summary(cars)
 #>      speed           dist       
 #>  Min.   : 4.0   Min.   :  2.00  
@@ -40,13 +44,8 @@ summary(cars)
 #>  3rd Qu.:19.0   3rd Qu.: 56.00  
 #>  Max.   :25.0   Max.   :120.00
 ```
-
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
-You can also embed plots, for example:
-
-<img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
+&#10;You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
+&#10;You can also embed plots, for example:
+&#10;<img src="man/figures/README-pressure-1.png" width="100%" />
+&#10;In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
+-->

@@ -17,6 +17,8 @@ column}
 
 \item{date_range}{An ordered string vector giving the range of dates to plot}
 
+\item{main}{A string specifying the plot title. Defaults to NULL.}
+
 \item{plot_color}{A string specifying the color that the truth should be
 plotted as. Defaults to "black".}
 }

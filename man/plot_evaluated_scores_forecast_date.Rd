@@ -27,6 +27,8 @@ row per model and horizon week combination plus a \code{horizon} column}
 
 \item{y_var}{A string specifying which metric to plot as the y-variable}
 
+\item{h}{An integer specifying the horizon of the desired metric to plot}
+
 \item{main}{A string specifying the plot title. Defaults to NULL.}
 
 \item{truth_data}{A data frame of truth data to plot in the same figure.
@@ -35,9 +37,6 @@ columns.}
 
 \item{truth_scaling}{A numeric specifying a multiplier for the truth values
 so that it fits nicely on the graph.}
-
-\item{horizon}{An integer specifying the horizon of the desired metric to
-plot}
 }
 \value{
 A scatter plot (with observations connected by lines) of the

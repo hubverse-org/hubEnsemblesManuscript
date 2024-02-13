@@ -9,8 +9,8 @@
 #'   model outputs (e.g., predictions). Should have columns containing the
 #'   following information: model name, reference date, location, horizon,
 #'   target, output type, output type id, and value. The target column should
-#'   contain targets of the form "[temporal resolution] [target]" or
-#'   "[temporal resolution] ahead [target]", such as "wk ahead inc flu hosp"
+#'   contain targets of the form "{temporal resolution} {target}" or
+#'   "{temporal resolution} ahead {target}", such as "wk ahead inc flu hosp"
 #'   "wk inc flu hosp", to properly create a temporal resolution column.
 #'
 #' @return a `data.frame` of reformatted model outputs that may be fed into

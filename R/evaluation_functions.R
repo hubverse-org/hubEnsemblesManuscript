@@ -78,8 +78,7 @@ evaluate_flu_scores <- function(scores, grouping_variables, baseline_name,
 #' @param model_colors An ordered vector of model colors. Must match with
 #'  `model_names` order
 #' @param y_var A string specifying which metric to plot as the y-variable
-#' @param horizon An integer specifying the horizon of the desired metric to
-#'  plot
+#' @param h An integer specifying the horizon of the desired metric to plot
 #' @param main A string specifying the plot title. Defaults to NULL.
 #' @param truth_data A data frame of truth data to plot in the same figure.
 #'  Defaults to `NULL`. If provided must contain target_end_date and value
@@ -196,6 +195,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
 #' @param truth_data A data frame of truth data. Must contain a target_end_date
 #'  column
 #' @param date_range An ordered string vector giving the range of dates to plot
+#' @param main A string specifying the plot title. Defaults to NULL.
 #' @param plot_color A string specifying the color that the truth should be
 #'  plotted as. Defaults to "black".
 #'

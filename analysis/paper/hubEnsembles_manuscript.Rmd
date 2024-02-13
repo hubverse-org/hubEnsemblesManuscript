@@ -3,7 +3,7 @@ title: "`hubEnsembles`: Ensembling Methods in R"
 output: 
   bookdown::html_document2:
     df_print: paged
-bibliography: ../manuscript/references.bib
+bibliography: references.bib
 ---
 
 ```{r, include = FALSE}
@@ -69,7 +69,7 @@ At minimum the task IDs (also called task ID variables) together specify the des
 
 ```{r flu-forecasts, echo=FALSE}
 library(hubUtils)
-readr::read_rds("data/flu_forecasts_raw.rds") |>
+readr::read_rds("../data/raw_data/flu_forecasts_raw.rds") |>
   tidyr::separate(target, sep = " ", convert = TRUE,
                   into = c("horizon", "target"), extra = "merge") |>
   as_model_out_tbl(model_id_col = "model",
@@ -552,7 +552,7 @@ Since 2013, the US Centers for Disease Control and Prevention (CDC) has been sol
 The component forecasts used to generate the ensembles consist of those submitted during the 2021-2022 and 2022-2023 influenza seasons, the only two complete seasons for which FluSight collected quantile forecasts for a target of weekly incident flu hospitalizations at the time of this writing. These predictions are not yet formatted according to hubverse standards but are easily transformed using the `as_model_out_tbl()` function from the `hubUtils` package. Below we print the first six rows of the transformed forecasts made on May 15, 2023 for California.
 
 ```{r transform data, eval=TRUE}
-flu_forecasts_raw <- readr::read_rds("data/flu_forecasts_raw.rds")
+flu_forecasts_raw <- readr::read_rds("../data/raw_data/flu_forecasts_raw.rds")
 
 forecast_data_hub <- flu_forecasts_raw |>
   dplyr::rename(forecast_date = timezero, location = unit) |>
@@ -607,20 +607,19 @@ lp_lognormal <- hubEnsembles::linear_pool(forecast_data_hub, weights = NULL,
 library(lubridate)
 library(patchwork)
 library(RColorBrewer)
-source("evaluation_functions.R")
-source("as_covid_hub_forecasts.R")
+devtools::load_all()
 
 model_names <- c("Flusight-baseline", "lp-lognormal", "lp-normal",
                  "mean-ensemble", "median-ensemble")
 
-flu_truth_all <- readr::read_rds("data/flu_truth_all.rds")
-flu_files <- list.files(path = "data", pattern = "hub", full.names = TRUE)
+flu_truth_all <- readr::read_rds("../data/raw_data/flu_truth_all.rds")
+flu_files <- list.files(path = "../data/raw_data", pattern = "hub", full.names = TRUE)
 flu_forecasts_og <- purrr::map_dfr(flu_files, .f = readr::read_rds)
 flu_forecasts_all <- purrr::map_dfr(flu_files, .f = readr::read_rds) |>
   as_covid_hub_forecasts()
 
-flu_scores_baseline <- readr::read_rds("data/flu_baseline_scores.rds")
-flu_scores_ensembles <- readr::read_rds("data/flu_scores_ensembles.rds")
+flu_scores_baseline <- readr::read_rds("../data/raw_data/flu_baseline_scores.rds")
+flu_scores_ensembles <- readr::read_rds("../data/raw_data/flu_scores_ensembles.rds")
 flu_scores_all <- rbind(flu_scores_ensembles, flu_scores_baseline)
 
 flu_dates_21_22 <- as.Date("2022-01-24") + weeks(0:21)
@@ -636,7 +635,6 @@ WIS measures how consistent a set of prediction intervals is with the observed v
 The results show that the quantile median ensemble had the best overall performance in terms of WIS and MAE (and the relative versions of these metrics) with above-nominal coverage rates (Table \@ref(tab:overall-evaluation)). The two linear opinion pools had very similar performance to each other. These methods had the second-best performance as measured by WIS and MAE, but they had the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performed the worst of the ensembles with the highest MAE, which was substantially different from that of the other ensembles.
 
 ```{r overall-evaluation, message=FALSE, warning=FALSE, echo=FALSE}
-source("format_cells.R")
 flu_overall_states <- flu_scores_all |>
   evaluate_flu_scores(grouping_variables = NULL,
                       baseline_name = "Flusight-baseline", us_only = FALSE)

@@ -42,7 +42,7 @@ Imports:
     cowplot (>= 1.1.1),
     dplyr (>= 1.1.2),
     ggplot2 (>= 3.4.4),
-    hubEnsembles (>= 0.0.0.9001),
+    hubEnsembles (>= 0.1.0),
     hubUtils (>= 0.0.0.9017),
     hubVis (>= 0.0.0.9001),
     knitr (>= 1.45),

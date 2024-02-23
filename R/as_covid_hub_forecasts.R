@@ -21,7 +21,6 @@
 #'
 #' @examples
 as_covid_hub_forecasts <- function(model_outputs) {
-
   if (all(c("mean", "median") %in% unique(model_outputs[["output_type"]]))) {
     stop("You may only have one type of point forecast.")
   }
@@ -34,17 +33,23 @@ as_covid_hub_forecasts <- function(model_outputs) {
     dplyr::mutate(target = ifelse(
       stringr::str_detect(target, "ahead"),
       stringr::str_replace(target, "ahead", "") |>
-        stringr::str_squish(), target)) |>
-    tidyr::separate(target, sep = " ", convert = TRUE,
-                    into = c("temporal_resolution", "target_variable"),
-                    extra = "merge")
+        stringr::str_squish(), target
+    )) |>
+    tidyr::separate(target,
+      sep = " ", convert = TRUE,
+      into = c("temporal_resolution", "target_variable"),
+      extra = "merge"
+    )
 
   covid_hub_outputs <- model_outputs |>
     dplyr::mutate(
       type = ifelse(output_type %in% c("mean", "median"), "point", output_type),
-      quantile = output_type_id) |>
-    dplyr::select(model, forecast_date, location, horizon, temporal_resolution,
-                  target_variable, target_end_date, type, quantile, value)
+      quantile = output_type_id
+    ) |>
+    dplyr::select(
+      model, forecast_date, location, horizon, temporal_resolution,
+      target_variable, target_end_date, type, quantile, value
+    )
 
   return(covid_hub_outputs)
 }

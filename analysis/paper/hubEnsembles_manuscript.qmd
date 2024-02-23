@@ -642,7 +642,8 @@ model_weights <- data.frame(
 )
 
 weighted_mean_ens <-
-  hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
+  hubEnsembles::simple_ensemble(
+    hubEnsembles::example_model_output,
     weights = model_weights,
     model_id = "simple-ensemble-weighted-mean"
   )

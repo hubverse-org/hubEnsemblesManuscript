@@ -16,8 +16,8 @@ author:
       orcid: 0000-0001-8793-9982
       institute: University of Pittsburgh
   - Anna Krystalli:
-      # orcid: 
-      institute: ADD ANNAS AFFILIATION HERE
+      orcid: 0000-0002-2378-4915
+      institute: R-RSE SMPC
   # add consortium authorship
   - Nick Reich:
       orcid: 0000-0003-3503-9899

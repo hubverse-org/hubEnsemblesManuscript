@@ -5,6 +5,6 @@ USER ${NB_USER}
 
 
 
-RUN wget https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript/raw/binder/DESCRIPTION && R -e "options(repos = list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/2024-02-23/')); devtools::install()"
+RUN wget https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript/raw/binder/DESCRIPTION && R -e "options(repos = list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/2024-02-23/')); install.packages('pak'); pak::local_install()"
 
 RUN rm DESCRIPTION.1; exit 0

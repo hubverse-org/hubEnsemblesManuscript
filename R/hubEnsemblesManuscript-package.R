@@ -6,4 +6,3 @@
 #' @importFrom stats setNames
 ## usethis namespace: end
 NULL
-

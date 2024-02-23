@@ -1,30 +1,46 @@
 ---
 title: "`hubEnsembles`: Ensembling Methods in R"
 author:
-  - Li Shandross:
-      correspondence: "yes"
-      email: lshandross@umass.edu
-      orcid: 0009-0008-1348-1954
-      institute: University of Massachusetts Amherst
-  - Emily Howerton:
-      orcid: 0000-0002-0639-3728
-      institute: Pennsylvania State University
-  - Lucie Contamin:
-      orcid: 0000-0001-5797-1279
-      institute: University of Pittsburgh
-  - Harry Hochheiser:
-      orcid: 0000-0001-8793-9982
-      institute: University of Pittsburgh
-  - Anna Krystalli:
-      orcid: 0000-0002-2378-4915
-      institute: R-RSE SMPC
+  - name: Li Shandross
+    corresponding: true
+    email: lshandross@umass.edu
+    orcid: 0009-0008-1348-1954
+    affiliation: 
+      - ref: umass
+  - name: Emily Howerton
+    orcid: 0000-0002-0639-3728
+    affiliation: 
+      - ref: penn
+  - name: Lucie Contamin
+    orcid: 0000-0001-5797-1279
+    affiliation: 
+      - ref: upitt
+  - name: Harry Hochheiser
+    orcid: 0000-0001-8793-9982
+    affiliation: 
+      - ref: upitt
+  - name: Anna Krystalli
+    orcid: 0000-0002-2378-4915
+    affiliation: 
+      - ref: rrse
   # add consortium authorship
-  - Nick Reich:
-      orcid: 0000-0003-3503-9899
-      institute: University of Massachusetts Amherst
-  - Evan Ray:
-      orcid: 0000-0003-4035-0243
-      institute: University of Massachusetts Amherst
+  - name: Nick Reich
+    orcid: 0000-0003-3503-9899
+    affiliation: 
+      - ref: umass
+  - name: Evan Ray
+    orcid: 0000-0003-4035-0243
+    affiliation: 
+      - ref: umass
+affiliations:
+  - id: umass
+    name: University of Massachusetts Amherst
+  - id: upitt
+    name: University of Pittsburgh
+  - id: penn
+    name: Pennsylvania State University
+  - id: rrse
+    name: R-RSE SMPC
 execute:
   echo: true
   warning: false

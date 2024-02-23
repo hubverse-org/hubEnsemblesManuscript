@@ -1,10 +1,10 @@
 FROM rocker/binder:4.3.2
-LABEL maintainer='Your Name <your_email@somewhere.com>'
-USER root
-COPY . ${HOME}
-RUN chown -R ${NB_USER} ${HOME}
+LABEL maintainer='Unknown'
+COPY --chown=${NB_USER} . ${HOME}
 USER ${NB_USER}
 
-RUN wget https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript/raw/master/DESCRIPTION && R --vanilla -s -e "options(repos = list(CRAN = 'http://cran.rstudio.com'));  install.packages('renv'); renv::restore()"
+
+
+RUN wget https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript/raw/binder/DESCRIPTION && R -e "options(repos = list(CRAN = 'http://mran.revolutionanalytics.com/snapshot/2024-02-23/')); devtools::install()"
 
 RUN rm DESCRIPTION.1; exit 0

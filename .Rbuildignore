@@ -3,3 +3,8 @@
 ^README\.Rmd$
 analysis
 ^LICENSE\.md$
+^README-.*\.png$
+^CONDUCT\.md$
+^CONTRIBUTING\.md$
+^\.binder/Dockerfile$
+^\.binder$

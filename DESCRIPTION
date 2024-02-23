@@ -61,4 +61,5 @@ Remotes:
     Infectious-Disease-Modeling-Hubs/hubEnsembles,
     Infectious-Disease-Modeling-Hubs/hubUtils,
     Infectious-Disease-Modeling-Hubs/hubVis,
-    reichlab/distfromq
+    reichlab/distfromq,
+    reichlab/covidHubUtils

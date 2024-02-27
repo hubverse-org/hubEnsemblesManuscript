@@ -1048,7 +1048,7 @@ vt_plot + ca_plot +
   theme(legend.position = "none")
 ```
 
-```{r plot-forecasts-hubVis}
+```{r plot-forecasts-hubVis, warning=FALSE, message=FALSE}
 #| label: fig-plot-forecasts-hubVis
 #| fig-cap: "TO BE FIXED: One to four week ahead forecasts for select dates plotted against target data for California."
 model_names <- c(
@@ -1096,29 +1096,25 @@ truth_ca <- flu_truth_all |>
     value = NA
   ))
 
-ca_plot_new <-
-  plot_step_ahead_model_output(forecasts_ca, truth_ca,
+ca_plot_ensembles <-
+  plot_step_ahead_model_output(
+    forecasts_ca |> filter(model_id != "Flusight-baseline"), 
+    truth_ca,
     use_median_as_point = TRUE,
     show_plot = FALSE,
     x_col_name = "target_end_date",
     x_truth_col_name = "target_end_date",
     show_legend = FALSE,
     facet = "model_id",
+    facet_scales = "free_y",
     facet_nrow = 3,
     interactive = FALSE,
     fill_transparency = 0.45,
     intervals = c(0.5, 0.95),
-    title = paste0(
-      "Weekly Incident ",
-      "Hospitalizations for Influenza ",
-      "in California"
-    )
+    title = NULL,
   )
 
-max_truth_ca <- max(dplyr::filter(flu_truth_all, location == "06")$value)
-max_forecast_ca <- max(dplyr::filter(forecasts_ca, location == "06")$value)
-
-ca_plot_new <- ca_plot_new +
+ca_plot_ensembles <- ca_plot_ensembles +
   scale_x_date(
     name = NULL, limits = c(
       as.Date("2022-01-01"),
@@ -1126,18 +1122,84 @@ ca_plot_new <- ca_plot_new +
     ),
     date_breaks = "4 months", date_labels = "%b '%y"
   ) +
-  coord_cartesian(ylim = c(0, max(25, min(
-    max_truth_ca * 3.5,
-    max_forecast_ca
-  )))) +
-  #  ggtitle("California") +
   theme(
     axis.ticks.length.x = unit(0.5, "cm"),
     axis.text.x = element_text(vjust = 7, hjust = -0.2),
+    axis.title.y = element_blank(),
     legend.position = "none"
   )
-
-ca_plot_new
+  
+ca_plot_baseline <-
+  plot_step_ahead_model_output(
+    forecasts_ca |> filter(model_id == "Flusight-baseline"), 
+    truth_ca,
+    use_median_as_point = TRUE,
+    show_plot = TRUE,
+    x_col_name = "target_end_date",
+    x_truth_col_name = "target_end_date",
+    show_legend = FALSE,
+    facet = "model_id",
+    facet_scales = "free_y",
+    facet_nrow = 1,
+    interactive = FALSE,
+    fill_transparency = 0.45,
+    intervals = c(0.5, 0.95),
+    title = NULL
+  ) +
+  scale_x_date(
+    name = NULL, limits = c(
+      as.Date("2022-01-01"),
+      as.Date("2023-06-08")
+    ),
+    date_breaks = "4 months", date_labels = "%b '%y"
+  ) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.ticks.length.x = unit(0, "cm"),
+    axis.text.x = element_blank(), #element_text(vjust = 5, hjust = -0.2),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  )
+  
+ca_plot_all <-
+  plot_step_ahead_model_output(
+    forecasts_ca |> mutate(facet_name = "All models, same scale"),
+    truth_ca,
+    use_median_as_point = TRUE,
+    show_plot = TRUE,
+    x_col_name = "target_end_date",
+    x_truth_col_name = "target_end_date",
+    show_legend = FALSE,
+    facet = "facet_name",
+    interactive = FALSE,
+    fill_transparency = 0.45,
+    intervals = c(0.5, 0.95),
+    title = NULL
+  ) +
+  scale_x_date(
+    name = NULL, limits = c(
+      as.Date("2022-01-01"),
+      as.Date("2023-06-08")
+    ),
+    date_breaks = "4 months", date_labels = "%b '%y"
+  ) +
+  theme(
+    axis.title.x = element_blank(),
+    axis.text.x = element_blank(),
+    axis.ticks.length.x = unit(0, "cm"),
+    axis.title.y = element_blank(),
+    legend.position = "none"
+  )
+  
+((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
+  plot_layout(guides='collect', heights=c(1, 2)) +
+#  plot_layout(guides='collect', axes='collect', axis_titles = 'collect', heights=c(1, 2)) +
+  plot_annotation(title = paste0(
+    "Weekly Incident ",
+    "Hospitalizations for Influenza ",
+    "in California"
+  ))
+  
 ```
 
 We can use additional functions from the `evaluation_functions.R` script to examine model performance with greater granularity. For example, we may use the following lines of code to generate a table that shows scores from week to week.

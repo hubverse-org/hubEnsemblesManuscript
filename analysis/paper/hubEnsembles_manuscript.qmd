@@ -860,7 +860,7 @@ We do not run the above code more than once and save the results in data objects
 ```{r read in forecasts and scores, echo=FALSE}
 library(lubridate)
 library(patchwork)
-library(RColorBrewer)
+#library(RColorBrewer)
 devtools::load_all()
 
 flu_truth_all <- readr::read_rds(
@@ -1109,6 +1109,7 @@ ca_plot_ensembles <-
     facet_scales = "free_y",
     facet_nrow = 3,
     interactive = FALSE,
+    pal_color = "Set2",
     fill_transparency = 0.45,
     intervals = c(0.5, 0.95),
     title = NULL,
@@ -1121,6 +1122,14 @@ ca_plot_ensembles <- ca_plot_ensembles +
       as.Date("2023-06-08")
     ),
     date_breaks = "4 months", date_labels = "%b '%y"
+  ) +
+  scale_color_manual(
+    breaks = model_names[2:5],
+    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
+  ) +
+  scale_fill_manual(
+    breaks = model_names[2:5],
+    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
   ) +
   theme(
     axis.ticks.length.x = unit(0.5, "cm"),
@@ -1241,7 +1250,7 @@ We then may combine several of these plots to obtain a complete picture by plott
 
 model_names <- c(model_names, "average target data")
 # model_colors <- c("#6BAED6", "#FD8D3C", "#74C476", "#9E9AC8", "#FB6A4A")
-model_colors <- c(brewer.pal(5, "Set2"), "black")
+model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
 
 # WIS
 wis_date_plot_states1_2122 <- flu_date_horizon_season_states |>

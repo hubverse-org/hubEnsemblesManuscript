@@ -373,9 +373,9 @@ Table&nbsp;2: A table summarizing how the model output representation columns ar
 <div aria-describedby="tbl-model-output-rep-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <table class="table">
 <colgroup>
-<col style="width: 25%">
 <col style="width: 26%">
-<col style="width: 48%">
+<col style="width: 26%">
+<col style="width: 47%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -439,7 +439,7 @@ Table&nbsp;2: A table summarizing how the model output representation columns ar
 <img src="hubEnsembles_manuscript_files/figure-html/fig-example-quantile-average-and-linear-pool-1.png" class="img-fluid figure-img" width="6000">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-example-quantile-average-and-linear-pool-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;1: (Panel A) Example of quantile output type predictions. In this example, points show model output collected for seven fixed quantile levels (<span class="math inline">\(\theta\)</span> = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions (<span class="math inline">\(N(100, 10)\)</span> in purple and <span class="math inline">\(N(120, 5)\)</span> in green), with the underlying cumulative distribution functions (CDFs) shown with curves. The associated values for each fixed quantile level do not align across distributions (vertical lines). (Panel B) Quantile average ensemble, which is calculated by averaging values for each fixed quantile level (represented by horizontal dashed gray lines). The distributions from panel A are re-plotted and the black line shows the resulting quantile average ensemble. Inset shows corresponding probability density functions (PDFs). (Panel C) Linear pool ensemble, which is calculated by averaging cumulative probabilities for each fixed value (represented by vertical dashed gray lines). To calculate the linear pool when model output is not defined for the same values (i.e., for quantile output type), model output is used to estimate the full CDF for each distribution (solid lines). The model outputs from panel A are interpolated and re-plotted and the black line shows the resulting linear pool ensemble. Inset shows corresponding PDFs.
+Figure&nbsp;1: (Panel A) Example of quantile output type predictions. In this example, points show model output collected for seven fixed quantile levels (<span class="math inline">\(\theta\)</span> = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions (<span class="math inline">\(N(100, 10)\)</span> in purple and <span class="math inline">\(N(120, 5)\)</span> in green), with the underlying cumulative distribution functions (CDFs) shown with curves. The associated values for each fixed quantile level do not align across distributions (vertical lines). (Panel B) Quantile average ensemble, which is calculated by averaging values for each fixed quantile level (represented by horizontal dashed gray lines). The distributions and corresponding model outputs from panel A are re-plotted and the black line shows the resulting quantile average ensemble. Inset shows corresponding probability density functions (PDFs). (Panel C) Linear pool ensemble, which is calculated by averaging cumulative probabilities for each fixed value (represented by vertical dashed gray lines). The distributions and corresponding model outputs from panel A are re-plotted. To calculate the linear pool in this case, where model outputs are not defined for the same values, the model outputs are used to interpolate the full CDF for each distribution from which quantiles can be extracted for fixed values (shown with triangles). The black line shows the resulting linear pool average ensemble. Inset shows corresponding PDFs.
 </figcaption>
 </figure>
 </div>

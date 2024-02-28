@@ -149,10 +149,8 @@ Alternatively, longer-term scenario projections for incident COVID-19 hospitaliz
 
 The model output representation includes the predicted values along with metadata that specifies how the predictions are conveyed, and consists of three columns: (1) `output_type`, (2) `output_type_id`, and (3) `value`. Unlike for the task IDs, these three columns are required and their names are fixed [@hubverse_docs]. The `output_type` defines how the prediction is represented and may be one of `"mean"` or `"median"` (point prediction), `"quantile"`, `"cdf"`, `"pmf"` (distributional prediction), or `"sample"` (although this output type is not yet supported by the `hubEnsembles` package). The `output_type_id` provides more identifying information for a prediction and is specific to the particular `output_type` (see \@tbl-flu-forecasts). For quantile predictions, the `output_type_id` is a numeric value between 0 and 1 specifying the probability level for the quantile. In the notation we defined above, the `output_type_id` corresponds to $\theta$ and the `value` of the prediction is the quantile estimate $F^{-1}(\theta)$. For CDF or PMF predictions, the `output_type_id` is the value $x$ at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the `value` column contains the estimate $F(x)$ or $f(x)$, respectively. Requirements for the values of the `output_type_id` and `value` columns associated with each valid output type are summarized on the [hubverse documentation website](https://hubdocs.readthedocs.io/en/latest/user-guide/model-output.html#formats-of-model-output) and in @tbl-model-output-rep) below. <!--#ELR: This kind of citation seems fine for an ordinary package vignette, but if we're aiming to directly turn this into a journal submission, we'll need to tidy this citation up a bit. --> <!--#ELR: I don't love the use of the word "estimate" that I introduced here -- noting that in much of statistics, a distinction is made between an estimate and a prediction, but I've used the two terms semi-interchangeably here. --> Finally, the `model_id` column gives a unique identifier of the model that created the predictions.
 
-
-
 | `output_type` | `output_type_id`                                                                            | `value`                                                                                                                                                                              |
-|:-----------------|:------------------|:----------------------------------|
+|:------------------|:------------------|:---------------------------------|
 | `mean`        | NA (not used for mean predictions)                                                          | Numeric: The mean of the predictive distribution                                                                                                                                     |
 | `median`      | NA (not used for median predictions)                                                        | Numeric: The median of the predictive distribution                                                                                                                                   |
 | `quantile`    | Numeric between 0.0 and 1.0: A probability level                                            | Numeric: The quantile of the predictive distribution at the probability level specified by the `output_type_id`                                                                      |
@@ -161,7 +159,6 @@ The model output representation includes the predicted values along with metadat
 | `sample`      | Positive integer sample index                                                               | Numeric: A sample from the predictive distribution                                                                                                                                   |
 
 : A table summarizing how the model output representation columns are used for predictions of different output types. Adapted from [@hubverse_docs] {#tbl-model-output-rep}
-
 
 ## Simple ensemble
 
@@ -179,7 +176,7 @@ However, implementation of LOP is less straightforward for the quantile output t
 
 ```{r example-quantile-average-and-linear-pool, echo=FALSE}
 #| label: fig-example-quantile-average-and-linear-pool
-#| fig-cap: "(Panel A) Example of quantile output type predictions. In this example, points show model output collected for seven fixed quantile levels ($\\theta$ = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions ($N(100, 10)$ in purple and $N(120, 5)$ in green), with the underlying cumulative distribution functions (CDFs) shown with curves. The associated values for each fixed quantile level do not align across distributions (vertical lines). (Panel B) Quantile average ensemble, which is calculated by averaging values for each fixed quantile level (represented by horizontal dashed gray lines). The distributions from panel A are re-plotted and the black line shows the resulting quantile average ensemble. Inset shows corresponding probability density functions (PDFs). (Panel C) Linear pool ensemble, which is calculated by averaging cumulative probabilities for each fixed value (represented by vertical dashed gray lines). To calculate the linear pool when model output is not defined for the same values (i.e., for quantile output type), model output is used to estimate the full CDF for each distribution (solid lines). The model outputs from panel A are interpolated and re-plotted and the black line shows the resulting linear pool ensemble. Inset shows corresponding PDFs."
+#| fig-cap: "(Panel A) Example of quantile output type predictions. In this example, points show model output collected for seven fixed quantile levels ($\\theta$ = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions ($N(100, 10)$ in purple and $N(120, 5)$ in green), with the underlying cumulative distribution functions (CDFs) shown with curves. The associated values for each fixed quantile level do not align across distributions (vertical lines). (Panel B) Quantile average ensemble, which is calculated by averaging values for each fixed quantile level (represented by horizontal dashed gray lines). The distributions and corresponding model outputs from panel A are re-plotted and the black line shows the resulting quantile average ensemble. Inset shows corresponding probability density functions (PDFs). (Panel C) Linear pool ensemble, which is calculated by averaging cumulative probabilities for each fixed value (represented by vertical dashed gray lines). The distributions and corresponding model outputs from panel A are re-plotted. To calculate the linear pool in this case, where model outputs are not defined for the same values, the model outputs are used to interpolate the full CDF for each distribution from which quantiles can be extracted for fixed values (shown with triangles). The black line shows the resulting linear pool average ensemble. Inset shows corresponding PDFs."
 #| fig-width: 10
 #| fig-height: 4
 
@@ -187,8 +184,8 @@ library(ggplot2)
 
 # set quantiles and values over which to define distributions
 quantile_probs <- c(0.01, seq(from = 0.1, to = 0.9, by = 0.2), 0.99)
-lop_example_x <- seq(85, 135, 10)
-x <- c(seq(from = 0.0, to = 400.0, length = 1001), lop_example_x)
+lop_example_x <- seq(85, 135, 12)
+x <- unique(c(seq(from = 0.0, to = 400.0, length = 1001), lop_example_x))
 
 # distribution 1 ~ N(100, 10)
 mean1 <- 100
@@ -383,17 +380,26 @@ pC <- ggplot(
     mapping = aes(x = value, xend = value, y = A, yend = B),
     color = "darkgray", linetype = "dashed"
   ) +
-  geom_line(mapping = aes(color = distribution, linewidth = distribution)) +
+  geom_line(mapping = aes(alpha = distribution, color = distribution, 
+                          linewidth = distribution)) +
+  geom_point(
+    data = dplyr::filter(
+      cdf_defined_on_quantiles,
+      distribution %in% LETTERS[1:2]
+    ),
+    mapping = aes(color = distribution, size = distribution) 
+  ) +
   geom_point(
     data = cdf_defined_on_values |>
       dplyr::filter(distribution != "Q", value %in% lop_example_x),
-    mapping = aes(color = distribution, size = distribution)
+    mapping = aes(color = distribution, size = distribution), shape = 15
   ) +
   coord_cartesian(xlim = c(75, 135)) +
   labs(x = "value", y = "", subtitle = "linear pool ensemble") +
+  scale_alpha_manual(values = c(0.3, 0.3, 1)) +
   scale_color_manual(values = c(dist_colors, "black")) +
   scale_linewidth_manual(values = c(0.8, 0.8, 1.2)) +
-  scale_size_manual(values = c(1.2, 1.2, 1.7)) +
+  scale_size_manual(values = c(1.2, 1.2, 1.9)) +
   scale_y_continuous(
     breaks = quantile_probs, limits = c(0, 1),
     expand = c(0, 0)
@@ -801,7 +807,7 @@ flu_forecasts_hubverseverse <- flu_forecasts_raw |>
   )
 ```
 
-Our only inclusion criteria for the component forecasts to be used in the ensembles were that every prediction (defined by a unique combination of task ID variables) was made for all 23 quantiles specified by FluSight (Q = {.010, 0.025, .050, .100, ..., .900, .950, .990}) and that they were not generated by the Flusight baseline or median ensemble models. In practice, this means that all forecasts made by outside teams were included in the four ensembles for this paper, matching the real-time fluctuation in how many models were used to generate the median ensemble run by FluSight (since number of submitted models could vary from week to week). 
+Our only inclusion criteria for the component forecasts to be used in the ensembles were that every prediction (defined by a unique combination of task ID variables) was made for all 23 quantiles specified by FluSight (Q = {.010, 0.025, .050, .100, ..., .900, .950, .990}) and that they were not generated by the Flusight baseline or median ensemble models. In practice, this means that all forecasts made by outside teams were included in the four ensembles for this paper, matching the real-time fluctuation in how many models were used to generate the median ensemble run by FluSight (since number of submitted models could vary from week to week).
 
 With these inclusion criteria, the final data set of component forecasts consisted of predictions from 25 modeling teams for 42 models, 53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target, and 23 quantiles. In the 2021-2022 season 23 models made predictions for 22 weeks spanning from late January 2022 to late June 2022 while the 2022-2023 season saw 18 models making predictions for 31 weeks spanning mid-October 2022 to mid-May 2023. Both seasons forecasted for the same locations (the 50 states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described above), and target (week ahead incident flu hospitalization). The values for the forecasts are always non-negative. Below we print several rows of these predictions for select quantiles of a single model, forecast date, horizon, and location.
 

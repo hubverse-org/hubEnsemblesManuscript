@@ -176,7 +176,7 @@ A median ensemble may also be created by specifying "median" as the aggregation 
 
 The `linear_pool` function implements the linear opinion pool method for ensembling projections. This function can be used to combine predictions with output types mean, quantile, CDF, and PMF. Unlike `simple_ensemble`, this function handles its computation differently based on the output type. For the CDF, PMF, and mean output types, the linear pool method is equivalent to calling `simple_ensemble` with a mean aggregation function, since `simple_ensemble` produces a linear pool prediction (an average of probabilities for the same prediction value or bin) for those output types.
 
-However, implementation of LOP is less straightforward for the quantile output type. This is because LOP averages CDF values (probabilities) at each value of the target variable, but the predictions are quantiles (on the scale of the target variable) for fixed probability levels. The value for these quantile predictions will generally differ between models, and as a result we are typically not provided CDF values at the same values of $x$ for all component predictions. This lack of alignment between CDF values for the same probability levels impedes computation of LOP from quantile forecasts and is illustrated in @fig-example-quantile-average-and-linear-pool below.
+However, implementation of LOP is less straightforward for the quantile output type. This is because LOP averages CDF values (probabilities) at each value of the target variable, but the predictions are quantiles (on the scale of the target variable) for fixed probability levels. The value for these quantile predictions will generally differ between models, and as a result we are typically not provided CDF values at the same values of $x$ for all component predictions. This lack of alignment between CDF values for the same probability levels impedes computation of LOP from quantile forecasts and is illustrated in panel A of @fig-example-quantile-average-and-linear-pool
 
 ```{r example-quantile-average-and-linear-pool, echo=FALSE}
 #| label: fig-example-quantile-average-and-linear-pool
@@ -387,22 +387,22 @@ pC <- ggplot(
   geom_line(mapping = aes(alpha = distribution, color = distribution, 
                           linewidth = distribution)) +
   geom_point(
-    data = dplyr::filter(
-      cdf_defined_on_quantiles,
-      distribution %in% LETTERS[1:2]
-    ),
-    mapping = aes(color = distribution, size = distribution) 
-  ) +
-  geom_point(
-    data = cdf_defined_on_values |>
-      dplyr::filter(distribution != "Q", value %in% lop_example_x),
-    mapping = aes(color = distribution, size = distribution), shape = 15
+    data = dplyr::bind_rows(
+      cdf_defined_on_values |>
+        dplyr::filter(distribution != "Q", value %in% lop_example_x) |>
+        dplyr::mutate(point_type = "interpolated value"),
+      dplyr::filter(cdf_defined_on_quantiles,
+                    distribution %in% LETTERS[1:2]) |>
+        dplyr::mutate(point_type = "submitted value")),
+    mapping = aes(color = distribution, size = distribution, shape = point_type), 
   ) +
   coord_cartesian(xlim = c(75, 135)) +
+  guides(alpha = "none", color = "none", linewidth = "none", size = "none") + 
   labs(x = "value", y = "", subtitle = "linear pool ensemble") +
   scale_alpha_manual(values = c(0.3, 0.3, 1)) +
   scale_color_manual(values = c(dist_colors, "black")) +
   scale_linewidth_manual(values = c(0.8, 0.8, 1.2)) +
+  scale_shape_manual(values = c(1, 19), name = "") + 
   scale_size_manual(values = c(1.2, 1.2, 1.9)) +
   scale_y_continuous(
     breaks = quantile_probs, limits = c(0, 1),
@@ -410,7 +410,7 @@ pC <- ggplot(
   ) +
   theme_bw() +
   theme(
-    legend.position = "none", panel.grid.minor = element_blank(),
+    legend.position = "bottom", panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank()
   )
 
@@ -431,7 +431,7 @@ pC_inset <- ggplot(
     panel.grid = element_blank()
   )
 
-pC_fin <- cowplot::ggdraw(pC) +
+pC_fin <- cowplot::ggdraw(pC + theme(legend.position = "none")) +
   cowplot::draw_plot(
     pC_inset + theme(plot.margin = unit(
       0.01 * c(1, 1, 1, 1),
@@ -443,15 +443,16 @@ pC_fin <- cowplot::ggdraw(pC) +
 
 # combine into final figure
 l <- cowplot::get_legend(pA)
+l2 <- cowplot::get_legend(pC)
 
 cowplot::plot_grid(
   cowplot::plot_grid(pA + theme(legend.position = "none"),
-    pB_fin, pC_fin,
-    labels = LETTERS[1:3],
-    nrow = 1,
-    rel_widths = c(0.34, 0.33, 0.33)
+                     pB_fin, pC_fin,
+                     labels = LETTERS[1:3],
+                     nrow = 1,
+                     rel_widths = c(0.34, 0.33, 0.33)
   ),
-  l,
+  cowplot::plot_grid("", l, l2, "", nrow = 1, rel_widths = c(0.175, 0.325, 0.325, 0.175)),
   ncol = 1, rel_heights = c(0.95, 0.05)
 )
 ```

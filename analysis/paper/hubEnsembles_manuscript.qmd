@@ -322,7 +322,7 @@ pB <- ggplot(
   geom_point(
     data = dplyr::filter(
       cdf_defined_on_quantiles,
-      distribution != "LOP"
+      distribution %in% c("A", "B")
     ),
     mapping = aes(color = distribution, size = distribution)
   ) +
@@ -389,11 +389,11 @@ pC <- ggplot(
   geom_point(
     data = dplyr::bind_rows(
       cdf_defined_on_values |>
-        dplyr::filter(distribution != "Q", value %in% lop_example_x) |>
-        dplyr::mutate(point_type = "interpolated value"),
+        dplyr::filter(distribution %in% c("A", "B"), value %in% lop_example_x) |>
+        dplyr::mutate(point_type = "interpolation"),
       dplyr::filter(cdf_defined_on_quantiles,
-                    distribution %in% LETTERS[1:2]) |>
-        dplyr::mutate(point_type = "submitted value")),
+                    distribution %in% c("A", "B")) |>
+        dplyr::mutate(point_type = "model output")),
     mapping = aes(color = distribution, size = distribution, shape = point_type), 
   ) +
   coord_cartesian(xlim = c(75, 135)) +

@@ -364,7 +364,7 @@ Table&nbsp;1: Example of forecasts for weekly incident flu hospitalizations, for
 </div>
 </div>
 <p>Alternatively, longer-term scenario projections for incident COVID-19 hospitalizations in the US at different locations, amounts of time in the future, and under different assumed conditions may use the following task ID columns: a <code>target</code> of “incident COVID-19 hospitalizations”, a <code>location</code> column specifying the location being predicted, an <code>origin_date</code> on which the projections were made, a <code>horizon</code> describing the number of steps ahead that the projection is predicting relative to the <code>origin_date</code>, and a <code>scenario_id</code> denoting the future conditions that were modeled and are projected to result in the specified number of incident hospitalizations. Different modeling efforts may use different sets of task ID columns and values to specify their prediction goals. Additional examples of task ID variables are available on the <a href="https://hubdocs.readthedocs.io/en/latest/user-guide/tasks.html">hubverse documentation website</a>.</p>
-<p>The model output representation includes the predicted values along with metadata that specifies how the predictions are conveyed, and consists of three columns: (1) <code>output_type</code>, (2) <code>output_type_id</code>, and (3) <code>value</code>. Unlike for the task IDs, these three columns are required and their names are fixed <span class="citation" data-cites="hubverse_docs">(<a href="#ref-hubverse_docs" role="doc-biblioref">hubverse 2022</a>)</span>. The <code>output_type</code> defines how the prediction is represented and may be one of <code>"mean"</code> or <code>"median"</code> (point prediction), <code>"quantile"</code>, <code>"cdf"</code>, <code>"pmf"</code> (distributional prediction), or <code>"sample"</code> (although this output type is not yet supported by the <code>hubEnsembles</code> package). The <code>output_type_id</code> provides more identifying information for a prediction and is specific to the particular <code>output_type</code> (see <a href="#tbl-flu-forecasts" class="quarto-xref">Table&nbsp;1</a>). For quantile predictions, the <code>output_type_id</code> is a numeric value between 0 and 1 specifying the probability level for the quantile. In the notation we defined above, the <code>output_type_id</code> corresponds to <span class="math inline">\(\theta\)</span> and the <code>value</code> of the prediction is the quantile estimate <span class="math inline">\(F^{-1}(\theta)\)</span>. For CDF or PMF predictions, the <code>output_type_id</code> is the value <span class="math inline">\(x\)</span> at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the <code>value</code> column contains the estimate <span class="math inline">\(F(x)\)</span> or <span class="math inline">\(f(x)\)</span>, respectively. Requirements for the values of the <code>output_type_id</code> and <code>value</code> columns associated with each valid output type are summarized on the <a href="https://hubdocs.readthedocs.io/en/latest/user-guide/model-output.html#formats-of-model-output">hubverse documentation website</a> and in <a href="#tbl-model-output-rep" class="quarto-xref">Table&nbsp;2</a>) below. <!--#ELR: This kind of citation seems fine for an ordinary package vignette, but if we're aiming to directly turn this into a journal submission, we'll need to tidy this citation up a bit. --> <!--#ELR: I don't love the use of the word "estimate" that I introduced here -- noting that in much of statistics, a distinction is made between an estimate and a prediction, but I've used the two terms semi-interchangeably here. --> Finally, the <code>model_id</code> column gives a unique identifier of the model that created the predictions.</p>
+<p>The model output representation includes the predicted values along with metadata that specifies how the predictions are conveyed, and consists of three columns: (1) <code>output_type</code>, (2) <code>output_type_id</code>, and (3) <code>value</code>. Unlike for the task IDs, these three columns are required and their names are fixed <span class="citation" data-cites="hubverse_docs">(<a href="#ref-hubverse_docs" role="doc-biblioref">hubverse 2022</a>)</span>. The <code>output_type</code> defines how the prediction is represented and may be one of <code>"mean"</code> or <code>"median"</code> (point prediction), <code>"quantile"</code>, <code>"cdf"</code>, <code>"pmf"</code> (distributional prediction), or <code>"sample"</code> (although this output type is not yet supported by the <code>hubEnsembles</code> package). The <code>output_type_id</code> provides more identifying information for a prediction and is specific to the particular <code>output_type</code> (see <a href="#tbl-flu-forecasts" class="quarto-xref">Table&nbsp;1</a>). For quantile predictions, the <code>output_type_id</code> is a numeric value between 0 and 1 specifying the probability level for the quantile. In the notation we defined above, the <code>output_type_id</code> corresponds to <span class="math inline">\(\theta\)</span> and the <code>value</code> of the prediction is the quantile estimate <span class="math inline">\(F^{-1}(\theta)\)</span>. For CDF or PMF predictions, the <code>output_type_id</code> is the value <span class="math inline">\(x\)</span> at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the <code>value</code> column contains the estimate <span class="math inline">\(F(x)\)</span> or <span class="math inline">\(f(x)\)</span>, respectively. Requirements for the values of the <code>output_type_id</code> and <code>value</code> columns associated with each valid output type are summarized on the <a href="https://hubdocs.readthedocs.io/en/latest/user-guide/model-output.#formats-of-model-output">hubverse documentation website</a> and in <a href="#tbl-model-output-rep" class="quarto-xref">Table&nbsp;2</a>) below. <!--#ELR: This kind of citation seems fine for an ordinary package vignette, but if we're aiming to directly turn this into a journal submission, we'll need to tidy this citation up a bit. --> <!--#ELR: I don't love the use of the word "estimate" that I introduced here -- noting that in much of statistics, a distinction is made between an estimate and a prediction, but I've used the two terms semi-interchangeably here. --> Finally, the <code>model_id</code> column gives a unique identifier of the model that created the predictions.</p>
 <p>This representation of predictive model output is codified by the <code>model_out_tbl</code> S3 class in the <code>hubUtils</code> package, one of the foundational hubverse packages. Although this S3 class is required for all <code>hubEnsembles</code> functions, model predictions in other formats can easily be transformed using the <code>as_model_out_tbl()</code> function from <code>hubUtils</code>. An example of this transformation is provided in <a href="#sec-flu" class="quarto-xref">Section&nbsp;5</a>. <!-- NGR: may need to change package name listed above once packages are split.--></p>
 <div id="tbl-model-output-rep" class="quarto-float anchored">
 <figure class="quarto-float quarto-float-tbl figure">
@@ -528,8 +528,8 @@ Figure&nbsp;1: (Panel A) Example of quantile output type predictions. In this ex
 <span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">facet_nrow =</span> <span class="dv">1</span>,</span>
 <span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">interactive =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">intervals =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.95</span>),</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">one_color =</span> <span class="st">"black"</span>,</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">pal_color =</span> <span class="cn">NULL</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  one_color = "black",</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#  pal_color = NULL,</span></span>
 <span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">show_legend =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">use_median_as_point =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_col_name =</span> <span class="st">"target_end_date"</span></span>
@@ -543,16 +543,12 @@ Figure&nbsp;1: (Panel A) Example of quantile output type predictions. In this ex
 <img src="hubEnsembles_manuscript_files/figure-html/fig-plot-ex-mods-1.png" class="img-fluid figure-img" width="4800">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plot-ex-mods-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figure&nbsp;2: Example model output. One example forecast of weekly US incident influenza hospitalizations is shown for each of three models (panels). Forecasts are represented by a median (line) and 50% prediction interval (Q25-Q75).
+Figure&nbsp;2: Example model output. One example forecast of weekly US incident influenza hospitalizations is shown for each of three models (panels). Forecasts are represented by a median (line), 50% prediction interval (Q25-Q75), and 95% prediction interval (Q2.5-Q97.5).
 </figcaption>
 </figure>
 </div>
 </div>
 </div>
-<!-- # LS: Even though we got some comments that different colors (with an accompanying legend) for the models are unnecessary if the facets are already labeled, I personally find the figures easier to read at a glance with multiple colors. I've left them in in my figures later in the paper but removed the legends since those are redundant. We should choose one approach and standardize, so let me know thoughts on which approach is better 
-# NGR: I don't have a strong feeling on this either way. I think it's ok to have colors, even if a bit redundant. but am also ok with grayscale.
-# ELR: I'm fine deferring to your preference on this.
--->
 </section>
 <section id="creating-ensembles-with-simple_ensemble" class="level2">
 <h2 class="anchored" data-anchor-id="creating-ensembles-with-simple_ensemble">Creating ensembles with <code>simple_ensemble</code></h2>
@@ -1050,7 +1046,6 @@ Table&nbsp;3: Summary of overall model performance across both seasons, averaged
 <p>Plots of the models’ forecasts can aid our understanding about the origin of these accuracy differences. For example, the linear opinion pools, which had the highest coverage rates, consistently had some of the widest prediction intervals. The median ensemble, which had the best WIS, seems to have best-balanced interval width overall, with narrower intervals than the linear pools that achieved near-nominal coverage on average across all time points. The quantile mean’s interval widths could vary, though it usually had narrower intervals than the linear pools. However, this model’s point forecasts demonstrated a larger error margin compared to the other ensembles, especially at longer horizons. This can be seen in <a href="#fig-plot-forecasts-hubVis" class="quarto-xref">Figure&nbsp;5</a> for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022. Here the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.</p>
 <!-- ELR: comments on the plot below:
  - can we get it so that there is not a line during the off season in this plot?
- - I don't think we need to color by model or have a legend for model color, since the model names are already in the facet labels.
 -->
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model_names <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
@@ -1164,52 +1159,55 @@ Table&nbsp;3: Summary of overall model performance across both seasons, averaged
 <span id="cb16-109"><a href="#cb16-109" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb16-110"><a href="#cb16-110" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_breaks =</span> <span class="st">"4 months"</span>, <span class="at">date_labels =</span> <span class="st">"%b '%y"</span></span>
 <span id="cb16-111"><a href="#cb16-111" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.length.x =</span> <span class="fu">unit</span>(<span class="dv">0</span>, <span class="st">"cm"</span>),</span>
-<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(), <span class="co">#element_text(vjust = 5, hjust = -0.2),</span></span>
-<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span></span>
-<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>ca_plot_all <span class="ot">&lt;-</span></span>
-<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_step_ahead_model_output</span>(</span>
-<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a>    forecasts_ca <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">facet_name =</span> <span class="st">"All models, same scale"</span>),</span>
-<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a>    truth_ca,</span>
-<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>    <span class="at">use_median_as_point =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">show_plot =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_col_name =</span> <span class="st">"target_end_date"</span>,</span>
-<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_truth_col_name =</span> <span class="st">"target_end_date"</span>,</span>
-<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">show_legend =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">facet =</span> <span class="st">"facet_name"</span>,</span>
-<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">interactive =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill_transparency =</span> <span class="fl">0.45</span>,</span>
-<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>    <span class="at">intervals =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.95</span>),</span>
-<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="cn">NULL</span></span>
-<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(</span>
-<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">limits =</span> <span class="fu">c</span>(</span>
-<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as.Date</span>(<span class="st">"2022-01-01"</span>),</span>
-<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as.Date</span>(<span class="st">"2023-06-08"</span>)</span>
-<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_breaks =</span> <span class="st">"4 months"</span>, <span class="at">date_labels =</span> <span class="st">"%b '%y"</span></span>
-<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.length.x =</span> <span class="fu">unit</span>(<span class="dv">0</span>, <span class="st">"cm"</span>),</span>
-<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
-<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span></span>
-<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a>((ca_plot_all <span class="sc">|</span> ca_plot_baseline) <span class="sc">/</span> ca_plot_ensembles) <span class="sc">+</span></span>
-<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides=</span><span class="st">'collect'</span>, <span class="at">heights=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
-<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a><span class="co">#  plot_layout(guides='collect', axes='collect', axis_titles = 'collect', heights=c(1, 2)) +</span></span>
-<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="fu">paste0</span>(</span>
-<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weekly Incident "</span>,</span>
-<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Hospitalizations for Influenza "</span>,</span>
-<span id="cb16-156"><a href="#cb16-156" aria-hidden="true" tabindex="-1"></a>    <span class="st">"in California"</span></span>
-<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-112"><a href="#cb16-112" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb16-113"><a href="#cb16-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb16-114"><a href="#cb16-114" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb16-115"><a href="#cb16-115" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.length.x =</span> <span class="fu">unit</span>(<span class="dv">0</span>, <span class="st">"cm"</span>),</span>
+<span id="cb16-116"><a href="#cb16-116" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(), <span class="co">#element_text(vjust = 5, hjust = -0.2),</span></span>
+<span id="cb16-117"><a href="#cb16-117" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb16-118"><a href="#cb16-118" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span></span>
+<span id="cb16-119"><a href="#cb16-119" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-120"><a href="#cb16-120" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-121"><a href="#cb16-121" aria-hidden="true" tabindex="-1"></a>ca_plot_all <span class="ot">&lt;-</span></span>
+<span id="cb16-122"><a href="#cb16-122" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_step_ahead_model_output</span>(</span>
+<span id="cb16-123"><a href="#cb16-123" aria-hidden="true" tabindex="-1"></a>    forecasts_ca <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">facet_name =</span> <span class="st">"All models, same scale"</span>),</span>
+<span id="cb16-124"><a href="#cb16-124" aria-hidden="true" tabindex="-1"></a>    truth_ca,</span>
+<span id="cb16-125"><a href="#cb16-125" aria-hidden="true" tabindex="-1"></a>    <span class="at">use_median_as_point =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-126"><a href="#cb16-126" aria-hidden="true" tabindex="-1"></a>    <span class="at">show_plot =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb16-127"><a href="#cb16-127" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_col_name =</span> <span class="st">"target_end_date"</span>,</span>
+<span id="cb16-128"><a href="#cb16-128" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_truth_col_name =</span> <span class="st">"target_end_date"</span>,</span>
+<span id="cb16-129"><a href="#cb16-129" aria-hidden="true" tabindex="-1"></a>    <span class="at">show_legend =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb16-130"><a href="#cb16-130" aria-hidden="true" tabindex="-1"></a>    <span class="at">facet =</span> <span class="st">"facet_name"</span>,</span>
+<span id="cb16-131"><a href="#cb16-131" aria-hidden="true" tabindex="-1"></a>    <span class="at">interactive =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb16-132"><a href="#cb16-132" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill_transparency =</span> <span class="fl">0.45</span>,</span>
+<span id="cb16-133"><a href="#cb16-133" aria-hidden="true" tabindex="-1"></a>    <span class="at">intervals =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.95</span>),</span>
+<span id="cb16-134"><a href="#cb16-134" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="cn">NULL</span></span>
+<span id="cb16-135"><a href="#cb16-135" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-136"><a href="#cb16-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_date</span>(</span>
+<span id="cb16-137"><a href="#cb16-137" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NULL</span>, <span class="at">limits =</span> <span class="fu">c</span>(</span>
+<span id="cb16-138"><a href="#cb16-138" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as.Date</span>(<span class="st">"2022-01-01"</span>),</span>
+<span id="cb16-139"><a href="#cb16-139" aria-hidden="true" tabindex="-1"></a>      <span class="fu">as.Date</span>(<span class="st">"2023-06-08"</span>)</span>
+<span id="cb16-140"><a href="#cb16-140" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb16-141"><a href="#cb16-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_breaks =</span> <span class="st">"4 months"</span>, <span class="at">date_labels =</span> <span class="st">"%b '%y"</span></span>
+<span id="cb16-142"><a href="#cb16-142" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-143"><a href="#cb16-143" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb16-144"><a href="#cb16-144" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb16-145"><a href="#cb16-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb16-146"><a href="#cb16-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb16-147"><a href="#cb16-147" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.ticks.length.x =</span> <span class="fu">unit</span>(<span class="dv">0</span>, <span class="st">"cm"</span>),</span>
+<span id="cb16-148"><a href="#cb16-148" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title.y =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb16-149"><a href="#cb16-149" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span></span>
+<span id="cb16-150"><a href="#cb16-150" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-151"><a href="#cb16-151" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-152"><a href="#cb16-152" aria-hidden="true" tabindex="-1"></a>((ca_plot_all <span class="sc">|</span> ca_plot_baseline) <span class="sc">/</span> ca_plot_ensembles) <span class="sc">+</span></span>
+<span id="cb16-153"><a href="#cb16-153" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_bw</span>() <span class="sc">+</span></span>
+<span id="cb16-154"><a href="#cb16-154" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides=</span><span class="st">'collect'</span>, <span class="at">heights=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)) <span class="sc">+</span></span>
+<span id="cb16-155"><a href="#cb16-155" aria-hidden="true" tabindex="-1"></a><span class="co">#  plot_layout(guides='collect', axes='collect', axis_titles = 'collect', heights=c(1, 2)) +</span></span>
+<span id="cb16-156"><a href="#cb16-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(<span class="at">title =</span> <span class="fu">paste0</span>(</span>
+<span id="cb16-157"><a href="#cb16-157" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Weekly Incident "</span>,</span>
+<span id="cb16-158"><a href="#cb16-158" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Hospitalizations for Influenza "</span>,</span>
+<span id="cb16-159"><a href="#cb16-159" aria-hidden="true" tabindex="-1"></a>    <span class="st">"in California"</span></span>
+<span id="cb16-160"><a href="#cb16-160" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div id="fig-plot-forecasts-hubVis" class="quarto-figure quarto-figure-center quarto-float anchored">
 <figure class="quarto-float quarto-float-fig figure">

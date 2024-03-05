@@ -252,7 +252,7 @@ F_{LOP}(x) = C_{LOP}(\mathcal{F}, \pmb{w}) = \sum_{i = 1}^Nw_iF_i(x).
 <p>To understand how these methods are implemented in <code>hubEnsembles</code>, we first must define the conventions employed by the hubverse and its packages for representing and working with model predictions. We begin with a short overview of concepts and conventions needed to utilize the <code>hubEnsembles</code> package, then explain the implementation of the two ensembling functions provided by the package, <code>simple_ensemble</code> and <code>linear_pool</code>.</p>
 <section id="hubverse-terminology-and-conventions" class="level2">
 <h2 class="anchored" data-anchor-id="hubverse-terminology-and-conventions">Hubverse terminology and conventions</h2>
-<p>Model output, generally referring to a specially formatted tabular representation of predictions produced by a modeling team, is a central concept in the hubverse effort. Each row represents a single, unique prediction with each column providing information about what is being predicted, its scope, and its value. Per hubverse convention, the columns may be broken down into task IDs, specification of the model output representation, and the model ID <span class="citation" data-cites="hubverse_docs">(<a href="#ref-hubverse_docs" role="doc-biblioref">hubverse 2022</a>)</span>. <!--#ELR: or `model_id`, if we want to name the specific column --></p>
+<p>Model output, generally referring to a specially formatted tabular representation of predictions produced by a modeling team<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, is a central concept in the hubverse effort. Each row represents a single, unique prediction with each column providing information about what is being predicted, its scope, and its value. Per hubverse convention, the columns may be broken down into task IDs, specification of the model output representation, and the model ID <span class="citation" data-cites="hubverse_docs">(<a href="#ref-hubverse_docs" role="doc-biblioref">hubverse 2022</a>)</span>. <!--#ELR: or `model_id`, if we want to name the specific column --></p>
 <p>At minimum the task IDs (also called task ID variables) together specify the desired outcome being predicted, but they may also include additional information, such as any conditions or assumptions that were used to generate the predictions <span class="citation" data-cites="hubverse_docs">(<a href="#ref-hubverse_docs" role="doc-biblioref">hubverse 2022</a>)</span>. For example, short-term forecasts of incident influenza hospitalizations in the US at different locations and amounts of time in the future (see <a href="#tbl-flu-forecasts" class="quarto-xref">Table&nbsp;1</a> below) might represent this information using a <code>target</code> column with the value “wk ahead inc flu hosp”, a <code>location</code> column identifying the location being predicted, a <code>reference_date</code> column with the “starting point” of the forecasts, and a <code>horizon</code> column with the number of steps ahead that the forecast is predicting relative to the <code>reference_date</code>. All these variables make up the task ID columns <span class="citation" data-cites="hubverse_docs">(<a href="#ref-hubverse_docs" role="doc-biblioref">hubverse 2022</a>)</span>.</p>
 <div class="cell">
 <div id="tbl-flu-forecasts" class="cell quarto-float anchored">
@@ -1300,6 +1300,7 @@ Figure&nbsp;8: Target data and average h-week ahead 95% PI coverage by forecast 
 
 </section>
 
+
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-aastveit2018" class="csl-entry" role="listitem">
 Aastveit, Knut Are, James Mitchell, Francesco Ravazzolo, and Herman K. van Dijk. 2018. <span>“The Evolution of Forecast Density Combinations in Economics.”</span> Amsterdam; Rotterdam. <a href="https://www.econstor.eu/handle/10419/185588">https://www.econstor.eu/handle/10419/185588</a>.
@@ -1397,7 +1398,12 @@ Winkler, Robert L. 2015. <span>“Equal Versus Differential Weighting in Combini
 <div id="ref-yamana_superensemble_2016" class="csl-entry" role="listitem">
 Yamana, Teresa K., Sasikiran Kandula, and Jeffrey Shaman. 2016. <span>“Superensemble Forecasts of Dengue Outbreaks.”</span> <em>Journal of The Royal Society Interface</em> 13 (123): 20160410. <a href="https://doi.org/10.1098/rsif.2016.0410">https://doi.org/10.1098/rsif.2016.0410</a>.
 </div>
-</div></section></div></main>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>A team is composed of one or more individuals who develop and run at least one model for tasks defined by a modeling hub.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {

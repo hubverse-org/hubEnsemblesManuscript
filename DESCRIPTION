@@ -44,7 +44,7 @@ Imports:
     ggplot2 (>= 3.4.4),
     hubEnsembles (>= 0.1.0),
     hubUtils (>= 0.0.0.9017),
-    hubVis (>= 0.0.0.9001),
+    hubVis (== 0.0.0.9001),
     knitr (>= 1.45),
     lubridate (>= 1.9.2),
     patchwork (>= 1.1.3),

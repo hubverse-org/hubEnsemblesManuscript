@@ -509,37 +509,40 @@ library(hubEnsembles)
 
 ## Example data: a forecast hub
 
-We will use an example hub to demonstrate the functionality of the `hubEnsembles` package (<https://github.com/Infectious-Disease-Modeling-Hubs/example-complex-forecast-hub>). The example hub includes both example model output data and target data (sometimes known as "truth" data), which are included in the `hubEnsembles` package as data objects named `example_model_output` and `example_target_data`. The model output data includes `quantile`, `mean` and `median` forecasts of future incident influenza hospitalizations, and `pmf` forecasts of hospitalization intensity, including "low", "moderate", "high", or "very high" intensities. Hospitalization intensity categories are determined by thresholds for weekly hospital admissions per 100,000 population. 
+We will use an example hub to demonstrate the functionality of the `hubEnsembles` package (<https://github.com/Infectious-Disease-Modeling-Hubs/example-complex-forecast-hub>). The example hub includes both example model output data and target data (sometimes known as "truth" data), which are included in the `hubEnsembles` package as data objects named `example_model_output` and `example_target_data`. 
 
-Each forecast is made for five task ID variables, including the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`, omitted in the print-out below since all values are identical in this case). Below is an example from a single model, the Flusight-baseline model, for the 1-week ahead forecast of US incident hospitalizations made on December 17, 2022. We print only the median and the 50%, 80%, and 98% prediction intervals, although other intervals and output types are included in the example model output data.
+The model output data includes `quantile`, `mean` and `median` forecasts of future incident influenza hospitalizations and `pmf` forecasts of hospitalization intensity. Each forecast is made for five task ID variables, including the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`). @tbl-example-forecasts provides an example of the quantile forecasts included in this data: 1-week ahead forecast of US incident hospitalizations made on December 17, 2022 from the Flusight-baseline model, the MOBS-GLEAM_FLUH model, and the PSI-DICE model. In @tbl-example-forecasts, we show only the median and the 50%, and 95% prediction intervals, although other intervals and `mean` forecasts are included in the example model output data.
 
-```{r, cols.print=9}
+```{r, cols.print=12}
+#| label: tbl-example-forecasts
+#| tbl-cap: "Example model output for forecasts of incident influenza hospitalizations. A subset of example model output is shown: 1-week ahead quantile forecasts made on 2022-12-17 for the US from three distinct models; only the median and 50% prediction intervals are displayed. This example data is provided in the `hubEnsembles` package and is a subset of the `example-complex-forecast-hub` data provided by the hubverse [@hubverse_docs]."
 hubEnsembles::example_model_output |>
   dplyr::filter(
     output_type %in% c("quantile", "median"),
-    output_type_id %in% c(0.01, 0.1, 0.25, 0.75, 0.9, 0.99, NA),
+    output_type_id %in% c(0.025, 0.25, 0.75, 0.75, NA),
     reference_date == "2022-12-17",
     location == "US",
     horizon == 1
-  ) |>
-  dplyr::select(-target)
-```
-
-The target data provides the observed incident influenza hospitalizations (`value`) in a given week (`time_idx`) and location (`location`); this target data corresponds to the forecast target `wk inc flu hosp`. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant.
-
-```{r}
-hubEnsembles::example_target_data |>
-  dplyr::filter(
-    location == "US",
-    time_idx > "2022-12-17"
   )
 ```
 
-We can plot these forecasts and the target data using the `plot_step_ahead_model_output()` function from `hubVis`, another package for visualizing model outputs from the hubverse suite.
+We also have corresponding target data included in the `hubEnsembles` package (@tbl-example-target-data). The example target data provide observed incident influenza hospitalizations (`value`) in a given week (`time_idx`) and for a given location (`location`). This target data could be used as calibration data for generating forecasts or for evaluating these forecasts post hoc. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for the target data.
+
+```{r, cols.print=13}
+#| label: tbl-example-target-data
+#| tbl-cap: "Example target data for incident influenza hospitalizations. This table includes target data from 2022-11-01 and 2023-02-01. This target data is provided in the `hubEnsembles` package and is a subset of the `example-complex-forecast-hub` targetdata provided by the hubverse [@hubverse_docs]."
+hubEnsembles::example_target_data |>
+  dplyr::filter(
+    location == "US",
+    time_idx >= "2022-11-01",
+    time_idx <= "2023-02-01"
+  )
+```
+We can plot these forecasts and the target data using the `plot_step_ahead_model_output()` function from `hubVis`, another package for visualizing model outputs from the hubverse suite (@fig-plot-ex-mods). We subset the model output data and the target data to the location and time horizone we are interested in. 
 
 ```{r plot-ex-mods}
 #| label: fig-plot-ex-mods
-#| fig-cap: "Example model output. One example forecast of weekly US incident influenza hospitalizations is shown for each of three models (panels). Forecasts are represented by a median (line), 50% prediction interval (Q25-Q75), and 95% prediction interval (Q2.5-Q97.5)."
+#| fig-cap: "One example quantile forecast of weekly US incident influenza hospitalizations is shown for each of three models (panels). Forecasts are represented by a median (line), 50% prediction interval (Q25-Q75), and 95% prediction interval (Q2.5-Q97.5)."
 #| fig-width: 8
 #| fig-height: 4
 
@@ -565,8 +568,6 @@ hubVis::plot_step_ahead_model_output(
   facet_nrow = 1,
   interactive = FALSE,
   intervals = c(0.5, 0.95),
-#  one_color = "black",
-#  pal_color = NULL,
   show_legend = FALSE,
   use_median_as_point = TRUE,
   x_col_name = "target_end_date"
@@ -574,6 +575,54 @@ hubVis::plot_step_ahead_model_output(
   theme_bw() +
   labs(y = "US incident hospitalizations")
 ```
+
+Next, we examine the `pmf` target in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". The hospitalization intensity categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations. 
+
+We show a representative example of the hospitalization intensity category forecasts in @tbl-example-forecasts-pmf. Because these forecasts are `pmf` output type, the `output_type_id` column specifies the bin of hospitalization intensity and the `value` column provides the forecasted probability of hospitalization incidence being in that category. Values sum to 1 across bins. For the MOBS-GLEAM_FLUH and PSI-DICE models, incidence is forecasted to decrease over the horizon (@fig-plot-ex-mods), and correspondingly, the probability of "high" and "very high" hospitalization intensity is smaller for later horizons (@fig-plot-ex-mods-pmf).
+
+```{r, cols.print=9}
+#| label: tbl-example-forecasts-pmf
+#| tbl-cap: "Example model output for forecasts of incident influenza hospitalization intensity. A subset of example model output is shown: 1-week ahead pmf forecasts made on 2022-12-17 for the US from three distinct models. We round the forecasted probability (in the `value` column) to two digits. This example data is provided in the `hubEnsembles` package and is a subset of the `example-complex-forecast-hub` data provided by the hubverse [@hubverse_docs]."
+hubEnsembles::example_model_output |>
+  dplyr::filter(
+    output_type %in% c("pmf"),
+    reference_date == "2022-12-17",
+    location == "US",
+    horizon == 1
+  ) |>
+  dplyr::mutate(value = round(value, 2))
+```
+
+```{r}
+#| echo: FALSE
+#| label: fig-plot-ex-mods-pmf
+#| fig-cap: "One example pmf forecast of incident influenza hospitalization intensity is shown for each of three models (panels). Each bar shows forecasts of horizon 0-3 weeks, and the darkness of the bar shows the hospitalization intensity bins (low, moderate, high, and very high)."
+#| fig-width: 8
+#| fig-height: 4
+
+model_outputs_plot_pmf <- hubEnsembles::example_model_output |>
+  hubUtils::as_model_out_tbl() |>
+  dplyr::filter(
+    location == "US",
+    output_type %in% c("pmf"),
+    reference_date == "2022-12-17"
+  ) |>
+  dplyr::mutate(output_type_id = factor(output_type_id, levels = c("low", "moderate", "high", "very high")))
+
+ggplot(data = model_outputs_plot_pmf, 
+       aes(x = horizon, y = value, fill = model_id, alpha = output_type_id)) + 
+  geom_bar(stat = "identity", position = "stack") + 
+  facet_grid(cols = vars(model_id)) + 
+  guides(fill = "none") + 
+  scale_alpha_discrete(name = "hospitalization intensity") +
+  scale_fill_brewer(palette = "Set2") + 
+  scale_x_continuous(expand = c(0,0), name = "horizon (weeks)") + 
+  scale_y_continuous(expand = c(0,0), name = "bin probability") +
+  theme_bw() + 
+  theme(legend.position = "bottom", 
+        panel.grid = element_blank())
+```
+
 
 ## Creating ensembles with `simple_ensemble`
 

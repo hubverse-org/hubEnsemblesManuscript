@@ -634,18 +634,20 @@ mean_ens <- hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
 )
 ```
 
-The resulting model output has the same structure as the original model output data, with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean` to change the name of this ensemble in the resulting data frame; if not specified, the default will be "hub-ensemble".
+The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean` to change the name of this ensemble in the resulting model output; if not specified, the default will be "hub-ensemble".
 
-```{r}
+```{r, rows.print = 9}
+#| label: tbl-mean-ensemble
+#| tbl-cap: "Mean ensemble model output. The values in the model_id column are determined by `simple_ensemble(..., model_id = )` argument). A subset of ensemble model output is shown: 1-week ahead pmf forecasts made on 2022-12-17 for the US. Results are generated for all output types. Here, we show only the median and 50% prediction intervals for the quantile output type and all bins for the pmf output type. "
+#| 
 mean_ens |>
   dplyr::filter(
-    output_type %in% c("quantile", "median"),
-    output_type_id %in% c(0.01, 0.1, 0.25, 0.75, 0.9, 0.99, NA),
+    output_type %in% c("quantile", "median", "pmf"),
+    output_type_id %in% c(0.025, 0.25, 0.75, 0.975, NA, "low", "moderate", "high", "very high"),
     reference_date == "2022-12-17",
     location == "US",
     horizon == 1
-  ) |>
-  head()
+  )
 ```
 
 ### Changing the aggregation function

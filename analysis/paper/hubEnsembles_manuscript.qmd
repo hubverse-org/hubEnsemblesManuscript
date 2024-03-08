@@ -185,7 +185,7 @@ The `simple_ensemble` function directly computes an ensemble from component mode
 
 By default, `simple_ensemble` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear opinion pool method.
 
-A median ensemble may also be created by specifying "median" as the aggregation function, or a custom function may be passed to the `agg_fun` argument to create other ensemble types. Similarly, model weights can be specified to create a weighted ensemble. These weights are allowed to vary for different task ID values, and for predictions of quantile output type, the weights may also be different for different quantile probability levels (corresponding to values of the `output_type_id` column).
+A median ensemble may also be created by specifying "median" as the aggregation function, or a custom function may be passed to the `agg_fun` argument to create other ensemble types. Similarly, model weights can be specified to create a weighted ensemble.
 
 | output_type | `simple_ensemble(..., agg_fun = "mean")` | `linear_pool()`|
 |-------------|------------------------|----------------------------------|

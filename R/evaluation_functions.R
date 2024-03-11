@@ -135,6 +135,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
   }
 
   if (y_var == "wis") {
+    y_lab <- "average wis"
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
         x = forecast_date, y = wis,
@@ -145,6 +146,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
         prob = c(0.5, 0.99)
       ))))
   } else if (y_var == "mae") {
+    y_lab <- "mae"
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
         x = forecast_date, y = mae,
@@ -155,6 +157,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
         prob = c(0.5, 0.99)
       ))))
   } else if (y_var == "cov95") {
+    y_lab <- "average\n PI coverage"
     truth_data <- NULL
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
@@ -166,6 +169,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
       ggplot2::coord_cartesian(ylim = c(0, 1.05)) +
       ggplot2::geom_hline(ggplot2::aes(yintercept = 0.95))
   } else if (y_var == "cov50") {
+    y_lab <- "average\n PI coverage"
     truth_data <- NULL
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
@@ -200,7 +204,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
         date_labels = "%b '%y"
       ) +
       ggplot2::scale_y_continuous(
-        name = paste("average", y_var),
+        name = y_lab,
         sec.axis = ggplot2::sec_axis(
           trans = ~ . / truth_scaling,
           name = "average\n target data"
@@ -219,8 +223,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
       ) +
       ggplot2::scale_color_manual(breaks = model_names, values = model_colors) +
       ggplot2::labs(
-        title = main, x = "forecast date",
-        y = paste("average", y_var)
+        title = main, x = "forecast date", y = y_lab,
       ) +
       ggplot2::theme_bw()
   }
@@ -228,7 +231,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
 
 
 
-#' Plot summarized metrics against forecast date
+#' Plot averaged truth against forecast date
 #'
 #' @param truth_data A data frame of truth data. Must contain a target_end_date
 #'  column
@@ -275,7 +278,7 @@ plot_flu_truth <- function(truth_data, date_range = NULL, main = "truth data",
     ggplot2::coord_cartesian(ylim = c(0, max(truth_to_plot$value) * 1.1)) +
     ggplot2::labs(
       title = main, x = "forecast date",
-      y = "average target data"
+      y = "average value"
     ) +
     ggplot2::theme_bw()
 }

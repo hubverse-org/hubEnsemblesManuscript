@@ -20,22 +20,24 @@
 #' @export
 #'
 #' @examples
+#' @importFrom rlang .data
+
 as_covid_hub_forecasts <- function(model_outputs) {
   if (all(c("mean", "median") %in% unique(model_outputs[["output_type"]]))) {
     stop("You may only have one type of point forecast.")
   }
 
   model_outputs <- model_outputs |>
-    dplyr::rename(model = model_id, target_variable = target)
+    dplyr::rename(model = .data$model_id, target_variable = .data$target)
 
   model_outputs <- model_outputs |>
-    dplyr::rename(target = target_variable) |>
+    dplyr::rename(target = .data$target_variable) |>
     dplyr::mutate(target = ifelse(
-      stringr::str_detect(target, "ahead"),
-      stringr::str_replace(target, "ahead", "") |>
-        stringr::str_squish(), target
+      stringr::str_detect(.data$target, "ahead"),
+      stringr::str_replace(.data$target, "ahead", "") |>
+        stringr::str_squish(), .data$target
     )) |>
-    tidyr::separate(target,
+    tidyr::separate(.data$target,
       sep = " ", convert = TRUE,
       into = c("temporal_resolution", "target_variable"),
       extra = "merge"
@@ -43,13 +45,13 @@ as_covid_hub_forecasts <- function(model_outputs) {
 
   covid_hub_outputs <- model_outputs |>
     dplyr::mutate(
-      type = ifelse(output_type %in% c("mean", "median"), "point", output_type),
-      quantile = output_type_id
+      type = ifelse(.data$output_type %in% c("mean", "median"), 
+                    "point", .data$output_type),
+      quantile = .data$output_type_id
     ) |>
-    dplyr::select(
-      model, forecast_date, location, horizon, temporal_resolution,
-      target_variable, target_end_date, type, quantile, value
-    )
+    dplyr::select(.data$model, .data$forecast_date, .data$location, .data$horizon, 
+                  .data$temporal_resolution, .data$target_variable, 
+                  .data$target_end_date, .data$type, .data$quantile, .data$value)
 
   return(covid_hub_outputs)
 }

@@ -12,6 +12,8 @@
 #' @export
 #'
 #' @examples
+#' @importFrom rlang .data
+
 get_flu_truth_single_date <- function(zoltar_connection, project_url, origin_date) {
   raw_truth <- zoltar_connection |>
     do_zoltar_query(project_url, query_type ="truth",
@@ -22,10 +24,12 @@ get_flu_truth_single_date <- function(zoltar_connection, project_url, origin_dat
 
   # Format truth
   truth_data <- raw_truth |>
-    dplyr::rename(location = unit, forecast_date = timezero) |>
-    dplyr::mutate(model="flu-truth", target_variable="inc flu hosp", 
-                  target_end_date=ceiling_date(forecast_date, "weeks")-days(1)) |>
-    dplyr::select(model, target_variable, target_end_date, location, value)
+    dplyr::rename(location = .data$unit, forecast_date = .data$timezero) |>
+    dplyr::mutate(model="flu-truth", target_variable="inc flu hosp",
+                  target_end_date=
+                    lubridate::ceiling_date(.data$forecast_date, "weeks")-
+                      lubridate::days(1)) |>
+    dplyr::select(.data$model, .data$target_variable, .data$target_end_date, .data$location, .data$value)
   
   return (truth_data)
 }
@@ -47,6 +51,8 @@ get_flu_truth_single_date <- function(zoltar_connection, project_url, origin_dat
 #' @export
 #'
 #' @examples
+#' @importFrom rlang .data
+
 get_flu_forecasts_single_date <- function(zoltar_connection, project_url, origin_date) {
   raw_forecasts <- zoltar_connection |>
     do_zoltar_query(project_url, query_type ="forecasts",
@@ -60,17 +66,18 @@ get_flu_forecasts_single_date <- function(zoltar_connection, project_url, origin
 
   # Format forecasts
   forecast_data <- raw_forecasts |>
-    tidyr::separate(target, sep=" ", convert=TRUE, into=c("horizon", "target_long"), extra="merge") |>
-    dplyr::rename(location = unit, forecast_date = timezero) |>
+    tidyr::separate(.data$target, sep=" ", convert=TRUE, 
+                    into=c("horizon", "target_long"), extra="merge") |>
+    dplyr::rename(location = .data$unit, forecast_date = .data$timezero) |>
     as_model_out_tbl(model_id_col = "model",
-                    output_type_col = "class",
-                    output_type_id_col = "quantile",
-                    value_col = "value",
-                    sep = "-",
-                    trim_to_task_ids = FALSE,
-                    hub_con = NULL,
-                    task_id_cols = task_id_cols,
-                    remove_empty = TRUE) #|>
+                     output_type_col = "class",
+                     output_type_id_col = "quantile",
+                     value_col = "value",
+                     sep = "-",
+                     trim_to_task_ids = FALSE,
+                     hub_con = NULL,
+                     task_id_cols = task_id_cols,
+                     remove_empty = TRUE) #|>
 #    dplyr::select(-season)
       
   return (forecast_data)
@@ -104,17 +111,19 @@ get_flu_forecasts_single_date <- function(zoltar_connection, project_url, origin
 #' @export
 #'
 #' @examples
+#' @importFrom rlang .data
+#' 
 generate_flu_ensemble_single_date <- function(zoltar_connection, project_url,
                                               origin_date, include_baseline=FALSE,
                                               ensemble_type, tail_dist=NULL, ...) {
 
   model_outputs <- zoltar_connection |> 
     get_flu_forecasts_single_date(project_url, origin_date) |>
-    dplyr::filter(model_id != "Flusight-ensemble")
+    dplyr::filter(.data$model_id != "Flusight-ensemble")
     
   if (!include_baseline) {
     model_outputs <- model_outputs |>
-      dplyr::filter(model_id != "Flusight-baseline")
+      dplyr::filter(.data$model_id != "Flusight-baseline")
   }
 
   task_id_cols <- c("forecast_date", "location", "horizon", "target_long")
@@ -124,27 +133,35 @@ generate_flu_ensemble_single_date <- function(zoltar_connection, project_url,
     if (is.null(tail_dist)) tail_dist = "norm"
     lp_type <- ifelse(tail_dist == "lnorm", "lognormal", "normal")
     ensemble_outputs <- model_outputs |>
-      linear_pool(weights=NULL, weights_col_name=NULL,
-                  model_id=paste("lp", lp_type, sep="-"),
-                  task_id_cols = task_id_cols,
-                  tail_dist = tail_dist,
-                  n_samples = 1e5)
+      hubEnsembles::linear_pool(weights=NULL, weights_col_name=NULL,
+                                model_id=paste("lp", lp_type, sep="-"),
+                                task_id_cols = task_id_cols,
+                                tail_dist = tail_dist,
+                                n_samples = 1e5)
 
   } else {
     ensemble_outputs <- model_outputs |>
-      simple_ensemble(weights=NULL, weights_col_name=NULL,
-                      agg_fun = ensemble_type,
-                      model_id=paste(ensemble_type, "ensemble", sep="-"),
-                      task_id_cols = task_id_cols)
+      hubEnsembles::simple_ensemble(weights=NULL, weights_col_name=NULL,
+                                    agg_fun = ensemble_type,
+                                    model_id=paste(ensemble_type, "ensemble", sep="-"),
+                                    task_id_cols = task_id_cols)
   }
   
   ensemble_outputs <- ensemble_outputs |> 
-    dplyr::rename(model = model_id, type = output_type, quantile = output_type_id) |>
-    tidyr::separate(target_long, sep=" ", convert=TRUE, into=c("temporal_resolution", "ahead", "target_variable"), extra="merge") |>
-    dplyr::mutate(value = ifelse(value < 0, 0, value)) |>
-    dplyr::mutate(target_end_date=ceiling_date(forecast_date, "weeks")-days(1), .before = value) |>
-    dplyr::select(model, forecast_date, location, horizon, temporal_resolution, 
-                  target_variable, target_end_date, type, quantile, value)
+    dplyr::rename(model = .data$model_id,
+                  type = .data$output_type, 
+                  quantile = .data$output_type_id) |>
+    tidyr::separate(.data$target_long, sep=" ", 
+                    convert=TRUE,
+                    into=c("temporal_resolution", "ahead", "target_variable"), 
+                    extra="merge") |>
+    dplyr::mutate(value = ifelse(.data$value < 0, 0, .data$value)) |>
+    dplyr::mutate(target_end_date=
+                    lubridate::ceiling_date(.data$forecast_date, "weeks")-
+                      lubridate::days(1)) |>
+    dplyr::select(.data$model, .data$forecast_date, .data$location, .data$horizon, 
+                  .data$temporal_resolution, .data$target_variable, 
+                  .data$target_end_date, .data$type, .data$quantile, .data$value)
   
   return (ensemble_outputs)
 }
@@ -173,14 +190,16 @@ generate_flu_ensemble_single_date <- function(zoltar_connection, project_url,
 #' @export
 #'
 #' @examples
+#' @importFrom rlang .data
+
 generate_flu_ensemble <- function(model_outputs, include_baseline=FALSE, ensemble_type, tail_dist=NULL, ...) {
 
   model_outputs <- model_outputs |>
-    dplyr::filter(model_id != "Flusight-ensemble")
+    dplyr::filter(.data$model_id != "Flusight-ensemble")
     
   if (!include_baseline) {
     model_outputs <- model_outputs |>
-      dplyr::filter(model_id != "Flusight-baseline")
+      dplyr::filter(.data$model_id != "Flusight-baseline")
   }
 
   task_id_cols <- c("forecast_date", "location", "horizon", "target_long")
@@ -190,27 +209,36 @@ generate_flu_ensemble <- function(model_outputs, include_baseline=FALSE, ensembl
     if (is.null(tail_dist)) tail_dist = "norm"
     lp_type <- ifelse(tail_dist == "lnorm", "lognormal", "normal")
     ensemble_outputs <- model_outputs |>
-      linear_pool(weights=NULL, weights_col_name=NULL,
-                  model_id=paste("lp", lp_type, sep="-"),
-                  task_id_cols = task_id_cols,
-                  tail_dist = tail_dist,
-                  n_samples = 1e5)
+      hubEnsembles::linear_pool(weights=NULL, weights_col_name=NULL,
+                                model_id=paste("lp", lp_type, sep="-"),
+                                task_id_cols = task_id_cols,
+                                tail_dist = tail_dist,
+                                n_samples = 1e5)
 
   } else {
     ensemble_outputs <- model_outputs |>
-      simple_ensemble(weights=NULL, weights_col_name=NULL,
-                      agg_fun = ensemble_type,
-                      model_id=paste(ensemble_type, "ensemble", sep="-"),
-                      task_id_cols = task_id_cols)
+      hubEnsembles::simple_ensemble(weights=NULL, weights_col_name=NULL,
+                                    agg_fun = ensemble_type,
+                                    model_id=paste(ensemble_type, "ensemble", sep="-"),
+                                    task_id_cols = task_id_cols)
   }
   
   ensemble_outputs <- ensemble_outputs |> 
-    dplyr::rename(model = model_id, type = output_type, quantile = output_type_id) |>
-    tidyr::separate(target_long, sep=" ", convert=TRUE, into=c("temporal_resolution", "ahead", "target_variable"), extra="merge") |>
-#    dplyr::mutate(value = ifelse(value < 0, 0, value)) |>
-    dplyr::mutate(target_end_date=ceiling_date(forecast_date, "weeks")-days(1), .before = value) |>
-    dplyr::select(model, forecast_date, location, horizon, temporal_resolution, 
-                  target_variable, target_end_date, type, quantile, value)
+    dplyr::rename(model = .data$model_id,
+                  type = .data$output_type, 
+                  quantile = .data$output_type_id) |>
+    tidyr::separate(.data$target_long, sep=" ", 
+                    convert=TRUE,
+                    into=c("temporal_resolution", "ahead", "target_variable"), 
+                    extra="merge") |>
+#    dplyr::mutate(value = ifelse(.data$value < 0, 0, .data$value)) |>
+    dplyr::mutate(target_end_date=
+                    lubridate::ceiling_date(.data$forecast_date, "weeks")-
+                      lubridate::days(1), 
+                  .before = .data$value) |>
+    dplyr::select(.data$model, .data$forecast_date, .data$location, .data$horizon, 
+                  .data$temporal_resolution, .data$target_variable, 
+                  .data$target_end_date, .data$type, .data$quantile, .data$value)
   
   return (ensemble_outputs)
 }
@@ -244,6 +272,7 @@ generate_flu_ensemble <- function(model_outputs, include_baseline=FALSE, ensembl
 #' @export
 #'
 #' @examples
+
 wrapper_flu_ensemble_single_date <- function(zoltar_connection, project_url,
                                               origin_date, include_baseline=FALSE,
                                               ensemble_type, tail_dist=NULL, ...) {

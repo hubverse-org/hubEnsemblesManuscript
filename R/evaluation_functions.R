@@ -16,36 +16,38 @@
 #' @export
 #'
 #' @examples
+#' @importFrom rlang .data
+
 evaluate_flu_scores <- function(scores, grouping_variables, baseline_name,
                                 us_only = FALSE) {
   if (isFALSE("location" %in% grouping_variables)) {
     if (us_only) {
-      scores <- dplyr::filter(scores, location == "US")
+      scores <- dplyr::filter(scores, .data$location == "US")
     } else {
-      scores <- dplyr::filter(scores, location != "US")
+      scores <- dplyr::filter(scores, .data$location != "US")
     }
   }
 
   if ("season" %in% grouping_variables & isFALSE("season" %in% names(scores))) {
     scores <- scores |>
-      dplyr::mutate(season = ifelse(forecast_date < as.Date("2022-08-01"),
+      dplyr::mutate(season = ifelse(.data$forecast_date < as.Date("2022-08-01"),
         "2021-2022", "2022-2023"
       ))
   }
 
   summarized_scores_all <- scores |>
-    dplyr::group_by(model, dplyr::across(dplyr::all_of(grouping_variables))) |>
+    dplyr::group_by(.data$model, dplyr::across(dplyr::all_of(grouping_variables))) |>
     dplyr::summarize(
-      wis = mean(wis), mae = mean(abs_error),
-      cov50 = mean(coverage_50), cov95 = mean(coverage_95)
+      wis = mean(.data$wis), mae = mean(.data$abs_error),
+      cov50 = mean(.data$coverage_50), cov95 = mean(.data$coverage_95)
     )
 
   summarized_scores_baseline <- scores |>
-    dplyr::filter(model == baseline_name) |>
-    dplyr::group_by(model, dplyr::across(dplyr::all_of(grouping_variables))) |>
-    dplyr::summarize(base_wis = mean(wis), base_mae = mean(abs_error)) |>
+    dplyr::filter(.data$model == baseline_name) |>
+    dplyr::group_by(.data$model, dplyr::across(dplyr::all_of(grouping_variables))) |>
+    dplyr::summarize(base_wis = mean(.data$wis), base_mae = mean(.data$abs_error)) |>
     dplyr::ungroup() |>
-    dplyr::select(-model)
+    dplyr::select(-.data$model)
 
   if (is.null(grouping_variables)) {
     summarized_scores_all <- summarized_scores_all |>
@@ -61,20 +63,20 @@ evaluate_flu_scores <- function(scores, grouping_variables, baseline_name,
   summarized_scores_all |>
     dplyr::mutate(
       rwis = dplyr::case_when(
-        base_wis != 0 ~ wis / base_wis,
-        base_wis == 0 & wis == 0 ~ 1,
-        base_wis == 0 & wis != 0 ~ Inf
+        base_wis != 0 ~ .data$wis / .data$base_wis,
+        base_wis == 0 & .data$wis == 0 ~ 1,
+        base_wis == 0 & .data$wis != 0 ~ Inf
       ),
       rmae = dplyr::case_when(
-        base_mae != 0 ~ mae / base_mae,
-        base_mae == 0 & mae == 0 ~ 1,
-        base_mae == 0 & mae != 0 ~ Inf
+        base_mae != 0 ~ .data$mae / .data$base_mae,
+        base_mae == 0 & .data$mae == 0 ~ 1,
+        base_mae == 0 & .data$mae != 0 ~ Inf
       )
     ) |>
-    dplyr::select(-base_wis, -base_mae) |>
+    dplyr::select(-.data$base_wis, -.data$base_mae) |>
     dplyr::group_by(dplyr::across(dplyr::all_of(grouping_variables))) |>
     dplyr::mutate(dplyr::across(dplyr::where(is.numeric), round, digits = 3)) |>
-    dplyr::arrange(wis, .by_group = TRUE)
+    dplyr::arrange(.data$wis, .by_group = TRUE)
 }
 
 
@@ -100,13 +102,15 @@ evaluate_flu_scores <- function(scores, grouping_variables, baseline_name,
 #' @export
 #'
 #' @examples
+#' @importFrom rlang .data
+
 plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
                                                 model_colors, y_var = "wis",
                                                 h = 1, main = NULL,
                                                 truth_data = NULL,
                                                 truth_scaling = 0.125) {
   data_to_plot <- summarized_scores |>
-    dplyr::filter(horizon == h)
+    dplyr::filter(.data$horizon == h)
 
   if (!is.null(truth_data)) {
     date_range <- lubridate::interval(
@@ -115,22 +119,22 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
     )
 
     truth_to_plot <- truth_data |>
-      dplyr::mutate(target_end_date = target_end_date - lubridate::days(5)) |>
-      dplyr::filter(target_end_date %within% date_range) |>
-      dplyr::group_by(model, target_end_date) |>
-      dplyr::summarize(value = mean(value))
+      dplyr::mutate(target_end_date = .data$target_end_date - lubridate::days(5)) |>
+      dplyr::filter(.data$target_end_date %within% date_range) |>
+      dplyr::group_by(.data$model, .data$target_end_date) |>
+      dplyr::summarize(value = mean(.data$value))
 
     truth_to_plot <- truth_to_plot |>
       dplyr::mutate(value = dplyr::case_when(
-        y_var == "wis" ~ value * truth_scaling,
-        y_var == "mae" ~ value * truth_scaling,
+        y_var == "wis" ~ .data$value * truth_scaling,
+        y_var == "mae" ~ .data$value * truth_scaling,
         (y_var == "cov95" | y_var == "cov50") &
-          target_end_date < as.Date("2022-08-01") ~
-          -0.15 * value / max(truth_to_plot$value) + 1,
+          .data$target_end_date < as.Date("2022-08-01") ~
+          -0.15 * .data$value / max(truth_to_plot$value) + 1,
         (y_var == "cov95" | y_var == "cov50") &
-          target_end_date > as.Date("2022-08-01") ~
-          -0.5 * value / max(truth_to_plot$value) + 1,
-        .default = value * truth_scaling
+          .data$target_end_date > as.Date("2022-08-01") ~
+          -0.5 * .data$value / max(truth_to_plot$value) + 1,
+        .default = .data$value * truth_scaling
       ))
   }
 
@@ -138,22 +142,22 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
     y_lab <- "average wis"
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
-        x = forecast_date, y = wis,
-        shape = model, group = model
+        x = .data$forecast_date, y = .data$wis,
+        shape = .data$model, group = .data$model
       )
     ) +
-      ggplot2::coord_cartesian(ylim = c(0, sum(quantile(data_to_plot$wis,
+      ggplot2::coord_cartesian(ylim = c(0, sum(stats::quantile(data_to_plot$wis,
         prob = c(0.5, 0.99)
       ))))
   } else if (y_var == "mae") {
     y_lab <- "mae"
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
-        x = forecast_date, y = mae,
-        shape = model, group = model
+        x = .data$forecast_date, y = .data$mae,
+        shape = .data$model, group = .data$model
       )
     ) +
-      ggplot2::coord_cartesian(ylim = c(0, sum(quantile(data_to_plot$mae,
+      ggplot2::coord_cartesian(ylim = c(0, sum(stats::quantile(data_to_plot$mae,
         prob = c(0.5, 0.99)
       ))))
   } else if (y_var == "cov95") {
@@ -161,8 +165,8 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
     truth_data <- NULL
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
-        x = forecast_date, y = cov95,
-        shape = model, group = model
+        x = .data$forecast_date, y = .data$cov95,
+        shape = .data$model, group = .data$model
       )
     ) +
       #      ggplot2::geom_jitter(height = 0.05, width = 0, mapping = ggplot2::aes(color = model)) +
@@ -173,8 +177,8 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
     truth_data <- NULL
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
-        x = forecast_date, y = cov95,
-        shape = model, group = model
+        x = .data$forecast_date, y = .data$cov50,
+        shape = .data$model, group = .data$model
       )
     ) +
       #      geom_jitter(height=0.05, width=0, mapping=aes(color=model)) +
@@ -186,19 +190,19 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
     gg +
       ggplot2::geom_point(truth_to_plot,
         mapping = ggplot2::aes(
-          x = target_end_date, y = value,
-          group = model
+          x = .data$target_end_date, y = .data$value,
+          shape = .data$model, group = .data$model
         ),
         col = "black"
       ) +
       ggplot2::geom_line(truth_to_plot,
         mapping = ggplot2::aes(
-          x = target_end_date, y = value,
-          group = model
+          x = .data$target_end_date, y = .data$value,
+        shape = .data$model, group = .data$model
         ), col = "black"
       ) +
-      ggplot2::geom_point(mapping = ggplot2::aes(col = model)) +
-      ggplot2::geom_line(mapping = ggplot2::aes(col = model)) +
+      ggplot2::geom_point(mapping = ggplot2::aes(col = .data$model)) +
+      ggplot2::geom_line(mapping = ggplot2::aes(col = .data$model)) +
       ggplot2::scale_x_date(
         name = NULL, date_breaks = "2 months",
         date_labels = "%b '%y"
@@ -215,8 +219,8 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
       ggplot2::theme_bw()
   } else {
     gg +
-      ggplot2::geom_point(mapping = ggplot2::aes(col = model), alpha = 0.8) +
-      ggplot2::geom_line(mapping = aes(col = model), alpha = 0.8) +
+      ggplot2::geom_point(mapping = ggplot2::aes(col = .data$model), alpha = 0.8) +
+      ggplot2::geom_line(mapping = aes(col = .data$model), alpha = 0.8) +
       ggplot2::scale_x_date(
         name = NULL, date_breaks = "2 months",
         date_labels = "%b '%y"
@@ -245,10 +249,12 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
 #' @export
 #'
 #' @examples
+#' @importFrom rlang .data
+
 plot_flu_truth <- function(truth_data, date_range = NULL, main = "truth data",
                            plot_color = "black") {
   truth_to_plot <- truth_data |>
-    dplyr::mutate(forecast_date = target_end_date - lubridate::days(5))
+    dplyr::mutate(forecast_date = .data$target_end_date - lubridate::days(5))
 
   if (!is.null(date_range)) {
     dates_to_plot <- lubridate::interval(
@@ -257,16 +263,16 @@ plot_flu_truth <- function(truth_data, date_range = NULL, main = "truth data",
     )
 
     truth_to_plot <- truth_to_plot |>
-      dplyr::filter(forecast_date %within% dates_to_plot)
+      dplyr::filter(.data$forecast_date %within% dates_to_plot)
   }
 
   truth_to_plot <- truth_to_plot |>
-    dplyr::group_by(forecast_date) |>
-    dplyr::summarize(value = mean(value))
+    dplyr::group_by(.data$forecast_date) |>
+    dplyr::summarize(value = mean(.data$value))
 
   truth_to_plot |>
     ggplot2::ggplot(
-      mapping = ggplot2::aes(x = forecast_date, y = value),
+      mapping = ggplot2::aes(x = .data$forecast_date, y = .data$value),
       col = plot_color, alpha = 0.8
     ) +
     ggplot2::geom_point() +

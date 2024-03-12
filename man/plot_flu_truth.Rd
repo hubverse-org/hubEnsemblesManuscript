@@ -2,7 +2,7 @@
 % Please edit documentation in R/evaluation_functions.R
 \name{plot_flu_truth}
 \alias{plot_flu_truth}
-\title{Plot summarized metrics against forecast date}
+\title{Plot averaged truth against forecast date}
 \usage{
 plot_flu_truth(
   truth_data,
@@ -27,5 +27,5 @@ A scatter plot (with observations connected by lines) of the truth
 data vs forecast date
 }
 \description{
-Plot summarized metrics against forecast date
+Plot averaged truth against forecast date
 }

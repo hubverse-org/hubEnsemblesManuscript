@@ -3,11 +3,13 @@ title: "`hubEnsembles`: Ensembling Methods in R"
 author:
   - name: Li Shandross
     corresponding: true
+    equal-contributor: true
     email: lshandross@umass.edu
     orcid: 0009-0008-1348-1954
     affiliation: 
       - ref: umass
   - name: Emily Howerton
+    equal-contributor: true
     orcid: 0000-0002-0639-3728
     affiliation: 
       - ref: penn
@@ -23,12 +25,13 @@ author:
     orcid: 0000-0002-2378-4915
     affiliation: 
       - ref: rrse
-  # add consortium authorship
-  - name: Nick Reich
+  - name: Consortium of Infectious Disease Modeling Hubs
+    note:  Alvaro J. Castro Rivadeneira, Sebastian Funk, Aaron Gerding, Hugo Gruson, Melissa Kerr, Sara Loo, Koji Sato, Kath Sherratt, Shaun Truelove, Martha Zorn  
+  - name: Nicholas G. Reich
     orcid: 0000-0003-3503-9899
     affiliation: 
       - ref: umass
-  - name: Evan Ray
+  - name: Evan L. Ray
     orcid: 0000-0003-4035-0243
     affiliation: 
       - ref: umass

@@ -63,6 +63,18 @@ format:
     df-print: paged
 ---
 
+```{r setup}
+#| echo: FALSE
+library(hubEnsembles)
+library(hubUtils)
+library(hubVis)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(patchwork)
+library(ggplot2)
+```
+
 # Introduction
 
 Predictions of future outcomes are essential to planning and decision making, yet generating reliable predictions of the future is challenging. One method for overcoming this challenge is combining predictions across multiple, independent models. These combination methods (also called aggregation or ensembling) have been repeatedly shown to produce predictions that are more accurate [@clemen1989; @timmermann2006b] and more consistent [@hibon2005] than individual models. Because of the clear performance benefits, multi-model ensembles are commonplace across fields, including weather [@alley2019], climate [@tebaldi2007], and economics [@aastveit2018]. More recently, multi-model ensembles have been used to improve predictions of infectious disease outbreaks [@viboud2018; @johansson2019; @mcgowan2019; @reich_accuracy_2019; @cramer2022].
@@ -112,7 +124,7 @@ Then, the details of the outcome being predicted can be stored in a series of ta
 ```{r flu-forecasts, echo=FALSE}
 #| label: tbl-flu-forecasts
 #| tbl-cap: "Example of forecasts for weekly incident flu hospitalizations, formatted according to hubverse standards. Quantile forecasts for the median and 50%, 80%, and 98% prediction intervals are shown."
-library(hubUtils)
+
 readr::read_rds(
   here::here("analysis/data/raw_data/flu_forecasts_raw.rds")
 ) |>
@@ -208,8 +220,6 @@ However, implementation of LOP is less straightforward for the quantile output t
 #| fig-cap: "(Panel A) Example of quantile output type predictions. In this example, points show model output collected for seven fixed quantile levels ($\\theta$ = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions ($N(100, 10)$ in purple and $N(120, 5)$ in green), with the underlying cumulative distribution functions (CDFs) shown with curves. The associated values for each fixed quantile level do not align across distributions (vertical lines). (Panel B) Quantile average ensemble, which is calculated by averaging values for each fixed quantile level (represented by horizontal dashed gray lines). The distributions and corresponding model outputs from panel A are re-plotted and the black line shows the resulting quantile average ensemble. Inset shows corresponding probability density functions (PDFs). (Panel C) Linear pool ensemble, which is calculated by averaging cumulative probabilities for each fixed value (represented by vertical dashed gray lines). The distributions and corresponding model outputs from panel A are re-plotted. To calculate the linear pool in this case, where model outputs are not defined for the same values, the model outputs are used to interpolate the full CDF for each distribution from which quantiles can be extracted for fixed values (shown with open circles). The black line shows the resulting linear pool average ensemble. Inset shows corresponding PDFs."
 #| fig-width: 10
 #| fig-height: 4
-
-library(ggplot2)
 
 # set quantiles and values over which to define distributions
 quantile_probs <- c(0.01, seq(from = 0.1, to = 0.9, by = 0.2), 0.99)
@@ -494,16 +504,7 @@ For step 1, functionality in the `distfromq` package uses a monotonic cubic spli
 
 # Demonstration of functionality {#sec-simple-ex}
 
-In this section, we provide a simple example to illustrate the two main functions in `hubEnsembles`, `simple_ensemble()` and `linear_pool()`. We will use the following R packages:
-
-```{r setup}
-library(dplyr)
-library(tidyr)
-library(ggplot2)
-library(hubUtils)
-library(hubVis)
-library(hubEnsembles)
-```
+In this section, we provide a simple example to illustrate the two main functions in `hubEnsembles`, `simple_ensemble()` and `linear_pool()`. 
 
 ## Example data: a forecast hub
 
@@ -941,9 +942,6 @@ lp_lognormal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
 We do not run the above code more than once and save the results in data objects split by a model and season, which then can be loaded in to plot and score. Scoring of the forecasts (not shown) is likewise performed only once, with the results saved in data objects. The component predictions are scored for every unique combination of task ID variables against target data with the `score_forecasts()` function from the `covidHubUtils` package. This function outputs scores that we can use to calculate several common metrics in forecast evaluation, including weighted interval score (WIS) [@bracher_evaluating_2021], mean absolute error (MAE), 50% prediction interval (PI) coverage, and 95% PI coverage. Of these metrics, WIS and PI coverage evaluate probabilistic forecasts while MAE evaluates point forecasts (which in hubverse terms corresponds to an output type of either mean or median). In this analysis, we use median forecasts taken from the 0.5 quantile.
 
 ```{r read in forecasts and scores, echo=FALSE}
-library(lubridate)
-library(patchwork)
-#library(RColorBrewer)
 devtools::load_all()
 
 flu_truth_all <- readr::read_rds(
@@ -1143,7 +1141,6 @@ flu_dates_22_23 <- as.Date("2022-10-17") + weeks(0:30)
 flu_dates_off_season <- as.Date("2022-06-27") + weeks(0:15)
 all_flu_dates <- c(flu_dates_21_22, flu_dates_22_23)
 
-library(hubVis)
 select_dates <- c(all_flu_dates[seq(1, 69, 4)], flu_dates_21_22[22] +
   lubridate::weeks(1:16))
 forecasts_ca <- flu_forecasts_ensembles |>

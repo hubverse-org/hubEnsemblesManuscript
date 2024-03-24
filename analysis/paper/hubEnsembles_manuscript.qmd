@@ -61,8 +61,6 @@ abstract: |
   Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. The R package `hubEnsembles` provides a flexible framework for  ensembling various types of predictions, including point estimates and probabilistic predictions. A range of common methods for generating ensembles are supported, including weighted averages, quantile averages, and linear pools. The `hubEnsembles` package fits within a broader framework of open-source software and data tools called the "hubverse", which facilitates the development and management of collaborative modelling exercises.
 keywords: |
   multiple models; aggregation; forecast; prediction
-funding: |
-  This work was supported by ADD HERE.
 format: 
   pdf:
     documentclass: scrartcl
@@ -81,6 +79,8 @@ library(lubridate)
 library(patchwork)
 library(ggplot2)
 ```
+
+Keywords: `r rmarkdown::metadata$keywords`
 
 # Introduction
 
@@ -1636,5 +1636,8 @@ The choice of an appropriate ensemble aggregation method may depend on the forec
 # Conclusion {#sec-conclusions}
 
 Ensembles of independent models are a powerful tool to generate more accurate and more reliable forecasts of future outcomes than a single model alone. Here, we have demonstrated how to utilize `hubEnsembles`, a simple and flexible framework to combine individual model forecasts and create ensemble predictions. When using `hubEnsembles`, it is important to carefully choose an ensemble method that is well suited for the situation. Although there may not be a universal "best" method, matching the properties of a given ensemble method with the features of the component models will likely yield best results. For example, we showed for forecasts of seasonal influenza in the US, the quantile median ensemble performed best overall, but the linear pool method had advantages during periods of rapid change, when outlying component forecasts were likely more important. Notably, all ensemble methods outperformed the baseline model. These performance improvements from ensemble models motivate the use of a "hub-based" approach to prediction for infectious diseases and in other fields. Fitting within the larger suite of "hubverse" tools that support such efforts, the `hubEnsembles` package provides important software infrastructure for leveraging the power of multi-model ensembles.
+
+# Acknowledgements
+The authors thank all members of the hubverse community; the broader hubverse software infrastructure made this package possible. E. Howerton was supported by the Eberly College of Science Barbara McClintock Science Achievement Graduate Scholarship in Biology at the Pennsylvania State University. PLEASE ADD FUNDING HERE.
 
 # References

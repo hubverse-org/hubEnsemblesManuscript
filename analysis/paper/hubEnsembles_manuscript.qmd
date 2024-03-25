@@ -3,47 +3,44 @@ title: "`hubEnsembles`: Ensembling Methods in R"
 author:
   - name: Li Shandross
     corresponding: true
-    equal-contributor: true
     email: lshandross@umass.edu
     orcid: 0009-0008-1348-1954
-    affiliation: 
-      - ref: umass
+    affil-id: 1
+    attributes:
+        equal-contributor: true
   - name: Emily Howerton
-    equal-contributor: true
     orcid: 0000-0002-0639-3728
-    affiliation: 
-      - ref: penn
+    affil-id: 2
+    attributes:
+        equal-contributor: true
   - name: Lucie Contamin
     orcid: 0000-0001-5797-1279
-    affiliation: 
-      - ref: upitt
+    affil-id: 3
   - name: Harry Hochheiser
     orcid: 0000-0001-8793-9982
-    affiliation: 
-      - ref: upitt
+    affil-id: 3
   - name: Anna Krystalli
     orcid: 0000-0002-2378-4915
-    affiliation: 
-      - ref: rrse
+    affil-id: 4
   - name: Consortium of Infectious Disease Modeling Hubs
-    note:  Alvaro J. Castro Rivadeneira, Sebastian Funk, Aaron Gerding, Hugo Gruson, Melissa Kerr, Sara Loo, Koji Sato, Kath Sherratt, Shaun Truelove, Martha Zorn  
+    affil-id:  5
   - name: Nicholas G. Reich
     orcid: 0000-0003-3503-9899
-    affiliation: 
-      - ref: umass
+    affil-id: 1
   - name: Evan L. Ray
     orcid: 0000-0003-4035-0243
-    affiliation: 
-      - ref: umass
+    affil-id: 1
 affiliations:
-  - id: umass
+  - id: 1
     name: University of Massachusetts Amherst
-  - id: upitt
-    name: University of Pittsburgh
-  - id: penn
+  - id: 2
     name: Pennsylvania State University
-  - id: rrse
+  - id: 3
+    name: University of Pittsburgh
+  - id: 4
     name: R-RSE SMPC
+  - id: 5
+    name: Alvaro J. Castro Rivadeneira, Sebastian Funk, Aaron Gerding, Hugo Gruson, Melissa Kerr, Sara L. Loo, Koji Sato, Katharine Sherratt, Shaun Truelove, Martha Zorn  
 execute:
   echo: true
   warning: false
@@ -63,7 +60,16 @@ keywords: |
   multiple models; aggregation; forecast; prediction
 format: 
   pdf:
-    documentclass: scrartcl
+    keep-tex: true
+    template-partials: 
+      - title.tex
+    include-in-header:
+      text: |
+        \usepackage[noblocks]{authblk}
+        \renewcommand*{\Authsep}{, }
+        \renewcommand*{\Authand}{, }
+        \renewcommand*{\Authands}{, }
+        \renewcommand\Affilfont{\small}
   html:
     df-print: paged
 ---

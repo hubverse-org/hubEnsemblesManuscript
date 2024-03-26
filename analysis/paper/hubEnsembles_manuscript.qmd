@@ -53,6 +53,7 @@ margin-left: "1 in"
 margin-right: "1 in"
 margin-top: "1 in"
 margin-bottom: "1 in"
+number-sections: true
 filters:
   - ../templates/scholarly-metadata.lua
   - ../templates/author-info-blocks.lua

@@ -979,22 +979,19 @@ flu_forecasts_raw_21_22 <- readr::read_rds(
 flu_forecasts_raw_22_23 <- readr::read_rds(
   here::here("analysis/data/raw_data/flu_forecasts-raw_22-23.rds")
 )
-flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, flu_forecasts_raw_22_23)
+flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, 
+                           dplyr::select(flu_forecasts_raw_22_23, -season))
 
 flu_forecasts_raw_21_22 <- readr::read_rds(
   here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
 )
 
 flu_forecasts_hubverse <- flu_forecasts_raw |>
-  dplyr::rename(forecast_date = timezero, location = unit) |>
-  tidyr::separate(target,
-    sep = " ", convert = TRUE,
-    into = c("horizon", "target"), extra = "merge"
-  ) |>
+  dplyr::rename(target = target_long) |>
   as_model_out_tbl(
-    model_id_col = "model",
-    output_type_col = "class",
-    output_type_id_col = "quantile",
+    model_id_col = "model_id",
+    output_type_col = "output_type",
+    output_type_id_col = "output_type_id",
     value_col = "value",
     sep = "-",
     trim_to_task_ids = FALSE,
@@ -1135,11 +1132,10 @@ Plots of the models' forecasts can aid our understanding about the origin of the
 #| target data for Vermont and California."
 
 flu_forecasts_wide <- flu_forecasts_ensembles |>
-  as_covid_hub_forecasts()
-dplyr::left_join(
-  covidHubUtils::hub_locations_flusight,
-  by = c("location" = "fips")
-) |>
+  as_covid_hub_forecasts() |>
+  dplyr::left_join(
+    covidHubUtils::hub_locations_flusight,
+    by = c("location" = "fips")) |>
   dplyr::mutate(horizon = as.character(horizon))
 
 select_dates <- all_flu_dates[seq(2, 53, 4)]

@@ -1332,6 +1332,7 @@ ca_plot_ensembles <-
     fill_transparency = 0.45,
     intervals = c(0.5, 0.95),
     title = NULL,
+    group = "forecast_date"
   )
 
 ca_plot_ensembles <- ca_plot_ensembles +
@@ -1372,7 +1373,8 @@ ca_plot_baseline <-
     interactive = FALSE,
     fill_transparency = 0.45,
     intervals = c(0.5, 0.95),
-    title = NULL
+    title = NULL,
+    group = "forecast_date"
   ) +
   scale_x_date(
     name = NULL, limits = c(
@@ -1403,7 +1405,8 @@ ca_plot_all <-
     interactive = FALSE,
     fill_transparency = 0.45,
     intervals = c(0.5, 0.95),
-    title = NULL
+    title = NULL,
+    group = "forecast_date"
   ) +
   scale_x_date(
     name = NULL, limits = c(

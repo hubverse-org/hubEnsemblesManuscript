@@ -543,7 +543,7 @@ l2 <- cowplot::get_legend(pc)
 
 cowplot::plot_grid(
   cowplot::plot_grid(
-    pA + theme(legend.position = "none"), pb_fin, pc_fin,
+    pa + theme(legend.position = "none"), pb_fin, pc_fin,
     labels = LETTERS[1:3], nrow = 1, rel_widths = c(0.34, 0.33, 0.33)
   ),
   cowplot::plot_grid(

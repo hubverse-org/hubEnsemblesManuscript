@@ -1,82 +1,60 @@
 ---
 title: "`hubEnsembles`: Ensembling Methods in R"
+format:
+  jss-pdf:
+    keep-tex: true
+    journal:
+      type: article
+      cite-shortnames: true
+      suppress: [title]
+      include-jss-default: false
 author:
   - name: Li Shandross
-    corresponding: true
-    email: lshandross@umass.edu
+    affiliations:
+      - name: University of Massachusetts Amherst
     orcid: 0009-0008-1348-1954
-    affil-id: 1
+    email: lshandross@umass.edu
     attributes:
-        equal-contributor: true
+      - corresponding: true
+      - equal-contributor: true
   - name: Emily Howerton
+    affiliations:
+      - The Pennsylvania State University
     orcid: 0000-0002-0639-3728
-    affil-id: 2
-    attributes:
-        equal-contributor: true
+    attributes: 
+      - equal-contributor: true
   - name: Lucie Contamin
+    affiliations:
+      - University of Pittsburgh
     orcid: 0000-0001-5797-1279
-    affil-id: 3
   - name: Harry Hochheiser
+    affiliations:
+      - University of Pittsburgh
     orcid: 0000-0001-8793-9982
-    affil-id: 3
   - name: Anna Krystalli
+    affiliations:
+      - R-RSE SMPC
     orcid: 0000-0002-2378-4915
-    affil-id: 4
   - name: Consortium of Infectious Disease Modeling Hubs
-    affil-id:  5
   - name: Nicholas G. Reich
+    affiliations:
+      - University of Massachusetts Amherst
     orcid: 0000-0003-3503-9899
-    affil-id: 1
   - name: Evan L. Ray
+    affiliations:
+      - University of Massachusetts Amherst
     orcid: 0000-0003-4035-0243
-    affil-id: 1
-affiliations:
-  - id: 1
-    name: University of Massachusetts Amherst
-  - id: 2
-    name: Pennsylvania State University
-  - id: 3
-    name: University of Pittsburgh
-  - id: 4
-    name: R-RSE SMPC
-  - id: 5
-    name: Alvaro J. Castro Rivadeneira, Sebastian Funk, Aaron Gerding, Hugo Gruson, Melissa Kerr, Sara L. Loo, Koji Sato, Katharine Sherratt, Shaun Truelove, Martha Zorn  
+
 execute:
   echo: true
   warning: false
   message: false
-  fig-path: "../figures/"
-  fig-dpi: 600
-  fig-width: 12
-  fig-height: 9
-margin-left: "1 in"
-margin-right: "1 in"
-margin-top: "1 in"
-margin-bottom: "1 in"
-number-sections: true
-filters:
-  - ../templates/scholarly-metadata.lua
-  - ../templates/author-info-blocks.lua
-  - ../templates/pagebreak.lua
 bibliography: references.bib
 abstract: |
   Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. The R package `hubEnsembles` provides a flexible framework for  ensembling various types of predictions, including point estimates and probabilistic predictions. A range of common methods for generating ensembles are supported, including weighted averages, quantile averages, and linear pools. The `hubEnsembles` package fits within a broader framework of open-source software and data tools called the "hubverse", which facilitates the development and management of collaborative modelling exercises.
-keywords: |
-  multiple models; aggregation; forecast; prediction
-format: 
-  pdf:
-    keep-tex: true
-    template-partials: 
-      - title.tex
-    include-in-header:
-      text: |
-        \usepackage[noblocks]{authblk}
-        \renewcommand*{\Authsep}{, }
-        \renewcommand*{\Authand}{, }
-        \renewcommand*{\Authands}{, }
-        \renewcommand\Affilfont{\small}
-  html:
-    df-print: paged
+  
+keywords: [multiple models, aggregation, forecast, prediction]
+keywords-formatted: [multiple models, aggregation, forecast, prediction]
 ---
 
 ```{r setup}
@@ -219,7 +197,7 @@ This representation of predictive model output is codified by the `model_out_tbl
 
 : A table summarizing how the model output representation columns are used for predictions of different output types. Adapted from [@hubverse_docs] {#tbl-model-output-rep}
 
-## Ensemble functions in `hubEnsembles`
+## Ensemble functions in hubEnsembles {#sec-ens-fns}
 
 The `hubEnsembles` package includes two functions that perform ensemble calculations: `simple_ensemble()`, which applies some function to each model prediction, and `linear_pool()`, which computes an ensemble using the linear opinion pool method. In the following sections, we outline the implementation details for each function and how these implementations correspond to the statistical ensembling methods described in @sec-defs. A short description of the calculation performed by each function is summarized by output type in @tbl-fns-by-output-type.
 
@@ -722,7 +700,7 @@ ggplot(
 ```
 
 
-## Creating ensembles with `simple_ensemble`
+## Creating ensembles with simple_ensemble
 
 Using the default options for `simple_ensemble()`, we can generate an equally weighted mean ensemble for each unique combination of values for the task ID variables, the `output_type` and the `output_type_id`. Recall that this means different ensemble methods will be used for different output types: for the `quantile` output type in our example data, the resulting ensemble is a quantile average, while for the `pmf` output type, the ensemble is a linear pool.
 
@@ -849,7 +827,7 @@ weighted_mean_ens <-
   )
 ```
 
-## Creating ensembles with `linear_pool`
+## Creating ensembles with linear_pool
 
 We can also generate a linear pool ensemble, or distributional mixture, using the `linear_pool()` function; this function can be applied to predictions with an `output_type` of `mean`, `quantile`, `cdf`, or `pmf`. Our example hub includes `median` output type, so we exclude it from the calculation.
 

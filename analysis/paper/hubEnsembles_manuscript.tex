@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, frame hidden, interior hidden, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, interior hidden, breakable, sharp corners, boxrule=0pt]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -416,21 +416,18 @@ that the forecast is predicting relative to the \texttt{reference\_date}
 columns.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2200}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2200}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1500}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0800}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1200}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1500}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0600}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0941}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 target
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-reference\_date
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 horizon
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -444,28 +441,29 @@ value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-UMass-trends\_ensemble & wk ahead inc flu hosp & 2023-05-15 & 1 &
-quantile & 0.01 & 766 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 2023-05-15 & 1 &
-quantile & 0.10 & 850 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 2023-05-15 & 1 &
-quantile & 0.25 & 913 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 2023-05-15 & 1 &
-quantile & 0.50 & 1010 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 2023-05-15 & 1 &
-quantile & 0.75 & 1077 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 2023-05-15 & 1 &
-quantile & 0.90 & 1153 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 2023-05-15 & 1 &
-quantile & 0.99 & 1281 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.01 &
+766 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.10 &
+850 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.25 &
+913 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.50 &
+1010 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.75 &
+1077 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.90 &
+1153 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.99 &
+1281 \\
 
 
 \caption{\label{tbl-flu-forecasts}Example of forecasts for weekly
 incident flu hospitalizations, formatted according to hubverse
 standards. Quantile forecasts for the median and 50\%, 80\%, and 98\%
 prediction intervals are shown from a single model. The
-\texttt{location} column has been omitted for brevity; all forecasts in
-this example are for the US.}
+\texttt{location} and \texttt{reference\_date} columns have been omitted
+for brevity; all forecasts in this example were made on 2023-05-15 for
+the US.}
 
 \tabularnewline
 \end{longtable}
@@ -487,22 +485,19 @@ goals. Additional examples of task ID variables are available on the
 hubverse documentation website \citep{hubverse_docs}.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1684}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1053}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1263}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0842}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1368}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1263}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1579}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0947}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1928}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1205}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0964}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1566}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1446}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1807}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1084}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 target
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-origin\_date
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 horizon
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -518,40 +513,41 @@ value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & A-2021-03-05 & quantile
-& 0.25 & 571104.0 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & A-2021-03-05 & quantile
-& 0.50 & 574478.0 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & A-2021-03-05 & quantile
-& 0.75 & 578958.0 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & B-2021-03-05 & quantile
-& 0.25 & 579960.2 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & B-2021-03-05 & quantile
-& 0.50 & 584210.0 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & B-2021-03-05 & quantile
-& 0.75 & 588643.5 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & C-2021-03-05 & quantile
-& 0.25 & 630991.8 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & C-2021-03-05 & quantile
-& 0.50 & 640293.0 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & C-2021-03-05 & quantile
-& 0.75 & 650513.2 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & D-2021-03-05 & quantile
-& 0.25 & 675736.0 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & D-2021-03-05 & quantile
-& 0.50 & 688469.0 \\
-HUBuni-simexamp & cum death & 2021-03-07 & 26 & D-2021-03-05 & quantile
-& 0.75 & 700861.5 \\
+HUBuni-simexamp & cum death & 26 & A-2021-03-05 & quantile & 0.25 &
+571104.0 \\
+HUBuni-simexamp & cum death & 26 & A-2021-03-05 & quantile & 0.50 &
+574478.0 \\
+HUBuni-simexamp & cum death & 26 & A-2021-03-05 & quantile & 0.75 &
+578958.0 \\
+HUBuni-simexamp & cum death & 26 & B-2021-03-05 & quantile & 0.25 &
+579960.2 \\
+HUBuni-simexamp & cum death & 26 & B-2021-03-05 & quantile & 0.50 &
+584210.0 \\
+HUBuni-simexamp & cum death & 26 & B-2021-03-05 & quantile & 0.75 &
+588643.5 \\
+HUBuni-simexamp & cum death & 26 & C-2021-03-05 & quantile & 0.25 &
+630991.8 \\
+HUBuni-simexamp & cum death & 26 & C-2021-03-05 & quantile & 0.50 &
+640293.0 \\
+HUBuni-simexamp & cum death & 26 & C-2021-03-05 & quantile & 0.75 &
+650513.2 \\
+HUBuni-simexamp & cum death & 26 & D-2021-03-05 & quantile & 0.25 &
+675736.0 \\
+HUBuni-simexamp & cum death & 26 & D-2021-03-05 & quantile & 0.50 &
+688469.0 \\
+HUBuni-simexamp & cum death & 26 & D-2021-03-05 & quantile & 0.75 &
+700861.5 \\
 
 
 \caption{\label{tbl-example-scenarios}Example of scenario projections
 for cumulative COVID-19 deaths, formatted according to hubverse
 standards. Quantile predictions for the median and 50\% prediction
 intervals from a single model are shown for four distinct scenarios. The
-\texttt{location} column has been omitted for brevity; all forecasts in
-this example are for the US. This example is a subset of the
-\texttt{example-complex-scenario-hub} data provided by the hubverse
-\citep{hubverse_docs}.}
+\texttt{location} and \texttt{origin\_date} columns have been omitted
+for brevity; all forecasts in this example were made on 2021-03-07 for
+the US. This example is a subset of the
+\texttt{example-complex-scenario-hub} data provided by the
+hubverse\citep{hubverse_docs}.}
 
 \tabularnewline
 \end{longtable}
@@ -877,24 +873,21 @@ R> hubEnsembles::example_model_output |>
 +    location == "US",
 +    horizon == 1
 +  ) |>
-+  dplyr::select(-location, -target_end_date) |>
++  dplyr::select(-location, -target_end_date, -reference_date) |>
 +  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0889}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1778}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1667}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0667}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2400}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1067}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2133}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1600}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0800}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-reference\_date
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 horizon
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -910,44 +903,33 @@ value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Flusight-baseline & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.025
-& 18886 \\
-Flusight-baseline & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.25 &
-23534 \\
-Flusight-baseline & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.75 &
-24369 \\
-Flusight-baseline & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.975
-& 28980 \\
-Flusight-baseline & 2022-12-17 & 1 & wk inc flu hosp & median & NA &
-23951 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.025 &
-14791 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.25 &
-20676 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.75 &
-30801 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.975 &
-42528 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk inc flu hosp & median & NA &
-25235 \\
-PSI-DICE & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.025 &
-14027 \\
-PSI-DICE & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.25 & 16770 \\
-PSI-DICE & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.75 & 23984 \\
-PSI-DICE & 2022-12-17 & 1 & wk inc flu hosp & quantile & 0.975 &
-27899 \\
-PSI-DICE & 2022-12-17 & 1 & wk inc flu hosp & median & NA & 19666 \\
+Flusight-baseline & 1 & wk inc flu hosp & quantile & 0.025 & 18886 \\
+Flusight-baseline & 1 & wk inc flu hosp & quantile & 0.25 & 23534 \\
+Flusight-baseline & 1 & wk inc flu hosp & quantile & 0.75 & 24369 \\
+Flusight-baseline & 1 & wk inc flu hosp & quantile & 0.975 & 28980 \\
+Flusight-baseline & 1 & wk inc flu hosp & median & NA & 23951 \\
+MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & quantile & 0.025 & 14791 \\
+MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & quantile & 0.25 & 20676 \\
+MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & quantile & 0.75 & 30801 \\
+MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & quantile & 0.975 & 42528 \\
+MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & median & NA & 25235 \\
+PSI-DICE & 1 & wk inc flu hosp & quantile & 0.025 & 14027 \\
+PSI-DICE & 1 & wk inc flu hosp & quantile & 0.25 & 16770 \\
+PSI-DICE & 1 & wk inc flu hosp & quantile & 0.75 & 23984 \\
+PSI-DICE & 1 & wk inc flu hosp & quantile & 0.975 & 27899 \\
+PSI-DICE & 1 & wk inc flu hosp & median & NA & 19666 \\
 
 
 \caption{\label{tbl-example-forecasts}Example model output for forecasts
 of incident influenza hospitalizations. A subset of example model output
 is shown: 1-week ahead quantile forecasts made on 2022-12-17 for the US
 from three distinct models; only the median, 50\% prediction intervals,
-and 95\% prediction intervals are displayed. The \texttt{location} and
-\texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the \pkg{hubEnsembles} package and is a
-subset of the \texttt{example-complex-forecast-hub} data provided by the
-hubverse \citep{hubverse_docs}.}
+and 95\% prediction intervals are displayed. The \texttt{location},
+\texttt{reference\_date} and \texttt{target\_end\_date} columns have
+been omitted for brevity. This example data is provided in the
+\pkg{hubEnsembles} package and is a subset of the
+\texttt{example-complex-forecast-hub} data provided by the hubverse
+\citep{hubverse_docs}.}
 
 \tabularnewline
 \end{longtable}
@@ -1089,24 +1071,21 @@ R> hubEnsembles::example_model_output |>
 +    horizon == 1
 +  ) |>
 +  dplyr::mutate(value = round(value, 2)) |>
-+  dplyr::select(-location, -target_end_date) |>
++  dplyr::select(-location, -reference_date, -target_end_date) |>
 +  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1800}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1500}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0800}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2600}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1200}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1500}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0600}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2118}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0941}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3059}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-reference\_date
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 horizon
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -1122,30 +1101,22 @@ value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Flusight-baseline & 2022-12-17 & 1 & wk flu hosp rate category & pmf &
-low & 0.00 \\
-Flusight-baseline & 2022-12-17 & 1 & wk flu hosp rate category & pmf &
-moderate & 0.01 \\
-Flusight-baseline & 2022-12-17 & 1 & wk flu hosp rate category & pmf &
-high & 0.86 \\
-Flusight-baseline & 2022-12-17 & 1 & wk flu hosp rate category & pmf &
-very high & 0.13 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk flu hosp rate category & pmf &
-low & 0.00 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk flu hosp rate category & pmf &
-moderate & 0.07 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk flu hosp rate category & pmf &
-high & 0.41 \\
-MOBS-GLEAM\_FLUH & 2022-12-17 & 1 & wk flu hosp rate category & pmf &
-very high & 0.52 \\
-PSI-DICE & 2022-12-17 & 1 & wk flu hosp rate category & pmf & low &
-0.00 \\
-PSI-DICE & 2022-12-17 & 1 & wk flu hosp rate category & pmf & moderate &
-0.23 \\
-PSI-DICE & 2022-12-17 & 1 & wk flu hosp rate category & pmf & high &
-0.60 \\
-PSI-DICE & 2022-12-17 & 1 & wk flu hosp rate category & pmf & very high
-& 0.17 \\
+Flusight-baseline & 1 & wk flu hosp rate category & pmf & low & 0.00 \\
+Flusight-baseline & 1 & wk flu hosp rate category & pmf & moderate &
+0.01 \\
+Flusight-baseline & 1 & wk flu hosp rate category & pmf & high & 0.86 \\
+Flusight-baseline & 1 & wk flu hosp rate category & pmf & very high &
+0.13 \\
+MOBS-GLEAM\_FLUH & 1 & wk flu hosp rate category & pmf & low & 0.00 \\
+MOBS-GLEAM\_FLUH & 1 & wk flu hosp rate category & pmf & moderate &
+0.07 \\
+MOBS-GLEAM\_FLUH & 1 & wk flu hosp rate category & pmf & high & 0.41 \\
+MOBS-GLEAM\_FLUH & 1 & wk flu hosp rate category & pmf & very high &
+0.52 \\
+PSI-DICE & 1 & wk flu hosp rate category & pmf & low & 0.00 \\
+PSI-DICE & 1 & wk flu hosp rate category & pmf & moderate & 0.23 \\
+PSI-DICE & 1 & wk flu hosp rate category & pmf & high & 0.60 \\
+PSI-DICE & 1 & wk flu hosp rate category & pmf & very high & 0.17 \\
 
 
 \caption{\label{tbl-example-forecasts-pmf}Example \texttt{pmf} model
@@ -1153,11 +1124,11 @@ output for forecasts of incident influenza hospitalization intensity. A
 subset of example model output is shown: 1-week ahead pmf forecasts made
 on 2022-12-17 for the US from three distinct models. We round the
 forecasted probability (in the \texttt{value} column) to two digits. The
-\texttt{location} and \texttt{target\_end\_date} columns have been
-omitted for brevity. This example data is provided in the
-\pkg{hubEnsembles} package and is a subset of the
-\texttt{example-complex-forecast-hub} data provided by the hubverse
-\citep{hubverse_docs}.}
+\texttt{location}, \texttt{reference\_date} and
+\texttt{target\_end\_date} columns have been omitted for brevity. This
+example data is provided in the \pkg{hubEnsembles} package and is a
+subset of the \texttt{example-complex-forecast-hub} data provided by the
+hubverse \citep{hubverse_docs}.}
 
 \tabularnewline
 \end{longtable}
@@ -1217,24 +1188,21 @@ R> mean_ens |>
 +    horizon == 1
 +  ) |>
 +  dplyr::mutate(value = round(value, 2)) |>
-+  dplyr::select(-location, -target_end_date) |>
++  dplyr::select(-location, -reference_date, -target_end_date) |>
 +  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1981}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1415}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0755}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2453}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1132}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1415}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0849}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2308}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0879}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2857}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1319}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1648}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0989}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-reference\_date
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 horizon
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -1250,24 +1218,23 @@ value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-simple-ensemble-mean & 2022-12-17 & 1 & wk flu hosp rate category & pmf
-& high & 0.62 \\
-simple-ensemble-mean & 2022-12-17 & 1 & wk flu hosp rate category & pmf
-& low & 0.00 \\
-simple-ensemble-mean & 2022-12-17 & 1 & wk flu hosp rate category & pmf
-& moderate & 0.10 \\
-simple-ensemble-mean & 2022-12-17 & 1 & wk flu hosp rate category & pmf
-& very high & 0.27 \\
-simple-ensemble-mean & 2022-12-17 & 1 & wk inc flu hosp & median & NA &
-22950.67 \\
-simple-ensemble-mean & 2022-12-17 & 1 & wk inc flu hosp & quantile &
-0.025 & 15901.33 \\
-simple-ensemble-mean & 2022-12-17 & 1 & wk inc flu hosp & quantile &
-0.25 & 20326.67 \\
-simple-ensemble-mean & 2022-12-17 & 1 & wk inc flu hosp & quantile &
-0.75 & 26384.67 \\
-simple-ensemble-mean & 2022-12-17 & 1 & wk inc flu hosp & quantile &
-0.975 & 33135.67 \\
+simple-ensemble-mean & 1 & wk flu hosp rate category & pmf & high &
+0.62 \\
+simple-ensemble-mean & 1 & wk flu hosp rate category & pmf & low &
+0.00 \\
+simple-ensemble-mean & 1 & wk flu hosp rate category & pmf & moderate &
+0.10 \\
+simple-ensemble-mean & 1 & wk flu hosp rate category & pmf & very high &
+0.27 \\
+simple-ensemble-mean & 1 & wk inc flu hosp & median & NA & 22950.67 \\
+simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.025 &
+15901.33 \\
+simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.25 &
+20326.67 \\
+simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.75 &
+26384.67 \\
+simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.975 &
+33135.67 \\
 
 
 \caption{\label{tbl-mean-ensemble}Mean ensemble model output. The values
@@ -1277,9 +1244,9 @@ ensemble model output is shown: 1-week ahead pmf forecasts made on
 2022-12-17 for the US. Results are generated for all output types. Here,
 we show only the median, 50\% prediction intervals, and 95\% prediction
 intervals for the quantile output type and all bins for the pmf output
-type. The \texttt{location} and \texttt{target\_end\_date} columns have
-been omitted for brevity, and the \texttt{value} column is rounded to
-two digits.}
+type. The \texttt{location}, \texttt{reference\_date} and
+\texttt{target\_end\_date} columns have been omitted for brevity, and
+the \texttt{value} column is rounded to two digits.}
 
 \tabularnewline
 \end{longtable}
@@ -1641,24 +1608,21 @@ R> readr::read_rds(
 +    horizon == 1,
 +    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
 +  ) |>
-+  dplyr::select(-location, -season) |>
++  dplyr::select(-location, -forecast_date, -season) |>
 +  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2222}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1414}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0808}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2222}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1212}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1515}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0606}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0941}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-forecast\_date
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
 horizon
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
@@ -1674,18 +1638,18 @@ value
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-UMass-trends\_ensemble & 2023-05-15 & 1 & wk ahead inc flu hosp &
-quantile & 0.025 & 12 \\
-UMass-trends\_ensemble & 2023-05-15 & 1 & wk ahead inc flu hosp &
-quantile & 0.100 & 17 \\
-UMass-trends\_ensemble & 2023-05-15 & 1 & wk ahead inc flu hosp &
-quantile & 0.250 & 25 \\
-UMass-trends\_ensemble & 2023-05-15 & 1 & wk ahead inc flu hosp &
-quantile & 0.750 & 46 \\
-UMass-trends\_ensemble & 2023-05-15 & 1 & wk ahead inc flu hosp &
-quantile & 0.900 & 56 \\
-UMass-trends\_ensemble & 2023-05-15 & 1 & wk ahead inc flu hosp &
-quantile & 0.975 & 68 \\
+UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.025 &
+12 \\
+UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.100 &
+17 \\
+UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.250 &
+25 \\
+UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.750 &
+46 \\
+UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.900 &
+56 \\
+UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.975 &
+68 \\
 
 
 \caption{\label{tbl-case-study-flu-forecasts}An example prediction of
@@ -1693,8 +1657,8 @@ weekly incident influenza hospitalizations. This exmaple forecast was
 made on May 15, 2023 for California at the 1 week ahead horizon. The
 forecast was generated during theFluSight forecasting challenge, and
 formatted according to hubverse standards post hoc. The
-\texttt{location} and \texttt{season} columns have been omitted for
-brevity.}
+\texttt{location}, \texttt{forecast\_date}, and \texttt{season} columns
+have been omitted for brevity.}
 
 \tabularnewline
 \end{longtable}

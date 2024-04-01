@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, enhanced, boxrule=0pt, frame hidden, breakable, borderline west={3pt}{0pt}{shadecolor}, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, frame hidden, interior hidden, breakable]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -142,7 +142,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={hubEnsembles: Ensembling Methods in R},
+  pdftitle={hubEnsembles: Ensembling Methods in },
   pdfauthor={Li Shandross; Emily Howerton; Lucie Contamin; Harry Hochheiser; Anna Krystalli; Consortium of Infectious Disease Modeling Hubs; Nicholas G. Reich; Evan L. Ray},
   pdfkeywords={multiple models, aggregation, forecast, prediction},
   colorlinks=true,
@@ -171,20 +171,21 @@ Massachusetts Amherst}
 Hochheiser, Anna Krystalli, Consortium of Infectious Disease Modeling
 Hubs, Nicholas G. Reich, Evan L. Ray} %% comma-separated
 
-\title{\texttt{hubEnsembles}: Ensembling Methods in R}
-\Plaintitle{hubEnsembles: Ensembling Methods in R} %% without formatting
+\title{\texttt{hubEnsembles}: Ensembling Methods in \proglang{R}}
+\Plaintitle{hubEnsembles: Ensembling Methods in} %% without formatting
 
 %% an abstract and keywords
 \Abstract{Combining predictions from multiple models into an ensemble is
 a widely used practice across many fields with demonstrated performance
-benefits. The R package \texttt{hubEnsembles} provides a flexible
-framework for ensembling various types of predictions, including point
-estimates and probabilistic predictions. A range of common methods for
-generating ensembles are supported, including weighted averages,
-quantile averages, and linear pools. The \texttt{hubEnsembles} package
-fits within a broader framework of open-source software and data tools
-called the ``hubverse'', which facilitates the development and
-management of collaborative modelling exercises.}
+benefits. The \proglang{R} package \texttt{hubEnsembles} provides a
+flexible framework for ensembling various types of predictions,
+including point estimates and probabilistic predictions. A range of
+common methods for generating ensembles are supported, including
+weighted averages, quantile averages, and linear pools. The
+\pkg{hubEnsembles} package fits within a broader framework of
+open-source software and data tools called the ``hubverse'', which
+facilitates the development and management of collaborative modelling
+exercises.}
 
 %% at least one keyword must be supplied
 \Keywords{multiple models, aggregation, forecast, prediction}
@@ -229,7 +230,7 @@ Evan L. Ray\\
 
 Keywords: multiple models, aggregation, forecast, prediction
 
-Introduction
+\section{Introduction}\label{sec-intro}
 
 Predictions of future outcomes are essential to planning and decision
 making, yet generating reliable predictions of the future is
@@ -257,7 +258,7 @@ for established theoretical reasons \citep{winkler2015}. However, more
 complex approaches have also been shown to have benefits in some
 settings
 \citep{yamana_superensemble_2016, ray_prediction_2018, reich_accuracy_2019, colon-gonzalez_probabilistic_2021}.
-Here, we present the \texttt{hubEnsembles} package, which provides a
+Here, we present the \pkg{hubEnsembles} package, which provides a
 flexible framework for generating ensemble predictions from multiple
 models. Complementing other software for combining predictions from
 multiple models (e.g.,
@@ -268,8 +269,8 @@ Throughout, we will use the term ``prediction'' to refer to any kind of
 model output that may be combined including a forecast, a scenario
 projection, or a parameter estimate.
 
-The \texttt{hubEnsembles} package is part of the ``hubverse'' collection
-of open-source software and data tools. The hubverse project facilitates
+The \pkg{hubEnsembles} package is part of the ``hubverse'' collection of
+open-source software and data tools. The hubverse project facilitates
 the development and management of collaborative modelling exercises
 \citep{hubverse_docs}. The broader hubverse initiative is motivated by
 the demonstrated benefits of collaborative hubs
@@ -278,15 +279,16 @@ benefits of multi-model ensembles and the desire for standardization
 across such hubs. In this paper, we focus specifically on the
 functionality encompassed in \texttt{hubEnsembles}. We provide an
 overview of the methods implemented, including mathematical definitions
-and properties (\textbf{?@sec-defs}) as well as implementation details
-(\textbf{?@sec-implementation}); we give simple examples to demonstrate
-the functionality (\textbf{?@sec-simple-ex}) and a more complex case
-study (\textbf{?@sec-flu}) that motivates a discussion and comparison of
-the various methods (\textbf{?@sec-conclusions}).
+and properties (Section~\ref{sec-defs}) as well as implementation
+details (Section~\ref{sec-implementation}); we give simple examples to
+demonstrate the functionality (Section~\ref{sec-simple-ex}) and a more
+complex case study (Section~\ref{sec-flu}) that motivates a discussion
+and comparison of the various methods (Section~\ref{sec-conclusions}).
 
-Mathematical definitions and properties of ensemble methods
+\section{Mathematical definitions and properties of ensemble
+methods}\label{sec-defs}
 
-The \texttt{hubEnsembles} package supports both point predictions and
+The \pkg{hubEnsembles} package supports both point predictions and
 probabilistic predictions of different formats. A point prediction gives
 a single estimate of a future outcome while a probabilistic prediction
 provides an estimated probability distribution over a set of future
@@ -305,7 +307,7 @@ further below).
 
 For a set of \(N\) point predictions,
 \(\pmb{p} = \{p_i|i \in 1, ..., N\}\), each from a distinct model \(i\),
-the \texttt{hubEnsembles} package can compute an ensemble of these
+the \pkg{hubEnsembles} package can compute an ensemble of these
 predictions
 
 \[
@@ -372,17 +374,17 @@ method preserves variation between individual models, whereas the
 quantile average cancels away this variation under the assumption it
 constitutes sampling error \citep{howerton2023}.
 
-Model implementation details
+\section{Model implementation details}\label{sec-implementation}
 
 To understand how these methods are implemented in
 \texttt{hubEnsembles}, we first must define the conventions employed by
 the hubverse and its packages for representing and working with model
 predictions. We begin with a short overview of concepts and conventions
-needed to utilize the \texttt{hubEnsembles} package, then explain the
+needed to utilize the \pkg{hubEnsembles} package, then explain the
 implementation of the two ensembling functions provided by the package,
 \texttt{simple\_ensemble} and \texttt{linear\_pool}.
 
-\section{Hubverse terminology and
+\subsection{Hubverse terminology and
 conventions}\label{hubverse-terminology-and-conventions}
 
 A central concept in the hubverse effort is ``model output''. Model
@@ -564,7 +566,7 @@ same three columns: (1) \texttt{output\_type}, (2)
 and may be one of \texttt{"mean"} or \texttt{"median"} (point
 prediction), \texttt{"quantile"}, \texttt{"cdf"}, \texttt{"pmf"}
 (probabilistic prediction), or \texttt{"sample"} (although this output
-type is not yet supported by the \texttt{hubEnsembles} package). The
+type is not yet supported by the \pkg{hubEnsembles} package). The
 \texttt{output\_type\_id} provides additional identifying information
 for a prediction and is specific to the particular \texttt{output\_type}
 (see Table~\ref{tbl-flu-forecasts}). For quantile predictions, the
@@ -582,12 +584,12 @@ Requirements for the values of the \texttt{output\_type\_id} and
 summarized in Table~\ref{tbl-model-output-rep}.
 
 This representation of predictive model output is codified by the
-\texttt{model\_out\_tbl} S3 class in the \texttt{hubUtils} package, one
-of the foundational hubverse packages. Although this S3 class is
-required for all \texttt{hubEnsembles} functions, model predictions in
-other formats can easily be transformed using the
+\texttt{model\_out\_tbl} S3 class in the \pkg{hubUtils} package, one of
+the foundational hubverse packages. Although this S3 class is required
+for all \texttt{hubEnsembles} functions, model predictions in other
+formats can easily be transformed using the
 \texttt{as\_model\_out\_tbl()} function from \texttt{hubUtils}. An
-example of this transformation is provided in \textbf{?@sec-flu}.
+example of this transformation is provided in Section~\ref{sec-flu}.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2083}}
@@ -639,17 +641,17 @@ are used for predictions of different output types. Adapted from
 
 \section{Ensemble functions in hubEnsembles}\label{sec-ens-fns}
 
-The \texttt{hubEnsembles} package includes two functions that perform
+The \pkg{hubEnsembles} package includes two functions that perform
 ensemble calculations: \texttt{simple\_ensemble()}, which applies some
 function to each model prediction, and \texttt{linear\_pool()}, which
 computes an ensemble using the linear opinion pool method. In the
 following sections, we outline the implementation details for each
 function and how these implementations correspond to the statistical
-ensembling methods described in \textbf{?@sec-defs}. A short description
-of the calculation performed by each function is summarized by output
-type in Table~\ref{tbl-fns-by-output-type}.
+ensembling methods described in Section~\ref{sec-defs}. A short
+description of the calculation performed by each function is summarized
+by output type in Table~\ref{tbl-fns-by-output-type}.
 
-\subsection{Simple ensemble}\label{simple-ensemble}
+\subsubsection{Simple ensemble}\label{simple-ensemble}
 
 The \texttt{simple\_ensemble} function directly computes an ensemble
 from component model outputs by combining them via some function (\(C\))
@@ -742,7 +744,7 @@ predictions of \texttt{mean} output type would return the median of
 individual model means.}\label{tbl-fns-by-output-type}\tabularnewline
 \end{longtable}
 
-\subsection{Linear pool}\label{sec-linear-pool}
+\subsubsection{Linear pool}\label{sec-linear-pool}
 
 The \texttt{linear\_pool} function implements the linear opinion pool
 method for ensembling predictions. This function can be used to combine
@@ -804,8 +806,8 @@ Given that LOP cannot be directly calculated from quantile predictions,
 we must first obtain an estimate of the CDF for each component
 distribution using the provided quantiles, combine the CDFs, then
 calculate the quantiles from the ensemble's CDF. We perform this
-calculation in three main steps, assisted by the \texttt{distfromq}
-package \citep{distfromq} for the first two:
+calculation in three main steps, assisted by the \pkg{distfromq} package
+\citep{distfromq} for the first two:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -824,7 +826,7 @@ package \citep{distfromq} for the first two:
   quantiles.
 \end{enumerate}
 
-For step 1, functionality in the \texttt{distfromq} package uses a
+For step 1, functionality in the \pkg{distfromq} package uses a
 monotonic cubic spline for interpolation on the interior of the provided
 quantiles. The user may choose one of several distributions to perform
 extrapolation of the CDF tails. These include normal, lognormal, and
@@ -833,22 +835,22 @@ location-scale parameterization is used, with separate location and
 scale parameters chosen in the lower and upper tails so as to match the
 two most extreme quantiles. The sampling process described in steps 2
 and 3 approximates the linear pool calculation described in
-\textbf{?@sec-defs}.
+Section~\ref{sec-defs}.
 
-Demonstration of functionality
+\section{Demonstration of functionality}\label{sec-simple-ex}
 
 In this section, we provide a simple example to illustrate the two main
 functions in \texttt{hubEnsembles}, \texttt{simple\_ensemble()} and
 \texttt{linear\_pool()}.
 
-\section{Example data: a forecast
+\subsection{Example data: a forecast
 hub}\label{example-data-a-forecast-hub}
 
 We will use an example hub provided by the hubverse to demonstrate the
-functionality of the \texttt{hubEnsembles} package
-\citep{hubverse_docs}. The example hub includes both example model
-output data and target data (sometimes known as ``truth'' data), which
-are included in the \texttt{hubEnsembles} package as data objects named
+functionality of the \pkg{hubEnsembles} package \citep{hubverse_docs}.
+The example hub includes both example model output data and target data
+(sometimes known as ``truth'' data), which are included in the
+\pkg{hubEnsembles} package as data objects named
 \texttt{example\_model\_output} and \texttt{example\_target\_data}.
 
 The model output data includes \texttt{quantile}, \texttt{mean} and
@@ -867,16 +869,16 @@ and 95\% prediction intervals, although other intervals and
 \texttt{mean} forecasts are included in the example model output data.
 
 \begin{verbatim}
-hubEnsembles::example_model_output |>
-  dplyr::filter(
-    output_type %in% c("quantile", "median"),
-    output_type_id %in% c(0.025, 0.25, 0.75, 0.75, 0.975, NA),
-    reference_date == "2022-12-17",
-    location == "US",
-    horizon == 1
-  ) |>
-  dplyr::select(-location, -target_end_date) |>
-  knitr::kable()
+R> hubEnsembles::example_model_output |>
++  dplyr::filter(
++    output_type %in% c("quantile", "median"),
++    output_type_id %in% c(0.025, 0.25, 0.75, 0.75, 0.975, NA),
++    reference_date == "2022-12-17",
++    location == "US",
++    horizon == 1
++  ) |>
++  dplyr::select(-location, -target_end_date) |>
++  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}
@@ -943,7 +945,7 @@ is shown: 1-week ahead quantile forecasts made on 2022-12-17 for the US
 from three distinct models; only the median, 50\% prediction intervals,
 and 95\% prediction intervals are displayed. The \texttt{location} and
 \texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the \texttt{hubEnsembles} package and is a
+example data is provided in the \pkg{hubEnsembles} package and is a
 subset of the \texttt{example-complex-forecast-hub} data provided by the
 hubverse \citep{hubverse_docs}.}
 
@@ -951,7 +953,7 @@ hubverse \citep{hubverse_docs}.}
 \end{longtable}
 
 We also have corresponding target data included in the
-\texttt{hubEnsembles} package (Table~\ref{tbl-example-target-data}). The
+\pkg{hubEnsembles} package (Table~\ref{tbl-example-target-data}). The
 example target data provide observed incident influenza hospitalizations
 (\texttt{value}) in a given week (\texttt{time\_idx}) and for a given
 location (\texttt{location}). This target data could be used as
@@ -961,13 +963,13 @@ forecasts post hoc. The forecast-specific task ID variables
 target data.
 
 \begin{verbatim}
-hubEnsembles::example_target_data |>
-  dplyr::filter(
-    location == "US",
-    time_idx >= "2022-11-01",
-    time_idx <= "2023-02-01"
-  ) |>
-  knitr::kable()
+R> hubEnsembles::example_target_data |>
++  dplyr::filter(
++    location == "US",
++    time_idx >= "2022-11-01",
++    time_idx <= "2023-02-01"
++  ) |>
++  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}llr@{}}
@@ -996,7 +998,7 @@ time\_idx & location & value \\
 \caption{\label{tbl-example-target-data}Example target data for incident
 influenza hospitalizations. This table includes target data from
 2022-11-01 and 2023-02-01. This target data is provided in the
-\texttt{hubEnsembles} package and is a subset of the
+\pkg{hubEnsembles} package and is a subset of the
 \texttt{example-complex-forecast-hub} target data provided by the
 hubverse \citep{hubverse_docs}.}
 
@@ -1004,41 +1006,38 @@ hubverse \citep{hubverse_docs}.}
 \end{longtable}
 
 We can plot these forecasts and the target data using the
-\texttt{plot\_step\_ahead\_model\_output()} function from
-\texttt{hubVis}, another package for visualizing model outputs from the
-hubverse suite (Figure~\ref{fig-plot-ex-mods}). We subset the model
-output data and the target data to the location and time horizons we are
-interested in.
+\texttt{plot\_step\_ahead\_model\_output()} function from \pkg{hubVis},
+another package for visualizing model outputs from the hubverse suite
+(Figure~\ref{fig-plot-ex-mods}). We subset the model output data and the
+target data to the location and time horizons we are interested in.
 
 \begin{verbatim}
-model_outputs_plot <- hubEnsembles::example_model_output |>
-  hubUtils::as_model_out_tbl() |>
-  dplyr::filter(
-    location == "US",
-    output_type %in% c("median", "mean", "quantile"),
-    reference_date == "2022-12-17"
-  )
-
-target_data_plot <- hubEnsembles::example_target_data |>
-  dplyr::filter(
-    location == "US",
-    time_idx >= "2022-11-01",
-    time_idx <= "2023-02-01"
-  )
-
-hubVis::plot_step_ahead_model_output(
-  model_output_data = model_outputs_plot,
-  truth_data = target_data_plot,
-  facet = "model_id",
-  facet_nrow = 1,
-  interactive = FALSE,
-  intervals = c(0.5, 0.95),
-  show_legend = FALSE,
-  use_median_as_point = TRUE,
-  x_col_name = "target_end_date"
-) +
-  theme_bw() +
-  labs(y = "US incident hospitalizations")
+R> model_outputs_plot <- hubEnsembles::example_model_output |>
++  hubUtils::as_model_out_tbl() |>
++  dplyr::filter(
++    location == "US",
++    output_type %in% c("median", "mean", "quantile"),
++    reference_date == "2022-12-17"
++  )
+R> target_data_plot <- hubEnsembles::example_target_data |>
++  dplyr::filter(
++    location == "US",
++    time_idx >= "2022-11-01",
++    time_idx <= "2023-02-01"
++  )
+R> hubVis::plot_step_ahead_model_output(
++  model_output_data = model_outputs_plot,
++  truth_data = target_data_plot,
++  facet = "model_id",
++  facet_nrow = 1,
++  interactive = FALSE,
++  intervals = c(0.5, 0.95),
++  show_legend = FALSE,
++  use_median_as_point = TRUE,
++  x_col_name = "target_end_date"
++) +
++  theme_bw() +
++  labs(y = "US incident hospitalizations")
 \end{verbatim}
 
 \begin{figure}[H]
@@ -1082,16 +1081,16 @@ probability of ``high'' and ``very high'' hospitalization intensity for
 later horizons (Figure~\ref{fig-plot-ex-mods-pmf}).
 
 \begin{verbatim}
-hubEnsembles::example_model_output |>
-  dplyr::filter(
-    output_type %in% c("pmf"),
-    reference_date == "2022-12-17",
-    location == "US",
-    horizon == 1
-  ) |>
-  dplyr::mutate(value = round(value, 2)) |>
-  dplyr::select(-location, -target_end_date) |>
-  knitr::kable()
+R> hubEnsembles::example_model_output |>
++  dplyr::filter(
++    output_type %in% c("pmf"),
++    reference_date == "2022-12-17",
++    location == "US",
++    horizon == 1
++  ) |>
++  dplyr::mutate(value = round(value, 2)) |>
++  dplyr::select(-location, -target_end_date) |>
++  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}
@@ -1156,7 +1155,7 @@ on 2022-12-17 for the US from three distinct models. We round the
 forecasted probability (in the \texttt{value} column) to two digits. The
 \texttt{location} and \texttt{target\_end\_date} columns have been
 omitted for brevity. This example data is provided in the
-\texttt{hubEnsembles} package and is a subset of the
+\pkg{hubEnsembles} package and is a subset of the
 \texttt{example-complex-forecast-hub} data provided by the hubverse
 \citep{hubverse_docs}.}
 
@@ -1179,7 +1178,7 @@ and the darkness of the bar shows the hospitalization intensity bins
 
 \end{figure}%
 
-\section{Creating ensembles with
+\subsection{Creating ensembles with
 simple\_ensemble}\label{creating-ensembles-with-simple_ensemble}
 
 Using the default options for \texttt{simple\_ensemble()}, we can
@@ -1192,9 +1191,10 @@ ensemble is a quantile average, while for the \texttt{pmf} output type,
 the ensemble is a linear pool.
 
 \begin{verbatim}
-mean_ens <- hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
-  model_id = "simple-ensemble-mean"
-)
+R> mean_ens <- hubEnsembles::simple_ensemble(
++  hubEnsembles::example_model_output,
++  model_id = "simple-ensemble-mean"
++)
 \end{verbatim}
 
 The resulting model output has the same structure as the original model
@@ -1205,20 +1205,20 @@ ensemble in the resulting model output; if not specified, the default
 will be ``hub-ensemble''.
 
 \begin{verbatim}
-mean_ens |>
-  dplyr::filter(
-    output_type %in% c("quantile", "median", "pmf"),
-    output_type_id %in% c(
-      0.025, 0.25, 0.75, 0.975, NA,
-      "low", "moderate", "high", "very high"
-    ),
-    reference_date == "2022-12-17",
-    location == "US",
-    horizon == 1
-  ) |>
-  dplyr::mutate(value = round(value, 2)) |>
-  dplyr::select(-location, -target_end_date) |>
-  knitr::kable()
+R> mean_ens |>
++  dplyr::filter(
++    output_type %in% c("quantile", "median", "pmf"),
++    output_type_id %in% c(
++      0.025, 0.25, 0.75, 0.975, NA,
++      "low", "moderate", "high", "very high"
++    ),
++    reference_date == "2022-12-17",
++    location == "US",
++    horizon == 1
++  ) |>
++  dplyr::mutate(value = round(value, 2)) |>
++  dplyr::select(-location, -target_end_date) |>
++  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}
@@ -1284,7 +1284,7 @@ two digits.}
 \tabularnewline
 \end{longtable}
 
-\subsection{Changing the aggregation
+\subsubsection{Changing the aggregation
 function}\label{changing-the-aggregation-function}
 
 We can change the function that is used to aggregate model outputs. For
@@ -1293,10 +1293,10 @@ submitted values for each quantile. We do so by specifying
 \texttt{agg\_fun\ =\ median}.
 
 \begin{verbatim}
-median_ens <- hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
-  agg_fun = median,
-  model_id = "simple-ensemble-median"
-)
+R> median_ens <- hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
++  agg_fun = median,
++  model_id = "simple-ensemble-median"
++)
 \end{verbatim}
 
 Custom functions can also be passed into the \texttt{agg\_fun} argument.
@@ -1307,16 +1307,15 @@ vector of numeric values to summarize, and if relevant, an argument
 \texttt{w} of numeric weights.
 
 \begin{verbatim}
-geometric_mean <- function(x) {
-  n <- length(x)
-  return(prod(x)^(1 / n))
-}
-
-geometric_mean_ens <-
-  hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
-    agg_fun = geometric_mean,
-    model_id = "simple-ensemble-geometric"
-  )
+R> geometric_mean <- function(x) {
++  n <- length(x)
++  return(prod(x)^(1 / n))
++}
+R> geometric_mean_ens <-
++  hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
++    agg_fun = geometric_mean,
++    model_id = "simple-ensemble-geometric"
++  )
 \end{verbatim}
 
 As expected, the mean, median, and geometric mean each give us slightly
@@ -1325,34 +1324,32 @@ prediction intervals, and 95\% prediction intervals in
 Figure~\ref{fig-plot-ensembles} demonstrate this.
 
 \begin{verbatim}
-model_output_plot <- dplyr::bind_rows(
-  mean_ens, median_ens,
-  geometric_mean_ens
-) |>
-  dplyr::filter(
-    location == "US",
-    output_type %in% c("median", "mean", "quantile"),
-    reference_date == "2022-12-17"
-  ) |>
-  dplyr::mutate(target_date = reference_date + horizon)
-
-target_data_plot <- hubEnsembles::example_target_data |>
-  dplyr::filter(
-    location == "US", time_idx >= "2022-11-01",
-    time_idx <= "2023-03-01"
-  )
-
-hubVis::plot_step_ahead_model_output(
-  model_output_data = model_output_plot,
-  truth_data = target_data_plot,
-  use_median_as_point = TRUE,
-  interactive = FALSE,
-  intervals = c(0.5, 0.95),
-  show_legend = TRUE,
-  x_col_name = "target_end_date"
-) +
-  theme_bw() +
-  labs(y = "US incident hospitalizations")
+R> model_output_plot <- dplyr::bind_rows(
++  mean_ens, median_ens,
++  geometric_mean_ens
++) |>
++  dplyr::filter(
++    location == "US",
++    output_type %in% c("median", "mean", "quantile"),
++    reference_date == "2022-12-17"
++  ) |>
++  dplyr::mutate(target_date = reference_date + horizon)
+R> target_data_plot <- hubEnsembles::example_target_data |>
++  dplyr::filter(
++    location == "US", time_idx >= "2022-11-01",
++    time_idx <= "2023-03-01"
++  )
+R> hubVis::plot_step_ahead_model_output(
++  model_output_data = model_output_plot,
++  truth_data = target_data_plot,
++  use_median_as_point = TRUE,
++  interactive = FALSE,
++  intervals = c(0.5, 0.95),
++  show_legend = TRUE,
++  x_col_name = "target_end_date"
++) +
++  theme_bw() +
++  labs(y = "US incident hospitalizations")
 \end{verbatim}
 
 \begin{figure}[H]
@@ -1372,7 +1369,7 @@ the quantile average approach.}
 
 \end{figure}%
 
-\subsection{Weighting model
+\subsubsection{Weighting model
 contributions}\label{weighting-model-contributions}
 
 We can weight the contributions of each model in the ensemble using the
@@ -1383,23 +1380,22 @@ the following example, we include the baseline model in the ensemble,
 but give it less weight than the other forecasts.
 
 \begin{verbatim}
-model_weights <- data.frame(
-  model_id = c(
-    "MOBS-GLEAM_FLUH", "PSI-DICE",
-    "simple_hub-baseline"
-  ),
-  weight = c(0.4, 0.4, 0.2)
-)
-
-weighted_mean_ens <-
-  hubEnsembles::simple_ensemble(
-    hubEnsembles::example_model_output,
-    weights = model_weights,
-    model_id = "simple-ensemble-weighted-mean"
-  )
+R> model_weights <- data.frame(
++  model_id = c(
++    "MOBS-GLEAM_FLUH", "PSI-DICE",
++    "simple_hub-baseline"
++  ),
++  weight = c(0.4, 0.4, 0.2)
++)
+R> weighted_mean_ens <-
++  hubEnsembles::simple_ensemble(
++    hubEnsembles::example_model_output,
++    weights = model_weights,
++    model_id = "simple-ensemble-weighted-mean"
++  )
 \end{verbatim}
 
-\section{Creating ensembles with
+\subsection{Creating ensembles with
 linear\_pool}\label{creating-ensembles-with-linear_pool}
 
 We can also generate a linear pool ensemble, or distributional mixture,
@@ -1410,14 +1406,14 @@ includes \texttt{median} output type, so we exclude it from the
 calculation.
 
 \begin{verbatim}
-linear_pool_ens <-
-  hubEnsembles::linear_pool(
-    dplyr::filter(
-      hubEnsembles::example_model_output,
-      output_type != "median"
-    ),
-    model_id = "linear-pool"
-  )
+R> linear_pool_ens <-
++  hubEnsembles::linear_pool(
++    dplyr::filter(
++      hubEnsembles::example_model_output,
++      output_type != "median"
++    ),
++    model_id = "linear-pool"
++  )
 \end{verbatim}
 
 As described above, for \texttt{quantile} model outputs, the
@@ -1440,85 +1436,81 @@ output type, because the \texttt{simple\_ensemble} is computing a
 quantile average.
 
 \begin{verbatim}
-p1 <- dplyr::bind_rows(
-  mean_ens,
-  linear_pool_ens
-) |>
-  dplyr::filter(
-    output_type == "pmf", reference_date == "2022-12-17",
-    location == "US"
-  ) |>
-  dplyr::mutate(output_type_id = gsub("_", " ", output_type_id)) |>
-  dplyr::mutate(output_type_id = factor(output_type_id,
-    levels = c(
-      "low", "moderate", "high",
-      "very high"
-    )
-  )) |>
-  ggplot(aes(x = output_type_id, y = value, fill = model_id)) +
-  geom_bar(stat = "identity", position = "dodge") +
-  facet_wrap(vars(horizon), labeller = label_both) +
-  labs(x = "US incident hospitalization intensity", y = "probability") +
-  scale_fill_brewer(palette = "Set1") +
-  theme_bw() +
-  theme(
-    legend.position = "bottom", legend.title = element_blank(),
-    strip.background = element_blank(), strip.placement = "outside",
-    panel.grid.major.x = element_blank()
-  )
-
-model_output_plot <- linear_pool_ens |>
-  dplyr::filter(output_type_id == 0.5) |>
-  dplyr::mutate(output_type = "median", output_type_id = NA)
-model_output_plot <- dplyr::bind_rows(linear_pool_ens, model_output_plot)
-model_output_plot <- dplyr::bind_rows(mean_ens, model_output_plot) |>
-  dplyr::filter(
-    location == "US",
-    output_type %in% c("median", "mean", "quantile"),
-    reference_date == "2022-12-17"
-  ) |>
-  dplyr::mutate(target_date = reference_date + horizon)
-target_data_plot <- hubEnsembles::example_target_data |>
-  dplyr::filter(
-    location == "US", time_idx >= "2022-11-01",
-    time_idx <= "2023-03-01"
-  )
-
-p2 <-
-  hubVis::plot_step_ahead_model_output(
-    model_output_data = model_output_plot,
-    truth_data = target_data_plot,
-    use_median_as_point = TRUE,
-    interactive = FALSE,
-    intervals = c(0.5, 0.95),
-    pal_color = "Set1",
-    show_legend = TRUE,
-    x_col_name = "target_end_date"
-  ) +
-  theme_bw() +
-  labs(y = "US incident hospitalizations")
-
-l <- cowplot::get_legend(p1)
-
-cowplot::plot_grid(
-  cowplot::plot_grid(
-    p1 +
-      labs(
-        subtitle =
-          "example PMF output type"
-      ) +
-      theme(legend.position = "none"),
-    p2 +
-      labs(
-        subtitle =
-          "example quantile output type"
-      ) +
-      theme(legend.position = "none"),
-    labels = LETTERS[1:2]
-  ), l,
-  ncol = 1,
-  rel_heights = c(0.95, 0.05)
-)
+R> p1 <- dplyr::bind_rows(
++  mean_ens,
++  linear_pool_ens
++) |>
++  dplyr::filter(
++    output_type == "pmf", reference_date == "2022-12-17",
++    location == "US"
++  ) |>
++  dplyr::mutate(output_type_id = gsub("_", " ", output_type_id)) |>
++  dplyr::mutate(output_type_id = factor(output_type_id,
++    levels = c(
++      "low", "moderate", "high",
++      "very high"
++    )
++  )) |>
++  ggplot(aes(x = output_type_id, y = value, fill = model_id)) +
++  geom_bar(stat = "identity", position = "dodge") +
++  facet_wrap(vars(horizon), labeller = label_both) +
++  labs(x = "US incident hospitalization intensity", y = "probability") +
++  scale_fill_brewer(palette = "Set1") +
++  theme_bw() +
++  theme(
++    legend.position = "bottom", legend.title = element_blank(),
++    strip.background = element_blank(), strip.placement = "outside",
++    panel.grid.major.x = element_blank()
++  )
+R> model_output_plot <- linear_pool_ens |>
++  dplyr::filter(output_type_id == 0.5) |>
++  dplyr::mutate(output_type = "median", output_type_id = NA)
+R> model_output_plot <- dplyr::bind_rows(linear_pool_ens, model_output_plot)
+R> model_output_plot <- dplyr::bind_rows(mean_ens, model_output_plot) |>
++  dplyr::filter(
++    location == "US",
++    output_type %in% c("median", "mean", "quantile"),
++    reference_date == "2022-12-17"
++  ) |>
++  dplyr::mutate(target_date = reference_date + horizon)
+R> target_data_plot <- hubEnsembles::example_target_data |>
++  dplyr::filter(
++    location == "US", time_idx >= "2022-11-01",
++    time_idx <= "2023-03-01"
++  )
+R> p2 <-
++  hubVis::plot_step_ahead_model_output(
++    model_output_data = model_output_plot,
++    truth_data = target_data_plot,
++    use_median_as_point = TRUE,
++    interactive = FALSE,
++    intervals = c(0.5, 0.95),
++    pal_color = "Set1",
++    show_legend = TRUE,
++    x_col_name = "target_end_date"
++  ) +
++  theme_bw() +
++  labs(y = "US incident hospitalizations")
+R> l <- cowplot::get_legend(p1)
+R> cowplot::plot_grid(
++  cowplot::plot_grid(
++    p1 +
++      labs(
++        subtitle =
++          "example PMF output type"
++      ) +
++      theme(legend.position = "none"),
++    p2 +
++      labs(
++        subtitle =
++          "example quantile output type"
++      ) +
++      theme(legend.position = "none"),
++    labels = LETTERS[1:2]
++  ), l,
++  ncol = 1,
++  rel_heights = c(0.95, 0.05)
++)
 \end{verbatim}
 
 \begin{figure}[H]
@@ -1542,9 +1534,10 @@ Ensembles combine individual models from the example hub
 
 \end{figure}%
 
-Case study: Weekly incident flu hospitalizations
+\section{Case study: Weekly incident flu
+hospitalizations}\label{sec-flu}
 
-To demonstrate the utility of the \texttt{hubEnsembles} package and the
+To demonstrate the utility of the \pkg{hubEnsembles} package and the
 differences between the two ensembling functions, we examine a second
 set of weekly US influenza hospitalizations forecasts which were
 generated in real time.
@@ -1563,7 +1556,7 @@ to generate the case study results can be found in the associated GitHub
 repository hubEnsemblesManuscript
 (\url{https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript}).
 
-\section{Data and Methods}\label{data-and-methods}
+\subsection{Data and Methods}\label{data-and-methods}
 
 We begin by querying the component forecasts used to generate the four
 ensembles from zoltar, a repository designed to archive forecasts
@@ -1575,40 +1568,40 @@ split by season, called \texttt{flu\_forecasts-raw\_21-22.rds} and
 formatting conventions, the raw forecasts must be transformed to fit
 hubverse standards before being fed into either of the ensembling
 functions. To do so, we use the \texttt{as\_model\_out\_tbl()} function
-from the \texttt{hubUtils} package. Here, we specify the task ID
-variables \texttt{forecast\ date} (when the forecast was made),
-\texttt{location}, \texttt{horizon}, and \texttt{target}.
+from the \pkg{hubUtils} package. Here, we specify the task ID variables
+\texttt{forecast\ date} (when the forecast was made), \texttt{location},
+\texttt{horizon}, and \texttt{target}.
 
 \begin{verbatim}
-flu_forecasts_raw_21_22 <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
-)
-flu_forecasts_raw_22_23 <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-raw_22-23.rds")
-)
-flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22,
-                           dplyr::select(flu_forecasts_raw_22_23, -season))
-
-flu_forecasts_raw_21_22 <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
-)
-
-flu_forecasts_hubverse <- flu_forecasts_raw |>
-  dplyr::rename(target = target_long) |>
-  as_model_out_tbl(
-    model_id_col = "model_id",
-    output_type_col = "output_type",
-    output_type_id_col = "output_type_id",
-    value_col = "value",
-    sep = "-",
-    trim_to_task_ids = FALSE,
-    hub_con = NULL,
-    task_id_cols = c(
-      "forecast_date", "location", "horizon",
-      "target"
-    ),
-    remove_empty = TRUE
-  )
+R> flu_forecasts_raw_21_22 <- readr::read_rds(
++  here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
++)
+R> flu_forecasts_raw_22_23 <- readr::read_rds(
++  here::here("analysis/data/raw_data/flu_forecasts-raw_22-23.rds")
++)
+R> flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22,
++                           dplyr::select(flu_forecasts_raw_22_23, -season))
+R> 
+R> flu_forecasts_raw_21_22 <- readr::read_rds(
++  here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
++)
+R> 
+R> flu_forecasts_hubverse <- flu_forecasts_raw |>
++  dplyr::rename(target = target_long) |>
++  as_model_out_tbl(
++    model_id_col = "model_id",
++    output_type_col = "output_type",
++    output_type_id_col = "output_type_id",
++    value_col = "value",
++    sep = "-",
++    trim_to_task_ids = FALSE,
++    hub_con = NULL,
++    task_id_cols = c(
++      "forecast_date", "location", "horizon",
++      "target"
++    ),
++    remove_empty = TRUE
++  )
 \end{verbatim}
 
 We excluded component forecasts from the ensemble calculations if any
@@ -1638,18 +1631,18 @@ provide an example of these predictions, showing select quantiles from a
 single model, forecast date, horizon, and location.
 
 \begin{verbatim}
-readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-small.rds")
-) |>
-  dplyr::filter(
-    model_id == "UMass-trends_ensemble",
-    forecast_date == "2023-05-15",
-    location == "06",
-    horizon == 1,
-    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
-  ) |>
-  dplyr::select(-location, -season) |>
-  knitr::kable()
+R> readr::read_rds(
++  here::here("analysis/data/raw_data/flu_forecasts-small.rds")
++) |>
++  dplyr::filter(
++    model_id == "UMass-trends_ensemble",
++    forecast_date == "2023-05-15",
++    location == "06",
++    horizon == 1,
++    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
++  ) |>
++  dplyr::select(-location, -season) |>
++  knitr::kable()
 \end{verbatim}
 
 \begin{longtable}[]{@{}
@@ -1713,35 +1706,31 @@ specifications, and general data set features (albeit for 4 total models
 instead of 42).
 
 \begin{verbatim}
-flu_forecasts_hubverse <- dplyr::filter(
-  flu_forecasts_hubverse,
-  model_id != "Flusight-baseline"
-)
-
-mean_ensemble <- hubEnsembles::simple_ensemble(flu_forecasts_hubverse,
-  weights = NULL,
-  agg_fun = "mean",
-  model_id = "mean-ensemble"
-)
-
-median_ensemble <- hubEnsembles::simple_ensemble(flu_forecasts_hubverse,
-  weights = NULL,
-  agg_fun = "median",
-  model_id = "median-ensemble"
-)
-
-lp_normal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
-  weights = NULL,
-  n_samples = 1e5, model_id = "lp-normal",
-  tail_dist = "norm"
-)
-
-lp_lognormal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
-  weights = NULL,
-  n_samples = 1e5,
-  model_id = "lp-lognormal",
-  tail_dist = "lnorm"
-)
+R> flu_forecasts_hubverse <- dplyr::filter(
++  flu_forecasts_hubverse,
++  model_id != "Flusight-baseline"
++)
+R> mean_ensemble <- hubEnsembles::simple_ensemble(flu_forecasts_hubverse,
++  weights = NULL,
++  agg_fun = "mean",
++  model_id = "mean-ensemble"
++)
+R> median_ensemble <- hubEnsembles::simple_ensemble(flu_forecasts_hubverse,
++  weights = NULL,
++  agg_fun = "median",
++  model_id = "median-ensemble"
++)
+R> lp_normal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
++  weights = NULL,
++  n_samples = 1e5, model_id = "lp-normal",
++  tail_dist = "norm"
++)
+R> lp_lognormal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
++  weights = NULL,
++  n_samples = 1e5,
++  model_id = "lp-lognormal",
++  tail_dist = "lnorm"
++)
 \end{verbatim}
 
 After computing the various ensembles, we evaluate the performance using
@@ -1788,7 +1777,7 @@ itself will always have a value of one for both of these metrics.
 
 Here, we score each unique prediction from an ensemble model, i.e.,
 combination of task ID variables, against target data with the
-\texttt{score\_forecasts()} function from the \texttt{covidHubUtils}
+\texttt{score\_forecasts()} function from the \pkg{covidHubUtils}
 package. This function outputs each of the metrics described above. We
 use median forecasts taken from the 0.5 quantile for the MAE evaluation.
 We calculate these metrics for the four ensembles (as well as the
@@ -1799,7 +1788,7 @@ code only one time and save the results in data objects split by a model
 and season, which then can be loaded separately for analysis plotting
 and scoring.
 
-\section{Performance results across
+\subsection{Performance results across
 ensembles}\label{performance-results-across-ensembles}
 
 The quantile median ensemble had the best overall performance in terms
@@ -1875,163 +1864,163 @@ the quantile mean predicted a continued increase in hospitalizations, at
 a steeper slope than the other ensemble methods.
 
 \begin{verbatim}
-model_names <- c(
-  "Flusight-baseline", "lp-lognormal", "lp-normal",
-  "mean-ensemble", "median-ensemble"
-)
-
-flu_dates_21_22 <- as.Date("2022-01-24") + weeks(0:21)
-flu_dates_22_23 <- as.Date("2022-10-17") + weeks(0:30)
-flu_dates_off_season <- as.Date("2022-06-27") + weeks(0:15)
-all_flu_dates <- c(flu_dates_21_22, flu_dates_22_23)
-
-select_dates <- c(all_flu_dates[seq(1, 69, 4)], flu_dates_21_22[22] +
-                    lubridate::weeks(1:16))
-forecasts_ca <- flu_forecasts_ensembles |>
-  rbind(expand.grid(model_id = model_names[1:5],
-                    forecast_date = flu_dates_21_22[22] +
-                      lubridate::weeks(1:16),
-                    location = unique(flu_truth_all$location),
-                    horizon = 1:4,
-                    target = "wk ahead inc flu hosp",
-                    output_type = "quantile",
-                    output_type_id = c(0.01, 0.025, seq(0.05, 0.95, 0.5),
-                                       0.975, 0.99),
-                    value = NA) |>
-          dplyr::mutate(target_end_date = forecast_date +
-                          lubridate::weeks(horizon), .before = target)) |>
-  dplyr::filter(location == "06", forecast_date %in% select_dates) |>
-  dplyr::group_by(forecast_date) |>
-  as_model_out_tbl()
-
-truth_ca <- flu_truth_all |>
-  dplyr::filter(location == "06") |>
-  rbind(expand.grid(
-    model = "flu-truth",
-    target_variable = "inc flu hosp",
-    target_end_date = flu_dates_21_22[22] +
-      lubridate::weeks(1:16),
-    location = unique(flu_truth_all$location),
-    value = NA
-  ))
-
-ca_plot_ensembles <-
-  plot_step_ahead_model_output(
-    forecasts_ca |> filter(model_id != "Flusight-baseline"),
-    truth_ca,
-    use_median_as_point = TRUE,
-    show_plot = FALSE,
-    x_col_name = "target_end_date",
-    x_truth_col_name = "target_end_date",
-    show_legend = FALSE,
-    facet = "model_id",
-    facet_scales = "free_y",
-    facet_nrow = 3,
-    interactive = FALSE,
-    pal_color = "Set2",
-    fill_transparency = 0.45,
-    intervals = c(0.5, 0.95),
-    title = NULL,
-    group = "forecast_date"
-  )
-
-ca_plot_ensembles <- ca_plot_ensembles +
-  scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
-  ) +
-  scale_color_manual(
-    breaks = model_names[2:5],
-    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
-  ) +
-  scale_fill_manual(
-    breaks = model_names[2:5],
-    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
-  ) +
-  theme(
-    axis.ticks.length.x = unit(0.5, "cm"),
-    axis.text.x = element_text(vjust = 7, hjust = -0.2),
-    axis.title.y = element_blank(),
-    legend.position = "none"
-  )
-
-ca_plot_baseline <-
-  plot_step_ahead_model_output(
-    forecasts_ca |> filter(model_id == "Flusight-baseline"),
-    truth_ca,
-    use_median_as_point = TRUE,
-    show_plot = TRUE,
-    x_col_name = "target_end_date",
-    x_truth_col_name = "target_end_date",
-    show_legend = FALSE,
-    facet = "model_id",
-    facet_scales = "free_y",
-    facet_nrow = 1,
-    interactive = FALSE,
-    fill_transparency = 0.45,
-    intervals = c(0.5, 0.95),
-    title = NULL,
-    group = "forecast_date"
-  ) +
-  scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
-  ) +
-  theme_bw() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.ticks.length.x = unit(0, "cm"),
-    axis.text.x = element_blank(), # element_text(vjust = 5, hjust = -0.2),
-    axis.title.y = element_blank(),
-    legend.position = "none"
-  )
-
-ca_plot_all <-
-  plot_step_ahead_model_output(
-    forecasts_ca |> mutate(facet_name = "All models, same scale"),
-    truth_ca,
-    use_median_as_point = TRUE,
-    show_plot = TRUE,
-    x_col_name = "target_end_date",
-    x_truth_col_name = "target_end_date",
-    show_legend = FALSE,
-    facet = "facet_name",
-    interactive = FALSE,
-    fill_transparency = 0.45,
-    intervals = c(0.5, 0.95),
-    title = NULL,
-    group = "forecast_date"
-  ) +
-  scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
-  ) +
-  theme_bw() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.length.x = unit(0, "cm"),
-    axis.title.y = element_blank(),
-    legend.position = "none"
-  )
-
-((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
-  theme_bw() +
-  plot_layout(guides = "collect", heights = c(1, 2)) +
-  plot_annotation(title = paste0(
-    "Weekly Incident ",
-    "Hospitalizations for Influenza ",
-    "in California"
-  ))
+R> model_names <- c(
++  "Flusight-baseline", "lp-lognormal", "lp-normal",
++  "mean-ensemble", "median-ensemble"
++)
+R> 
+R> flu_dates_21_22 <- as.Date("2022-01-24") + weeks(0:21)
+R> flu_dates_22_23 <- as.Date("2022-10-17") + weeks(0:30)
+R> flu_dates_off_season <- as.Date("2022-06-27") + weeks(0:15)
+R> all_flu_dates <- c(flu_dates_21_22, flu_dates_22_23)
+R> 
+R> select_dates <- c(all_flu_dates[seq(1, 69, 4)], flu_dates_21_22[22] +
++                    lubridate::weeks(1:16))
+R> forecasts_ca <- flu_forecasts_ensembles |>
++  rbind(expand.grid(model_id = model_names[1:5],
++                    forecast_date = flu_dates_21_22[22] +
++                      lubridate::weeks(1:16),
++                    location = unique(flu_truth_all$location),
++                    horizon = 1:4,
++                    target = "wk ahead inc flu hosp",
++                    output_type = "quantile",
++                    output_type_id = c(0.01, 0.025, seq(0.05, 0.95, 0.5),
++                                       0.975, 0.99),
++                    value = NA) |>
++          dplyr::mutate(target_end_date = forecast_date +
++                          lubridate::weeks(horizon), .before = target)) |>
++  dplyr::filter(location == "06", forecast_date %in% select_dates) |>
++  dplyr::group_by(forecast_date) |>
++  as_model_out_tbl()
+R> 
+R> truth_ca <- flu_truth_all |>
++  dplyr::filter(location == "06") |>
++  rbind(expand.grid(
++    model = "flu-truth",
++    target_variable = "inc flu hosp",
++    target_end_date = flu_dates_21_22[22] +
++      lubridate::weeks(1:16),
++    location = unique(flu_truth_all$location),
++    value = NA
++  ))
+R> 
+R> ca_plot_ensembles <-
++  plot_step_ahead_model_output(
++    forecasts_ca |> filter(model_id != "Flusight-baseline"),
++    truth_ca,
++    use_median_as_point = TRUE,
++    show_plot = FALSE,
++    x_col_name = "target_end_date",
++    x_truth_col_name = "target_end_date",
++    show_legend = FALSE,
++    facet = "model_id",
++    facet_scales = "free_y",
++    facet_nrow = 3,
++    interactive = FALSE,
++    pal_color = "Set2",
++    fill_transparency = 0.45,
++    intervals = c(0.5, 0.95),
++    title = NULL,
++    group = "forecast_date"
++  )
+R> 
+R> ca_plot_ensembles <- ca_plot_ensembles +
++  scale_x_date(
++    name = NULL, limits = c(
++      as.Date("2022-01-01"),
++      as.Date("2023-06-08")
++    ),
++    date_breaks = "4 months", date_labels = "%b '%y"
++  ) +
++  scale_color_manual(
++    breaks = model_names[2:5],
++    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
++  ) +
++  scale_fill_manual(
++    breaks = model_names[2:5],
++    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
++  ) +
++  theme(
++    axis.ticks.length.x = unit(0.5, "cm"),
++    axis.text.x = element_text(vjust = 7, hjust = -0.2),
++    axis.title.y = element_blank(),
++    legend.position = "none"
++  )
+R> 
+R> ca_plot_baseline <-
++  plot_step_ahead_model_output(
++    forecasts_ca |> filter(model_id == "Flusight-baseline"),
++    truth_ca,
++    use_median_as_point = TRUE,
++    show_plot = TRUE,
++    x_col_name = "target_end_date",
++    x_truth_col_name = "target_end_date",
++    show_legend = FALSE,
++    facet = "model_id",
++    facet_scales = "free_y",
++    facet_nrow = 1,
++    interactive = FALSE,
++    fill_transparency = 0.45,
++    intervals = c(0.5, 0.95),
++    title = NULL,
++    group = "forecast_date"
++  ) +
++  scale_x_date(
++    name = NULL, limits = c(
++      as.Date("2022-01-01"),
++      as.Date("2023-06-08")
++    ),
++    date_breaks = "4 months", date_labels = "%b '%y"
++  ) +
++  theme_bw() +
++  theme(
++    axis.title.x = element_blank(),
++    axis.ticks.length.x = unit(0, "cm"),
++    axis.text.x = element_blank(), # element_text(vjust = 5, hjust = -0.2),
++    axis.title.y = element_blank(),
++    legend.position = "none"
++  )
+R> 
+R> ca_plot_all <-
++  plot_step_ahead_model_output(
++    forecasts_ca |> mutate(facet_name = "All models, same scale"),
++    truth_ca,
++    use_median_as_point = TRUE,
++    show_plot = TRUE,
++    x_col_name = "target_end_date",
++    x_truth_col_name = "target_end_date",
++    show_legend = FALSE,
++    facet = "facet_name",
++    interactive = FALSE,
++    fill_transparency = 0.45,
++    intervals = c(0.5, 0.95),
++    title = NULL,
++    group = "forecast_date"
++  ) +
++  scale_x_date(
++    name = NULL, limits = c(
++      as.Date("2022-01-01"),
++      as.Date("2023-06-08")
++    ),
++    date_breaks = "4 months", date_labels = "%b '%y"
++  ) +
++  theme_bw() +
++  theme(
++    axis.title.x = element_blank(),
++    axis.text.x = element_blank(),
++    axis.ticks.length.x = unit(0, "cm"),
++    axis.title.y = element_blank(),
++    legend.position = "none"
++  )
+R> 
+R> ((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
++  theme_bw() +
++  plot_layout(guides = "collect", heights = c(1, 2)) +
++  plot_annotation(title = paste0(
++    "Weekly Incident ",
++    "Hospitalizations for Influenza ",
++    "in California"
++  ))
 \end{verbatim}
 
 \begin{figure}[H]
@@ -2057,14 +2046,14 @@ with greater granularity. For example, we may use the following lines of
 code to generate a table that shows scores from week to week.
 
 \begin{verbatim}
-flu_date_horizon_season_states <- flu_scores_all |>
-  evaluate_flu_scores(
-    grouping_variables = c(
-      "horizon", "forecast_date",
-      "season"
-    ),
-    baseline_name = "Flusight-baseline", us_only = FALSE
-  )
+R> flu_date_horizon_season_states <- flu_scores_all |>
++  evaluate_flu_scores(
++    grouping_variables = c(
++      "horizon", "forecast_date",
++      "season"
++    ),
++    baseline_name = "Flusight-baseline", us_only = FALSE
++  )
 \end{verbatim}
 
 However, reading and interpreting such a table becomes unwieldy with 53
@@ -2076,15 +2065,15 @@ chunk below. (In practice, we may also split the predictions by season
 for improve readability, but this step is not strictly necessary.)
 
 \begin{verbatim}
-flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 1,
-    y_var = "mae",
-    main = "MAE 2021-2022, 1 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.1
-  )
+R> flu_date_horizon_season_states |>
++  dplyr::filter(season == "2021-2022") |>
++  plot_evaluated_scores_forecast_date(model_names, model_colors,
++    h = 1,
++    y_var = "mae",
++    main = "MAE 2021-2022, 1 week ahead",
++    truth_data = flu_truth_all,
++    truth_scaling = 0.1
++  )
 \end{verbatim}
 
 We then may combine several of these plots to obtain a complete picture
@@ -2177,7 +2166,7 @@ accurate point forecasts. The \texttt{simple\_ensemble} and
 model weights and an aggregation function for \texttt{simple\_ensemble}
 allow users to implement a variety of ensemble methods.
 
-Conclusion
+\section{Summary and discussion}\label{sec-conclusions}
 
 Ensembles of independent models are a powerful tool to generate more
 accurate and more reliable forecasts of future outcomes than a single
@@ -2196,10 +2185,11 @@ ensemble methods outperformed the baseline model. These performance
 improvements from ensemble models motivate the use of a ``hub-based''
 approach to prediction for infectious diseases and in other fields.
 Fitting within the larger suite of ``hubverse'' tools that support such
-efforts, the \texttt{hubEnsembles} package provides important software
+efforts, the \pkg{hubEnsembles} package provides important software
 infrastructure for leveraging the power of multi-model ensembles.
 
-Acknowledgements
+\section*{Acknowledgements}\label{acknowledgements}
+\addcontentsline{toc}{section}{Acknowledgements}
 
 The authors thank all members of the hubverse community; the broader
 hubverse software infrastructure made this package possible. E. Howerton
@@ -2207,9 +2197,8 @@ was supported by the Eberly College of Science Barbara McClintock
 Science Achievement Graduate Scholarship in Biology at the Pennsylvania
 State University. PLEASE ADD FUNDING HERE.
 
-References
 
-
+\renewcommand\refname{References}
   \bibliography{references.bib}
 
 

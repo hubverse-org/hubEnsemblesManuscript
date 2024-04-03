@@ -1028,7 +1028,7 @@ readr::read_rds(
   knitr::kable()
 ```
 
-Next, we combine the component model outputsto generate predictions from each ensemble model. The resulting ensemble forecasts will have the same task ID variables, model output specifications, and general data set features (albeit for 4 total models instead of 42).
+Next, we combine the component model outputs to generate predictions from each ensemble model. The resulting ensemble forecasts will have the same task ID variables, model output specifications, and general data set features (albeit for 4 total models instead of 42).
 
 ```{r construct ensembles, eval=FALSE}
 flu_forecasts_hubverse <- dplyr::filter(

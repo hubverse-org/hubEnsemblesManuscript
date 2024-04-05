@@ -1117,7 +1117,6 @@ flu_overall_states |>
   dplyr::select(model, wis, rwis, mae, rmae, cov50, cov95) |>
   format_cells(rows = 1, cols = c(1:5, 7), "bold") |>
   format_cells(rows = 4, cols = 6, "bold") |>
-  format_cells(rows = 1, cols = 6, "italics") |>
   knitr::kable()
 ```
 

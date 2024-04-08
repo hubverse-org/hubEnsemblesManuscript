@@ -34,9 +34,11 @@ author:
     affiliations:
       - R-RSE SMPC
     orcid: 0000-0002-2378-4915
-  - name: Consortium of Infectious Disease Modeling Hubs
-    attributes:
-      deceased: true # use as a proxy to flag consortium authorship for now
+  - name: |
+      | Consortium of 
+      | Infectious Disease Modeling Hubs
+    affiliations:
+      - A list of authors and their affiliations appears at the end of the paper
   - name: Nicholas G. Reich
     affiliations:
       - University of Massachusetts Amherst

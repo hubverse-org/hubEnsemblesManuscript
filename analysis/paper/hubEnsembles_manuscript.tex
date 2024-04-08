@@ -83,10 +83,6 @@
 \newcommand{\class}[1]{`\code{#1}'}
 \newcommand{\fct}[1]{\code{#1()}}
 \makeatletter
-\makeatother
-\makeatletter
-\makeatother
-\makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
 \ifdefined\contentsname
@@ -122,20 +118,32 @@
 \newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
 \makeatother
 \makeatletter
+\makeatother
+\makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
 \makeatother
 \makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\makeatother
+\makeatletter
+\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}{}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, sharp corners, enhanced, breakable, interior hidden]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
 \fi
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{bookmark}
+
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
   pdftitle={: Ensembling Methods in },
-  pdfauthor={Li Shandross; Emily Howerton; Lucie Contamin; Harry Hochheiser; Anna Krystalli; Consortium of Infectious Disease Modeling Hubs; Nicholas G. Reich; Evan L. Ray},
+  pdfauthor={Li Shandross; Emily Howerton; Lucie Contamin; Harry Hochheiser; Anna Krystalli; Nicholas G. Reich; Evan L. Ray},
   pdfkeywords={multiple models, aggregation, forecast, prediction},
   colorlinks=true,
   linkcolor={blue},
@@ -155,14 +163,16 @@ Contamin~\orcidlink{0000-0001-5797-1279}\\University of
 Pittsburgh \And Harry
 Hochheiser~\orcidlink{0000-0001-8793-9982}\\University of
 Pittsburgh \AND Anna Krystalli~\orcidlink{0000-0002-2378-4915}\\R-RSE
-SMPC \And Consortium of Infectious Disease Modeling
-Hubs\thanks{A list of authors and their affiliations appears at the end of the paper.} \AND Nicholas
-G. Reich~\orcidlink{0000-0003-3503-9899}\\University of Massachusetts
+SMPC \And Consortium of\\
+Infectious Disease Modeling Hubs\\A list of authors and their
+affiliations appears at the end of the paper \AND Nicholas G.
+Reich~\orcidlink{0000-0003-3503-9899}\\University of Massachusetts
 Amherst \And Evan L. Ray~\orcidlink{0000-0003-4035-0243}\\University of
 Massachusetts Amherst}
 \Plainauthor{Li Shandross, Emily Howerton, Lucie Contamin, Harry
-Hochheiser, Anna Krystalli, Consortium of Infectious Disease Modeling
-Hubs, Nicholas G. Reich, Evan L. Ray} %% comma-separated
+Hochheiser, Anna Krystalli, Consortium of\\
+Infectious Disease Modeling Hubs, Nicholas G. Reich, Evan L.
+Ray} %% comma-separated
 
 \title{\pkg{hubEnsembles}: Ensembling Methods in \proglang{R}}
 \Plaintitle{: Ensembling Methods in} %% without formatting
@@ -209,7 +219,8 @@ Harry Hochheiser\\
 \\~
 Anna Krystalli\\
 \\~
-Consortium of Infectious Disease Modeling Hubs\\
+Consortium of\\
+Infectious Disease Modeling Hubs\\
 \\~
 Nicholas G. Reich\\
 \\~
@@ -220,8 +231,8 @@ Evan L. Ray\\
 
 \begin{document}
 \maketitle
-\hypertarget{sec-intro}{%
-\section{Introduction}\label{sec-intro}}
+
+\section{Introduction}\label{sec-intro}
 
 Predictions of future outcomes are essential to planning and decision
 making, yet generating reliable predictions of the future is
@@ -276,9 +287,8 @@ demonstrate the functionality (Section~\ref{sec-simple-ex}) and a more
 complex case study (Section~\ref{sec-flu}) that motivates a discussion
 and comparison of the various methods (Section~\ref{sec-conclusions}).
 
-\hypertarget{sec-defs}{%
 \section{Mathematical definitions and properties of ensemble
-methods}\label{sec-defs}}
+methods}\label{sec-defs}
 
 The \pkg{hubEnsembles} package supports both point predictions and
 probabilistic predictions of different formats. A point prediction gives
@@ -366,8 +376,7 @@ method preserves variation between individual models, whereas the
 quantile average cancels away this variation under the assumption it
 constitutes sampling error \citep{howerton2023}.
 
-\hypertarget{sec-implementation}{%
-\section{Model implementation details}\label{sec-implementation}}
+\section{Model implementation details}\label{sec-implementation}
 
 To understand how these methods are implemented in \pkg{hubEnsembles},
 we first must define the conventions employed by the hubverse and its
@@ -377,9 +386,8 @@ with a short overview of concepts and conventions needed to utilize the
 ensembling functions provided by the package, \texttt{simple\_ensemble}
 and \texttt{linear\_pool}.
 
-\hypertarget{hubverse-terminology-and-conventions}{%
 \subsection{Hubverse terminology and
-conventions}\label{hubverse-terminology-and-conventions}}
+conventions}\label{hubverse-terminology-and-conventions}
 
 A central concept in the hubverse effort is ``model output''. Model
 output is a specially formatted tabular representation of predictions.
@@ -409,7 +417,6 @@ that the forecast is predicting relative to the \texttt{reference\_date}
 (Table~\ref{tbl-flu-forecasts}). All these variables make up the task ID
 columns.
 
-\hypertarget{tbl-flu-forecasts}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
@@ -417,22 +424,7 @@ columns.
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-output\_type\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
@@ -465,13 +457,17 @@ UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.90 &
 1153 \\
 UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.99 &
 1281 \\
+
+
 \caption{\label{tbl-flu-forecasts}Example of forecasts for weekly
 incident flu hospitalizations, formatted according to hubverse
 standards. Quantile forecasts for the median and 50\%, 80\%, and 98\%
 prediction intervals are shown from a single model. The
 \texttt{location} and \texttt{reference\_date} columns have been omitted
 for brevity; all forecasts in this example were made on 2023-05-15 for
-the US.}\tabularnewline
+the US.}
+
+\tabularnewline
 \end{longtable}
 
 Alternatively, longer-term scenario projections may require different
@@ -490,7 +486,6 @@ different sets of task ID columns and values to specify their prediction
 goals. Additional examples of task ID variables are available on the
 hubverse documentation website \citep{hubverse_docs}.
 
-\hypertarget{tbl-example-scenarios}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1928}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1205}}
@@ -499,24 +494,7 @@ hubverse documentation website \citep{hubverse_docs}.
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1446}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1807}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1084}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-scenario\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-output\_type\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
@@ -561,6 +539,8 @@ HUBuni-simexamp & cum death & 26 & D-2021-03-05 & quantile & 0.50 &
 688469.0 \\
 HUBuni-simexamp & cum death & 26 & D-2021-03-05 & quantile & 0.75 &
 700861.5 \\
+
+
 \caption{\label{tbl-example-scenarios}Example of scenario projections
 for cumulative COVID-19 deaths, formatted according to hubverse
 standards. Quantile predictions for the median and 50\% prediction
@@ -569,7 +549,9 @@ intervals from a single model are shown for four distinct scenarios. The
 for brevity; all forecasts in this example were made on 2021-03-07 for
 the US. This example is a subset of the
 \texttt{example-complex-scenario-hub} data provided by the
-hubverse\citep{hubverse_docs}.}\tabularnewline
+hubverse\citep{hubverse_docs}.}
+
+\tabularnewline
 \end{longtable}
 
 The third purpose of a model output column is to specify the models
@@ -607,7 +589,6 @@ can easily be transformed using the \texttt{as\_model\_out\_tbl()}
 function from \pkg{hubUtils}. An example of this transformation is
 provided in Section~\ref{sec-flu}.
 
-\hypertarget{tbl-model-output-rep}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2083}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
@@ -651,13 +632,12 @@ predictive distribution when evaluated at a specified level of a
 categorical outcome variable \\
 \texttt{sample} & Positive integer sample index & Numeric: A sample from
 the predictive distribution \\
-\caption{\label{tbl-model-output-rep}A table summarizing how the model
-output representation columns are used for predictions of different
-output types. Adapted from \citep{hubverse_docs}}\tabularnewline
+\caption{A table summarizing how the model output representation columns
+are used for predictions of different output types. Adapted from
+\citep{hubverse_docs}}\label{tbl-model-output-rep}\tabularnewline
 \end{longtable}
 
-\hypertarget{sec-ens-fns}{%
-\section{Ensemble functions in hubEnsembles}\label{sec-ens-fns}}
+\section{Ensemble functions in hubEnsembles}\label{sec-ens-fns}
 
 The \pkg{hubEnsembles} package includes two functions that perform
 ensemble calculations: \texttt{simple\_ensemble()}, which applies some
@@ -669,8 +649,7 @@ ensembling methods described in Section~\ref{sec-defs}. A short
 description of the calculation performed by each function is summarized
 by output type in Table~\ref{tbl-fns-by-output-type}.
 
-\hypertarget{simple-ensemble}{%
-\subsubsection{Simple ensemble}\label{simple-ensemble}}
+\subsubsection{Simple ensemble}\label{simple-ensemble}
 
 The \texttt{simple\_ensemble} function directly computes an ensemble
 from component model outputs by combining them via some function (\(C\))
@@ -700,7 +679,6 @@ as the aggregation function, or a custom function may be passed to the
 \texttt{agg\_fun} argument to create other ensemble types. Similarly,
 model weights can be specified to create a weighted ensemble.
 
-\hypertarget{tbl-fns-by-output-type}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1831}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3380}}
@@ -741,31 +719,30 @@ cumulative probabilities at each target variable value,
 \texttt{pmf} & mean of individual model bin probabilities at each target
 variable value, \(f_{LOP}(x)\) & mean of individual model bin
 probabilities at each target variable value, \(f_{LOP}(x)\) \\
-\caption{\label{tbl-fns-by-output-type}Summary of ensemble function
-calculations for each output type. The ensemble function (columns)
-determines the operation that is performed, and in the case of
-probabilistic output types (\texttt{quantile}, \texttt{cdf},
-\texttt{pmf}), this also determines what ensemble distribution is
-generated (quantile average, \(F_{Q}^{-1}(\theta)\), or linear pool,
-\(F_{LOP}(x)\)). The resulting ensemble will be returned in the same
-output type as the inputs. Thus, the output type (rows) determines how
-the resulting ensemble distribution is summarized (as a quantile
-function, \(F^{-1}(\theta)\), cumulative distribution function,
-\(F(x)\), or probability mass function \(f(x)\)). Estimating individual
-model cumulative probabilities is required to compute a
-\texttt{linear\_pool()} for predictions of \texttt{quantile} output
-type; see Section~\ref{sec-linear-pool} for details. In the case of
-\texttt{simple\_ensemble()}, we report the calculations for the default
-case where \texttt{agg\_fun\ =\ "mean"}; however, if another aggregation
-function is chosen (e.g., \texttt{agg\_fun\ =\ "median"}), that
-calculation would be performed instead. For example,
+\caption{Summary of ensemble function calculations for each output type.
+The ensemble function (columns) determines the operation that is
+performed, and in the case of probabilistic output types
+(\texttt{quantile}, \texttt{cdf}, \texttt{pmf}), this also determines
+what ensemble distribution is generated (quantile average,
+\(F_{Q}^{-1}(\theta)\), or linear pool, \(F_{LOP}(x)\)). The resulting
+ensemble will be returned in the same output type as the inputs. Thus,
+the output type (rows) determines how the resulting ensemble
+distribution is summarized (as a quantile function, \(F^{-1}(\theta)\),
+cumulative distribution function, \(F(x)\), or probability mass function
+\(f(x)\)). Estimating individual model cumulative probabilities is
+required to compute a \texttt{linear\_pool()} for predictions of
+\texttt{quantile} output type; see Section~\ref{sec-linear-pool} for
+details. In the case of \texttt{simple\_ensemble()}, we report the
+calculations for the default case where \texttt{agg\_fun\ =\ "mean"};
+however, if another aggregation function is chosen (e.g.,
+\texttt{agg\_fun\ =\ "median"}), that calculation would be performed
+instead. For example,
 \texttt{simple\_ensemble(...,\ agg\_fun\ =\ "median")} applied to
 predictions of \texttt{mean} output type would return the median of
-individual model means.}\tabularnewline
+individual model means.}\label{tbl-fns-by-output-type}\tabularnewline
 \end{longtable}
 
-\hypertarget{sec-linear-pool}{%
-\subsubsection{Linear pool}\label{sec-linear-pool}}
+\subsubsection{Linear pool}\label{sec-linear-pool}
 
 The \texttt{linear\_pool} function implements the linear opinion pool
 method for ensembling predictions. This function can be used to combine
@@ -792,7 +769,9 @@ Figure~\ref{fig-example-quantile-average-and-linear-pool}.
 
 \begin{figure}
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf}
 
 }
 
@@ -819,7 +798,7 @@ can be extracted for fixed values (shown with open circles). The black
 line shows theresulting linear pool average ensemble. Inset shows
 corresponding PDFs.}
 
-\end{figure}
+\end{figure}%
 
 Given that LOP cannot be directly calculated from quantile predictions,
 we must first obtain an estimate of the CDF for each component
@@ -856,16 +835,14 @@ two most extreme quantiles. The sampling process described in steps 2
 and 3 approximates the linear pool calculation described in
 Section~\ref{sec-defs}.
 
-\hypertarget{sec-simple-ex}{%
-\section{Demonstration of functionality}\label{sec-simple-ex}}
+\section{Demonstration of functionality}\label{sec-simple-ex}
 
 In this section, we provide a simple example to illustrate the two main
 functions in \pkg{hubEnsembles}, \texttt{simple\_ensemble()} and
 \texttt{linear\_pool()}.
 
-\hypertarget{example-data-a-forecast-hub}{%
 \subsection{Example data: a forecast
-hub}\label{example-data-a-forecast-hub}}
+hub}\label{example-data-a-forecast-hub}
 
 We will use an example hub provided by the hubverse to demonstrate the
 functionality of the \pkg{hubEnsembles} package \citep{hubverse_docs}.
@@ -902,7 +879,6 @@ R> hubEnsembles::example_model_output |>
 +  knitr::kable()
 \end{verbatim}
 
-\hypertarget{tbl-example-forecasts}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2400}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1067}}
@@ -910,22 +886,7 @@ R> hubEnsembles::example_model_output |>
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1600}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2000}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0800}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
@@ -959,6 +920,8 @@ PSI-DICE & 1 & wk inc flu hosp & quantile & 0.25 & 16770 \\
 PSI-DICE & 1 & wk inc flu hosp & quantile & 0.75 & 23984 \\
 PSI-DICE & 1 & wk inc flu hosp & quantile & 0.975 & 27899 \\
 PSI-DICE & 1 & wk inc flu hosp & median & NA & 19666 \\
+
+
 \caption{\label{tbl-example-forecasts}Example model output for forecasts
 of incident influenza hospitalizations. A subset of example model output
 is shown: 1-week ahead quantile forecasts made on 2022-12-17 for the US
@@ -966,9 +929,11 @@ from three distinct models; only the median, 50\% prediction intervals,
 and 95\% prediction intervals are displayed. The \texttt{location},
 \texttt{reference\_date} and \texttt{target\_end\_date} columns have
 been omitted for brevity. This example data is provided in the
-{hubEnsembles} package and is a subset of the
+\pkg{hubEnsembles} package and is a subset of the
 \texttt{example-complex-forecast-hub} data provided by the hubverse
-\citep{hubverse_docs}.}\tabularnewline
+\citep{hubverse_docs}.}
+
+\tabularnewline
 \end{longtable}
 
 We also have corresponding target data included in the
@@ -991,12 +956,8 @@ R> hubEnsembles::example_target_data |>
 +  knitr::kable()
 \end{verbatim}
 
-\hypertarget{tbl-example-target-data}{}
 \begin{longtable}[]{@{}llr@{}}
-\toprule\noalign{}
-time\_idx & location & value \\
-\midrule\noalign{}
-\endfirsthead
+
 \toprule\noalign{}
 time\_idx & location & value \\
 \midrule\noalign{}
@@ -1016,12 +977,16 @@ time\_idx & location & value \\
 2023-01-14 & US & 6692 \\
 2023-01-21 & US & 4182 \\
 2023-01-28 & US & 2838 \\
+
+
 \caption{\label{tbl-example-target-data}Example target data for incident
 influenza hospitalizations. This table includes target data from
 2022-11-01 and 2023-02-01. This target data is provided in the
-{hubEnsembles} package and is a subset of the
+\pkg{hubEnsembles} package and is a subset of the
 \texttt{example-complex-forecast-hub} target data provided by the
-hubverse \citep{hubverse_docs}.}\tabularnewline
+hubverse \citep{hubverse_docs}.}
+
+\tabularnewline
 \end{longtable}
 
 We can plot these forecasts and the target data using the
@@ -1061,7 +1026,9 @@ R> hubVis::plot_step_ahead_model_output(
 
 \begin{figure}[H]
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf}
 
 }
 
@@ -1071,7 +1038,7 @@ US incident influenza hospitalizations is shown for each of three models
 interval (Q25-Q75), and 95\% prediction interval (Q2.5-Q97.5). Gray
 points represent observed incident hospitalizations.}
 
-\end{figure}
+\end{figure}%
 
 Next, we examine the \texttt{pmf} target in the example model output
 data. For this target, teams forecasted the probability that
@@ -1110,7 +1077,6 @@ R> hubEnsembles::example_model_output |>
 +  knitr::kable()
 \end{verbatim}
 
-\hypertarget{tbl-example-forecasts-pmf}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2118}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0941}}
@@ -1118,22 +1084,7 @@ R> hubEnsembles::example_model_output |>
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
@@ -1168,6 +1119,8 @@ PSI-DICE & 1 & wk flu hosp rate category & pmf & low & 0.00 \\
 PSI-DICE & 1 & wk flu hosp rate category & pmf & moderate & 0.23 \\
 PSI-DICE & 1 & wk flu hosp rate category & pmf & high & 0.60 \\
 PSI-DICE & 1 & wk flu hosp rate category & pmf & very high & 0.17 \\
+
+
 \caption{\label{tbl-example-forecasts-pmf}Example \texttt{pmf} model
 output for forecasts of incident influenza hospitalization intensity. A
 subset of example model output is shown: 1-week ahead pmf forecasts made
@@ -1175,14 +1128,18 @@ on 2022-12-17 for the US from three distinct models. We round the
 forecasted probability (in the \texttt{value} column) to two digits. The
 \texttt{location}, \texttt{reference\_date} and
 \texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the {hubEnsembles} package and is a subset
-of the \texttt{example-complex-forecast-hub} data provided by the
-hubverse \citep{hubverse_docs}.}\tabularnewline
+example data is provided in the \pkg{hubEnsembles} package and is a
+subset of the \texttt{example-complex-forecast-hub} data provided by the
+hubverse \citep{hubverse_docs}.}
+
+\tabularnewline
 \end{longtable}
 
 \begin{figure}
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf}
 
 }
 
@@ -1192,11 +1149,10 @@ three models (panels). Each bar shows forecasts of horizon 0-3 weeks,
 and the darkness of the bar shows the hospitalization intensity bins
 (low, moderate, high, and very high).}
 
-\end{figure}
+\end{figure}%
 
-\hypertarget{creating-ensembles-with-simple_ensemble}{%
 \subsection{Creating ensembles with
-simple\_ensemble}\label{creating-ensembles-with-simple_ensemble}}
+simple\_ensemble}\label{creating-ensembles-with-simple_ensemble}
 
 Using the default options for \texttt{simple\_ensemble()}, we can
 generate an equally weighted mean ensemble for each unique combination
@@ -1238,7 +1194,6 @@ R> mean_ens |>
 +  knitr::kable()
 \end{verbatim}
 
-\hypertarget{tbl-mean-ensemble}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2308}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0879}}
@@ -1246,22 +1201,7 @@ R> mean_ens |>
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1319}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1648}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0989}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
@@ -1297,6 +1237,8 @@ simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.75 &
 26384.67 \\
 simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.975 &
 33135.67 \\
+
+
 \caption{\label{tbl-mean-ensemble}Mean ensemble model output. The values
 in the model\_id column are determined by
 \texttt{simple\_ensemble(...,\ model\_id\ =\ )} argument). A subset of
@@ -1306,12 +1248,13 @@ we show only the median, 50\% prediction intervals, and 95\% prediction
 intervals for the quantile output type and all bins for the pmf output
 type. The \texttt{location}, \texttt{reference\_date} and
 \texttt{target\_end\_date} columns have been omitted for brevity, and
-the \texttt{value} column is rounded to two digits.}\tabularnewline
+the \texttt{value} column is rounded to two digits.}
+
+\tabularnewline
 \end{longtable}
 
-\hypertarget{changing-the-aggregation-function}{%
 \subsubsection{Changing the aggregation
-function}\label{changing-the-aggregation-function}}
+function}\label{changing-the-aggregation-function}
 
 We can change the function that is used to aggregate model outputs. For
 example, we may want to calculate a median of the component models'
@@ -1380,7 +1323,9 @@ R> hubVis::plot_step_ahead_model_output(
 
 \begin{figure}[H]
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf}
 
 }
 
@@ -1391,11 +1336,10 @@ individual predictions from the example hub
 mean, geometric mean, or median. All methods correspond to variations of
 the quantile average approach.}
 
-\end{figure}
+\end{figure}%
 
-\hypertarget{weighting-model-contributions}{%
 \subsubsection{Weighting model
-contributions}\label{weighting-model-contributions}}
+contributions}\label{weighting-model-contributions}
 
 We can weight the contributions of each model in the ensemble using the
 \texttt{weights} argument of \texttt{simple\_ensemble}. This arguement
@@ -1420,9 +1364,8 @@ R> weighted_mean_ens <-
 +  )
 \end{verbatim}
 
-\hypertarget{creating-ensembles-with-linear_pool}{%
 \subsection{Creating ensembles with
-linear\_pool}\label{creating-ensembles-with-linear_pool}}
+linear\_pool}\label{creating-ensembles-with-linear_pool}
 
 We can also generate a linear pool ensemble, or distributional mixture,
 using the \texttt{linear\_pool()} function; this function can be applied
@@ -1541,7 +1484,9 @@ R> cowplot::plot_grid(
 
 \begin{figure}[H]
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf}
 
 }
 
@@ -1556,11 +1501,10 @@ type, \texttt{simple\_ensemble} corresponds to a quantile average.
 Ensembles combine individual models from the example hub
 (Figure~\ref{fig-plot-ex-mods}).}
 
-\end{figure}
+\end{figure}%
 
-\hypertarget{sec-flu}{%
 \section{Case study: Weekly incident flu
-hospitalizations}\label{sec-flu}}
+hospitalizations}\label{sec-flu}
 
 To demonstrate the utility of the \pkg{hubEnsembles} package and the
 differences between the two ensembling functions, we examine a second
@@ -1581,8 +1525,7 @@ to generate the case study results can be found in the associated GitHub
 repository hubEnsemblesManuscript
 (\url{https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript}).
 
-\hypertarget{data-and-methods}{%
-\subsection{Data and Methods}\label{data-and-methods}}
+\subsection{Data and Methods}\label{data-and-methods}
 
 We begin by querying the component forecasts used to generate the four
 ensembles from zoltar, a repository designed to archive forecasts
@@ -1671,7 +1614,6 @@ R> readr::read_rds(
 +  knitr::kable()
 \end{verbatim}
 
-\hypertarget{tbl-case-study-flu-forecasts}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0941}}
@@ -1679,22 +1621,7 @@ R> readr::read_rds(
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-output\_type\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model\_id
@@ -1725,13 +1652,17 @@ UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.900 &
 56 \\
 UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.975 &
 68 \\
+
+
 \caption{\label{tbl-case-study-flu-forecasts}An example prediction of
 weekly incident influenza hospitalizations. This exmaple forecast was
 made on May 15, 2023 for California at the 1 week ahead horizon. The
 forecast was generated during theFluSight forecasting challenge, and
 formatted according to hubverse standards post hoc. The
 \texttt{location}, \texttt{forecast\_date}, and \texttt{season} columns
-have been omitted for brevity.}\tabularnewline
+have been omitted for brevity.}
+
+\tabularnewline
 \end{longtable}
 
 Next, we combine the component model outputs using the following code to
@@ -1823,9 +1754,8 @@ code only one time and save the results in data objects split by a model
 and season, which then can be loaded separately for analysis plotting
 and scoring.
 
-\hypertarget{performance-results-across-ensembles}{%
 \subsection{Performance results across
-ensembles}\label{performance-results-across-ensembles}}
+ensembles}\label{performance-results-across-ensembles}
 
 The quantile median ensemble had the best overall performance in terms
 of WIS and MAE (and the relative versions of these metrics) with
@@ -1837,7 +1767,6 @@ empirical coverage that was well above the nominal coverage rate. The
 quantile mean performed the worst of the ensembles with the highest MAE,
 which was substantially different from that of the other ensembles.
 
-\hypertarget{tbl-overall-evaluation}{}
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2469}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1358}}
@@ -1846,24 +1775,7 @@ which was substantially different from that of the other ensembles.
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1235}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1235}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1235}}@{}}
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-model
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-wis
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-rwis
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-mae
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-rmae
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-cov50
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-cov95
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
+
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 model
@@ -1891,11 +1803,14 @@ lp-lognormal & 19.747 & 0.863 & 27.933 & 0.953 & 0.708 & 0.99 \\
 mean-ensemble & 20.18 & 0.882 & 29.582 & 1.009 & \textbf{0.595} &
 0.889 \\
 Flusight-baseline & 22.876 & 1 & 29.315 & 1 & 0.604 & 0.881 \\
+
+
 \caption{\label{tbl-overall-evaluation}Summary of overall model
 performance across both seasons, averaged over all locations except the
 US national location. The best values for each metric is bolded, though
-the metric values are often quite similar among the
-models.}\tabularnewline
+the metric values are often quite similar among the models.}
+
+\tabularnewline
 \end{longtable}
 
 Plots of the models' forecasts can aid our understanding about the
@@ -2076,7 +1991,9 @@ R> ((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
 
 \begin{figure}[H]
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf}
 
 }
 
@@ -2087,7 +2004,7 @@ other panels show forecasts for each individual model, with varying
 y-axis scales show prediction accuracy as compared to observed influenza
 hospitalizations.}
 
-\end{figure}
+\end{figure}%
 
 We can use additional functions from the
 \texttt{evaluation\_functions.R} script to examine model performance
@@ -2149,7 +2066,9 @@ Figure~\ref{fig-cov95-vs-forecast-date}).
 
 \begin{figure}
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-mae-vs-forecast-date-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-mae-vs-forecast-date-1.pdf}
 
 }
 
@@ -2159,11 +2078,13 @@ averaged across all locations. Average MAE is shown for each season
 plotted for each ensemble model (colored points) across the entire
 season. Average target data across all locations is plotted in black.}
 
-\end{figure}
+\end{figure}%
 
 \begin{figure}
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf}
 
 }
 
@@ -2173,11 +2094,13 @@ averaged across all locations. Average WIS is shown for each season
 plotted for each ensemble model (colored points) across the entire
 season. Average target data across all locations is plotted in black.}
 
-\end{figure}
+\end{figure}%
 
 \begin{figure}
 
-{\centering \includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-cov95-vs-forecast-date-1.pdf}
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-cov95-vs-forecast-date-1.pdf}
 
 }
 
@@ -2188,7 +2111,7 @@ Results are plotted for each ensemble model (colored points) across the
 entire season. Average target data across all locations is plotted in
 black.}
 
-\end{figure}
+\end{figure}%
 
 In this analysis all of the ensemble variations outperformed the
 baseline model; yet, different ensembling methods performed best under
@@ -2209,8 +2132,7 @@ accurate point forecasts. The \texttt{simple\_ensemble} and
 model weights and an aggregation function for \texttt{simple\_ensemble}
 allow users to implement a variety of ensemble methods.
 
-\hypertarget{sec-conclusions}{%
-\section{Summary and discussion}\label{sec-conclusions}}
+\section{Summary and discussion}\label{sec-conclusions}
 
 Ensembles of independent models are a powerful tool to generate more
 accurate and more reliable forecasts of future outcomes than a single
@@ -2232,8 +2154,7 @@ Fitting within the larger suite of ``hubverse'' tools that support such
 efforts, the \pkg{hubEnsembles} package provides important software
 infrastructure for leveraging the power of multi-model ensembles.
 
-\hypertarget{acknowledgements}{%
-\section*{Acknowledgements}\label{acknowledgements}}
+\section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}
 
 The authors thank all members of the hubverse community; the broader
@@ -2242,9 +2163,8 @@ was supported by the Eberly College of Science Barbara McClintock
 Science Achievement Graduate Scholarship in Biology at the Pennsylvania
 State University. PLEASE ADD FUNDING HERE.
 
-\hypertarget{consortium-of-infectious-disease-modeling-hubs}{%
 \section*{Consortium of Infectious Disease Modeling
-Hubs}\label{consortium-of-infectious-disease-modeling-hubs}}
+Hubs}\label{consortium-of-infectious-disease-modeling-hubs}
 \addcontentsline{toc}{section}{Consortium of Infectious Disease Modeling
 Hubs}
 

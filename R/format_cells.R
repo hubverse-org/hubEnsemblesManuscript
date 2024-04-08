@@ -1,4 +1,6 @@
-# from here https://stackoverflow.com/questions/28166168/how-to-change-fontface-bold-italics-for-a-cell-in-a-kable-table-in-rmarkdown?noredirect=1&lq=1
+# Function adapted from answered question on Stack Overflow
+# Apply table formatting with a function
+# Source: https://stackoverflow.com/a/49656650
 format_cells <- function(df, rows, cols,
                          value = c("italics", "bold", "strikethrough")) {
   # select the correct markup

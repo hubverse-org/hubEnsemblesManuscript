@@ -13,7 +13,7 @@ This repository contains the data and code for our paper:
 Our pre-print is online here:
 
 > Authors, (2024). *`hubEnsembles`: Ensembling Methods in R*. Name of
-> journal/book, Accessed 23 Feb 2024. Online at
+> journal/book, Accessed 04 Apr 2024. Online at
 > <https://doi.org/xxx/xxx>
 
 ### How to cite
@@ -21,7 +21,7 @@ Our pre-print is online here:
 Please cite this compendium as:
 
 > Authors, (2024). *Compendium of R code and data for `hubEnsembles`:
-> Ensembling Methods in R*. Accessed 23 Feb 2024. Online at
+> Ensembling Methods in R*. Accessed 04 Apr 2024. Online at
 > <https://doi.org/xxx/xxx>
 
 ## Contents
@@ -52,8 +52,8 @@ You can download the compendium as a zip from from this URL:
 - run `devtools::install()` to ensure you have the packages this
   analysis depends on (also listed in the [DESCRIPTION](/DESCRIPTION)
   file).
-- finally, open `analysis/paper/hubEnsembles_manuscript.Rmd` and knit to
-  produce the `hubEnsembles_manuscript.html`, or run
+- finally, open `analysis/paper/hubEnsembles_manuscript.qmd` and knit to
+  produce the `hubEnsembles_manuscript.pdf`, or run
   `rmarkdown::render("analysis/paper/hubEnsembles_manuscript.qmd")` in
   the R console
 

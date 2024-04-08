@@ -13,16 +13,15 @@ author:
     affiliations:
       - name: University of Massachusetts Amherst
     orcid: 0009-0008-1348-1954
-    email: lshandross@umass.edu
     attributes:
-      - corresponding: true
-      - equal-contributor: true
+      equal-contributor: true
+    email: lshandross@umass.edu
   - name: Emily Howerton
     affiliations:
       - The Pennsylvania State University
     orcid: 0000-0002-0639-3728
-    attributes: 
-      - equal-contributor: true
+    attributes:
+      equal-contributor: true
   - name: Lucie Contamin
     affiliations:
       - University of Pittsburgh
@@ -36,6 +35,8 @@ author:
       - R-RSE SMPC
     orcid: 0000-0002-2378-4915
   - name: Consortium of Infectious Disease Modeling Hubs
+    attributes:
+      deceased: true # use as a proxy to flag consortium authorship for now
   - name: Nicholas G. Reich
     affiliations:
       - University of Massachusetts Amherst
@@ -44,7 +45,6 @@ author:
     affiliations:
       - University of Massachusetts Amherst
     orcid: 0000-0003-4035-0243
-
 execute:
   echo: true
   warning: false
@@ -69,7 +69,6 @@ library(patchwork)
 library(ggplot2)
 ```
 
-Keywords: `r rmarkdown::metadata$keywords`
 
 ## Introduction {#sec-intro}
 
@@ -1645,5 +1644,8 @@ Ensembles of independent models are a powerful tool to generate more accurate an
 ## Acknowledgements  {.unnumbered}
 
 The authors thank all members of the hubverse community; the broader hubverse software infrastructure made this package possible. E. Howerton was supported by the Eberly College of Science Barbara McClintock Science Achievement Graduate Scholarship in Biology at the Pennsylvania State University. PLEASE ADD FUNDING HERE.
+
+Consortium of Infectious Disease Modeling Hubs authors include Alvaro J. Castro Rivadeneira (University of  Massachusetts Amherst), Lucie Contamin (University of Pittsburgh), Sebastian Funk (London School of Hygene and Tropical Medicine), Aaron Gerding (University of  Massachusetts Amherst), Hugo Gruson (ADD AFFILIATION), Harry Hochheiser (University of Pittsburgh), Emily Howerton (The Pennsylvania State University), Melissa Kerr (University of  Massachusetts Amherst), Anna Krystalli (R-RSE SMPC), Sara L. Loo (Johns Hopkins University), Evan L. Ray (University of Massachusetts Amherst), Nicholas G. Reich (University of Massachusetts Amherst), Koji Sato, Li Shandross (University of  Massachusetts Amherst), Katharine Sherratt (London School of Hygene and Tropical Medicine), Shaun Truelove (Johns Hopkins University, Martha Zorn (University of  Massachusetts Amherst)
+
 
 ## References {.unnumbered}

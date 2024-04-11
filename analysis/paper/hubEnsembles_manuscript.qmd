@@ -1121,6 +1121,9 @@ Plots of the models' forecasts can aid our understanding about the origin of the
 #| scale. All other panels show forecasts for each individual model, with
 #| varying y-axis scales, and their prediction accuracy as compared to
 #| observed influenza hospitalizations."
+#| fig-width: 9
+#| fig-height: 12
+
 model_names <- c(
   "Flusight-baseline", "lp-lognormal", "lp-normal",
   "mean-ensemble", "median-ensemble"
@@ -1291,7 +1294,7 @@ All of the ensemble models tend to have similar MAE values during the entire eva
 #| points) across the entire season. Average target data across all locations
 #| is plotted in black."
 #| fig-width: 10
-#| fig-height: 7.5
+#| fig-height: 12
 model_names <- c(model_names, "average target data")
 # model_colors <- c("#6BAED6", "#FD8D3C", "#74C476", "#9E9AC8", "#FB6A4A")
 model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
@@ -1363,7 +1366,7 @@ truth_states_2122 + truth_states_2223 +
 #| points) across the entire season. Average target data across all locations is
 #| plotted in black."
 #| fig-width: 10
-#| fig-height: 7.5
+#| fig-height: 12
 
 # WIS
 wis_date_plot_states1_2122 <- flu_date_horizon_season_states |>
@@ -1413,7 +1416,7 @@ truth_states_2122 + truth_states_2223 +
 #| model (colored points) across the entire season. Average target data across
 #| all locations is plotted in black."
 #| fig-width: 9
-#| fig-height: 7.5
+#| fig-height: 12
 
 # 95% Coverage
 cov95_date_plot_states1_2122 <- flu_date_horizon_season_states |>

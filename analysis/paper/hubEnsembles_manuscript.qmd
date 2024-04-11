@@ -1305,23 +1305,30 @@ flu_date_horizon_season_states <- flu_scores_all |>
     baseline_name = "Flusight-baseline", us_only = FALSE
   )
 
+truth_states_2122 <- flu_truth_all |>
+  plot_flu_truth(
+    date_range = flu_dates_21_22[c(1, 22)],
+    main = "Target Data 2021-22 (wk inc flu hosp)"
+  )
+truth_states_2223 <- flu_truth_all |>
+  plot_flu_truth(
+    date_range = flu_dates_22_23[c(1, 31)],
+    main = "Target Data 2022-23 (wk inc flu hosp)"
+  )
+
 mae_date_plot_states1_2223 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2022-2023") |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 1,
     y_var = "mae",
-    main = "MAE 2022-2023, 1 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.15
+    main = "MAE 2022-2023, 1 week ahead"
   )
 mae_date_plot_states4_2223 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2022-2023") |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 4,
     y_var = "mae",
-    main = "MAE 2022-2023, 4 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.15
+    main = "MAE 2022-2023, 4 week ahead"
   )
 
 mae_date_plot_states1_2122 <- flu_date_horizon_season_states |>
@@ -1329,26 +1336,21 @@ mae_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 1,
     y_var = "mae",
-    main = "MAE 2021-2022, 1 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.15
+    main = "MAE 2021-2022, 1 week ahead"
   )
 mae_date_plot_states4_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 4,
     y_var = "mae",
-    main = "MAE 2021-2022, 4 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.15
+    main = "MAE 2021-2022, 4 week ahead"
   )
-
-mae_date_plot_states1_2122 +
-  mae_date_plot_states1_2223 +
-  mae_date_plot_states4_2122 +
-  mae_date_plot_states4_2223 +
+  
+truth_states_2122 + truth_states_2223 +
+  mae_date_plot_states1_2122 + mae_date_plot_states1_2223 +
+  mae_date_plot_states4_2122 + mae_date_plot_states4_2223 +
   theme_bw() +
-  plot_layout(ncol = 2, guides = "collect") &
+  plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
   theme(legend.position = "bottom")
 ```
 
@@ -1369,18 +1371,14 @@ wis_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 1,
     y_var = "wis",
-    main = "WIS 2021-2022, 1 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.1
+    main = "WIS 2021-2022, 1 week ahead"
   )
 wis_date_plot_states4_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 4,
     y_var = "wis",
-    main = "WIS 2021-2022, 4 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.1
+    main = "WIS 2021-2022, 4 week ahead"
   )
 
 wis_date_plot_states1_2223 <- flu_date_horizon_season_states |>
@@ -1388,26 +1386,21 @@ wis_date_plot_states1_2223 <- flu_date_horizon_season_states |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 1,
     y_var = "wis",
-    main = "WIS 2022-2023, 1 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.1
+    main = "WIS 2022-2023, 1 week ahead"
   )
 wis_date_plot_states4_2223 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2022-2023") |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 4,
     y_var = "wis",
-    main = "WIS 2022-2023, 4 week ahead",
-    truth_data = flu_truth_all,
-    truth_scaling = 0.1
+    main = "WIS 2022-2023, 4 week ahead"
   )
 
-wis_date_plot_states1_2122 +
-  wis_date_plot_states1_2223 +
-  wis_date_plot_states4_2122 +
-  wis_date_plot_states4_2223 +
+truth_states_2122 + truth_states_2223 +
+  wis_date_plot_states1_2122 + wis_date_plot_states1_2223 +
+  wis_date_plot_states4_2122 + wis_date_plot_states4_2223 +
   theme_bw() +
-  plot_layout(ncol = 2, guides = "collect") &
+  plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
   theme(legend.position = "bottom")
 ```
 
@@ -1428,8 +1421,7 @@ cov95_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 1,
     y_var = "cov95",
-    main = "95% Coverage 2021-22, 1 week ahead",
-    truth_data = flu_truth_all
+    main = "95% Coverage 2021-22, 1 week ahead"
   ) +
   coord_cartesian(ylim = c(0, 1.05))
 cov95_date_plot_states4_2122 <- flu_date_horizon_season_states |>
@@ -1437,8 +1429,7 @@ cov95_date_plot_states4_2122 <- flu_date_horizon_season_states |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 4,
     y_var = "cov95",
-    main = "95% Coverage 2021-22, 4 week ahead",
-    truth_data = flu_truth_all
+    main = "95% Coverage 2021-22, 4 week ahead"
   ) +
   coord_cartesian(ylim = c(0, 1.05))
 
@@ -1447,8 +1438,7 @@ cov95_date_plot_states1_2223 <- flu_date_horizon_season_states |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 1,
     y_var = "cov95",
-    main = "95% Coverage 2022-23, 1 week ahead",
-    truth_data = flu_truth_all
+    main = "95% Coverage 2022-23, 1 week ahead"
   ) +
   coord_cartesian(ylim = c(0, 1.05))
 cov95_date_plot_states4_2223 <- flu_date_horizon_season_states |>
@@ -1456,21 +1446,9 @@ cov95_date_plot_states4_2223 <- flu_date_horizon_season_states |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
     h = 4,
     y_var = "cov95",
-    main = "95% Coverage 2022-23, 4 week ahead",
-    truth_data = flu_truth_all
+    main = "95% Coverage 2022-23, 4 week ahead"
   ) +
   coord_cartesian(ylim = c(0, 1.05))
-
-truth_states_2122 <- flu_truth_all |>
-  plot_flu_truth(
-    date_range = flu_dates_21_22[c(1, 22)],
-    main = "Target Data 2021-22 (wk inc flu hosp)"
-  )
-truth_states_2223 <- flu_truth_all |>
-  plot_flu_truth(
-    date_range = flu_dates_22_23[c(1, 31)],
-    main = "Target Data 2022-23 (wk inc flu hosp)"
-  )
 
 truth_states_2122 + truth_states_2223 +
   cov95_date_plot_states1_2122 + cov95_date_plot_states1_2223 +

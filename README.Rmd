@@ -60,7 +60,7 @@ You can download the compendium as a zip from from this URL:
 - open the `.Rproj` file in RStudio
 - run `devtools::install()` to ensure you have the packages this analysis depends on (also listed in the
 [DESCRIPTION](/DESCRIPTION) file).
-- finally, open `analysis/paper/hubEnsembles_manuscript.Rmd` and knit to produce the `hubEnsembles_manuscript.html`, or run `rmarkdown::render("analysis/paper/hubEnsembles_manuscript.qmd")` in the R console
+- finally, open `analysis/paper/hubEnsembles_manuscript.qmd` and knit to produce the `hubEnsembles_manuscript.html`, or run `rmarkdown::render("analysis/paper/hubEnsembles_manuscript.qmd")` in the R console
 
 ### Licenses
 

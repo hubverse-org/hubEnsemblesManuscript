@@ -220,7 +220,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
   } else {
     gg +
       ggplot2::geom_point(mapping = ggplot2::aes(col = .data$model), alpha = 0.8) +
-      ggplot2::geom_line(mapping = aes(col = .data$model), alpha = 0.8) +
+      ggplot2::geom_line(mapping = ggplot2::aes(col = .data$model), alpha = 0.8) +
       ggplot2::scale_x_date(
         name = NULL, date_breaks = "2 months",
         date_labels = "%b '%y"

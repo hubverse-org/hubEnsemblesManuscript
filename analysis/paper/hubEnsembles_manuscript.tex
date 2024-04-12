@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, frame hidden, borderline west={3pt}{0pt}{shadecolor}, interior hidden, boxrule=0pt, breakable, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, frame hidden, boxrule=0pt, sharp corners, breakable, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -420,26 +420,26 @@ that the forecast is predicting relative to the \texttt{reference\_date}
 columns.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0941}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1075}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1505}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1828}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0860}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-model\_id
+\texttt{model\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
+\texttt{target}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
+\texttt{horizon}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
+\texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-output\_type\_id
+\texttt{output\_type\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
+\texttt{value}
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
@@ -489,29 +489,29 @@ goals. Additional examples of task ID variables are available on the
 hubverse documentation website \citep{hubverse_docs}.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1928}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1205}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.0964}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1566}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1446}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1807}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1084}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1778}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1111}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1556}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1556}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1889}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1000}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-model\_id
+\texttt{model\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
+\texttt{target}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
+\texttt{horizon}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-scenario\_id
+\texttt{scenario\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
+\texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-output\_type\_id
+\texttt{output\_type\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
+\texttt{value}
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
@@ -877,51 +877,51 @@ R> hubEnsembles::example_model_output |>
 +    location == "US",
 +    horizon == 1
 +  ) |>
-+  dplyr::select(-location, -target_end_date, -reference_date) |>
-+  knitr::kable()
++  dplyr::select(all_of(abbr_fc_col)) |>
++  knitr::kable(col.names = formatted_fc_col)
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2400}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1067}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2133}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1600}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2000}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0800}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2169}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1928}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1205}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1687}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2048}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0964}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-model\_id
+\texttt{model\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
+\texttt{horizon}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
+\texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type\_id
+\texttt{output\_type\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
+\texttt{value}
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Flusight-baseline & 1 & wk inc flu hosp & quantile & 0.025 & 18886 \\
-Flusight-baseline & 1 & wk inc flu hosp & quantile & 0.25 & 23534 \\
-Flusight-baseline & 1 & wk inc flu hosp & quantile & 0.75 & 24369 \\
-Flusight-baseline & 1 & wk inc flu hosp & quantile & 0.975 & 28980 \\
-Flusight-baseline & 1 & wk inc flu hosp & median & NA & 23951 \\
-MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & quantile & 0.025 & 14791 \\
-MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & quantile & 0.25 & 20676 \\
-MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & quantile & 0.75 & 30801 \\
-MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & quantile & 0.975 & 42528 \\
-MOBS-GLEAM\_FLUH & 1 & wk inc flu hosp & median & NA & 25235 \\
-PSI-DICE & 1 & wk inc flu hosp & quantile & 0.025 & 14027 \\
-PSI-DICE & 1 & wk inc flu hosp & quantile & 0.25 & 16770 \\
-PSI-DICE & 1 & wk inc flu hosp & quantile & 0.75 & 23984 \\
-PSI-DICE & 1 & wk inc flu hosp & quantile & 0.975 & 27899 \\
-PSI-DICE & 1 & wk inc flu hosp & median & NA & 19666 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.025 & 18886 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.25 & 23534 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.75 & 24369 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.975 & 28980 \\
+Flusight-baseline & wk inc flu hosp & 1 & median & NA & 23951 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.025 & 14791 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.25 & 20676 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.75 & 30801 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.975 & 42528 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & median & NA & 25235 \\
+PSI-DICE & wk inc flu hosp & 1 & quantile & 0.025 & 14027 \\
+PSI-DICE & wk inc flu hosp & 1 & quantile & 0.25 & 16770 \\
+PSI-DICE & wk inc flu hosp & 1 & quantile & 0.75 & 23984 \\
+PSI-DICE & wk inc flu hosp & 1 & quantile & 0.975 & 27899 \\
+PSI-DICE & wk inc flu hosp & 1 & median & NA & 19666 \\
 
 
 \caption{\label{tbl-example-forecasts}Example model output for forecasts
@@ -955,13 +955,13 @@ R> hubEnsembles::example_target_data |>
 +    time_idx >= "2022-11-01",
 +    time_idx <= "2023-02-01"
 +  ) |>
-+  knitr::kable()
++  knitr::kable(col.names = c("`time_idx`", "`location`", "`value`"))
 \end{verbatim}
 
 \begin{longtable}[]{@{}llr@{}}
 
 \toprule\noalign{}
-time\_idx & location & value \\
+\texttt{time\_idx} & \texttt{location} & \texttt{value} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
@@ -1077,52 +1077,52 @@ R> hubEnsembles::example_model_output |>
 +    horizon == 1
 +  ) |>
 +  dplyr::mutate(value = round(value, 2)) |>
-+  dplyr::select(-location, -reference_date, -target_end_date) |>
-+  knitr::kable()
++  dplyr::select(all_of(abbr_fc_col)) |>
++  knitr::kable(col.names = formatted_fc_col)
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2118}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0941}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.3059}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1935}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2796}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1075}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1505}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1828}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0860}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-model\_id
+\texttt{model\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
+\texttt{horizon}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
+\texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type\_id
+\texttt{output\_type\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
+\texttt{value}
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Flusight-baseline & 1 & wk flu hosp rate category & pmf & low & 0.00 \\
-Flusight-baseline & 1 & wk flu hosp rate category & pmf & moderate &
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & low & 0.00 \\
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & moderate &
 0.01 \\
-Flusight-baseline & 1 & wk flu hosp rate category & pmf & high & 0.86 \\
-Flusight-baseline & 1 & wk flu hosp rate category & pmf & very high &
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & high & 0.86 \\
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & very high &
 0.13 \\
-MOBS-GLEAM\_FLUH & 1 & wk flu hosp rate category & pmf & low & 0.00 \\
-MOBS-GLEAM\_FLUH & 1 & wk flu hosp rate category & pmf & moderate &
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & low & 0.00 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & moderate &
 0.07 \\
-MOBS-GLEAM\_FLUH & 1 & wk flu hosp rate category & pmf & high & 0.41 \\
-MOBS-GLEAM\_FLUH & 1 & wk flu hosp rate category & pmf & very high &
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & high & 0.41 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & very high &
 0.52 \\
-PSI-DICE & 1 & wk flu hosp rate category & pmf & low & 0.00 \\
-PSI-DICE & 1 & wk flu hosp rate category & pmf & moderate & 0.23 \\
-PSI-DICE & 1 & wk flu hosp rate category & pmf & high & 0.60 \\
-PSI-DICE & 1 & wk flu hosp rate category & pmf & very high & 0.17 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & low & 0.00 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & moderate & 0.23 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & high & 0.60 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.17 \\
 
 
 \caption{\label{tbl-example-forecasts-pmf}Example \texttt{pmf} model
@@ -1194,52 +1194,52 @@ R> mean_ens |>
 +    horizon == 1
 +  ) |>
 +  dplyr::mutate(value = round(value, 2)) |>
-+  dplyr::select(-location, -reference_date, -target_end_date) |>
-+  knitr::kable()
++  dplyr::select(all_of(abbr_fc_col)) |>
++  knitr::kable(col.names = formatted_fc_col)
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2308}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0879}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2857}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1319}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1648}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0989}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2165}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2680}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1031}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1443}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1753}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0928}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-model\_id
+\texttt{model\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
+\texttt{horizon}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
+\texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type\_id
+\texttt{output\_type\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
+\texttt{value}
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-simple-ensemble-mean & 1 & wk flu hosp rate category & pmf & high &
+simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & high &
 0.62 \\
-simple-ensemble-mean & 1 & wk flu hosp rate category & pmf & low &
+simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & low &
 0.00 \\
-simple-ensemble-mean & 1 & wk flu hosp rate category & pmf & moderate &
+simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & moderate &
 0.10 \\
-simple-ensemble-mean & 1 & wk flu hosp rate category & pmf & very high &
+simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & very high &
 0.27 \\
-simple-ensemble-mean & 1 & wk inc flu hosp & median & NA & 22950.67 \\
-simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.025 &
+simple-ensemble-mean & wk inc flu hosp & 1 & median & NA & 22950.67 \\
+simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.025 &
 15901.33 \\
-simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.25 &
+simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.25 &
 20326.67 \\
-simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.75 &
+simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.75 &
 26384.67 \\
-simple-ensemble-mean & 1 & wk inc flu hosp & quantile & 0.975 &
+simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.975 &
 33135.67 \\
 
 
@@ -1617,47 +1617,47 @@ R> readr::read_rds(
 +    horizon == 1,
 +    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
 +  ) |>
-+  dplyr::select(-location, -forecast_date, -season) |>
-+  knitr::kable()
++  dplyr::select(all_of(abbr_fc_col)) |>
++  knitr::kable(col.names = formatted_fc_col)
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0941}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2588}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1412}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1765}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0706}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1075}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1505}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1828}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0860}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-model\_id
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-horizon
+\texttt{model\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-target
+\texttt{target}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{horizon}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-output\_type
+\texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-output\_type\_id
+\texttt{output\_type\_id}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-value
+\texttt{value}
 \end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.025 &
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.025 &
 12 \\
-UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.100 &
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.100 &
 17 \\
-UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.250 &
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.250 &
 25 \\
-UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.750 &
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.750 &
 46 \\
-UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.900 &
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.900 &
 56 \\
-UMass-trends\_ensemble & 1 & wk ahead inc flu hosp & quantile & 0.975 &
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.975 &
 68 \\
 
 
@@ -1773,19 +1773,19 @@ different from that of the other ensembles.
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
-model
+\texttt{model}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-wis
+\texttt{wis}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-rwis
+\texttt{rwis}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-mae
+\texttt{mae}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-rmae
+\texttt{rmae}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-cov50
+\texttt{cov50}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-cov95
+\texttt{cov95}
 \end{minipage} \\
 \midrule\noalign{}
 \endhead

@@ -2,10 +2,10 @@
 # Apply table formatting with a function
 # Source: https://stackoverflow.com/a/49656650
 format_cells <- function(df, rows, cols,
-                         value = c("italics", "bold", "strikethrough")) {
+                         value = c("italics", "bold", "strikethrough", "code")) {
   # select the correct markup
   # one * for italics, two ** for bold
-  map <- setNames(c("*", "**", "~~"), c("italics", "bold", "strikethrough"))
+  map <- setNames(c("*", "**", "~~", "`"), c("italics", "bold", "strikethrough", "code"))
   markup <- map[value]
 
   for (r in rows) {

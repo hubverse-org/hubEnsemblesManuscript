@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[interior hidden, frame hidden, boxrule=0pt, sharp corners, breakable, borderline west={3pt}{0pt}{shadecolor}, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, breakable, frame hidden, interior hidden, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -682,14 +682,14 @@ as the aggregation function, or a custom function may be passed to the
 model weights can be specified to create a weighted ensemble.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1605}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4198}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4198}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3600}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{simple\_ensemble(...,\ agg\_fun\ =\ "mean")}
+\texttt{simple\_ensemble(...,\ agg\_fun="mean")}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{linear\_pool()}
 \end{minipage} \\
@@ -699,7 +699,7 @@ model weights can be specified to create a weighted ensemble.
 \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{simple\_ensemble(...,\ agg\_fun\ =\ "mean")}
+\texttt{simple\_ensemble(...,\ agg\_fun="mean")}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{linear\_pool()}
 \end{minipage} \\
@@ -1149,9 +1149,10 @@ hubverse \citep{hubverse_docs}.}
 
 \caption{\label{fig-plot-ex-mods-pmf}One example \texttt{pmf} forecast
 of incident influenza hospitalization intensity is shown for each of
-three models (panels). Each bar shows forecasts of horizon 0-3 weeks,
-and the darkness of the bar shows the hospitalization intensity bins
-(low, moderate, high, and very high).}
+three models (panels). Each cell shows the forecasted probability of a
+given hospitalization intensity bin (low, moderate, high, and very high)
+for each forecast horizon (0-3 weeks ahead). Darker colors indicate
+higher forecasted probability.}
 
 \end{figure}%
 
@@ -1540,18 +1541,17 @@ repository
 \subsection{Data and Methods}\label{data-and-methods}
 
 We begin by querying the component forecasts used to generate the four
-ensembles from zoltar, a repository designed to archive forecasts
-created by the Reich Lab at UMass Amherst. Here, we only consider
-Flusight predictions in a quantile format from the 2021-2022 and
-2022-2023 seasons. These forecasts were stored in two data objects,
-split by season, called \texttt{flu\_forecasts-raw\_21-22.rds} and
-\texttt{flu\_forecasts-raw\_22-23.rds}. Since zoltar has its own
-formatting conventions, the raw forecasts must be transformed to fit
-hubverse standards before being fed into either of the ensembling
-functions. To do so, we use the \texttt{as\_model\_out\_tbl()} function
-from the \pkg{hubUtils} package. Here, we specify the task ID variables
-\texttt{forecast\ date} (when the forecast was made), \texttt{location},
-\texttt{horizon}, and \texttt{target}.
+ensembles from Zoltar \citep{reich_zoltar_2021}, a repository designed
+to archive forecasts created by the Reich Lab at UMass Amherst. Here, we
+only consider Flusight predictions in a quantile format from the
+2021-2022 and 2022-2023 seasons. These forecasts were stored in two data
+objects, split by season, called \texttt{flu\_forecasts-raw\_21-22.rds}
+and \texttt{flu\_forecasts-raw\_22-23.rds}. Forecasts must conform to
+hubverse standards to be fed into either of the ensembling functions, so
+we first transform the raw forecasts using \texttt{as\_model\_out\_tbl}
+function from the \pkg{hubUtils} package. Here, we specify the task ID
+variables \texttt{forecast\ date} (when the forecast was made),
+\texttt{location}, \texttt{horizon}, and \texttt{target}.
 
 \begin{verbatim}
 R> flu_forecasts_raw_21_22 <- readr::read_rds(
@@ -2092,24 +2092,46 @@ implement a variety of ensemble methods.
 \section{Summary and discussion}\label{sec-conclusions}
 
 Ensembles of independent models are a powerful tool to generate more
-accurate and more reliable forecasts of future outcomes than a single
+accurate and more reliable predictions of future outcomes than a single
 model alone. Here, we have demonstrated how to utilize
 \pkg{hubEnsembles}, a simple and flexible framework to combine
-individual model forecasts and create ensemble predictions. When using
-\pkg{hubEnsembles}, it is important to carefully choose an ensemble
-method that is well suited for the situation. Although there may not be
-a universal ``best'' method, matching the properties of a given ensemble
-method with the features of the component models will likely yield best
-results. For example, we showed for forecasts of seasonal influenza in
-the US, the quantile median ensemble performed best overall, but the
-linear pool method had advantages during periods of rapid change, when
-outlying component forecasts were likely more important. Notably, all
-ensemble methods outperformed the baseline model. These performance
-improvements from ensemble models motivate the use of a ``hub-based''
-approach to prediction for infectious diseases and in other fields.
-Fitting within the larger suite of ``hubverse'' tools that support such
-efforts, the \pkg{hubEnsembles} package provides important software
-infrastructure for leveraging the power of multi-model ensembles.
+individual model predictions into an ensemble.
+
+The \pkg{hubEnsembles} package is situated within the larger hubverse
+collection of open-source software and data tools to support
+collaborative modeling exercises. Collaborative hubs offer many
+benefits, including serving as a centralized entity to guide and elicit
+predictions from multiple independent models \citep{reich2022}. Given
+the increasing popularity of multi-model ensembles and collaborative
+hubs, there is a clear need for generalized data standards and software
+infrastructure to support these hubs. By addressing this need, the
+hubverse suite of tools can reduce duplicative efforts across existing
+hubs, support other communities engaged in collaborative efforts, and
+enable the adoption of multi-model approaches in new domains.
+
+When using \pkg{hubEnsembles}, it is important to carefully choose an
+ensemble method that is well suited for the situation. Although there
+may not be a universal ``best'' method, matching the properties of a
+given ensemble method with the features of the component models will
+likely yield best results \citep{howerton2023}. Our case study on
+seasonal influenza forecasts in the US demonstrates this point. The
+quantile median ensemble performed best overall for a range of metrics,
+including weighted interval score, mean absolute error, and prediction
+interval coverage. Yet, the linear pool method, which generates an
+ensemble with wider prediction intervals, demonstrated performance
+advantages during periods of rapid change, when outlying component
+forecasts were likely more important. Notably, all ensemble methods
+outperformed the baseline model. The performance improvements from
+ensemble models motivate the use of a ``hub-based'' approach to
+prediction for infectious diseases and in other fields.
+
+Ongoing development of the \pkg{hubEnsembles} package and the larger
+suite of hubverse tools will continue to support multi-model predictions
+in new ways, including for example supporting additional types of
+predictions and enabling cloud-based data storage. All such
+infrastructure will ultimately provide a comprehensive suite of
+open-source software tools for leveraging the power of collaborative
+hubs and multi-model ensembles.
 
 \section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}

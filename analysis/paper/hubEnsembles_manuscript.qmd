@@ -674,9 +674,10 @@ hubEnsembles::example_model_output |>
 #| echo: FALSE
 #| label: fig-plot-ex-mods-pmf
 #| fig-cap: "One example `pmf` forecast of incident influenza hospitalization
-#| intensity is shown for each of three models (panels). Each bar shows
-#| forecasts of horizon 0-3 weeks, and the darkness of the bar shows the
-#| hospitalization intensity bins (low, moderate, high, and very high)."
+#| intensity is shown for each of three models (panels). Each cell shows the
+#| forecasted probability of a given hospitalization intensity bin (low,
+#| moderate, high, and very high) for each forecast horizon (0-3 weeks ahead).
+#| Darker colors indicate higher forecasted probability."
 #| fig-width: 8
 #| fig-height: 4
 
@@ -695,17 +696,17 @@ model_outputs_plot_pmf <- hubEnsembles::example_model_output |>
 
 ggplot(
   data = model_outputs_plot_pmf,
-  aes(x = horizon, y = value, fill = model_id, alpha = output_type_id)
+  aes(x = horizon, y = output_type_id, fill = value)
 ) +
-  geom_bar(stat = "identity", position = "stack") +
+  geom_tile() + 
   facet_grid(cols = vars(model_id)) +
-  guides(fill = "none") +
-  scale_alpha_discrete(name = "hospitalization intensity") +
-  scale_fill_brewer(palette = "Set2") +
+  scale_alpha_discrete(name = "probability") +
+  scale_fill_distiller(palette = "YlOrBr", direction = 0, name = "bin probability") +
   scale_x_continuous(expand = c(0, 0), name = "horizon (weeks)") +
-  scale_y_continuous(expand = c(0, 0), name = "bin probability") +
+  scale_y_discrete(expand = c(0, 0), name = "hospitalization intensity") +
   theme_bw() +
   theme(
+    legend.key.width = unit(1,"cm"),
     legend.position = "bottom",
     panel.grid = element_blank()
   )

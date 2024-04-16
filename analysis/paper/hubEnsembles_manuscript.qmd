@@ -1137,25 +1137,13 @@ model_names <- c(
 
 flu_dates_21_22 <- as.Date("2022-01-24") + weeks(0:21)
 flu_dates_22_23 <- as.Date("2022-10-17") + weeks(0:30)
-flu_dates_off_season <- as.Date("2022-06-27") + weeks(0:15)
 all_flu_dates <- c(flu_dates_21_22, flu_dates_22_23)
 
-select_dates <- c(all_flu_dates[seq(1, 69, 4)], flu_dates_21_22[22] +
-                    lubridate::weeks(1:16))
 forecasts_ca <- flu_forecasts_ensembles |>
-  rbind(expand.grid(model_id = model_names[1:5],
-                    forecast_date = flu_dates_21_22[22] +
-                      lubridate::weeks(1:16),
-                    location = unique(flu_truth_all$location),
-                    horizon = 1:4,
-                    target = "wk ahead inc flu hosp",
-                    output_type = "quantile",
-                    output_type_id = c(0.01, 0.025, seq(0.05, 0.95, 0.5),
-                                       0.975, 0.99),
-                    value = NA) |>
-          dplyr::mutate(target_end_date = forecast_date +
-                          lubridate::weeks(horizon), .before = target)) |>
-  dplyr::filter(location == "06", forecast_date %in% select_dates) |>
+  dplyr::filter(
+    location == "06",
+    forecast_date %in% all_flu_dates[seq(1, 69, 4)]
+  ) |>
   dplyr::group_by(forecast_date) |>
   as_model_out_tbl()
 

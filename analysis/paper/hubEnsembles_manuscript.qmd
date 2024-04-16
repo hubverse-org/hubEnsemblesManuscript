@@ -1142,11 +1142,13 @@ all_flu_dates <- c(flu_dates_21_22, flu_dates_22_23)
 forecasts_ca <- flu_forecasts_ensembles |>
   dplyr::filter(
     location == "06",
-    forecast_date %in% all_flu_dates[seq(1, 69, 4)]
+    forecast_date %in% all_flu_dates[seq(1, 69, 4)] # dates once every 4 weeks
   ) |>
   dplyr::group_by(forecast_date) |>
   as_model_out_tbl()
 
+# Add non-forecasted weeks with NA value 
+# prevents erroneous line connecting seasons
 truth_ca <- flu_truth_all |>
   dplyr::filter(location == "06") |>
   rbind(expand.grid(
@@ -1158,6 +1160,8 @@ truth_ca <- flu_truth_all |>
     value = NA
   ))
 
+
+# Plot ensembles' forecasts only
 ca_plot_ensembles <-
   plot_step_ahead_model_output(
     forecasts_ca |> filter(model_id != "Flusight-baseline"),
@@ -1201,6 +1205,7 @@ ca_plot_ensembles <- ca_plot_ensembles +
     legend.position = "none"
   )
 
+# Plot separate baseline "facet"
 ca_plot_baseline <-
   plot_step_ahead_model_output(
     forecasts_ca |> filter(model_id == "Flusight-baseline"),
@@ -1230,11 +1235,12 @@ ca_plot_baseline <-
   theme(
     axis.title.x = element_blank(),
     axis.ticks.length.x = unit(0, "cm"),
-    axis.text.x = element_blank(), # element_text(vjust = 5, hjust = -0.2),
+    axis.text.x = element_blank(),
     axis.title.y = element_blank(),
     legend.position = "none"
   )
 
+# Plot all models on same graph (for scale comparison)
 ca_plot_all <-
   plot_step_ahead_model_output(
     forecasts_ca |> mutate(facet_name = "All models, same scale"),
@@ -1267,6 +1273,7 @@ ca_plot_all <-
     legend.position = "none"
   )
 
+# Assemble plots
 ((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
   theme_bw() +
   plot_layout(guides = "collect", heights = c(1, 2)) +
@@ -1293,6 +1300,7 @@ model_names <- c(model_names, "average target data")
 # model_colors <- c("#6BAED6", "#FD8D3C", "#74C476", "#9E9AC8", "#FB6A4A")
 model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
 
+# Summarize flu scores by horizon, forecast_date, and season
 flu_date_horizon_season_states <- flu_scores_all |>
   evaluate_flu_scores(
     grouping_variables = c(
@@ -1302,6 +1310,7 @@ flu_date_horizon_season_states <- flu_scores_all |>
     baseline_name = "Flusight-baseline", us_only = FALSE
   )
 
+# Plot truth data, faceted by season
 truth_states_2122 <- flu_truth_all |>
   plot_flu_truth(
     date_range = flu_dates_21_22[c(1, 22)],
@@ -1313,6 +1322,7 @@ truth_states_2223 <- flu_truth_all |>
     main = "Target Data 2022-23 (wk inc flu hosp)"
   )
 
+# Plot MAE by forecast_date, faceted by horizon and season
 mae_date_plot_states1_2223 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2022-2023") |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
@@ -1342,7 +1352,8 @@ mae_date_plot_states4_2122 <- flu_date_horizon_season_states |>
     y_var = "mae",
     main = "MAE 2021-2022, 4 week ahead"
   )
-  
+
+# Assemble plots into larger MAE figure
 truth_states_2122 + truth_states_2223 +
   mae_date_plot_states1_2122 + mae_date_plot_states1_2223 +
   mae_date_plot_states4_2122 + mae_date_plot_states4_2223 +
@@ -1362,7 +1373,7 @@ truth_states_2122 + truth_states_2223 +
 #| fig-width: 10
 #| fig-height: 12
 
-# WIS
+# Plot WIS by forecast_date, faceted by horizon and season
 wis_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
@@ -1393,6 +1404,7 @@ wis_date_plot_states4_2223 <- flu_date_horizon_season_states |>
     main = "WIS 2022-2023, 4 week ahead"
   )
 
+# Assemble plots into larger WIS figure
 truth_states_2122 + truth_states_2223 +
   wis_date_plot_states1_2122 + wis_date_plot_states1_2223 +
   wis_date_plot_states4_2122 + wis_date_plot_states4_2223 +
@@ -1412,7 +1424,7 @@ truth_states_2122 + truth_states_2223 +
 #| fig-width: 9
 #| fig-height: 12
 
-# 95% Coverage
+# Plot 95% coverage by forecast_date, faceted by horizon and season
 cov95_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
   plot_evaluated_scores_forecast_date(model_names, model_colors,
@@ -1447,6 +1459,7 @@ cov95_date_plot_states4_2223 <- flu_date_horizon_season_states |>
   ) +
   coord_cartesian(ylim = c(0, 1.05))
 
+# Assemble plots into larger 95% coverage figure
 truth_states_2122 + truth_states_2223 +
   cov95_date_plot_states1_2122 + cov95_date_plot_states1_2223 +
   cov95_date_plot_states4_2122 + cov95_date_plot_states4_2223 +

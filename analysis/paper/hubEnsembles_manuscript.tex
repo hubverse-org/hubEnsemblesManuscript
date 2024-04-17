@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, breakable, frame hidden, interior hidden, sharp corners, enhanced, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, sharp corners, enhanced, frame hidden, interior hidden, breakable]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -1286,8 +1286,8 @@ R> geometric_mean <- function(x) {
 +  return(prod(x)^(1 / n))
 +}
 R> 
-R> geometric_mean_ens <-
-+  hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
+R> geometric_mean_ens <- hubEnsembles::example_model_output |>
++  hubEnsembles::simple_ensemble(
 +    agg_fun = geometric_mean,
 +    model_id = "simple-ensemble-geometric"
 +  )
@@ -1358,16 +1358,12 @@ but give it less weight than the other forecasts.
 
 \begin{verbatim}
 R> model_weights <- data.frame(
-+  model_id = c(
-+    "MOBS-GLEAM_FLUH", "PSI-DICE",
-+    "simple_hub-baseline"
-+  ),
++  model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "simple_hub-baseline"),
 +  weight = c(0.4, 0.4, 0.2)
 +)
 R> 
-R> weighted_mean_ens <-
+R> weighted_mean_ens <- hubEnsembles::example_model_output |>
 +  hubEnsembles::simple_ensemble(
-+    hubEnsembles::example_model_output,
 +    weights = model_weights,
 +    model_id = "simple-ensemble-weighted-mean"
 +  )
@@ -1384,14 +1380,9 @@ includes \texttt{median} output type, so we exclude it from the
 calculation.
 
 \begin{verbatim}
-R> linear_pool_ens <-
-+  hubEnsembles::linear_pool(
-+    dplyr::filter(
-+      hubEnsembles::example_model_output,
-+      output_type != "median"
-+    ),
-+    model_id = "linear-pool"
-+  )
+R> linear_pool_ens <- hubEnsembles::example_model_output |>
++  dplyr::filter(output_type != "median") |>
++  hubEnsembles::linear_pool(model_id = "linear-pool")
 \end{verbatim}
 
 As described above, for \texttt{quantile} model outputs, the
@@ -1414,21 +1405,19 @@ output type, because the \texttt{simple\_ensemble} is computing a
 quantile average.
 
 \begin{verbatim}
-R> p1 <- dplyr::bind_rows(
-+  mean_ens,
-+  linear_pool_ens
-+) |>
+R> p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
 +  dplyr::filter(
 +    output_type == "pmf", reference_date == "2022-12-17",
 +    location == "US"
 +  ) |>
 +  dplyr::mutate(output_type_id = gsub("_", " ", output_type_id)) |>
-+  dplyr::mutate(output_type_id = factor(output_type_id,
-+    levels = c(
-+      "low", "moderate", "high",
-+      "very high"
-+    )
-+  )) |>
++  dplyr::mutate(
++    output_type_id = 
++      factor(
++        output_type_id,
++        levels = c("low", "moderate", "high", "very high")
++      )
++  ) |>
 +  ggplot(aes(x = output_type_id, y = value, fill = model_id)) +
 +  geom_bar(stat = "identity", position = "dodge") +
 +  facet_wrap(vars(horizon), labeller = label_both) +
@@ -1454,8 +1443,8 @@ R> model_output_plot <- dplyr::bind_rows(mean_ens, model_output_plot) |>
 +  dplyr::mutate(target_date = reference_date + horizon)
 R> target_data_plot <- hubEnsembles::example_target_data |>
 +  dplyr::filter(
-+    location == "US", time_idx >= "2022-11-01",
-+    time_idx <= "2023-03-01"
++    location == "US", 
++    time_idx >= "2022-11-01", time_idx <= "2023-03-01"
 +  )
 R> 
 R> p2 <-
@@ -1476,17 +1465,9 @@ R> l <- cowplot::get_legend(p1)
 R> 
 R> cowplot::plot_grid(
 +  cowplot::plot_grid(
-+    p1 +
-+      labs(
-+        subtitle =
-+          "example PMF output type"
-+      ) +
++    p1 + labs(subtitle = "example PMF output type") +
 +      theme(legend.position = "none"),
-+    p2 +
-+      labs(
-+        subtitle =
-+          "example quantile output type"
-+      ) +
++    p2 + labs(subtitle = "example quantile output type") +
 +      theme(legend.position = "none"),
 +    labels = LETTERS[1:2]
 +  ), l,
@@ -1573,10 +1554,7 @@ R> flu_forecasts_hubverse <- flu_forecasts_raw |>
 +    sep = "-",
 +    trim_to_task_ids = FALSE,
 +    hub_con = NULL,
-+    task_id_cols = c(
-+      "forecast_date", "location", "horizon",
-+      "target"
-+    ),
++    task_id_cols = c("forecast_date", "location", "horizon", "target"),
 +    remove_empty = TRUE
 +  )
 \end{verbatim}
@@ -1683,25 +1661,29 @@ R> flu_forecasts_hubverse <- dplyr::filter(
 +  model_id != "Flusight-baseline"
 +)
 R> 
-R> mean_ensemble <- hubEnsembles::simple_ensemble(flu_forecasts_hubverse,
+R> mean_ensemble <- flu_forecasts_hubverse |>
++  hubEnsembles::simple_ensemble(
 +  weights = NULL,
 +  agg_fun = "mean",
 +  model_id = "mean-ensemble"
 +)
 R> 
-R> median_ensemble <- hubEnsembles::simple_ensemble(flu_forecasts_hubverse,
+R> median_ensemble <- flu_forecasts_hubverse |>
++  hubEnsembles::simple_ensemble(
 +  weights = NULL,
 +  agg_fun = "median",
 +  model_id = "median-ensemble"
 +)
 R> 
-R> lp_normal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
+R> lp_normal <- flu_forecasts_hubverse |>
++  hubEnsembles::linear_pool(
 +  weights = NULL,
 +  n_samples = 1e5, model_id = "lp-normal",
 +  tail_dist = "norm"
 +)
 R> 
-R> lp_lognormal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
+R> lp_lognormal <- flu_forecasts_hubverse |>
++  hubEnsembles::linear_pool(
 +  weights = NULL,
 +  n_samples = 1e5,
 +  model_id = "lp-lognormal",
@@ -1832,28 +1814,18 @@ R> model_names <- c(
 R> 
 R> flu_dates_21_22 <- as.Date("2022-01-24") + weeks(0:21)
 R> flu_dates_22_23 <- as.Date("2022-10-17") + weeks(0:30)
-R> flu_dates_off_season <- as.Date("2022-06-27") + weeks(0:15)
 R> all_flu_dates <- c(flu_dates_21_22, flu_dates_22_23)
 R> 
-R> select_dates <- c(all_flu_dates[seq(1, 69, 4)], flu_dates_21_22[22] +
-+                    lubridate::weeks(1:16))
 R> forecasts_ca <- flu_forecasts_ensembles |>
-+  rbind(expand.grid(model_id = model_names[1:5],
-+                    forecast_date = flu_dates_21_22[22] +
-+                      lubridate::weeks(1:16),
-+                    location = unique(flu_truth_all$location),
-+                    horizon = 1:4,
-+                    target = "wk ahead inc flu hosp",
-+                    output_type = "quantile",
-+                    output_type_id = c(0.01, 0.025, seq(0.05, 0.95, 0.5),
-+                                       0.975, 0.99),
-+                    value = NA) |>
-+          dplyr::mutate(target_end_date = forecast_date +
-+                          lubridate::weeks(horizon), .before = target)) |>
-+  dplyr::filter(location == "06", forecast_date %in% select_dates) |>
++  dplyr::filter(
++    location == "06",
++    forecast_date %in% all_flu_dates[seq(1, 69, 4)] # dates once every 4 weeks
++  ) |>
 +  dplyr::group_by(forecast_date) |>
 +  as_model_out_tbl()
 R> 
+R> # Add non-forecasted weeks with NA value 
+R> # prevents erroneous line connecting seasons
 R> truth_ca <- flu_truth_all |>
 +  dplyr::filter(location == "06") |>
 +  rbind(expand.grid(
@@ -1865,6 +1837,8 @@ R> truth_ca <- flu_truth_all |>
 +    value = NA
 +  ))
 R> 
+R> 
+R> # Plot ensembles' forecasts only
 R> ca_plot_ensembles <-
 +  plot_step_ahead_model_output(
 +    forecasts_ca |> filter(model_id != "Flusight-baseline"),
@@ -1908,6 +1882,7 @@ R> ca_plot_ensembles <- ca_plot_ensembles +
 +    legend.position = "none"
 +  )
 R> 
+R> # Plot separate baseline "facet"
 R> ca_plot_baseline <-
 +  plot_step_ahead_model_output(
 +    forecasts_ca |> filter(model_id == "Flusight-baseline"),
@@ -1937,11 +1912,12 @@ R> ca_plot_baseline <-
 +  theme(
 +    axis.title.x = element_blank(),
 +    axis.ticks.length.x = unit(0, "cm"),
-+    axis.text.x = element_blank(), # element_text(vjust = 5, hjust = -0.2),
++    axis.text.x = element_blank(),
 +    axis.title.y = element_blank(),
 +    legend.position = "none"
 +  )
 R> 
+R> # Plot all models on same graph (for scale comparison)
 R> ca_plot_all <-
 +  plot_step_ahead_model_output(
 +    forecasts_ca |> mutate(facet_name = "All models, same scale"),
@@ -1974,6 +1950,7 @@ R> ca_plot_all <-
 +    legend.position = "none"
 +  )
 R> 
+R> # Assemble plots
 R> ((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
 +  theme_bw() +
 +  plot_layout(guides = "collect", heights = c(1, 2)) +
@@ -2140,7 +2117,8 @@ The authors thank all members of the hubverse community; the broader
 hubverse software infrastructure made this package possible. E. Howerton
 was supported by the Eberly College of Science Barbara McClintock
 Science Achievement Graduate Scholarship in Biology at the Pennsylvania
-State University. PLEASE ADD FUNDING HERE.
+State University. L. Contamin and H. Hochheiser were supported by NIGMS
+grant U24GM132013. PLEASE ADD FUNDING HERE.
 
 \section*{Consortium of Infectious Disease Modeling
 Hubs}\label{consortium-of-infectious-disease-modeling-hubs}

@@ -149,10 +149,7 @@ readr::read_rds(
     sep = "-",
     trim_to_task_ids = FALSE,
     hub_con = NULL,
-    task_id_cols = c(
-      "timezero", "location", "horizon",
-      "target"
-    ),
+    task_id_cols = c("timezero", "location", "horizon", "target"),
     remove_empty = TRUE
   ) |>
   dplyr::filter(
@@ -276,10 +273,7 @@ cdf_defined_on_quantiles <-
     value = c(
       qnorm(quantile_probs, mean1, sd1),
       qnorm(quantile_probs, mean2, sd2),
-      qnorm(
-        quantile_probs, mean(c(mean1, mean2)),
-        mean(c(sd1, sd2))
-      )
+      qnorm(quantile_probs, mean(c(mean1, mean2)), mean(c(sd1, sd2)))
     ),
     distribution = c(
       rep("A", length(quantile_probs)),
@@ -294,10 +288,7 @@ cdf_defined_on_values <-
     value = rep(x, 4),
     quantile = c(
       pnorm(x, mean1, sd1), pnorm(x, mean2, sd2),
-      rowMeans(cbind(
-        pnorm(x, mean1, sd1),
-        pnorm(x, mean2, sd2)
-      )),
+      rowMeans(cbind(pnorm(x, mean1, sd1), pnorm(x, mean2, sd2))),
       pnorm(x, mean(c(mean1, mean2)), mean(c(sd1, sd2)))
     ),
     distribution = c(
@@ -313,14 +304,8 @@ pdfs_defined_on_values <-
     prob = c(
       dnorm(x, mean = mean1, sd = sd1),
       dnorm(x, mean = mean2, sd = sd2),
-      rowMeans(cbind(
-        dnorm(x, mean = mean1, sd = sd1),
-        dnorm(x, mean = mean2, sd = sd2)
-      )),
-      dnorm(x,
-        mean = mean(c(mean1, mean2)),
-        sd = mean(c(sd1, sd2))
-      )
+      rowMeans(cbind(dnorm(x, mean1, sd1), dnorm(x, mean2, sd2))),
+      dnorm(x, mean(c(mean1, mean2)), mean(c(sd1, sd2)))
     ),
     distribution = c(
       rep("A", length(x)), rep("B", length(x)),
@@ -775,8 +760,8 @@ geometric_mean <- function(x) {
   return(prod(x)^(1 / n))
 }
 
-geometric_mean_ens <-
-  hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
+geometric_mean_ens <- hubEnsembles::example_model_output |>
+  hubEnsembles::simple_ensemble(
     agg_fun = geometric_mean,
     model_id = "simple-ensemble-geometric"
   )
@@ -832,16 +817,12 @@ We can weight the contributions of each model in the ensemble using the `weights
 ```{r}
 #| prompt: true
 model_weights <- data.frame(
-  model_id = c(
-    "MOBS-GLEAM_FLUH", "PSI-DICE",
-    "simple_hub-baseline"
-  ),
+  model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "simple_hub-baseline"),
   weight = c(0.4, 0.4, 0.2)
 )
 
-weighted_mean_ens <-
+weighted_mean_ens <- hubEnsembles::example_model_output |>
   hubEnsembles::simple_ensemble(
-    hubEnsembles::example_model_output,
     weights = model_weights,
     model_id = "simple-ensemble-weighted-mean"
   )
@@ -853,14 +834,9 @@ We can also generate a linear pool ensemble, or distributional mixture, using th
 
 ```{r}
 #| prompt: true
-linear_pool_ens <-
-  hubEnsembles::linear_pool(
-    dplyr::filter(
-      hubEnsembles::example_model_output,
-      output_type != "median"
-    ),
-    model_id = "linear-pool"
-  )
+linear_pool_ens <- hubEnsembles::example_model_output |>
+  dplyr::filter(output_type != "median") |>
+  hubEnsembles::linear_pool(model_id = "linear-pool")
 ```
 
 As described above, for `quantile` model outputs, the `linear_pool` function approximates the full probability distribution for each component prediction using the value-quantile pairs provided by that model, and then obtains quasi-random samples from that distributional estimate. The number of samples drawn from the distribution of each component model defaults to `1e4`, but this can be changed using the `n_samples` argument.
@@ -881,21 +857,19 @@ In @fig-plot-ex-quantile-and-linear-pool, we compare ensemble results generated 
 #| fig-width: 10
 #| fig-height: 4
 
-p1 <- dplyr::bind_rows(
-  mean_ens,
-  linear_pool_ens
-) |>
+p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
   dplyr::filter(
     output_type == "pmf", reference_date == "2022-12-17",
     location == "US"
   ) |>
   dplyr::mutate(output_type_id = gsub("_", " ", output_type_id)) |>
-  dplyr::mutate(output_type_id = factor(output_type_id,
-    levels = c(
-      "low", "moderate", "high",
-      "very high"
-    )
-  )) |>
+  dplyr::mutate(
+    output_type_id = 
+      factor(
+        output_type_id,
+        levels = c("low", "moderate", "high", "very high")
+      )
+  ) |>
   ggplot(aes(x = output_type_id, y = value, fill = model_id)) +
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(vars(horizon), labeller = label_both) +
@@ -921,8 +895,8 @@ model_output_plot <- dplyr::bind_rows(mean_ens, model_output_plot) |>
   dplyr::mutate(target_date = reference_date + horizon)
 target_data_plot <- hubEnsembles::example_target_data |>
   dplyr::filter(
-    location == "US", time_idx >= "2022-11-01",
-    time_idx <= "2023-03-01"
+    location == "US", 
+    time_idx >= "2022-11-01", time_idx <= "2023-03-01"
   )
 
 p2 <-
@@ -943,17 +917,9 @@ l <- cowplot::get_legend(p1)
 
 cowplot::plot_grid(
   cowplot::plot_grid(
-    p1 +
-      labs(
-        subtitle =
-          "example PMF output type"
-      ) +
+    p1 + labs(subtitle = "example PMF output type") +
       theme(legend.position = "none"),
-    p2 +
-      labs(
-        subtitle =
-          "example quantile output type"
-      ) +
+    p2 + labs(subtitle = "example quantile output type") +
       theme(legend.position = "none"),
     labels = LETTERS[1:2]
   ), l,
@@ -992,10 +958,7 @@ flu_forecasts_hubverse <- flu_forecasts_raw |>
     sep = "-",
     trim_to_task_ids = FALSE,
     hub_con = NULL,
-    task_id_cols = c(
-      "forecast_date", "location", "horizon",
-      "target"
-    ),
+    task_id_cols = c("forecast_date", "location", "horizon", "target"),
     remove_empty = TRUE
   )
 ```
@@ -1039,25 +1002,29 @@ flu_forecasts_hubverse <- dplyr::filter(
   model_id != "Flusight-baseline"
 )
 
-mean_ensemble <- hubEnsembles::simple_ensemble(flu_forecasts_hubverse,
+mean_ensemble <- flu_forecasts_hubverse |>
+  hubEnsembles::simple_ensemble(
   weights = NULL,
   agg_fun = "mean",
   model_id = "mean-ensemble"
 )
 
-median_ensemble <- hubEnsembles::simple_ensemble(flu_forecasts_hubverse,
+median_ensemble <- flu_forecasts_hubverse |>
+  hubEnsembles::simple_ensemble(
   weights = NULL,
   agg_fun = "median",
   model_id = "median-ensemble"
 )
 
-lp_normal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
+lp_normal <- flu_forecasts_hubverse |>
+  hubEnsembles::linear_pool(
   weights = NULL,
   n_samples = 1e5, model_id = "lp-normal",
   tail_dist = "norm"
 )
 
-lp_lognormal <- hubEnsembles::linear_pool(flu_forecasts_hubverse,
+lp_lognormal <- flu_forecasts_hubverse |>
+  hubEnsembles::linear_pool(
   weights = NULL,
   n_samples = 1e5,
   model_id = "lp-lognormal",
@@ -1303,10 +1270,7 @@ model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
 # Summarize flu scores by horizon, forecast_date, and season
 flu_date_horizon_season_states <- flu_scores_all |>
   evaluate_flu_scores(
-    grouping_variables = c(
-      "horizon", "forecast_date",
-      "season"
-    ),
+    grouping_variables = c("horizon", "forecast_date", "season"),
     baseline_name = "Flusight-baseline", us_only = FALSE
   )
 
@@ -1322,35 +1286,35 @@ truth_states_2223 <- flu_truth_all |>
     main = "Target Data 2022-23 (wk inc flu hosp)"
   )
 
-# Plot MAE by forecast_date, faceted by horizon and season
-mae_date_plot_states1_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 1,
-    y_var = "mae",
-    main = "MAE 2022-2023, 1 week ahead"
-  )
-mae_date_plot_states4_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 4,
-    y_var = "mae",
-    main = "MAE 2022-2023, 4 week ahead"
-  )
-
 mae_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 1,
-    y_var = "mae",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 1, y_var = "mae",
     main = "MAE 2021-2022, 1 week ahead"
   )
 mae_date_plot_states4_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 4,
-    y_var = "mae",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 4, y_var = "mae",
     main = "MAE 2021-2022, 4 week ahead"
+  )
+
+# Plot MAE by forecast_date, faceted by horizon and season
+mae_date_plot_states1_2223 <- flu_date_horizon_season_states |>
+  dplyr::filter(season == "2022-2023") |>
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 1, y_var = "mae",
+    main = "MAE 2022-2023, 1 week ahead"
+  )
+mae_date_plot_states4_2223 <- flu_date_horizon_season_states |>
+  dplyr::filter(season == "2022-2023") |>
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 4, y_var = "mae",
+    main = "MAE 2022-2023, 4 week ahead"
   )
 
 # Assemble plots into larger MAE figure
@@ -1376,31 +1340,31 @@ truth_states_2122 + truth_states_2223 +
 # Plot WIS by forecast_date, faceted by horizon and season
 wis_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 1,
-    y_var = "wis",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 1, y_var = "wis",
     main = "WIS 2021-2022, 1 week ahead"
   )
 wis_date_plot_states4_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 4,
-    y_var = "wis",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 4, y_var = "wis",
     main = "WIS 2021-2022, 4 week ahead"
   )
 
 wis_date_plot_states1_2223 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 1,
-    y_var = "wis",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 1, y_var = "wis",
     main = "WIS 2022-2023, 1 week ahead"
   )
 wis_date_plot_states4_2223 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 4,
-    y_var = "wis",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 4, y_var = "wis",
     main = "WIS 2022-2023, 4 week ahead"
   )
 
@@ -1427,34 +1391,34 @@ truth_states_2122 + truth_states_2223 +
 # Plot 95% coverage by forecast_date, faceted by horizon and season
 cov95_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 1,
-    y_var = "cov95",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 1, y_var = "cov95",
     main = "95% Coverage 2021-22, 1 week ahead"
   ) +
   coord_cartesian(ylim = c(0, 1.05))
 cov95_date_plot_states4_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 4,
-    y_var = "cov95",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 4, y_var = "cov95",
     main = "95% Coverage 2021-22, 4 week ahead"
   ) +
   coord_cartesian(ylim = c(0, 1.05))
 
 cov95_date_plot_states1_2223 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 1,
-    y_var = "cov95",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 1, y_var = "cov95",
     main = "95% Coverage 2022-23, 1 week ahead"
   ) +
   coord_cartesian(ylim = c(0, 1.05))
 cov95_date_plot_states4_2223 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(model_names, model_colors,
-    h = 4,
-    y_var = "cov95",
+  plot_evaluated_scores_forecast_date(
+    model_names, model_colors,
+    h = 4, y_var = "cov95",
     main = "95% Coverage 2022-23, 4 week ahead"
   ) +
   coord_cartesian(ylim = c(0, 1.05))

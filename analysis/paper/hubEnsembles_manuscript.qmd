@@ -142,7 +142,7 @@ readr::read_rds(
     sep = " ", convert = TRUE,
     into = c("horizon", "target"), extra = "merge"
   ) |>
-  as_model_out_tbl(
+  hubUtils::as_model_out_tbl(
     model_id_col = "model",
     output_type_col = "class",
     output_type_id_col = "quantile",
@@ -596,7 +596,6 @@ We can plot these forecasts and the target data using the `plot_step_ahead_model
 #| intervals. Gray points represent observed incident hospitalizations."
 #| fig-width: 8
 #| fig-height: 4
-
 model_outputs_plot <- hubExamples::forecast_outputs |>
   hubUtils::as_model_out_tbl() |>
   dplyr::filter(
@@ -663,7 +662,6 @@ hubExamples::forecast_outputs |>
 #| Darker colors indicate higher forecasted probability."
 #| fig-width: 8
 #| fig-height: 4
-
 model_outputs_plot_pmf <- hubExamples::forecast_outputs |>
   hubUtils::as_model_out_tbl() |>
   dplyr::filter(
@@ -671,6 +669,7 @@ model_outputs_plot_pmf <- hubExamples::forecast_outputs |>
     output_type %in% c("pmf"),
     reference_date == "2022-12-17"
   ) |>
+  # Reorder bin names to be in correct order
   dplyr::mutate(
     output_type_id = factor(output_type_id,
       levels = c("low", "moderate", "high", "very high")
@@ -855,6 +854,7 @@ In @fig-plot-ex-quantile-and-linear-pool, we compare ensemble results generated 
 #| fig-width: 10
 #| fig-height: 4
 
+# Generate plot of ensemble probability in each bin
 p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
   dplyr::filter(
     output_type == "pmf", reference_date == "2022-12-17",
@@ -880,10 +880,16 @@ p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
     panel.grid.major.x = element_blank()
   )
 
+# Create new data frame of ensemble output to be plotted
+# Use median results as point estimate in plot
+# Pull quantile == 0.5 results for linear pool and add them to the end of 
+# the data.frame as "median" output type (because linear_pool() does not
+# automatically provide median estimates)
 model_output_plot <- linear_pool_ens |>
   dplyr::filter(output_type_id == 0.5, target == "wk inc flu hosp") |>
   dplyr::mutate(output_type = "median", output_type_id = NA)
 model_output_plot <- dplyr::bind_rows(linear_pool_ens, model_output_plot)
+# Filter to desired forecasts
 model_output_plot <- dplyr::bind_rows(mean_ens, model_output_plot) |>
   dplyr::filter(
     location == "25",
@@ -913,8 +919,10 @@ p2 <-
   theme_bw() +
   labs(y = "incident hospitalizations")
 
+# Pull legend
 l <- cowplot::get_legend(p1)
 
+# Assemble plots
 cowplot::plot_grid(
   cowplot::plot_grid(
     p1 + labs(subtitle = "example PMF output type") +
@@ -1107,7 +1115,7 @@ forecasts_ca <- flu_forecasts_ensembles |>
     forecast_date %in% all_flu_dates[seq(1, 69, 4)] # dates once every 4 weeks
   ) |>
   dplyr::group_by(forecast_date) |>
-  as_model_out_tbl()
+  hubUtils::as_model_out_tbl()
 
 # Add non-forecasted weeks with NA value 
 # prevents erroneous line connecting seasons

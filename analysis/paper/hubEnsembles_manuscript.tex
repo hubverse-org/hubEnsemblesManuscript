@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, interior hidden, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, breakable, frame hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, interior hidden, enhanced]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -867,19 +867,6 @@ Table~\ref{tbl-example-forecasts}, we show only the median, the 50\%,
 and 90\% prediction intervals, although other intervals and
 \texttt{mean} forecasts are included in the example model output data.
 
-\begin{verbatim}
-R> hubExamples::forecast_outputs |>
-+  dplyr::filter(
-+    output_type %in% c("quantile", "median"),
-+    output_type_id %in% c(0.05, 0.25, 0.75, 0.75, 0.95, NA),
-+    reference_date == "2022-12-17",
-+    location == "25",
-+    horizon == 1
-+  ) |>
-+  dplyr::select(all_of(abbr_fc_col)) |>
-+  knitr::kable(col.names = formatted_fc_col)
-\end{verbatim}
-
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2169}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1928}}
@@ -945,16 +932,6 @@ forecasts post hoc. The forecast-specific task ID variables
 \texttt{reference\_date} and \texttt{horizon} are not relevant for the
 target data.
 
-\begin{verbatim}
-R> hubExamples::forecast_target_ts |>
-+  dplyr::filter(
-+    location == "25",
-+    date >= "2022-11-01",
-+    date <= "2023-02-01"
-+  ) |>
-+  knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
-\end{verbatim}
-
 \begin{longtable}[]{@{}llr@{}}
 
 \toprule\noalign{}
@@ -1000,7 +977,6 @@ R> model_outputs_plot <- hubExamples::forecast_outputs |>
 +    output_type %in% c("median", "mean", "quantile"),
 +    reference_date == "2022-12-17"
 +  )
-R> 
 R> target_data_plot <- hubExamples::forecast_target_ts |>
 +  dplyr::filter(
 +    location == "25",
@@ -1008,7 +984,6 @@ R> target_data_plot <- hubExamples::forecast_target_ts |>
 +    date <= "2023-02-01"
 +  ) |>
 +  dplyr::rename(value = observation)
-R> 
 R> hubVis::plot_step_ahead_model_output(
 +  model_output_data = model_outputs_plot,
 +  truth_data = target_data_plot,
@@ -1020,7 +995,7 @@ R> hubVis::plot_step_ahead_model_output(
 +  use_median_as_point = TRUE,
 +  x_col_name = "target_end_date", 
 +  x_truth_col_name = "date"
-+) +
++  ) +
 +  theme_bw() +
 +  labs(y = "incident hospitalizations")
 \end{verbatim}
@@ -1064,19 +1039,6 @@ incidence is forecasted to decrease over the horizon
 (Figure~\ref{fig-plot-ex-mods}), and correspondingly, there is lower
 probability of ``high'' and ``very high'' hospitalization intensity for
 later horizons (Figure~\ref{fig-plot-ex-mods-pmf}).
-
-\begin{verbatim}
-R> hubExamples::forecast_outputs |>
-+  dplyr::filter(
-+    output_type %in% c("pmf"),
-+    reference_date == "2022-12-17",
-+    location == "25",
-+    horizon == 1
-+  ) |>
-+  dplyr::mutate(value = round(value, 2)) |>
-+  dplyr::select(all_of(abbr_fc_col)) |>
-+  knitr::kable(col.names = formatted_fc_col)
-\end{verbatim}
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1935}}
@@ -1177,23 +1139,6 @@ task ID variables, output type, output type ID, and value. We also use
 ensemble in the resulting model output; if not specified, the default
 will be ``hub-ensemble''.
 
-\begin{verbatim}
-R> mean_ens |>
-+  dplyr::filter(
-+    output_type %in% c("quantile", "median", "pmf"),
-+    output_type_id %in% c(
-+      0.025, 0.25, 0.75, 0.975, NA,
-+      "low", "moderate", "high", "very high"
-+    ),
-+    reference_date == "2022-12-17",
-+    location == "25",
-+    horizon == 1
-+  ) |>
-+  dplyr::mutate(value = round(value, 2)) |>
-+  dplyr::select(all_of(abbr_fc_col)) |>
-+  knitr::kable(col.names = formatted_fc_col)
-\end{verbatim}
-
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2188}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2708}}
@@ -1274,7 +1219,6 @@ R> geometric_mean <- function(x) {
 +  n <- length(x)
 +  return(prod(x)^(1 / n))
 +}
-R> 
 R> geometric_mean_ens <- hubExamples::forecast_outputs |>
 +  hubEnsembles::simple_ensemble(
 +    agg_fun = geometric_mean,
@@ -1287,40 +1231,7 @@ different resulting ensembles. The median point estimates, 50\%
 prediction intervals, and 90\% prediction intervals in
 Figure~\ref{fig-plot-ensembles} demonstrate this.
 
-\begin{verbatim}
-R> model_output_plot <- dplyr::bind_rows(
-+  mean_ens, median_ens,
-+  geometric_mean_ens
-+) |>
-+  dplyr::filter(
-+    location == "25",
-+    output_type %in% c("median", "mean", "quantile"),
-+    reference_date == "2022-12-17"
-+  ) |>
-+  dplyr::mutate(target_date = reference_date + horizon)
-R> 
-R> target_data_plot <- hubExamples::forecast_target_ts |>
-+  dplyr::filter(
-+    location == "25", date >= "2022-11-01",
-+    date <= "2023-03-01"
-+  ) |>
-+  dplyr::rename(value = observation)
-R> 
-R> hubVis::plot_step_ahead_model_output(
-+  model_output_data = model_output_plot,
-+  truth_data = target_data_plot,
-+  use_median_as_point = TRUE,
-+  interactive = FALSE,
-+  intervals = c(0.5, 0.90),
-+  show_legend = TRUE,
-+  x_col_name = "target_end_date", 
-+  x_truth_col_name = "date"
-+) +
-+  theme_bw() +
-+  labs(y = "incident hospitalizations")
-\end{verbatim}
-
-\begin{figure}[H]
+\begin{figure}
 
 \centering{
 
@@ -1352,7 +1263,6 @@ R> model_weights <- data.frame(
 +  model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "simple_hub-baseline"),
 +  weight = c(0.4, 0.4, 0.2)
 +)
-R> 
 R> weighted_mean_ens <- hubExamples::forecast_outputs |>
 +  hubEnsembles::simple_ensemble(
 +    weights = model_weights,
@@ -1395,81 +1305,7 @@ the linear pool ensemble method. This is not the case for the quantile
 output type, because the \texttt{simple\_ensemble} is computing a
 quantile average.
 
-\begin{verbatim}
-R> p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
-+  dplyr::filter(
-+    output_type == "pmf", reference_date == "2022-12-17",
-+    location == "25"
-+  ) |>
-+  dplyr::mutate(output_type_id = gsub("_", " ", output_type_id)) |>
-+  dplyr::mutate(
-+    output_type_id = 
-+      factor(
-+        output_type_id,
-+        levels = c("low", "moderate", "high", "very high")
-+      )
-+  ) |>
-+  ggplot(aes(x = output_type_id, y = value, fill = model_id)) +
-+  geom_bar(stat = "identity", position = "dodge") +
-+  facet_wrap(vars(horizon), labeller = label_both) +
-+  labs(x = "incident hospitalization intensity", y = "probability") +
-+  scale_fill_brewer(palette = "Set1") +
-+  theme_bw() +
-+  theme(
-+    legend.position = "bottom", legend.title = element_blank(),
-+    strip.background = element_blank(), strip.placement = "outside",
-+    panel.grid.major.x = element_blank()
-+  )
-R> 
-R> model_output_plot <- linear_pool_ens |>
-+  dplyr::filter(output_type_id == 0.5, target == "wk inc flu hosp") |>
-+  dplyr::mutate(output_type = "median", output_type_id = NA)
-R> model_output_plot <- dplyr::bind_rows(linear_pool_ens, model_output_plot)
-R> model_output_plot <- dplyr::bind_rows(mean_ens, model_output_plot) |>
-+  dplyr::filter(
-+    location == "25",
-+    output_type %in% c("median", "mean", "quantile"),
-+    reference_date == "2022-12-17"
-+  ) |>
-+  dplyr::mutate(target_date = reference_date + horizon)
-R> target_data_plot <- hubExamples::forecast_target_ts |>
-+  dplyr::filter(
-+    location == "25", 
-+    date >= "2022-11-01", date <= "2023-03-01"
-+  ) |>
-+  dplyr::rename(value = observation)
-R> 
-R> p2 <-
-+  hubVis::plot_step_ahead_model_output(
-+    model_output_data = model_output_plot,
-+    truth_data = target_data_plot,
-+    use_median_as_point = TRUE,
-+    interactive = FALSE,
-+    intervals = c(0.5, 0.9),
-+    pal_color = "Set1",
-+    show_legend = TRUE,
-+    x_col_name = "target_end_date", 
-+    x_truth_col_name = "date"
-+  ) +
-+  theme_bw() +
-+  labs(y = "incident hospitalizations")
-R> 
-R> l <- cowplot::get_legend(p1)
-R> 
-R> cowplot::plot_grid(
-+  cowplot::plot_grid(
-+    p1 + labs(subtitle = "example PMF output type") +
-+      theme(legend.position = "none"),
-+    p2 + labs(subtitle = "example quantile output type") +
-+      theme(legend.position = "none"),
-+    labels = LETTERS[1:2]
-+  ), l,
-+  ncol = 1,
-+  rel_heights = c(0.95, 0.05)
-+)
-\end{verbatim}
-
-\begin{figure}[H]
+\begin{figure}
 
 \centering{
 
@@ -1495,8 +1331,7 @@ hospitalizations}\label{sec-flu}
 
 To demonstrate the utility of the \pkg{hubEnsembles} package and the
 differences between the two ensembling functions, we examine a second
-set of weekly US influenza hospitalizations forecasts which were
-generated in real time.
+set of weekly influenza hospitalizations forecasts for the US.
 
 Since 2013, the US Centers for Disease Control and Prevention (CDC) has
 been soliciting forecasts of seasonal influenza from modeling teams
@@ -1536,7 +1371,6 @@ R> flu_forecasts_raw_22_23 <- readr::read_rds(
 +)
 R> flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22,
 +                           dplyr::select(flu_forecasts_raw_22_23, -season))
-R> 
 R> flu_forecasts_hubverse <- flu_forecasts_raw |>
 +  dplyr::rename(target = target_long) |>
 +  as_model_out_tbl(
@@ -1576,21 +1410,6 @@ for the forecasts are always non-negative. In
 Table~\ref{tbl-case-study-flu-forecasts}, we provide an example of these
 predictions, showing select quantiles from a single model, forecast
 date, horizon, and location.
-
-\begin{verbatim}
-R> readr::read_rds(
-+  here::here("analysis/data/raw_data/flu_forecasts-small.rds")
-+) |>
-+  dplyr::filter(
-+    model_id == "UMass-trends_ensemble",
-+    forecast_date == "2023-05-15",
-+    location == "06",
-+    horizon == 1,
-+    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
-+  ) |>
-+  dplyr::select(all_of(abbr_fc_col)) |>
-+  knitr::kable(col.names = formatted_fc_col)
-\end{verbatim}
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
@@ -1644,37 +1463,34 @@ have been omitted for brevity.}
 \end{longtable}
 
 Next, we combine the component model outputs to generate predictions
-from each ensemble model. The resulting ensemble forecasts will have the
-same task ID variables, model output specifications, and general data
-set features (albeit for 4 total models instead of 42).
+from each ensemble model. We begin by excluding the baseline model from
+the set of predictions that will be combined. Then, we create one object
+to store the ensemble results generated from each method we are
+interested in comparing.
 
 \begin{verbatim}
 R> flu_forecasts_hubverse <- dplyr::filter(
 +  flu_forecasts_hubverse,
 +  model_id != "Flusight-baseline"
 +)
-R> 
 R> mean_ensemble <- flu_forecasts_hubverse |>
 +  hubEnsembles::simple_ensemble(
 +  weights = NULL,
 +  agg_fun = "mean",
 +  model_id = "mean-ensemble"
 +)
-R> 
 R> median_ensemble <- flu_forecasts_hubverse |>
 +  hubEnsembles::simple_ensemble(
 +  weights = NULL,
 +  agg_fun = "median",
 +  model_id = "median-ensemble"
 +)
-R> 
 R> lp_normal <- flu_forecasts_hubverse |>
 +  hubEnsembles::linear_pool(
 +  weights = NULL,
 +  n_samples = 1e5, model_id = "lp-normal",
 +  tail_dist = "norm"
 +)
-R> 
 R> lp_lognormal <- flu_forecasts_hubverse |>
 +  hubEnsembles::linear_pool(
 +  weights = NULL,
@@ -1799,162 +1615,7 @@ California following the 2022-23 season peak on December 5, 2022. Here
 the quantile mean predicted a continued increase in hospitalizations, at
 a steeper slope than the other ensemble methods.
 
-\begin{verbatim}
-R> model_names <- c(
-+  "Flusight-baseline", "lp-lognormal", "lp-normal",
-+  "mean-ensemble", "median-ensemble"
-+)
-R> 
-R> flu_dates_21_22 <- as.Date("2022-01-24") + weeks(0:21)
-R> flu_dates_22_23 <- as.Date("2022-10-17") + weeks(0:30)
-R> all_flu_dates <- c(flu_dates_21_22, flu_dates_22_23)
-R> 
-R> forecasts_ca <- flu_forecasts_ensembles |>
-+  dplyr::filter(
-+    location == "06",
-+    forecast_date %in% all_flu_dates[seq(1, 69, 4)] # dates once every 4 weeks
-+  ) |>
-+  dplyr::group_by(forecast_date) |>
-+  as_model_out_tbl()
-R> 
-R> # Add non-forecasted weeks with NA value 
-R> # prevents erroneous line connecting seasons
-R> truth_ca <- flu_truth_all |>
-+  dplyr::filter(location == "06") |>
-+  rbind(expand.grid(
-+    model = "flu-truth",
-+    target_variable = "inc flu hosp",
-+    target_end_date = flu_dates_21_22[22] +
-+      lubridate::weeks(1:16),
-+    location = unique(flu_truth_all$location),
-+    value = NA
-+  ))
-R> 
-R> 
-R> # Plot ensembles' forecasts only
-R> ca_plot_ensembles <-
-+  plot_step_ahead_model_output(
-+    forecasts_ca |> filter(model_id != "Flusight-baseline"),
-+    truth_ca,
-+    use_median_as_point = TRUE,
-+    show_plot = FALSE,
-+    x_col_name = "target_end_date",
-+    x_truth_col_name = "target_end_date",
-+    show_legend = FALSE,
-+    facet = "model_id",
-+    facet_scales = "free_y",
-+    facet_nrow = 3,
-+    interactive = FALSE,
-+    pal_color = "Set2",
-+    fill_transparency = 0.45,
-+    intervals = c(0.5, 0.95),
-+    title = NULL,
-+    group = "forecast_date"
-+  )
-R> 
-R> ca_plot_ensembles <- ca_plot_ensembles +
-+  scale_x_date(
-+    name = NULL, limits = c(
-+      as.Date("2022-01-01"),
-+      as.Date("2023-06-08")
-+    ),
-+    date_breaks = "4 months", date_labels = "%b '%y"
-+  ) +
-+  scale_color_manual(
-+    breaks = model_names[2:5],
-+    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
-+  ) +
-+  scale_fill_manual(
-+    breaks = model_names[2:5],
-+    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
-+  ) +
-+  theme(
-+    axis.ticks.length.x = unit(0.5, "cm"),
-+    axis.text.x = element_text(vjust = 7, hjust = -0.2),
-+    axis.title.y = element_blank(),
-+    legend.position = "none"
-+  )
-R> 
-R> # Plot separate baseline "facet"
-R> ca_plot_baseline <-
-+  plot_step_ahead_model_output(
-+    forecasts_ca |> filter(model_id == "Flusight-baseline"),
-+    truth_ca,
-+    use_median_as_point = TRUE,
-+    show_plot = TRUE,
-+    x_col_name = "target_end_date",
-+    x_truth_col_name = "target_end_date",
-+    show_legend = FALSE,
-+    facet = "model_id",
-+    facet_scales = "free_y",
-+    facet_nrow = 1,
-+    interactive = FALSE,
-+    fill_transparency = 0.45,
-+    intervals = c(0.5, 0.95),
-+    title = NULL,
-+    group = "forecast_date"
-+  ) +
-+  scale_x_date(
-+    name = NULL, limits = c(
-+      as.Date("2022-01-01"),
-+      as.Date("2023-06-08")
-+    ),
-+    date_breaks = "4 months", date_labels = "%b '%y"
-+  ) +
-+  theme_bw() +
-+  theme(
-+    axis.title.x = element_blank(),
-+    axis.ticks.length.x = unit(0, "cm"),
-+    axis.text.x = element_blank(),
-+    axis.title.y = element_blank(),
-+    legend.position = "none"
-+  )
-R> 
-R> # Plot all models on same graph (for scale comparison)
-R> ca_plot_all <-
-+  plot_step_ahead_model_output(
-+    forecasts_ca |> mutate(facet_name = "All models, same scale"),
-+    truth_ca,
-+    use_median_as_point = TRUE,
-+    show_plot = TRUE,
-+    x_col_name = "target_end_date",
-+    x_truth_col_name = "target_end_date",
-+    show_legend = FALSE,
-+    facet = "facet_name",
-+    interactive = FALSE,
-+    fill_transparency = 0.45,
-+    intervals = c(0.5, 0.95),
-+    title = NULL,
-+    group = "forecast_date"
-+  ) +
-+  scale_x_date(
-+    name = NULL, limits = c(
-+      as.Date("2022-01-01"),
-+      as.Date("2023-06-08")
-+    ),
-+    date_breaks = "4 months", date_labels = "%b '%y"
-+  ) +
-+  theme_bw() +
-+  theme(
-+    axis.title.x = element_blank(),
-+    axis.text.x = element_blank(),
-+    axis.ticks.length.x = unit(0, "cm"),
-+    axis.title.y = element_blank(),
-+    legend.position = "none"
-+  )
-R> 
-R> # Assemble plots
-R> ((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
-+  theme_bw() +
-+  plot_layout(guides = "collect", heights = c(1, 2)) +
-+  plot_annotation(title = paste0(
-+    "Weekly Incident ",
-+    "Hospitalizations for Influenza ",
-+    "in California"
-+  ))
-\end{verbatim}
-
-\begin{figure}[H]
+\begin{figure}
 
 \centering{
 

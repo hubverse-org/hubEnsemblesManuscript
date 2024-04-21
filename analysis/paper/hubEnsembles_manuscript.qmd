@@ -548,7 +548,7 @@ The model output data includes `quantile`, `mean` and `median` forecasts of futu
 
 ```{r, cols.print=12}
 #| label: tbl-example-forecasts
-#| prompt: true
+#| echo: false
 #| tbl-cap: "Example model output for forecasts of incident influenza
 #| hospitalizations. A subset of example model output is shown: 1-week ahead
 #| quantile forecasts made on 2022-12-17 for Massachusetts from three distinct
@@ -572,7 +572,7 @@ We also have corresponding target data included in the [hubExamples]{.pkg} packa
 
 ```{r, cols.print=13}
 #| label: tbl-example-target-data
-#| prompt: true
+#| echo: false
 #| tbl-cap: "Example target data for incident influenza hospitalizations. This
 #| table includes target data from 2022-11-01 and 2023-02-01. This target data
 #| is provided in the [hubExamples]{.pkg} package."
@@ -604,7 +604,6 @@ model_outputs_plot <- hubExamples::forecast_outputs |>
     output_type %in% c("median", "mean", "quantile"),
     reference_date == "2022-12-17"
   )
-
 target_data_plot <- hubExamples::forecast_target_ts |>
   dplyr::filter(
     location == "25",
@@ -612,7 +611,6 @@ target_data_plot <- hubExamples::forecast_target_ts |>
     date <= "2023-02-01"
   ) |>
   dplyr::rename(value = observation)
-
 hubVis::plot_step_ahead_model_output(
   model_output_data = model_outputs_plot,
   truth_data = target_data_plot,
@@ -624,7 +622,7 @@ hubVis::plot_step_ahead_model_output(
   use_median_as_point = TRUE,
   x_col_name = "target_end_date", 
   x_truth_col_name = "date"
-) +
+  ) +
   theme_bw() +
   labs(y = "incident hospitalizations")
 ```
@@ -635,7 +633,7 @@ We show a representative example of the hospitalization intensity category forec
 
 ```{r, cols.print=9}
 #| label: tbl-example-forecasts-pmf
-#| prompt: true
+#| echo: false
 #| tbl-cap: "Example `pmf` model output for forecasts of incident influenza
 #| hospitalization intensity. A subset of example model output is shown: 1-week
 #| ahead pmf forecasts made on 2022-12-17 for Massachusetts from three distinct
@@ -714,7 +712,7 @@ The resulting model output has the same structure as the original model output d
 
 ```{r, rows.print = 9}
 #| label: tbl-mean-ensemble
-#| prompt: true
+#| echo: false
 #| tbl-cap: "Mean ensemble model output. The values in the `model_id` column are
 #| determined by the argument `simple_ensemble(..., model_id = )`. A subset of
 #| ensemble model output is shown: 1-week ahead pmf forecasts made on 2022-12-17
@@ -759,7 +757,6 @@ geometric_mean <- function(x) {
   n <- length(x)
   return(prod(x)^(1 / n))
 }
-
 geometric_mean_ens <- hubExamples::forecast_outputs |>
   hubEnsembles::simple_ensemble(
     agg_fun = geometric_mean,
@@ -771,7 +768,7 @@ As expected, the mean, median, and geometric mean each give us slightly differen
 
 ```{r plot-ensembles}
 #| label: fig-plot-ensembles
-#| prompt: true
+#| echo: false
 #| fig-cap: "Three different ensembles for weekly incident influenza
 #| hospitalizations in Massachusetts. Each ensemble combines individual
 #| predictions from the example hub (@fig-plot-ex-mods) using a different
@@ -822,7 +819,6 @@ model_weights <- data.frame(
   model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "simple_hub-baseline"),
   weight = c(0.4, 0.4, 0.2)
 )
-
 weighted_mean_ens <- hubExamples::forecast_outputs |>
   hubEnsembles::simple_ensemble(
     weights = model_weights,
@@ -847,7 +843,7 @@ In @fig-plot-ex-quantile-and-linear-pool, we compare ensemble results generated 
 
 ```{r plot-ex-quantile-and-linear-pool}
 #| label: fig-plot-ex-quantile-and-linear-pool
-#| prompt: true
+#| echo: false
 #| fig-cap: "Comparison of results from `simple_ensemble` (blue) and `linear
 #| pool` (red). (Panel A) Ensemble predictions of Massachusetts incident
 #| influenza hospitalization intensity (classified as low, moderate, high, or
@@ -951,7 +947,6 @@ flu_forecasts_raw_22_23 <- readr::read_rds(
 )
 flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22,
                            dplyr::select(flu_forecasts_raw_22_23, -season))
-
 flu_forecasts_hubverse <- flu_forecasts_raw |>
   dplyr::rename(target = target_long) |>
   as_model_out_tbl(
@@ -975,7 +970,7 @@ In both seasons, forecasts were made for the same locations (the 50 states, Wash
 
 ```{r, eval=TRUE}
 #| label: tbl-case-study-flu-forecasts
-#| prompt: true
+#| echo: false
 #| tbl-cap: "An example prediction of weekly incident influenza
 #| hospitalizations. The example model output was made on May 15, 2023 for
 #| California at the 1 week ahead horizon. The forecast was generated during
@@ -996,7 +991,7 @@ readr::read_rds(
   knitr::kable(col.names = formatted_fc_col)
 ```
 
-Next, we combine the component model outputs to generate predictions from each ensemble model. The resulting ensemble forecasts will have the same task ID variables, model output specifications, and general data set features (albeit for 4 total models instead of 42).
+Next, we combine the component model outputs to generate predictions from each ensemble model. We begin by excluding the baseline model from the set of predictions that will be combined. Then, we create one object to store the ensemble results generated from each method we are interested in comparing.
 
 ```{r construct ensembles, eval=FALSE}
 #| prompt: true
@@ -1005,28 +1000,24 @@ flu_forecasts_hubverse <- dplyr::filter(
   flu_forecasts_hubverse,
   model_id != "Flusight-baseline"
 )
-
 mean_ensemble <- flu_forecasts_hubverse |>
   hubEnsembles::simple_ensemble(
   weights = NULL,
   agg_fun = "mean",
   model_id = "mean-ensemble"
 )
-
 median_ensemble <- flu_forecasts_hubverse |>
   hubEnsembles::simple_ensemble(
   weights = NULL,
   agg_fun = "median",
   model_id = "median-ensemble"
 )
-
 lp_normal <- flu_forecasts_hubverse |>
   hubEnsembles::linear_pool(
   weights = NULL,
   n_samples = 1e5, model_id = "lp-normal",
   tail_dist = "norm"
 )
-
 lp_lognormal <- flu_forecasts_hubverse |>
   hubEnsembles::linear_pool(
   weights = NULL,
@@ -1092,7 +1083,7 @@ Plots of the models' forecasts can aid our understanding about the origin of the
 
 ```{r plot-forecasts-hubVis, warning=FALSE, message=FALSE}
 #| label: fig-plot-forecasts-hubVis
-#| prompt: true
+#| echo: false
 #| fig-cap: "One to four week ahead forecasts for select dates plotted against
 #| target data for California. The first panel shows all models on the same 
 #| scale. All other panels show forecasts for each individual model, with

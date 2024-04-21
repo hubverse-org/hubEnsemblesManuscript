@@ -934,7 +934,7 @@ cowplot::plot_grid(
 
 ## Case study: Weekly incident flu hospitalizations {#sec-flu}
 
-To demonstrate the utility of the [hubEnsembles]{.pkg} package and the differences between the two ensembling functions, we examine a second set of weekly US influenza hospitalizations forecasts which were generated in real time.
+To demonstrate the utility of the [hubEnsembles]{.pkg} package and the differences between the two ensembling functions, we examine a second set of weekly influenza hospitalizations forecasts for the US.
 
 Since 2013, the US Centers for Disease Control and Prevention (CDC) has been soliciting forecasts of seasonal influenza from modeling teams through a collaborative challenge called FluSight [@cdc_flusight]. We use a subset of these predictions to create four equally-weighted ensembles with `simple_ensemble()` and `linear_pool()` and compare the resulting ensembles' performance. The ensembling methods chosen for this case study consist of a quantile (arithmetic) mean, a quantile median, a linear pool with normal tails, and a linear pool with lognormal tails. Note that only a select portion of the code is shown in this manuscript for brevity, although all the functions and scripts used to generate the case study results can be found in the associated GitHub repository (<https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript>).
 

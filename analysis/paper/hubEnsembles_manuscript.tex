@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, sharp corners, frame hidden, borderline west={3pt}{0pt}{shadecolor}, interior hidden, boxrule=0pt, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, interior hidden, enhanced]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -473,29 +473,29 @@ the US.}
 \end{longtable}
 
 Alternatively, longer-term scenario projections may require different
-task ID columns. For example, projections of cumulative COVID-19 deaths
-in the US at different locations, amounts of time in the future, and
-under different assumed conditions may use a \texttt{target} column of
-``cum death'', a \texttt{location} column specifying the location being
+task ID columns. For example, projections of incident COVID-19 cases in
+the US at different locations, amounts of time in the future, and under
+different assumed conditions may use a \texttt{target} column of ``cum
+death'', a \texttt{location} column specifying the location being
 predicted, an \texttt{origin\_date} column specifying the date on which
 the projections were made, a \texttt{horizon} column describing the
 number of steps ahead that the projection is predicting relative to the
 \texttt{origin\_date}, and a \texttt{scenario\_id} column denoting the
 future conditions that were modeled and are projected to result in the
-specified number of cumulative deaths
-(Table~\ref{tbl-example-scenarios}). Different modeling efforts may use
-different sets of task ID columns and values to specify their prediction
-goals. Additional examples of task ID variables are available on the
-hubverse documentation website \citep{hubverse_docs}.
+specified number of incident cases (Table~\ref{tbl-example-scenarios}).
+Different modeling efforts may use different sets of task ID columns and
+values to specify their prediction goals. Additional examples of task ID
+variables are available on the hubverse documentation website
+\citep{hubverse_docs}.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1778}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1111}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1000}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1111}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1556}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1556}}
   >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1889}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1000}}@{}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1111}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -517,41 +517,40 @@ hubverse documentation website \citep{hubverse_docs}.
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-HUBuni-simexamp & cum death & 26 & A-2021-03-05 & quantile & 0.25 &
-571104.0 \\
-HUBuni-simexamp & cum death & 26 & A-2021-03-05 & quantile & 0.50 &
-574478.0 \\
-HUBuni-simexamp & cum death & 26 & A-2021-03-05 & quantile & 0.75 &
-578958.0 \\
-HUBuni-simexamp & cum death & 26 & B-2021-03-05 & quantile & 0.25 &
-579960.2 \\
-HUBuni-simexamp & cum death & 26 & B-2021-03-05 & quantile & 0.50 &
-584210.0 \\
-HUBuni-simexamp & cum death & 26 & B-2021-03-05 & quantile & 0.75 &
-588643.5 \\
-HUBuni-simexamp & cum death & 26 & C-2021-03-05 & quantile & 0.25 &
-630991.8 \\
-HUBuni-simexamp & cum death & 26 & C-2021-03-05 & quantile & 0.50 &
-640293.0 \\
-HUBuni-simexamp & cum death & 26 & C-2021-03-05 & quantile & 0.75 &
-650513.2 \\
-HUBuni-simexamp & cum death & 26 & D-2021-03-05 & quantile & 0.25 &
-675736.0 \\
-HUBuni-simexamp & cum death & 26 & D-2021-03-05 & quantile & 0.50 &
-688469.0 \\
-HUBuni-simexamp & cum death & 26 & D-2021-03-05 & quantile & 0.75 &
-700861.5 \\
+HUBuni-simexamp & inc case & 26 & A-2021-03-05 & quantile & 0.25 &
+1147.00 \\
+HUBuni-simexamp & inc case & 26 & A-2021-03-05 & quantile & 0.50 &
+1516.00 \\
+HUBuni-simexamp & inc case & 26 & A-2021-03-05 & quantile & 0.75 &
+1929.00 \\
+HUBuni-simexamp & inc case & 26 & B-2021-03-05 & quantile & 0.25 &
+4241.75 \\
+HUBuni-simexamp & inc case & 26 & B-2021-03-05 & quantile & 0.50 &
+4952.50 \\
+HUBuni-simexamp & inc case & 26 & B-2021-03-05 & quantile & 0.75 &
+6002.25 \\
+HUBuni-simexamp & inc case & 26 & C-2021-03-05 & quantile & 0.25 &
+32478.75 \\
+HUBuni-simexamp & inc case & 26 & C-2021-03-05 & quantile & 0.50 &
+38594.50 \\
+HUBuni-simexamp & inc case & 26 & C-2021-03-05 & quantile & 0.75 &
+44975.50 \\
+HUBuni-simexamp & inc case & 26 & D-2021-03-05 & quantile & 0.25 &
+85811.75 \\
+HUBuni-simexamp & inc case & 26 & D-2021-03-05 & quantile & 0.50 &
+99841.50 \\
+HUBuni-simexamp & inc case & 26 & D-2021-03-05 & quantile & 0.75 &
+113963.50 \\
 
 
 \caption{\label{tbl-example-scenarios}Example of scenario projections
-for cumulative COVID-19 deaths, formatted according to hubverse
-standards. Quantile predictions for the median and 50\% prediction
-intervals from a single model are shown for four distinct scenarios. The
+for incident COVID-19 cases, formatted according to hubverse standards.
+Quantile predictions for the median and 50\% prediction intervals from a
+single model are shown for four distinct scenarios. The
 \texttt{location} and \texttt{origin\_date} columns have been omitted
 for brevity; all forecasts in this example were made on 2021-03-07 for
-the US. This example is a subset of the
-\texttt{example-complex-scenario-hub} data provided by the
-hubverse\citep{hubverse_docs}.}
+the US. This example is a subset of the \texttt{scenario\_outputs} data
+provided by the \pkg{hubExamples} package.}
 
 \tabularnewline
 \end{longtable}
@@ -850,8 +849,8 @@ We will use an example hub provided by the hubverse to demonstrate the
 functionality of the \pkg{hubEnsembles} package \citep{hubverse_docs}.
 The example hub includes both example model output data and target data
 (sometimes known as ``truth'' data), which are included in the
-\pkg{hubEnsembles} package as data objects named
-\texttt{example\_model\_output} and \texttt{example\_target\_data}.
+\pkg{hubExamples} package as data objects named
+\texttt{forecast\_outputs} and \texttt{forecast\_target\_ts}.
 
 The model output data includes \texttt{quantile}, \texttt{mean} and
 \texttt{median} forecasts of future incident influenza hospitalizations
@@ -865,16 +864,16 @@ of the date the forecast was made and the forecast horizon,
 Table~\ref{tbl-example-forecasts} provides an example set of quantile
 forecasts included in this example model output. In
 Table~\ref{tbl-example-forecasts}, we show only the median, the 50\%,
-and 95\% prediction intervals, although other intervals and
+and 90\% prediction intervals, although other intervals and
 \texttt{mean} forecasts are included in the example model output data.
 
 \begin{verbatim}
-R> hubEnsembles::example_model_output |>
+R> hubExamples::forecast_outputs |>
 +  dplyr::filter(
 +    output_type %in% c("quantile", "median"),
-+    output_type_id %in% c(0.025, 0.25, 0.75, 0.75, 0.975, NA),
++    output_type_id %in% c(0.05, 0.25, 0.75, 0.75, 0.95, NA),
 +    reference_date == "2022-12-17",
-+    location == "US",
++    location == "25",
 +    horizon == 1
 +  ) |>
 +  dplyr::select(all_of(abbr_fc_col)) |>
@@ -907,41 +906,39 @@ R> hubEnsembles::example_model_output |>
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.025 & 18886 \\
-Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.25 & 23534 \\
-Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.75 & 24369 \\
-Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.975 & 28980 \\
-Flusight-baseline & wk inc flu hosp & 1 & median & NA & 23951 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.025 & 14791 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.25 & 20676 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.75 & 30801 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.975 & 42528 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & median & NA & 25235 \\
-PSI-DICE & wk inc flu hosp & 1 & quantile & 0.025 & 14027 \\
-PSI-DICE & wk inc flu hosp & 1 & quantile & 0.25 & 16770 \\
-PSI-DICE & wk inc flu hosp & 1 & quantile & 0.75 & 23984 \\
-PSI-DICE & wk inc flu hosp & 1 & quantile & 0.975 & 27899 \\
-PSI-DICE & wk inc flu hosp & 1 & median & NA & 19666 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.05 & 496 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.25 & 566 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.75 & 598 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.95 & 668 \\
+Flusight-baseline & wk inc flu hosp & 1 & median & NA & 582 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.05 & 446 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.25 & 563 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.75 & 803 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.95 & 1097 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & median & NA & 664 \\
+PSI-DICE & wk inc flu hosp & 1 & quantile & 0.05 & 290 \\
+PSI-DICE & wk inc flu hosp & 1 & quantile & 0.25 & 496 \\
+PSI-DICE & wk inc flu hosp & 1 & quantile & 0.75 & 712 \\
+PSI-DICE & wk inc flu hosp & 1 & quantile & 0.95 & 843 \\
+PSI-DICE & wk inc flu hosp & 1 & median & NA & 613 \\
 
 
 \caption{\label{tbl-example-forecasts}Example model output for forecasts
 of incident influenza hospitalizations. A subset of example model output
-is shown: 1-week ahead quantile forecasts made on 2022-12-17 for the US
-from three distinct models; only the median, 50\% prediction intervals,
-and 95\% prediction intervals are displayed. The \texttt{location},
-\texttt{reference\_date} and \texttt{target\_end\_date} columns have
-been omitted for brevity. This example data is provided in the
-\pkg{hubEnsembles} package and is a subset of the
-\texttt{example-complex-forecast-hub} data provided by the hubverse
-\citep{hubverse_docs}.}
+is shown: 1-week ahead quantile forecasts made on 2022-12-17 for
+Massachusetts from three distinct models; only the median, 50\%
+prediction intervals, and 90\% prediction intervals are displayed. The
+\texttt{location}, \texttt{reference\_date} and
+\texttt{target\_end\_date} columns have been omitted for brevity. This
+example data is provided in the \pkg{hubExamples} package.}
 
 \tabularnewline
 \end{longtable}
 
-We also have corresponding target data included in the
-\pkg{hubEnsembles} package (Table~\ref{tbl-example-target-data}). The
-example target data provide observed incident influenza hospitalizations
-(\texttt{value}) in a given week (\texttt{time\_idx}) and for a given
+We also have corresponding target data included in the \pkg{hubExamples}
+package (Table~\ref{tbl-example-target-data}). The example target data
+provide observed incident influenza hospitalizations
+(\texttt{observations}) in a given week (\texttt{date}) and for a given
 location (\texttt{location}). This target data could be used as
 calibration data for generating forecasts or for evaluating these
 forecasts post hoc. The forecast-specific task ID variables
@@ -949,44 +946,42 @@ forecasts post hoc. The forecast-specific task ID variables
 target data.
 
 \begin{verbatim}
-R> hubEnsembles::example_target_data |>
+R> hubExamples::forecast_target_ts |>
 +  dplyr::filter(
-+    location == "US",
-+    time_idx >= "2022-11-01",
-+    time_idx <= "2023-02-01"
++    location == "25",
++    date >= "2022-11-01",
++    date <= "2023-02-01"
 +  ) |>
-+  knitr::kable(col.names = c("`time_idx`", "`location`", "`value`"))
++  knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
 \end{verbatim}
 
 \begin{longtable}[]{@{}llr@{}}
 
 \toprule\noalign{}
-\texttt{time\_idx} & \texttt{location} & \texttt{value} \\
+\texttt{date} & \texttt{location} & \texttt{observation} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-2022-11-05 & US & 6571 \\
-2022-11-12 & US & 8848 \\
-2022-11-19 & US & 11427 \\
-2022-11-26 & US & 19846 \\
-2022-12-03 & US & 26333 \\
-2022-12-10 & US & 23851 \\
-2022-12-17 & US & 21435 \\
-2022-12-24 & US & 19286 \\
-2022-12-31 & US & 19369 \\
-2023-01-07 & US & 12928 \\
-2023-01-14 & US & 6692 \\
-2023-01-21 & US & 4182 \\
-2023-01-28 & US & 2838 \\
+2022-11-05 & 25 & 31 \\
+2022-11-12 & 25 & 43 \\
+2022-11-19 & 25 & 79 \\
+2022-11-26 & 25 & 221 \\
+2022-12-03 & 25 & 446 \\
+2022-12-10 & 25 & 578 \\
+2022-12-17 & 25 & 694 \\
+2022-12-24 & 25 & 769 \\
+2022-12-31 & 25 & 733 \\
+2023-01-07 & 25 & 466 \\
+2023-01-14 & 25 & 238 \\
+2023-01-21 & 25 & 122 \\
+2023-01-28 & 25 & 71 \\
 
 
 \caption{\label{tbl-example-target-data}Example target data for incident
 influenza hospitalizations. This table includes target data from
 2022-11-01 and 2023-02-01. This target data is provided in the
-\pkg{hubEnsembles} package and is a subset of the
-\texttt{example-complex-forecast-hub} target data provided by the
-hubverse \citep{hubverse_docs}.}
+\pkg{hubExamples} package.}
 
 \tabularnewline
 \end{longtable}
@@ -998,20 +993,21 @@ another package for visualizing model outputs from the hubverse suite
 target data to the location and time horizons we are interested in.
 
 \begin{verbatim}
-R> model_outputs_plot <- hubEnsembles::example_model_output |>
+R> model_outputs_plot <- hubExamples::forecast_outputs |>
 +  hubUtils::as_model_out_tbl() |>
 +  dplyr::filter(
-+    location == "US",
++    location == "25",
 +    output_type %in% c("median", "mean", "quantile"),
 +    reference_date == "2022-12-17"
 +  )
 R> 
-R> target_data_plot <- hubEnsembles::example_target_data |>
+R> target_data_plot <- hubExamples::forecast_target_ts |>
 +  dplyr::filter(
-+    location == "US",
-+    time_idx >= "2022-11-01",
-+    time_idx <= "2023-02-01"
-+  )
++    location == "25",
++    date >= "2022-11-01",
++    date <= "2023-02-01"
++  ) |>
++  dplyr::rename(value = observation)
 R> 
 R> hubVis::plot_step_ahead_model_output(
 +  model_output_data = model_outputs_plot,
@@ -1019,13 +1015,14 @@ R> hubVis::plot_step_ahead_model_output(
 +  facet = "model_id",
 +  facet_nrow = 1,
 +  interactive = FALSE,
-+  intervals = c(0.5, 0.95),
++  intervals = c(0.5, 0.9),
 +  show_legend = FALSE,
 +  use_median_as_point = TRUE,
-+  x_col_name = "target_end_date"
++  x_col_name = "target_end_date", 
++  x_truth_col_name = "date"
 +) +
 +  theme_bw() +
-+  labs(y = "US incident hospitalizations")
++  labs(y = "incident hospitalizations")
 \end{verbatim}
 
 \begin{figure}[H]
@@ -1037,10 +1034,10 @@ R> hubVis::plot_step_ahead_model_output(
 }
 
 \caption{\label{fig-plot-ex-mods}One example quantile forecast of weekly
-US incident influenza hospitalizations is shown for each of three models
-(panels). Forecasts are represented by a median (line), 50\% prediction
-interval (Q25-Q75), and 95\% prediction interval (Q2.5-Q97.5). Gray
-points represent observed incident hospitalizations.}
+incident influenza hospitalizations in Massachusetts from each of three
+models (panels). Forecasts are represented by a median (line), 50\% and
+90\% prediction intervals. Gray points represent observed incident
+hospitalizations.}
 
 \end{figure}%
 
@@ -1069,11 +1066,11 @@ probability of ``high'' and ``very high'' hospitalization intensity for
 later horizons (Figure~\ref{fig-plot-ex-mods-pmf}).
 
 \begin{verbatim}
-R> hubEnsembles::example_model_output |>
+R> hubExamples::forecast_outputs |>
 +  dplyr::filter(
 +    output_type %in% c("pmf"),
 +    reference_date == "2022-12-17",
-+    location == "US",
++    location == "25",
 +    horizon == 1
 +  ) |>
 +  dplyr::mutate(value = round(value, 2)) |>
@@ -1109,32 +1106,30 @@ R> hubEnsembles::example_model_output |>
 \endlastfoot
 Flusight-baseline & wk flu hosp rate category & 1 & pmf & low & 0.00 \\
 Flusight-baseline & wk flu hosp rate category & 1 & pmf & moderate &
-0.01 \\
-Flusight-baseline & wk flu hosp rate category & 1 & pmf & high & 0.86 \\
+0.00 \\
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & high & 0.07 \\
 Flusight-baseline & wk flu hosp rate category & 1 & pmf & very high &
-0.13 \\
+0.92 \\
 MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & low & 0.00 \\
 MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & moderate &
-0.07 \\
-MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & high & 0.41 \\
+0.00 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & high & 0.16 \\
 MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & very high &
-0.52 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & low & 0.00 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & moderate & 0.23 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & high & 0.60 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.17 \\
+0.83 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & low & 0.01 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & moderate & 0.07 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & high & 0.22 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.70 \\
 
 
 \caption{\label{tbl-example-forecasts-pmf}Example \texttt{pmf} model
 output for forecasts of incident influenza hospitalization intensity. A
 subset of example model output is shown: 1-week ahead pmf forecasts made
-on 2022-12-17 for the US from three distinct models. We round the
+on 2022-12-17 for Massachusetts from three distinct models. We round the
 forecasted probability (in the \texttt{value} column) to two digits. The
 \texttt{location}, \texttt{reference\_date} and
 \texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the \pkg{hubEnsembles} package and is a
-subset of the \texttt{example-complex-forecast-hub} data provided by the
-hubverse \citep{hubverse_docs}.}
+example data is provided in the \pkg{hubExamples} package.}
 
 \tabularnewline
 \end{longtable}
@@ -1170,7 +1165,7 @@ the ensemble is a linear pool.
 
 \begin{verbatim}
 R> mean_ens <- hubEnsembles::simple_ensemble(
-+  hubEnsembles::example_model_output,
++  hubExamples::forecast_outputs,
 +  model_id = "simple-ensemble-mean"
 +)
 \end{verbatim}
@@ -1191,7 +1186,7 @@ R> mean_ens |>
 +      "low", "moderate", "high", "very high"
 +    ),
 +    reference_date == "2022-12-17",
-+    location == "US",
++    location == "25",
 +    horizon == 1
 +  ) |>
 +  dplyr::mutate(value = round(value, 2)) |>
@@ -1200,12 +1195,12 @@ R> mean_ens |>
 \end{verbatim}
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2165}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2680}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1031}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1443}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1753}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0928}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2188}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2708}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1042}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1458}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1771}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0833}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -1226,34 +1221,28 @@ R> mean_ens |>
 \bottomrule\noalign{}
 \endlastfoot
 simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & high &
-0.62 \\
+0.15 \\
 simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & low &
 0.00 \\
 simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & moderate &
-0.10 \\
+0.02 \\
 simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & very high &
-0.27 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & median & NA & 22950.67 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.025 &
-15901.33 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.25 &
-20326.67 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.75 &
-26384.67 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.975 &
-33135.67 \\
+0.82 \\
+simple-ensemble-mean & wk inc flu hosp & 1 & median & NA & 619.67 \\
+simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.25 & 541.67 \\
+simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.75 & 704.33 \\
 
 
 \caption{\label{tbl-mean-ensemble}Mean ensemble model output. The values
-in the model\_id column are determined by
-\texttt{simple\_ensemble(...,\ model\_id\ =\ )} argument). A subset of
-ensemble model output is shown: 1-week ahead pmf forecasts made on
-2022-12-17 for the US. Results are generated for all output types. Here,
-we show only the median, 50\% prediction intervals, and 95\% prediction
-intervals for the quantile output type and all bins for the pmf output
-type. The \texttt{location}, \texttt{reference\_date} and
-\texttt{target\_end\_date} columns have been omitted for brevity, and
-the \texttt{value} column is rounded to two digits.}
+in the \texttt{model\_id} column are determined by the argument
+\texttt{simple\_ensemble(...,\ model\_id\ =\ )}. A subset of ensemble
+model output is shown: 1-week ahead pmf forecasts made on 2022-12-17 for
+Massachusetts. Results are generated for all output types. Here, we show
+only the median and 50\% prediction interval for the quantile output
+type and all bins for the pmf output type. The \texttt{location},
+\texttt{reference\_date} and \texttt{target\_end\_date} columns have
+been omitted for brevity, and the \texttt{value} column is rounded to
+two digits.}
 
 \tabularnewline
 \end{longtable}
@@ -1267,7 +1256,7 @@ submitted values for each quantile. We do so by specifying
 \texttt{agg\_fun\ =\ median}.
 
 \begin{verbatim}
-R> median_ens <- hubEnsembles::simple_ensemble(hubEnsembles::example_model_output,
+R> median_ens <- hubEnsembles::simple_ensemble(hubExamples::forecast_outputs,
 +  agg_fun = median,
 +  model_id = "simple-ensemble-median"
 +)
@@ -1286,7 +1275,7 @@ R> geometric_mean <- function(x) {
 +  return(prod(x)^(1 / n))
 +}
 R> 
-R> geometric_mean_ens <- hubEnsembles::example_model_output |>
+R> geometric_mean_ens <- hubExamples::forecast_outputs |>
 +  hubEnsembles::simple_ensemble(
 +    agg_fun = geometric_mean,
 +    model_id = "simple-ensemble-geometric"
@@ -1295,7 +1284,7 @@ R> geometric_mean_ens <- hubEnsembles::example_model_output |>
 
 As expected, the mean, median, and geometric mean each give us slightly
 different resulting ensembles. The median point estimates, 50\%
-prediction intervals, and 95\% prediction intervals in
+prediction intervals, and 90\% prediction intervals in
 Figure~\ref{fig-plot-ensembles} demonstrate this.
 
 \begin{verbatim}
@@ -1304,29 +1293,31 @@ R> model_output_plot <- dplyr::bind_rows(
 +  geometric_mean_ens
 +) |>
 +  dplyr::filter(
-+    location == "US",
++    location == "25",
 +    output_type %in% c("median", "mean", "quantile"),
 +    reference_date == "2022-12-17"
 +  ) |>
 +  dplyr::mutate(target_date = reference_date + horizon)
 R> 
-R> target_data_plot <- hubEnsembles::example_target_data |>
+R> target_data_plot <- hubExamples::forecast_target_ts |>
 +  dplyr::filter(
-+    location == "US", time_idx >= "2022-11-01",
-+    time_idx <= "2023-03-01"
-+  )
++    location == "25", date >= "2022-11-01",
++    date <= "2023-03-01"
++  ) |>
++  dplyr::rename(value = observation)
 R> 
 R> hubVis::plot_step_ahead_model_output(
 +  model_output_data = model_output_plot,
 +  truth_data = target_data_plot,
 +  use_median_as_point = TRUE,
 +  interactive = FALSE,
-+  intervals = c(0.5, 0.95),
++  intervals = c(0.5, 0.90),
 +  show_legend = TRUE,
-+  x_col_name = "target_end_date"
++  x_col_name = "target_end_date", 
++  x_truth_col_name = "date"
 +) +
 +  theme_bw() +
-+  labs(y = "US incident hospitalizations")
++  labs(y = "incident hospitalizations")
 \end{verbatim}
 
 \begin{figure}[H]
@@ -1338,8 +1329,8 @@ R> hubVis::plot_step_ahead_model_output(
 }
 
 \caption{\label{fig-plot-ensembles}Three different ensembles for weekly
-US incident influenza hospitalizations. Each ensemble combines
-individual predictions from the example hub
+incident influenza hospitalizations in Massachusetts. Each ensemble
+combines individual predictions from the example hub
 (Figure~\ref{fig-plot-ex-mods}) using a different method: arithmetic
 mean, geometric mean, or median. All methods correspond to variations of
 the quantile average approach.}
@@ -1362,7 +1353,7 @@ R> model_weights <- data.frame(
 +  weight = c(0.4, 0.4, 0.2)
 +)
 R> 
-R> weighted_mean_ens <- hubEnsembles::example_model_output |>
+R> weighted_mean_ens <- hubExamples::forecast_outputs |>
 +  hubEnsembles::simple_ensemble(
 +    weights = model_weights,
 +    model_id = "simple-ensemble-weighted-mean"
@@ -1380,7 +1371,7 @@ includes \texttt{median} output type, so we exclude it from the
 calculation.
 
 \begin{verbatim}
-R> linear_pool_ens <- hubEnsembles::example_model_output |>
+R> linear_pool_ens <- hubExamples::forecast_outputs |>
 +  dplyr::filter(output_type != "median") |>
 +  hubEnsembles::linear_pool(model_id = "linear-pool")
 \end{verbatim}
@@ -1408,7 +1399,7 @@ quantile average.
 R> p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
 +  dplyr::filter(
 +    output_type == "pmf", reference_date == "2022-12-17",
-+    location == "US"
++    location == "25"
 +  ) |>
 +  dplyr::mutate(output_type_id = gsub("_", " ", output_type_id)) |>
 +  dplyr::mutate(
@@ -1421,7 +1412,7 @@ R> p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
 +  ggplot(aes(x = output_type_id, y = value, fill = model_id)) +
 +  geom_bar(stat = "identity", position = "dodge") +
 +  facet_wrap(vars(horizon), labeller = label_both) +
-+  labs(x = "US incident hospitalization intensity", y = "probability") +
++  labs(x = "incident hospitalization intensity", y = "probability") +
 +  scale_fill_brewer(palette = "Set1") +
 +  theme_bw() +
 +  theme(
@@ -1431,21 +1422,22 @@ R> p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
 +  )
 R> 
 R> model_output_plot <- linear_pool_ens |>
-+  dplyr::filter(output_type_id == 0.5) |>
++  dplyr::filter(output_type_id == 0.5, target == "wk inc flu hosp") |>
 +  dplyr::mutate(output_type = "median", output_type_id = NA)
 R> model_output_plot <- dplyr::bind_rows(linear_pool_ens, model_output_plot)
 R> model_output_plot <- dplyr::bind_rows(mean_ens, model_output_plot) |>
 +  dplyr::filter(
-+    location == "US",
++    location == "25",
 +    output_type %in% c("median", "mean", "quantile"),
 +    reference_date == "2022-12-17"
 +  ) |>
 +  dplyr::mutate(target_date = reference_date + horizon)
-R> target_data_plot <- hubEnsembles::example_target_data |>
+R> target_data_plot <- hubExamples::forecast_target_ts |>
 +  dplyr::filter(
-+    location == "US", 
-+    time_idx >= "2022-11-01", time_idx <= "2023-03-01"
-+  )
++    location == "25", 
++    date >= "2022-11-01", date <= "2023-03-01"
++  ) |>
++  dplyr::rename(value = observation)
 R> 
 R> p2 <-
 +  hubVis::plot_step_ahead_model_output(
@@ -1453,13 +1445,14 @@ R> p2 <-
 +    truth_data = target_data_plot,
 +    use_median_as_point = TRUE,
 +    interactive = FALSE,
-+    intervals = c(0.5, 0.95),
++    intervals = c(0.5, 0.9),
 +    pal_color = "Set1",
 +    show_legend = TRUE,
-+    x_col_name = "target_end_date"
++    x_col_name = "target_end_date", 
++    x_truth_col_name = "date"
 +  ) +
 +  theme_bw() +
-+  labs(y = "US incident hospitalizations")
++  labs(y = "incident hospitalizations")
 R> 
 R> l <- cowplot::get_legend(p1)
 R> 
@@ -1486,14 +1479,14 @@ R> cowplot::plot_grid(
 
 \caption{\label{fig-plot-ex-quantile-and-linear-pool}Comparison of
 results from \texttt{simple\_ensemble} (blue) and \texttt{linear\ pool}
-(red). (Panel A) Ensemble predictions of US incident influenza
-hospitalization intensity (classified as low, moderate, high, or very
-high), which provide an example of PMF output type. (Panel B) Ensemble
-predictions of weekly US incident influenza hospitalizations, which
-provide an example of quantile output type. Note, for quantile output
-type, \texttt{simple\_ensemble} corresponds to a quantile average.
-Ensembles combine individual models from the example hub
-(Figure~\ref{fig-plot-ex-mods}).}
+(red). (Panel A) Ensemble predictions of Massachusetts incident
+influenza hospitalization intensity (classified as low, moderate, high,
+or very high), which provide an example of PMF output type. (Panel B)
+Ensemble predictions of weekly incident influenza hospitalizations in
+Massachusetts, which provide an example of quantile output type. Note,
+for quantile output type, \texttt{simple\_ensemble} corresponds to a
+quantile average. Ensembles combine individual models from the example
+hub (Figure~\ref{fig-plot-ex-mods}).}
 
 \end{figure}%
 

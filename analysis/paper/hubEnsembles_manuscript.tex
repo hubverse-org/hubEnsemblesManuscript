@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, boxrule=0pt, sharp corners, interior hidden, frame hidden, breakable, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, frame hidden, interior hidden, enhanced, breakable, borderline west={3pt}{0pt}{shadecolor}, sharp corners]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -980,8 +980,7 @@ R> model_outputs_plot <- hubExamples::forecast_outputs |>
 R> target_data_plot <- hubExamples::forecast_target_ts |>
 +  dplyr::filter(
 +    location == "25",
-+    date >= "2022-11-01",
-+    date <= "2023-02-01"
++    date >= "2022-11-01", date <= "2023-02-01"
 +  ) |>
 +  dplyr::rename(value = observation)
 R> hubVis::plot_step_ahead_model_output(

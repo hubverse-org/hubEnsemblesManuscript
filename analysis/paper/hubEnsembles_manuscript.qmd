@@ -579,8 +579,7 @@ We also have corresponding target data included in the [hubExamples]{.pkg} packa
 hubExamples::forecast_target_ts |>
   dplyr::filter(
     location == "25",
-    date >= "2022-11-01",
-    date <= "2023-02-01"
+    date >= "2022-11-01", date <= "2023-02-01"
   ) |>
   knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
 ```
@@ -606,8 +605,7 @@ model_outputs_plot <- hubExamples::forecast_outputs |>
 target_data_plot <- hubExamples::forecast_target_ts |>
   dplyr::filter(
     location == "25",
-    date >= "2022-11-01",
-    date <= "2023-02-01"
+    date >= "2022-11-01", date <= "2023-02-01"
   ) |>
   dplyr::rename(value = observation)
 hubVis::plot_step_ahead_model_output(
@@ -663,7 +661,6 @@ hubExamples::forecast_outputs |>
 #| fig-width: 8
 #| fig-height: 4
 model_outputs_plot_pmf <- hubExamples::forecast_outputs |>
-  hubUtils::as_model_out_tbl() |>
   dplyr::filter(
     location == "25",
     output_type %in% c("pmf"),
@@ -789,8 +786,8 @@ model_output_plot <- dplyr::bind_rows(
 
 target_data_plot <- hubExamples::forecast_target_ts |>
   dplyr::filter(
-    location == "25", date >= "2022-11-01",
-    date <= "2023-03-01"
+    location == "25", 
+    date >= "2022-11-01", date <= "2023-03-01"
   ) |>
   dplyr::rename(value = observation)
 
@@ -860,7 +857,7 @@ p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
     output_type == "pmf", reference_date == "2022-12-17",
     location == "25"
   ) |>
-  dplyr::mutate(output_type_id = gsub("_", " ", output_type_id)) |>
+  # Reorder bin names to be in correct order
   dplyr::mutate(
     output_type_id = 
       factor(
@@ -880,7 +877,7 @@ p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
     panel.grid.major.x = element_blank()
   )
 
-# Create new data frame of ensemble output to be plotted
+## Create new data frame of ensemble output to be plotted
 # Use median results as point estimate in plot
 # Pull quantile == 0.5 results for linear pool and add them to the end of 
 # the data.frame as "median" output type (because linear_pool() does not
@@ -904,6 +901,7 @@ target_data_plot <- hubExamples::forecast_target_ts |>
   ) |>
   dplyr::rename(value = observation)
 
+# Generate plot of incidence forecasts 0-3 week horizons
 p2 <-
   hubVis::plot_step_ahead_model_output(
     model_output_data = model_output_plot,

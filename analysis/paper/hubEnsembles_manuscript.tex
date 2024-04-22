@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, frame hidden, interior hidden, enhanced, breakable, borderline west={3pt}{0pt}{shadecolor}, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, borderline west={3pt}{0pt}{shadecolor}, enhanced, boxrule=0pt, breakable, interior hidden]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -240,13 +240,12 @@ challenging. One method for overcoming this challenge is combining
 predictions across multiple, independent models. These combination
 methods (also called aggregation or ensembling) have been repeatedly
 shown to produce predictions that are more accurate
-\citep{clemen1989, timmermann2006b} and more consistent
-\citep{hibon2005} than individual models. Because of the clear
-performance benefits, multi-model ensembles are commonplace across
-fields, including weather \citep{alley2019}, climate
-\citep{tebaldi2007}, and economics \citep{aastveit2018}. More recently,
-multi-model ensembles have been used to improve predictions of
-infectious disease outbreaks
+\citep{clemen1989, timmermann2006} and more consistent \citep{hibon2005}
+than individual models. Because of the clear performance benefits,
+multi-model ensembles are commonplace across fields, including weather
+\citep{alley2019}, climate \citep{tebaldi2007}, and economics
+\citep{aastveit2018}. More recently, multi-model ensembles have been
+used to improve predictions of infectious disease outbreaks
 \citep{viboud2018, johansson2019, mcgowan2019, reich_accuracy_2019, cramer2022}.
 
 In the rapidly growing field of outbreak forecasting, there are many

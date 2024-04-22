@@ -62,6 +62,7 @@ Imports:
     zoltr (>= 1.0.0)
 Remotes:
     Infectious-Disease-Modeling-Hubs/hubEnsembles,
+    Infectious-Disease-Modeling-Hubs/hubExamples,
     Infectious-Disease-Modeling-Hubs/hubUtils,
     Infectious-Disease-Modeling-Hubs/hubVis,
     reichlab/distfromq,

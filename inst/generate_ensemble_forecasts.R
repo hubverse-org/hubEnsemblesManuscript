@@ -21,7 +21,7 @@ project_url <- the_projects[the_projects$name == "CDC Influenza Hospitalization 
 the_project_info <- project_info(zoltar_connection, project_url)
 the_models <- models(zoltar_connection, project_url)
 
-origin_dates <-  "2023-05-15"
+origin_dates <- "2023-05-15"
 task_id_cols <- c("forecast_date", "location", "horizon", "target")
 
 # Get/format forecasts
@@ -129,7 +129,7 @@ flu_lp_norm_21_22 <- purrr::map_dfr(flu_dates_21_22, .f = function(dates_vector)
 
 
 
-lp_ensemble1 <-  flu_forecasts_raw_22_23 |>
+lp_ensemble1 <- flu_forecasts_raw_22_23 |>
   filter(forecast_date < "2023-02-01") |>
   dplyr::group_split(forecast_date) |>
   purrr::map_dfr(.f = function(split_forecasts) {
@@ -137,13 +137,13 @@ lp_ensemble1 <-  flu_forecasts_raw_22_23 |>
                           ensemble_type="linear_pool", tail_dist=NULL)
   }) 
   
-lp_ensemble2 <-  flu_forecasts_raw_22_23 |>
+lp_ensemble2 <- flu_forecasts_raw_22_23 |>
   filter(forecast_date > "2023-02-01") |>
   dplyr::group_split(forecast_date) |>
   purrr::map_dfr(.f = function(split_forecasts) {
     generate_flu_ensemble(split_forecasts, include_baseline=FALSE, 
                           ensemble_type="linear_pool", tail_dist=NULL)
-  }) 
+  })
 
 flu_lp_norm_22_23 <- rbind(lp_ensemble1, lp_ensemble2)
 
@@ -157,35 +157,34 @@ flu_lp_lognorm_21_22 <- purrr::map_dfr(flu_dates_21_22, .f = function(dates_vect
                                     ensemble_type="linear_pool", tail_dist="lnorm") 
 })
 
-lp_lognorm1 <-  flu_forecasts_raw_22_23 |>
+lp_lognorm1 <- flu_forecasts_raw_22_23 |>
   filter(forecast_date %within% flu_dates_22_23[1:10]) |>
   dplyr::group_split(forecast_date) |>
   purrr::map_dfr(.f = function(split_forecasts) {
     generate_flu_ensemble(model_outputs=split_forecasts, include_baseline=FALSE, 
                           ensemble_type="linear_pool", tail_dist="lnorm")
-  }) 
+  })
 readr::write_rds(lp_lognorm1, "data/flu_lp_lognorm1.rds", "xz", compression = 9L)
 
-lp_lognorm2 <-  flu_forecasts_raw_22_23 |>
+lp_lognorm2 <- flu_forecasts_raw_22_23 |>
   filter(forecast_date %within% flu_dates_22_23[11:20]) |>
   dplyr::group_split(forecast_date) |>
   purrr::map_dfr(.f = function(split_forecasts) {
     generate_flu_ensemble(split_forecasts, include_baseline=FALSE, 
                           ensemble_type="linear_pool", tail_dist="lnorm")
-  }) 
+  })
 readr::write_rds(lp_lognorm2, "data/flu_lp_lognorm2.rds", "xz", compression = 9L)
 
-lp_lognorm3 <-  flu_forecasts_raw_22_23 |>
+lp_lognorm3 <- flu_forecasts_raw_22_23 |>
   filter(forecast_date %within% flu_dates_22_23[21:31]) |>
   dplyr::group_split(forecast_date) |>
   purrr::map_dfr(.f = function(split_forecasts) {
     generate_flu_ensemble(split_forecasts, include_baseline=FALSE, 
                           ensemble_type="linear_pool", tail_dist="lnorm")
-  }) 
+  })
 readr::write_rds(lp_lognorm3, "data/flu_lp_lognorm3.rds", "xz", compression = 9L)
 
 flu_lp_lognorm_22_23 <- rbind(lp_lognorm1, lp_lognorm2, lp_lognorm3)
 
 readr::write_rds(flu_lp_lognorm_21_22, "data/flu_lp_lognorm-ensemble_21-22.rds", "xz", compression = 9L)
 readr::write_rds(flu_lp_lognorm_22_23, "data/flu_lp_lognorm-ensemble_22-23.rds", "xz", compression = 9L)
-

@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, interior hidden, sharp corners, frame hidden, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, boxrule=0pt, enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden, sharp corners, breakable]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -1635,31 +1635,30 @@ hospitalizations.}
 
 \end{figure}%
 
-Generally, the median ensemble outperforms the other models regardless
-of scoring metric. The median model has lower MAE and WIS values than
-the mean model during similar periods of time, which are localized times
-of change. The median model also had better coverage rates than the mean
-model in the tells the distribution (95\% intervals) but similar
-coverage rates in the center of the distribution (50\% intervals). All
-of the ensemble models tend to have similar MAE values during the entire
-evaluation time period, with slight divergence in MAE values for certain
-weeks at the four week ahead horizon
-(Figure~\ref{fig-mae-vs-forecast-date}). However, the models show
-greater differences for the other two metrics, WIS and coverage,
-particularly during times of rapid change in the observed incident
-hospitalizations (Figure~\ref{fig-wis-vs-forecast-date} and
-Figure~\ref{fig-cov95-vs-forecast-date}). The linear pools have a lower
-WIS than the median ensemble at the one week ahead forecast horizon for
-over a third of forecast dates (11 weeks) during the 2022-2023 season:
-from October 17, 2022 to December 12, 2022; January 2, 2023; and January
-9, 2023 (Figure~\ref{fig-wis-vs-forecast-date}). These dates span the
-rapid rise and fall of incident flu hospitalizations surrounding the
-season's peak, with the largest differences in WIS occurring on November
-28, December 5, December 12, January 2, and January 9. Additionally, the
-PI coverage rates for the linear pools were at least as large as the
-coverage rates of the other models throughout the entire period of
-analysis at both the 1 and 4 week ahead forecast horizons (see
-Figure~\ref{fig-cov95-vs-forecast-date}).
+Averaging across all time points, the median model can be seen to have
+the best scores for every metric. It outperforms the mean ensemble by a
+similar amount for both MAE and WIS, particularly around local times of
+change (see Figure~\ref{fig-mae-vs-forecast-date} and
+Figure~\ref{fig-wis-vs-forecast-date}). The median ensemble also has
+better coverage rates than the mean ensemble in the tails of the
+distribution (95\% intervals, see
+Figure~\ref{fig-cov95-vs-forecast-date}) and similar coverage in the
+center (50\% intervals). The median model also outperforms the linear
+pools for most weeks, with the greatest differences in scores being for
+WIS and coverage rates (Figure~\ref{fig-wis-vs-forecast-date} and
+Figure~\ref{fig-cov95-vs-forecast-date}). This seems to indicate that
+the linear pools' estimates are usually too conservative, with their
+wide intervals and higher-than-nominal coverage rates being penalized by
+WIS. However, during the 2022-2023 season there are several localized
+times when the linear pools showcased better one-week-ahead forecasts
+than the median ensemble (Figure~\ref{fig-wis-vs-forecast-date}). These
+localized instances are characterized by similar MAE values
+(Figure~\ref{fig-wis-vs-forecast-date}) for the two methods and poor
+median ensemble coverage rates
+(Figure~\ref{fig-cov95-vs-forecast-date}). In these instances, the wide
+intervals from the linear pools were useful in capturing the
+eventually-observed hospitalizations, usually during times of rapid
+change.
 
 \begin{figure}
 

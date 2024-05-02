@@ -524,7 +524,7 @@ For step 1, functionality in the [distfromq]{.pkg} package uses a monotonic cubi
 
 ## Basic demonstration of functionality {#sec-simple-ex}
 
-In this section, we provide a simple example to illustrate the two main functions in [hubEnsembles]{.pkg}, `simple_ensemble()` and `linear_pool()`. 
+In this section, we provide a simple example to illustrate the two main functions in [hubEnsembles]{.pkg}, `simple_ensemble()` and `linear_pool()`. The figures from here on are generated reproducibly using data from rds files stored in the `analysis/data/raw-data` directory and scripts in the `inst` directory.
 
 ### Example data: a forecast hub
 

@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}, frame hidden, enhanced]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, breakable, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, interior hidden, enhanced, sharp corners]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -1638,9 +1638,15 @@ hospitalizations.}
 
 \end{figure}%
 
-All of the ensemble models tend to have similar MAE values during the
-entire evaluation time period, with slight divergence in MAE values for
-certain weeks at the four week ahead horizon
+Generally, the median ensemble outperforms the other models regardless
+of scoring metric. The median model has lower MAE and WIS values than
+the mean model during similar periods of time, which are localized times
+of change. The median model also had better coverage rates than the mean
+model in the tells the distribution (95\% intervals) but similar
+coverage rates in the center of the distribution (50\% intervals). All
+of the ensemble models tend to have similar MAE values during the entire
+evaluation time period, with slight divergence in MAE values for certain
+weeks at the four week ahead horizon
 (Figure~\ref{fig-mae-vs-forecast-date}). However, the models show
 greater differences for the other two metrics, WIS and coverage,
 particularly during times of rapid change in the observed incident

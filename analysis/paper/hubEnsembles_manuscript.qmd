@@ -1235,6 +1235,8 @@ ca_plot_all <-
   ))
 ```
 
+
+Generally, the median ensemble outperforms the other models regardless of scoring metric. The median model has lower MAE and WIS values than the mean model during similar periods of time, which are localized times of change. The median model also had better coverage rates than the mean model in the tells the distribution (95% intervals) but similar coverage rates in the center of the distribution (50% intervals).
 All of the ensemble models tend to have similar MAE values during the entire evaluation time period, with slight divergence in MAE values for certain weeks at the four week ahead horizon (@fig-mae-vs-forecast-date). However, the models show greater differences for the other two metrics, WIS and coverage, particularly during times of rapid change in the observed incident hospitalizations (@fig-wis-vs-forecast-date and @fig-cov95-vs-forecast-date). The linear pools have a lower WIS than the median ensemble at the one week ahead forecast horizon for over a third of forecast dates (11 weeks) during the 2022-2023 season: from October 17, 2022 to December 12, 2022; January 2, 2023; and January 9, 2023 (@fig-wis-vs-forecast-date). These dates span the rapid rise and fall of incident flu hospitalizations surrounding the season's peak, with the largest differences in WIS occurring on November 28, December 5, December 12, January 2, and January 9. Additionally, the PI coverage rates for the linear pools were at least as large as the coverage rates of the other models throughout the entire period of analysis at both the 1 and 4 week ahead forecast horizons (see @fig-cov95-vs-forecast-date).
 
 ```{r mae-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
@@ -1248,7 +1250,6 @@ All of the ensemble models tend to have similar MAE values during the entire eva
 #| fig-width: 10
 #| fig-height: 12
 model_names <- c(model_names, "average target data")
-# model_colors <- c("#6BAED6", "#FD8D3C", "#74C476", "#9E9AC8", "#FB6A4A")
 model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
 
 # Summarize flu scores by horizon, forecast_date, and season

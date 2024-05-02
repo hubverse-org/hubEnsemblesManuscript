@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, breakable, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, interior hidden, enhanced, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, interior hidden, sharp corners, frame hidden, breakable]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -722,25 +722,24 @@ variable value, \(f_{LOP}(x)\) & mean of individual model bin
 probabilities at each target variable value, \(f_{LOP}(x)\) \\
 \caption{Summary of ensemble function calculations for each output type.
 The ensemble function (columns) determines the operation that is
-performed, and in the case of probabilistic output types
-(\texttt{quantile}, \texttt{cdf}, \texttt{pmf}), this also determines
-what ensemble distribution is generated (quantile average,
-\(F_{Q}^{-1}(\theta)\), or linear pool, \(F_{LOP}(x)\)). The resulting
-ensemble will be returned in the same output type as the inputs. Thus,
-the output type (rows) determines how the resulting ensemble
-distribution is summarized (as a quantile function, \(F^{-1}(\theta)\),
-cumulative distribution function, \(F(x)\), or probability mass function
-\(f(x)\)). Estimating individual model cumulative probabilities is
-required to compute a \texttt{linear\_pool()} for predictions of
-\texttt{quantile} output type; see Section~\ref{sec-linear-pool} for
-details. In the case of \texttt{simple\_ensemble()}, we report the
-calculations for the default case where \texttt{agg\_fun\ =\ "mean"};
-however, if another aggregation function is chosen (e.g.,
-\texttt{agg\_fun\ =\ "median"}), that calculation would be performed
-instead. For example,
+performed, and in the case of probabilistic output types (quantile, CDF,
+PMF), this also determines what ensemble distribution is generated
+(quantile average, \(F_{Q}^{-1}(\theta)\), or linear pool,
+\(F_{LOP}(x)\)). The resulting ensemble will be returned in the same
+output type as the inputs. Thus, the output type (rows) determines how
+the resulting ensemble distribution is summarized (as a quantile
+function, \(F^{-1}(\theta)\), cumulative distribution function,
+\(F(x)\), or probability mass function \(f(x)\)). Estimating individual
+model cumulative probabilities is required to compute a
+\texttt{linear\_pool()} for predictions of \texttt{quantile} output
+type; see Section~\ref{sec-linear-pool} for details. In the case of
+\texttt{simple\_ensemble()}, we report the calculations for the default
+case where \texttt{agg\_fun\ =\ "mean"}; however, if another aggregation
+function is chosen (e.g., \texttt{agg\_fun\ =\ "median"}), that
+calculation would be performed instead. For example,
 \texttt{simple\_ensemble(...,\ agg\_fun\ =\ "median")} applied to
-predictions of \texttt{mean} output type would return the median of
-individual model means.}\label{tbl-fns-by-output-type}\tabularnewline
+predictions of mean output type would return the median of individual
+model means.}\label{tbl-fns-by-output-type}\tabularnewline
 \end{longtable}
 
 \subsubsection{Linear pool}\label{sec-linear-pool}
@@ -855,20 +854,20 @@ dataset of model output contains predictions for only a small subset
 rows of select dates, locations, and output type IDs, far fewer than an
 actual modeling hub would typically collect.
 
-The model output data includes \texttt{quantile}, \texttt{mean} and
-\texttt{median} forecasts of future incident influenza hospitalizations
-and \texttt{pmf} forecasts of hospitalization intensity. Each forecast
-is made for five task ID variables, including the location for which the
-forecast was made (\texttt{location}), the date on which the forecast
-was made (\texttt{reference\_date}), the number of steps ahead
+The model output data includes quantile, mean and median forecasts of
+future incident influenza hospitalizations and PMF forecasts of
+hospitalization intensity. Each forecast is made for five task ID
+variables, including the location for which the forecast was made
+(\texttt{location}), the date on which the forecast was made
+(\texttt{reference\_date}), the number of steps ahead
 (\texttt{horizon}), the date of the forecast prediction (a combination
 of the date the forecast was made and the forecast horizon,
 \texttt{target\_end\_date}), and the forecast target (\texttt{target}).
 Table~\ref{tbl-example-model-outputs} provides an example set of
 quantile forecasts included in this example model output. In
 Table~\ref{tbl-example-model-outputs}, we show only the median, the
-50\%, and 90\% prediction intervals, although other intervals and
-\texttt{mean} forecasts are included in the example model output data.
+50\%, and 90\% prediction intervals, although other intervals and mean
+forecasts are included in the example model output data.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2169}}
@@ -928,9 +927,9 @@ example data is provided in the \pkg{hubExamples} package.}
 We also have corresponding target data included in the \pkg{hubExamples}
 package (Table~\ref{tbl-example-target-data}). The example target data
 provide observed incident influenza hospitalizations
-(\texttt{observations}) in a given week (\texttt{date}) and for a given
+(\texttt{observation}) in a given week (\texttt{date}) and for a given
 location (\texttt{location}). This target data could be used as
-calibration data for generating forecasts or for evaluating these
+calibration data for generating forecasts or for evaluating the
 forecasts post hoc. The forecast-specific task ID variables
 \texttt{reference\_date} and \texttt{horizon} are not relevant for the
 target data.
@@ -1017,29 +1016,29 @@ hospitalizations.}
 
 \end{figure}%
 
-Next, we examine the \texttt{pmf} target in the example model output
-data. For this target, teams forecasted the probability that
-hospitalization intensity will be ``low'', ``moderate'', ``high'', or
-``very high''. These hospitalization intensity categories are determined
-by thresholds for weekly hospital admissions per 100,000 population. In
-other words, ``low'' hospitalization intensity in a given week means few
-incident influenza hospitalizations per 100,000 population are
-predicted, whereas ``very high'' hospitalization intensity means many
-hospitalizations per 100,000 population are predicted. These forecasts
-are made for the same task ID variables as the \texttt{quantile}
-forecasts of incident hospitalizations.
+Next, we examine the PMF target in the example model output data. For
+this target, teams forecasted the probability that hospitalization
+intensity will be ``low'', ``moderate'', ``high'', or ``very high''.
+These hospitalization intensity categories are determined by thresholds
+for weekly hospital admissions per 100,000 population. In other words,
+``low'' hospitalization intensity in a given week means few incident
+influenza hospitalizations per 100,000 population are predicted, whereas
+``very high'' hospitalization intensity means many hospitalizations per
+100,000 population are predicted. These forecasts are made for the same
+task ID variables as the \texttt{quantile} forecasts of incident
+hospitalizations.
 
 We show a representative example of the hospitalization intensity
 category forecasts in Table~\ref{tbl-example-forecasts-pmf}. Because
-these forecasts are \texttt{pmf} output type, the
-\texttt{output\_type\_id} column specifies the bin of hospitalization
-intensity and the \texttt{value} column provides the forecasted
-probability of hospitalization incidence being in that category. Values
-sum to 1 across bins. For the MOBS-GLEAM\_FLUH and PSI-DICE models,
-incidence is forecasted to decrease over the horizon
-(Figure~\ref{fig-plot-ex-mods}), and correspondingly, there is lower
-probability of ``high'' and ``very high'' hospitalization intensity for
-later horizons (Figure~\ref{fig-plot-ex-mods-pmf}).
+these forecasts are PMF output type, the \texttt{output\_type\_id}
+column specifies the bin of hospitalization intensity and the
+\texttt{value} column provides the forecasted probability of
+hospitalization incidence being in that category. Values sum to 1 across
+bins. For the MOBS-GLEAM\_FLUH and PSI-DICE models, incidence is
+forecasted to decrease over the horizon (Figure~\ref{fig-plot-ex-mods}),
+and correspondingly, there is lower probability of ``high'' and ``very
+high'' hospitalization intensity for later horizons
+(Figure~\ref{fig-plot-ex-mods-pmf}).
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1935}}
@@ -1085,10 +1084,10 @@ PSI-DICE & wk flu hosp rate category & 1 & pmf & high & 0.22 \\
 PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.70 \\
 
 
-\caption{\label{tbl-example-forecasts-pmf}Example \texttt{pmf} model
-output for forecasts of incident influenza hospitalization intensity. A
-subset of example model output is shown: 1-week ahead pmf forecasts made
-on 2022-12-17 for Massachusetts from three distinct models. We round the
+\caption{\label{tbl-example-forecasts-pmf}Example PMF model output for
+forecasts of incident influenza hospitalization intensity. A subset of
+example model output is shown: 1-week ahead PMF forecasts made on
+2022-12-17 for Massachusetts from three distinct models. We round the
 forecasted probability (in the \texttt{value} column) to two digits. The
 \texttt{location}, \texttt{reference\_date} and
 \texttt{target\_end\_date} columns have been omitted for brevity. This
@@ -1105,12 +1104,12 @@ example data is provided in the \pkg{hubExamples} package.}
 
 }
 
-\caption{\label{fig-plot-ex-mods-pmf}One example \texttt{pmf} forecast
-of incident influenza hospitalization intensity is shown for each of
-three models (panels). Each cell shows the forecasted probability of a
-given hospitalization intensity bin (low, moderate, high, and very high)
-for each forecast horizon (0-3 weeks ahead). Darker colors indicate
-higher forecasted probability.}
+\caption{\label{fig-plot-ex-mods-pmf}One example PMF forecast of
+incident influenza hospitalization intensity is shown for each of three
+models (panels). Each cell shows the forecasted probability of a given
+hospitalization intensity bin (low, moderate, high, and very high) for
+each forecast horizon (0-3 weeks ahead). Darker colors indicate higher
+forecasted probability.}
 
 \end{figure}%
 
@@ -1123,8 +1122,8 @@ of values for the task ID variables, the \texttt{output\_type} and the
 \texttt{output\_type\_id}. Recall that this means different ensemble
 methods will be used for different output types: for the
 \texttt{quantile} output type in our example data, the resulting
-ensemble is a quantile average, while for the \texttt{pmf} output type,
-the ensemble is a linear pool.
+ensemble is a quantile average, while for the PMF output type, the
+ensemble is a linear pool.
 
 \begin{verbatim}
 R> mean_ens <- hubEnsembles::simple_ensemble(
@@ -1182,10 +1181,10 @@ simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.75 & 704.33 \\
 \caption{\label{tbl-mean-ensemble}Mean ensemble model output. The values
 in the \texttt{model\_id} column are determined by the argument
 \texttt{simple\_ensemble(...,\ model\_id\ =\ )}. A subset of ensemble
-model output is shown: 1-week ahead pmf forecasts made on 2022-12-17 for
+model output is shown: 1-week ahead PMF forecasts made on 2022-12-17 for
 Massachusetts. Results are generated for all output types. Here, we show
 only the median and 50\% prediction interval for the quantile output
-type and all bins for the pmf output type. The \texttt{location},
+type and all bins for the PMF output type. The \texttt{location},
 \texttt{reference\_date} and \texttt{target\_end\_date} columns have
 been omitted for brevity, and the \texttt{value} column is rounded to
 two digits.}
@@ -1276,10 +1275,9 @@ linear\_pool}\label{creating-ensembles-with-linear_pool}
 
 We can also generate a linear pool ensemble, or distributional mixture,
 using the \texttt{linear\_pool()} function; this function can be applied
-to predictions with an \texttt{output\_type} of \texttt{mean},
-\texttt{quantile}, \texttt{cdf}, or \texttt{pmf}. Our example hub
-includes \texttt{median} output type, so we exclude it from the
-calculation.
+to predictions with an \texttt{output\_type} of mean, quantile, CDF, or
+PMF. Our example hub includes median output type, so we exclude it from
+the calculation.
 
 \begin{verbatim}
 R> linear_pool_ens <- hubExamples::forecast_outputs |>
@@ -1332,8 +1330,7 @@ data}\label{sec-case-study}
 
 To further demonstrate the utility of the \pkg{hubEnsembles} package and
 the differences between the two ensembling functions, we examine a more
-complex example consisting of weekly influenza hospitalizations
-forecasts for the US. Unlike the previous section's basic showcase of
+complex example. Unlike the previous section's basic showcase of
 functionality, we use this case study to provide a more complete
 analysis that compares and evaluates ensemble model performance using
 real forecasts collected by a modeling hub, with an overarching goal of
@@ -1408,7 +1405,7 @@ the 2022-2023 season, there were 31 models making predictions for 31
 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42
 total models made forecasts for both seasons.
 
-In both seasons, forecasts were made for the same locations (the 50
+In both seasons, forecasts were made for the same locations (the 50 US
 states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a
 whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described
 above), and target (week ahead incident flu hospitalization). The values

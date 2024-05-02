@@ -75,6 +75,7 @@ library(here)
 library(ggplot2)
 library(reshape2)
 library(cowplot)
+renv::restore()
 devtools::load_all()
 ```
 

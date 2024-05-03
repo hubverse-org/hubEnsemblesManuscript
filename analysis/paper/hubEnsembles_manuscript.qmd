@@ -191,17 +191,9 @@ This representation of predictive model output is codified by the `model_out_tbl
 
 : A table summarizing how the model output representation columns are used for predictions of different output types. Adapted from [@hubverse_docs] {#tbl-model-output-rep}
 
-## Ensemble functions in hubEnsembles {#sec-ens-fns}
+### Ensemble functions in hubEnsembles {#sec-ens-fns}
 
 The [hubEnsembles]{.pkg} package includes two functions that perform ensemble calculations: `simple_ensemble()`, which applies some function to each model prediction, and `linear_pool()`, which computes an ensemble using the linear opinion pool method. In the following sections, we outline the implementation details for each function and how these implementations correspond to the statistical ensembling methods described in @sec-defs. A short description of the calculation performed by each function is summarized by output type in @tbl-fns-by-output-type.
-
-#### Simple ensemble {#sec-simple-ensemble}
-
-The `simple_ensemble` function directly computes an ensemble from component model outputs by combining them via some function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type). 
-
-By default, `simple_ensemble` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear pool method.
-
-Any aggregation function $C$ may be specified by the user. For example, a median ensemble may also be created by specifying "median" as the aggregation function, or a custom function may be passed to the `agg_fun` argument to create other ensemble types. Similarly, model weights can be specified to create a weighted ensemble.
 
 | `output_type` | `simple_ensemble(..., agg_fun="mean")` | `linear_pool()`|
 |-------------|----------------------------------|----------------------------------|
@@ -212,6 +204,14 @@ Any aggregation function $C$ may be specified by the user. For example, a median
 | `pmf` | mean of individual model bin probabilities at each target variable value, $f_{LOP}(x)$| mean of individual model bin probabilities at each target variable value, $f_{LOP}(x)$|
 
 : Summary of ensemble function calculations for each output type. The ensemble function (columns) determines the operation that is performed, and in the case of probabilistic output types (quantile, CDF, PMF), this also determines what ensemble distribution is generated (quantile average, $F_{Q}^{-1}(\theta)$, or linear pool, $F_{LOP}(x)$). The resulting ensemble will be returned in the same output type as the inputs. Thus, the output type (rows) determines how the resulting ensemble distribution is summarized (as a quantile function, $F^{-1}(\theta)$, cumulative distribution function, $F(x)$, or probability mass function $f(x)$). Estimating individual model cumulative probabilities is required to compute a `linear_pool()` for predictions of `quantile` output type; see @sec-linear-pool for details. In the case of `simple_ensemble()`, we report the calculations for the default case where `agg_fun = "mean"`; however, if another aggregation function is chosen (e.g., `agg_fun = "median"`), that calculation would be performed instead. For example, `simple_ensemble(..., agg_fun = "median")` applied to predictions of mean output type would return the median of individual model means. {#tbl-fns-by-output-type}{tbl-colwidths="[14,50,36]"}
+
+#### Simple ensemble {#sec-simple-ensemble}
+
+The `simple_ensemble` function directly computes an ensemble from component model outputs by combining them via some function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type). 
+
+By default, `simple_ensemble` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear pool method.
+
+Any aggregation function $C$ may be specified by the user. For example, a median ensemble may also be created by specifying "median" as the aggregation function, or a custom function may be passed to the `agg_fun` argument to create other ensemble types. Similarly, model weights can be specified to create a weighted ensemble.
 
 #### Linear pool {#sec-linear-pool}
 
@@ -514,11 +514,11 @@ cowplot::plot_grid(
 )
 ```
 
-Given that LOP cannot be directly calculated from quantile predictions, we must first obtain an estimate of the CDF for each component distribution using the provided quantiles, combine the CDFs, then calculate the quantiles from the ensemble's CDF. We perform this calculation in three main steps, assisted by the [distfromq]{.pkg} package [@distfromq] for the first two:
+Given that LOP cannot be directly calculated from quantile predictions, we must first obtain an estimate of the CDF for each component distribution from the provided quantiles, combine the CDFs, then calculate the quantiles using the ensemble's CDF. We perform this calculation in three main steps, assisted by the [distfromq]{.pkg} package [@distfromq] for the first two:
 
-1.  Interpolate and extrapolate from the provided quantiles for each component model to obtain an estimate of the CDF of that particular distribution.
-2.  Draw samples from each component model distribution. To reduce Monte Carlo variability, we use quasi-random samples corresponding to quantiles of the estimated distribution [@niederreiter1992quasirandom].
-3.  Pool the samples from all component models and extract the desired quantiles.
+1. Interpolate and extrapolate from the provided quantiles for each component model to obtain an estimate of the CDF of that particular distribution.
+2. Draw samples from each component model distribution. To reduce Monte Carlo variability, we use quasi-random samples corresponding to quantiles of the estimated distribution [@niederreiter1992quasirandom].
+3. Pool the samples from all component models and extract the desired quantiles.
 
 For step 1, functionality in the [distfromq]{.pkg} package uses a monotonic cubic spline for interpolation on the interior of the provided quantiles. The user may choose one of several distributions to perform extrapolation of the CDF tails. These include normal, lognormal, and cauchy distributions, with "normal" set as the default. A location-scale parameterization is used, with separate location and scale parameters chosen in the lower and upper tails so as to match the two most extreme quantiles. The sampling process described in steps 2 and 3 approximates the linear pool calculation described in @sec-defs.
 
@@ -527,10 +527,6 @@ For step 1, functionality in the [distfromq]{.pkg} package uses a monotonic cubi
 In this section, we provide a simple example to illustrate the two main functions in [hubEnsembles]{.pkg}, `simple_ensemble()` and `linear_pool()`. The figures from here on are generated reproducibly using data from rds files stored in the `analysis/data/raw-data` directory and scripts in the `inst` directory.
 
 ### Example data: a forecast hub
-
-We will use an example hub provided by the hubverse to demonstrate the functionality of the [hubEnsembles]{.pkg} package [@hubverse_docs]. The example hub includes both example model output data and target data (sometimes known as "truth" data), which are included in the [hubExamples]{.pkg} package as data objects named `forecast_outputs` and `forecast_target_ts`. The toy dataset of model output contains predictions for only a small subset rows of select dates, locations, and output type IDs, far fewer than an actual modeling hub would typically collect.
-
-The model output data includes quantile, mean and median forecasts of future incident influenza hospitalizations and PMF forecasts of hospitalization intensity. Each forecast is made for five task ID variables, including the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`). @tbl-example-model-outputs provides an example set of quantile forecasts included in this example model output. In @tbl-example-model-outputs, we show only the median, the 50%, and 90% prediction intervals, although other intervals and mean forecasts are included in the example model output data.
 
 ```{r, cols.print=12}
 #| label: tbl-example-model-outputs
@@ -553,6 +549,10 @@ hubExamples::forecast_outputs |>
   dplyr::select(all_of(abbr_fc_col)) |>
   knitr::kable(col.names = formatted_fc_col)
 ```
+
+We will use an example hub provided by the hubverse to demonstrate the functionality of the [hubEnsembles]{.pkg} package [@hubverse_docs]. The example hub includes both example model output data and target data (sometimes known as "truth" data), which are included in the [hubExamples]{.pkg} package as data objects named `forecast_outputs` and `forecast_target_ts`. The toy dataset of model output contains predictions for only a small subset rows of select dates, locations, and output type IDs, far fewer than an actual modeling hub would typically collect.
+
+The model output data includes quantile, mean and median forecasts of future incident influenza hospitalizations and PMF forecasts of hospitalization intensity. Each forecast is made for five task ID variables, including the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`). @tbl-example-model-outputs provides an example set of quantile forecasts included in this example model output. In @tbl-example-model-outputs, we show only the median, the 50%, and 90% prediction intervals, although other intervals and mean forecasts are included in the example model output data.
 
 We also have corresponding target data included in the [hubExamples]{.pkg} package (@tbl-example-target-data). The example target data provide observed incident influenza hospitalizations (`observation`) in a given week (`date`) and for a given location (`location`). This target data could be used as calibration data for generating forecasts or for evaluating the forecasts post hoc. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for the target data.
 
@@ -611,8 +611,6 @@ hubVis::plot_step_ahead_model_output(
 
 Next, we examine the PMF target in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These hospitalization intensity categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations. 
 
-We show a representative example of the hospitalization intensity category forecasts in @tbl-example-forecasts-pmf. Because these forecasts are PMF output type, the `output_type_id` column specifies the bin of hospitalization intensity and the `value` column provides the forecasted probability of hospitalization incidence being in that category. Values sum to 1 across bins. For the MOBS-GLEAM_FLUH and PSI-DICE models, incidence is forecasted to decrease over the horizon (@fig-plot-ex-mods), and correspondingly, there is lower probability of "high" and "very high" hospitalization intensity for later horizons (@fig-plot-ex-mods-pmf).
-
 ```{r, cols.print=9}
 #| label: tbl-example-forecasts-pmf
 #| echo: false
@@ -634,6 +632,8 @@ hubExamples::forecast_outputs |>
   dplyr::select(all_of(abbr_fc_col)) |>
   knitr::kable(col.names = formatted_fc_col)
 ```
+
+We show a representative example of the hospitalization intensity category forecasts in @tbl-example-forecasts-pmf. Because these forecasts are PMF output type, the `output_type_id` column specifies the bin of hospitalization intensity and the `value` column provides the forecasted probability of hospitalization incidence being in that category. Values sum to 1 across bins. For the MOBS-GLEAM_FLUH and PSI-DICE models, incidence is forecasted to decrease over the horizon (@fig-plot-ex-mods), and correspondingly, there is lower probability of "high" and "very high" hospitalization intensity for later horizons (@fig-plot-ex-mods-pmf).
 
 ```{r}
 #| echo: FALSE

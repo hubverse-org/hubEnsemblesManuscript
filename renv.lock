@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.3.3",
+    "Version": "4.4.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -20,48 +20,9 @@
       ],
       "Hash": "164809cd72e1d5160b4cb3aa57f510fe"
     },
-    "Formula": {
-      "Package": "Formula",
-      "Version": "1.2-5",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "stats"
-      ],
-      "Hash": "7a29697b75e027767a53fde6c903eca7"
-    },
-    "Hmisc": {
-      "Package": "Hmisc",
-      "Version": "5.1-2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "Formula",
-        "R",
-        "base64enc",
-        "cluster",
-        "colorspace",
-        "data.table",
-        "foreign",
-        "ggplot2",
-        "grid",
-        "gridExtra",
-        "gtable",
-        "htmlTable",
-        "htmltools",
-        "knitr",
-        "methods",
-        "nnet",
-        "rmarkdown",
-        "rpart",
-        "viridis"
-      ],
-      "Hash": "c0d441bec5693f2cad30231f7f72d90a"
-    },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-60.0.1",
+      "Version": "7.3-60.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -72,7 +33,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "b765b28387acc8ec9e9c1530713cb19c"
+      "Hash": "2f342c46163b0b54d7b64d1f798e2c78"
     },
     "MMWRweek": {
       "Package": "MMWRweek",
@@ -83,7 +44,7 @@
     },
     "Matrix": {
       "Package": "Matrix",
-      "Version": "1.6-5",
+      "Version": "1.7-0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -96,7 +57,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "8c7115cd3a0e048bda2a7cd110549f7a"
+      "Hash": "1920b2f11133b12350024297d8a4ff4a"
     },
     "R6": {
       "Package": "R6",
@@ -194,15 +155,9 @@
     },
     "arrow": {
       "Package": "arrow",
-      "Version": "15.0.2",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "arrow",
-      "RemoteUsername": "apache",
-      "RemoteRef": "apache-arrow-15.0.2",
-      "RemoteSha": "e03105efc38edca4ca429bf967a17b4d0fbebe40",
-      "RemoteSubdir": "r",
+      "Version": "15.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "R6",
@@ -218,7 +173,7 @@
         "utils",
         "vctrs"
       ],
-      "Hash": "b5fd80c96bae19e099b33a7c7e57ad83"
+      "Hash": "85c24dd7844977e4a680ba28f576125c"
     },
     "askpass": {
       "Package": "askpass",
@@ -402,29 +357,15 @@
       ],
       "Hash": "3f038e5ac7f41d4ac41ce658c85e3042"
     },
-    "cluster": {
-      "Package": "cluster",
-      "Version": "2.1.6",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "grDevices",
-        "graphics",
-        "stats",
-        "utils"
-      ],
-      "Hash": "0aaa05204035dc43ea0004b9c76611dd"
-    },
     "codetools": {
       "Package": "codetools",
-      "Version": "0.2-19",
+      "Version": "0.2-20",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "c089a619a7fae175d149d89164f8c7d8"
+      "Hash": "61e097f35917d342622f21cdc79c256e"
     },
     "colorspace": {
       "Package": "colorspace",
@@ -451,8 +392,8 @@
       "Package": "covidData",
       "Version": "1.0.1",
       "Source": "GitHub",
-      "Remotes": "Chicago/RSocrata",
       "RemoteType": "github",
+      "Remotes": "Chicago/RSocrata",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "covidData",
       "RemoteUsername": "reichlab",
@@ -460,7 +401,6 @@
       "RemoteSha": "a45c3f65b249af3299445856b0180eb4c87639a1",
       "Requirements": [
         "MMWRweek",
-        "R",
         "RSocrata",
         "dplyr",
         "here",
@@ -474,14 +414,14 @@
         "tidyr",
         "xml2"
       ],
-      "Hash": "8cea22056869c26ed65369db55520be9"
+      "Hash": "a907673916316b30cd2e28afb322db89"
     },
     "covidHubUtils": {
       "Package": "covidHubUtils",
       "Version": "0.1.9",
       "Source": "GitHub",
-      "Remotes": "reichlab/covidData, reichlab/zoltr, epiforecasts/scoringutils@v1.2.2",
       "RemoteType": "github",
+      "Remotes": "reichlab/covidData, reichlab/zoltr, epiforecasts/scoringutils@v1.2.2",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "covidHubUtils",
       "RemoteUsername": "reichlab",
@@ -862,19 +802,6 @@
       ],
       "Hash": "618609b42c9406731ead03adf5379850"
     },
-    "foreign": {
-      "Package": "foreign",
-      "Version": "0.8-86",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "methods",
-        "stats",
-        "utils"
-      ],
-      "Hash": "550170303dbb19d07b2bcc288068e7dc"
-    },
     "fs": {
       "Package": "fs",
       "Version": "1.6.4",
@@ -1010,20 +937,6 @@
       ],
       "Hash": "e0b3a53876554bd45879e596cdb10a52"
     },
-    "gridExtra": {
-      "Package": "gridExtra",
-      "Version": "2.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "grDevices",
-        "graphics",
-        "grid",
-        "gtable",
-        "utils"
-      ],
-      "Hash": "7d7f283939f563670a697165b2cf5560"
-    },
     "gtable": {
       "Package": "gtable",
       "Version": "0.3.5",
@@ -1073,24 +986,6 @@
         "vctrs"
       ],
       "Hash": "b59377caa7ed00fa41808342002138f9"
-    },
-    "htmlTable": {
-      "Package": "htmlTable",
-      "Version": "2.4.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "checkmate",
-        "htmltools",
-        "htmlwidgets",
-        "knitr",
-        "magrittr",
-        "methods",
-        "rstudioapi",
-        "stringr"
-      ],
-      "Hash": "0164d8cade33fac2190703da7e6e3241"
     },
     "htmltools": {
       "Package": "htmltools",
@@ -1203,17 +1098,16 @@
     },
     "hubEnsembles": {
       "Package": "hubEnsembles",
-      "Version": "0.1.1",
+      "Version": "0.1.2",
       "Source": "GitHub",
-      "Remotes": "Infectious-Disease-Modeling-Hubs/hubUtils, Infectious-Disease-Modeling-Hubs/hubData, reichlab/distfromq",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
+      "RemoteUsername": "Infectious-Disease-Modeling-Hubs",
       "RemoteRepo": "hubEnsembles",
-      "RemoteUsername": "infectious-disease-modeling-hubs",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "f878abc96aeb1f641fab9e958d568df523d657b4",
+      "RemoteRef": "main",
+      "RemoteSha": "105308f174a834765bab93e2040744d916ff607b",
+      "Remotes": "Infectious-Disease-Modeling-Hubs/hubUtils, Infectious-Disease-Modeling-Hubs/hubData, reichlab/distfromq",
       "Requirements": [
-        "Hmisc",
         "R",
         "cli",
         "distfromq",
@@ -1226,7 +1120,7 @@
         "tidyr",
         "tidyselect"
       ],
-      "Hash": "8bf209d5e4be78f34f4bb9ce98d03bfa"
+      "Hash": "1f6a828869cb352c923a07da2ec9dca1"
     },
     "hubExamples": {
       "Package": "hubExamples",
@@ -1247,8 +1141,8 @@
       "Package": "hubUtils",
       "Version": "0.0.2",
       "Source": "GitHub",
-      "Remotes": "Infectious-Disease-Modeling-Hubs/hubData, Infectious-Disease-Modeling-Hubs/hubAdmin",
       "RemoteType": "github",
+      "Remotes": "Infectious-Disease-Modeling-Hubs/hubData, Infectious-Disease-Modeling-Hubs/hubAdmin",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "hubUtils",
       "RemoteUsername": "Infectious-Disease-Modeling-Hubs",
@@ -1385,7 +1279,7 @@
     },
     "lattice": {
       "Package": "lattice",
-      "Version": "0.22-5",
+      "Version": "0.22-6",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1396,7 +1290,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "7c5e89f04e72d6611c77451f6331a091"
+      "Hash": "cc5ac1ba4c238c7ca9fa6a87ca11a7e2"
     },
     "lazyeval": {
       "Package": "lazyeval",
@@ -1446,13 +1340,13 @@
     },
     "matrixStats": {
       "Package": "matrixStats",
-      "Version": "1.2.0",
+      "Version": "1.3.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "33a3ca9e732b57244d14f5d732ffc9eb"
+      "Hash": "4b3ea27a19d669c0405b38134d89a9d1"
     },
     "memoise": {
       "Package": "memoise",
@@ -1528,18 +1422,6 @@
         "utils"
       ],
       "Hash": "a623a2239e642806158bc4dc3f51565d"
-    },
-    "nnet": {
-      "Package": "nnet",
-      "Version": "7.3-19",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "stats",
-        "utils"
-      ],
-      "Hash": "2c797b46eea7fb58ede195bc0b1f1138"
     },
     "numDeriv": {
       "Package": "numDeriv",
@@ -2006,19 +1888,6 @@
       ],
       "Hash": "c25fe7b2d8cba73d1b63c947bf7afdb9"
     },
-    "rpart": {
-      "Package": "rpart",
-      "Version": "4.1.23",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "grDevices",
-        "graphics",
-        "stats"
-      ],
-      "Hash": "b3d390424f41d04174cccf84d49676c2"
-    },
     "rprojroot": {
       "Package": "rprojroot",
       "Version": "2.0.4",
@@ -2455,19 +2324,6 @@
         "rlang"
       ],
       "Hash": "c03fa420630029418f7e6da3667aac4a"
-    },
-    "viridis": {
-      "Package": "viridis",
-      "Version": "0.6.5",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "ggplot2",
-        "gridExtra",
-        "viridisLite"
-      ],
-      "Hash": "acd96d9fa70adeea4a5a1150609b9745"
     },
     "viridisLite": {
       "Package": "viridisLite",

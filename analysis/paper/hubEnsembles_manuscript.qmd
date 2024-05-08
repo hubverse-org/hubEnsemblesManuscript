@@ -933,7 +933,7 @@ Since 2013, the US Centers for Disease Control and Prevention (CDC) has been sol
 
 ### Data and Methods
 
-We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. Here, we only consider Flusight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast date` (when the forecast was made), `location`, `horizon`, and `target`.
+We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. Here, we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast date` (when the forecast was made), `location`, `horizon`, and `target`.
 
 ```{r transform data, eval=FALSE}
 #| prompt: true

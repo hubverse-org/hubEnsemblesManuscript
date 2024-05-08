@@ -229,9 +229,10 @@ However, implementation of LOP is less straightforward for the quantile output t
 #| example, points show model output collected for seven fixed quantile levels
 #| ($\\theta$ = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions
 #| ($N(100, 10)$ in purple and $N(120, 5)$ in green), with the underlying
-#| cumulative distribution functions (CDFs) shown with curves. The associated
-#| values for each fixed quantile level do not align across distributions
-#| (vertical lines). (Panel B) Quantile average ensemble, which is calculated by
+#| cumulative distribution functions (CDFs) shown with curves. The y-axis ticks
+#| show each of the fixed quantile levels. The associated values for each fixed
+#| quantile level do not align across distributions (vertical lines).
+#| (Panel B) Quantile average ensemble, which is calculated by
 #| averaging values for each fixed quantile level (represented by horizontal
 #| dashed gray lines). The distributions and corresponding model outputs from
 #| panel A are re-plotted and the black line shows the resulting quantile

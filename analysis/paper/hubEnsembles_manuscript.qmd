@@ -102,7 +102,9 @@ For probabilistic predictions, there are two commonly used classes of methods to
 
 The quantile average combines a set of quantile functions, $\mathcal{Q} = \{F_i^{-1}(\theta)| i \in 1,...,N \}$, with a given set of weights, $\pmb{w}$, as $$
 F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta).
-$$This computes the average value of predictions across different models for each fixed quantile level $\theta$. It is also possible to use other combination functions, such as a weighted median, to combine quantile predictions.
+$$
+
+This computes the average value of predictions across different models for each fixed quantile level $\theta$. It is also possible to use other combination functions, such as a weighted median, to combine quantile predictions.
 
 The probability average or linear pool is calculated by averaging probabilities across predictions for a fixed value of the target variable, $x$. In other words, for a set $\mathcal{F} = \{F_i(x)| i \in 1,...,N \}$ containing the values of CDFs at the point $x$ and weights $\pmb{w}$, the linear pool is calculated as
 
@@ -110,7 +112,7 @@ $$
 F_{LOP}(x) = C_{LOP}(\mathcal{F}, \pmb{w}) = \sum_{i = 1}^Nw_iF_i(x). 
 $$
 
-For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be equivalently calculated: $f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)$.
+For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be equivalently calculated: $f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)$. For a visual depiction of these equations, see @fig-example-quantile-average-and-linear-pool below.
 
 The different averaging methods for probabilistic predictions yield different properties of the resulting ensemble distribution. For example, the variance of the linear pool is $\sigma^2_{LOP} = \sum_{i=1}^Nw_i\sigma_i^2 + \sum_{i=1}^Nw_i(\mu_i-\mu_{LOP})^2$, where $\mu_i$ is the mean and $\sigma^2_i$ is the variance of individual prediction $i$, and although there is no closed-form variance for the quantile average, the variance of the quantile average will always be less than or equal to that of the linear pool [@lichtendahl2013]. Both methods generate distributions with the same mean, $\mu_Q = \mu_{LOP} = \sum_{i=1}^Nw_i\mu_i$, which is the mean of individual model means [@lichtendahl2013]. The linear pool method preserves variation between individual models, whereas the quantile average cancels away this variation under the assumption it constitutes sampling error [@howerton2023].
 
@@ -185,7 +187,7 @@ The third group of columns in model output specify the model predictions and det
 This representation of predictive model output is codified by the `model_out_tbl` S3 class in the [hubUtils]{.pkg} package, one of the foundational hubverse packages. Although this S3 class is required for all [hubEnsembles]{.pkg} functions, model predictions in other formats can easily be transformed using the `as_model_out_tbl()` function from [hubUtils]{.pkg}. An example of this transformation is provided in @sec-case-study.
 
 | `output_type` | `output_type_id`                                                                            | `value`                                                                                                                                                       |
-|:----------------|:----------------------|:-------------------------------|
+|:-----------------|:----------------------|:------------------------------|
 | `mean`        | NA (not used for mean predictions)                                                          | Numeric: The mean of the predictive distribution                                                                                                              |
 | `median`      | NA (not used for median predictions)                                                        | Numeric: The median of the predictive distribution                                                                                                            |
 | `quantile`    | Numeric between 0.0 and 1.0: A quantile level                                               | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
@@ -200,7 +202,7 @@ This representation of predictive model output is codified by the `model_out_tbl
 The [hubEnsembles]{.pkg} package includes two functions that perform ensemble calculations: `simple_ensemble()`, which applies some function to each model prediction, and `linear_pool()`, which computes an ensemble using the linear opinion pool method. In the following sections, we outline the implementation details for each function and how these implementations correspond to the statistical ensembling methods described in @sec-defs. A short description of the calculation performed by each function is summarized by output type in @tbl-fns-by-output-type.
 
 | `output_type` | `simple_ensemble(..., agg_fun="mean")`                                                        | `linear_pool()`                                                                                                                                                          |
-|----------------|----------------------------|----------------------------|
+|------------------|---------------------------|---------------------------|
 | `mean`        | mean of individual model means                                                                | mean of individual model means                                                                                                                                           |
 | `median`      | mean of individual model medians                                                              | NA                                                                                                                                                                       |
 | `quantile`    | mean of individual model target variable values at each quantile level, $F^{-1}_Q(\theta)$    | quantile of the distribution obtained by computing the mean of estimated individual model cumulative probabilities at each target variable value, $F^{-1}_{LOP}(\theta)$ |
@@ -583,7 +585,7 @@ We can plot these forecasts and the target data using the `plot_step_ahead_model
 #| fig-cap: "One example quantile forecast of weekly incident influenza
 #| hospitalizations in Massachusetts from each of three models (panels).
 #| Forecasts are represented by a median (line), 50% and 90% prediction
-#| intervals. Gray points represent observed incident hospitalizations."
+#| intervals (ribbons). Gray points represent observed incident hospitalizations."
 #| fig-width: 8
 #| fig-height: 4
 model_outputs_plot <- hubExamples::forecast_outputs |>
@@ -758,7 +760,8 @@ As expected, the mean, median, and geometric mean each give us slightly differen
 #| hospitalizations in Massachusetts. Each ensemble combines individual
 #| predictions from the example hub (@fig-plot-ex-mods) using a different
 #| method: arithmetic mean, geometric mean, or median. All methods correspond to
-#| variations of the quantile average approach."
+#| variations of the quantile average approach. Ensembles are represented by a median 
+#| (line), 50% and 90% prediction intervals (ribbons)."
 #| fig-height: 4
 #| fig-width: 8
 
@@ -835,7 +838,8 @@ In @fig-plot-ex-quantile-and-linear-pool, we compare ensemble results generated 
 #| predictions of weekly incident influenza hospitalizations in Massachusetts,
 #| which provide an example of quantile output type. Note, for quantile output
 #| type, `simple_ensemble` corresponds to a quantile average.  Ensembles combine
-#| individual models from the example hub (@fig-plot-ex-mods)."
+#| individual models from the example hub, and are represented by a median 
+#| (line), 50% and 90% prediction intervals (ribbons) (@fig-plot-ex-mods)."
 #| fig-width: 10
 #| fig-height: 4
 

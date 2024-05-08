@@ -82,6 +82,8 @@
 
 \newcommand{\class}[1]{`\code{#1}'}
 \newcommand{\fct}[1]{\code{#1()}}
+\usepackage{float}
+\floatplacement{table}{H}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -132,7 +134,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, sharp corners, boxrule=0pt, frame hidden, enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners, enhanced, interior hidden]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -421,12 +423,12 @@ that the forecast is predicting relative to the \texttt{reference\_date}
 task ID columns.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1975}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1975}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1235}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1728}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2099}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0988}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1447}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2105}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1316}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1842}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2237}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1053}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -446,18 +448,18 @@ task ID columns.
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 0 & quantile & 0.25 & 514 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.25 & 563 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 2 & quantile & 0.25 & 469 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 3 & quantile & 0.25 & 324 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 0 & quantile & 0.5 & 596 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.5 & 664 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 2 & quantile & 0.5 & 575 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 3 & quantile & 0.5 & 408 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 0 & quantile & 0.75 & 713 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.75 & 803 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 2 & quantile & 0.75 & 705 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 3 & quantile & 0.75 & 512 \\
+model-X & wk inc flu hosp & 0 & quantile & 0.25 & 514 \\
+model-X & wk inc flu hosp & 0 & quantile & 0.5 & 596 \\
+model-X & wk inc flu hosp & 0 & quantile & 0.75 & 713 \\
+model-X & wk inc flu hosp & 1 & quantile & 0.25 & 563 \\
+model-X & wk inc flu hosp & 1 & quantile & 0.5 & 664 \\
+model-X & wk inc flu hosp & 1 & quantile & 0.75 & 803 \\
+model-X & wk inc flu hosp & 2 & quantile & 0.25 & 469 \\
+model-X & wk inc flu hosp & 2 & quantile & 0.5 & 575 \\
+model-X & wk inc flu hosp & 2 & quantile & 0.75 & 705 \\
+model-X & wk inc flu hosp & 3 & quantile & 0.25 & 324 \\
+model-X & wk inc flu hosp & 3 & quantile & 0.5 & 408 \\
+model-X & wk inc flu hosp & 3 & quantile & 0.75 & 512 \\
 
 
 \caption{\label{tbl-example-forecasts}Example of forecasts for incident
@@ -466,8 +468,8 @@ Quantile predictions for the median and 50\% prediction intervals from a
 single model are shown for four distinct horizons. The \texttt{location}
 and \texttt{reference\_date} columns have been omitted for brevity; all
 forecasts in this example were made on 2022-12-17 for Massachusetts.
-This example is a subset of the \texttt{forecast\_outputs} data provided
-by the \pkg{hubExamples} package.}
+This example is a modified subset of the \texttt{forecast\_outputs} data
+provided by the \pkg{hubExamples} package.}
 
 \tabularnewline
 \end{longtable}
@@ -489,13 +491,13 @@ variables are available on the hubverse documentation website
 \citep{hubverse_docs}.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1778}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1000}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1111}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1556}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1556}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1889}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1111}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1294}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1059}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1176}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1647}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1647}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2000}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1176}}@{}}
 
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -517,30 +519,18 @@ variables are available on the hubverse documentation website
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-HUBuni-simexamp & inc case & 26 & A-2021-03-05 & quantile & 0.25 &
-1147.00 \\
-HUBuni-simexamp & inc case & 26 & A-2021-03-05 & quantile & 0.50 &
-1516.00 \\
-HUBuni-simexamp & inc case & 26 & A-2021-03-05 & quantile & 0.75 &
-1929.00 \\
-HUBuni-simexamp & inc case & 26 & B-2021-03-05 & quantile & 0.25 &
-4241.75 \\
-HUBuni-simexamp & inc case & 26 & B-2021-03-05 & quantile & 0.50 &
-4952.50 \\
-HUBuni-simexamp & inc case & 26 & B-2021-03-05 & quantile & 0.75 &
-6002.25 \\
-HUBuni-simexamp & inc case & 26 & C-2021-03-05 & quantile & 0.25 &
-32478.75 \\
-HUBuni-simexamp & inc case & 26 & C-2021-03-05 & quantile & 0.50 &
-38594.50 \\
-HUBuni-simexamp & inc case & 26 & C-2021-03-05 & quantile & 0.75 &
-44975.50 \\
-HUBuni-simexamp & inc case & 26 & D-2021-03-05 & quantile & 0.25 &
-85811.75 \\
-HUBuni-simexamp & inc case & 26 & D-2021-03-05 & quantile & 0.50 &
-99841.50 \\
-HUBuni-simexamp & inc case & 26 & D-2021-03-05 & quantile & 0.75 &
-113963.50 \\
+model-Y & inc case & 26 & A & quantile & 0.25 & 1147.00 \\
+model-Y & inc case & 26 & A & quantile & 0.50 & 1516.00 \\
+model-Y & inc case & 26 & A & quantile & 0.75 & 1929.00 \\
+model-Y & inc case & 26 & B & quantile & 0.25 & 4241.75 \\
+model-Y & inc case & 26 & B & quantile & 0.50 & 4952.50 \\
+model-Y & inc case & 26 & B & quantile & 0.75 & 6002.25 \\
+model-Y & inc case & 26 & C & quantile & 0.25 & 32478.75 \\
+model-Y & inc case & 26 & C & quantile & 0.50 & 38594.50 \\
+model-Y & inc case & 26 & C & quantile & 0.75 & 44975.50 \\
+model-Y & inc case & 26 & D & quantile & 0.25 & 85811.75 \\
+model-Y & inc case & 26 & D & quantile & 0.50 & 99841.50 \\
+model-Y & inc case & 26 & D & quantile & 0.75 & 113963.50 \\
 
 
 \caption{\label{tbl-example-scenarios}Example of scenario projections
@@ -549,8 +539,9 @@ Quantile predictions for the median and 50\% prediction intervals from a
 single model are shown for four distinct scenarios. The
 \texttt{location} and \texttt{origin\_date} columns have been omitted
 for brevity; all forecasts in this example were made on 2021-03-07 for
-the US. This example is a subset of the \texttt{scenario\_outputs} data
-provided by the \pkg{hubExamples} package.}
+the US. This example is a modified subset of the
+\texttt{scenario\_outputs} data provided by the \pkg{hubExamples}
+package.}
 
 \tabularnewline
 \end{longtable}

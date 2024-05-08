@@ -82,8 +82,6 @@
 
 \newcommand{\class}[1]{`\code{#1}'}
 \newcommand{\fct}[1]{\code{#1()}}
-\usepackage{float}
-\floatplacement{table}{H}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -134,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, frame hidden, sharp corners, enhanced, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, breakable, enhanced, boxrule=0pt, sharp corners, borderline west={3pt}{0pt}{shadecolor}, interior hidden]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -264,13 +262,13 @@ settings
 Here, we present the \pkg{hubEnsembles} package, which provides a
 flexible framework for generating ensemble predictions from multiple
 models. Complementing other software for combining predictions from
-multiple models (e.g.,
-\citep{pedregosa_scikit-learn_2011, weiss2019, bosse_stackr_2023, couch_stacks_2023}),
-\pkg{hubEnsembles} supports multiple types of predictions, including
-point estimates and different kinds of probabilistic predictions.
-Throughout, we will use the term ``prediction'' to refer to any kind of
-model output that may be combined including a forecast, a scenario
-projection, or a parameter estimate.
+multiple models (e.g., \citet{pedregosa_scikit-learn_2011};
+\citet{weiss2019}; \citet{bosse_stackr_2023};
+\citet{couch_stacks_2023}), \pkg{hubEnsembles} supports multiple types
+of predictions, including point estimates and different kinds of
+probabilistic predictions. Throughout, we will use the term
+``prediction'' to refer to any kind of model output that may be combined
+including a forecast, a scenario projection, or a parameter estimate.
 
 The \pkg{hubEnsembles} package is part of the ``hubverse'' collection of
 open-source software and data tools. The hubverse project facilitates
@@ -345,7 +343,9 @@ The quantile average combines a set of quantile functions,
 \(\mathcal{Q} = \{F_i^{-1}(\theta)| i \in 1,...,N \}\), with a given set
 of weights, \(\pmb{w}\), as \[
 F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta).
-\]This computes the average value of predictions across different models
+\]
+
+This computes the average value of predictions across different models
 for each fixed quantile level \(\theta\). It is also possible to use
 other combination functions, such as a weighted median, to combine
 quantile predictions.
@@ -363,7 +363,9 @@ F_{LOP}(x) = C_{LOP}(\mathcal{F}, \pmb{w}) = \sum_{i = 1}^Nw_iF_i(x).
 
 For a set of PMF values, \(\{f_i(x)|i \in 1, ..., N\}\), the linear pool
 can be equivalently calculated:
-\(f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)\).
+\(f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)\). For a visual depiction of
+these equations, see
+Figure~\ref{fig-example-quantile-average-and-linear-pool} below.
 
 The different averaging methods for probabilistic predictions yield
 different properties of the resulting ensemble distribution. For
@@ -559,7 +561,7 @@ predictions, or \texttt{"quantile"}, \texttt{"cdf"}, \texttt{"pmf"}, or
 output type is not yet supported by the \pkg{hubEnsembles} package). The
 \texttt{output\_type\_id} provides additional identifying information
 for a prediction and is specific to the particular \texttt{output\_type}
-(see Table~\ref{tbl-example-forecasts}). For quantile predictions, the
+(see Table~\ref{tbl-model-output-rep}). For quantile predictions, the
 \texttt{output\_type\_id} is a numeric value between 0 and 1 specifying
 the cumulative probability associated with the quantile prediction. In
 the notation we defined above, the \texttt{output\_type\_id} corresponds
@@ -582,9 +584,9 @@ function from \pkg{hubUtils}. An example of this transformation is
 provided in Section~\ref{sec-case-study}.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2083}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4583}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2500}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3194}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4306}}@{}}
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{output\_type}
@@ -772,9 +774,10 @@ show model output collected for seven fixed quantile levels (\(\theta\)
 = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions
 (\(N(100, 10)\) in purple and \(N(120, 5)\) in green), with the
 underlying cumulative distribution functions (CDFs) shown with curves.
-The associated values for each fixed quantile level do not align across
-distributions (vertical lines). (Panel B) Quantile average ensemble,
-which is calculated by averaging values for each fixed quantile level
+The y-axis ticks show each of the fixed quantile levels. The associated
+values for each fixed quantile level do not align across distributions
+(vertical lines). (Panel B) Quantile average ensemble, which is
+calculated by averaging values for each fixed quantile level
 (represented by horizontal dashed gray lines). The distributions and
 corresponding model outputs from panel A are re-plotted and the black
 line shows the resulting quantile average ensemble. Inset shows
@@ -1005,8 +1008,8 @@ R> hubVis::plot_step_ahead_model_output(
 \caption{\label{fig-plot-ex-mods}One example quantile forecast of weekly
 incident influenza hospitalizations in Massachusetts from each of three
 models (panels). Forecasts are represented by a median (line), 50\% and
-90\% prediction intervals. Gray points represent observed incident
-hospitalizations.}
+90\% prediction intervals (ribbons). Gray points represent observed
+incident hospitalizations.}
 
 \end{figure}%
 
@@ -1238,7 +1241,8 @@ incident influenza hospitalizations in Massachusetts. Each ensemble
 combines individual predictions from the example hub
 (Figure~\ref{fig-plot-ex-mods}) using a different method: arithmetic
 mean, geometric mean, or median. All methods correspond to variations of
-the quantile average approach.}
+the quantile average approach. Ensembles are represented by a median
+(line), 50\% and 90\% prediction intervals (ribbons).}
 
 \end{figure}%
 
@@ -1315,7 +1319,8 @@ Ensemble predictions of weekly incident influenza hospitalizations in
 Massachusetts, which provide an example of quantile output type. Note,
 for quantile output type, \texttt{simple\_ensemble} corresponds to a
 quantile average. Ensembles combine individual models from the example
-hub (Figure~\ref{fig-plot-ex-mods}).}
+hub, and are represented by a median (line), 50\% and 90\% prediction
+intervals (ribbons) (Figure~\ref{fig-plot-ex-mods}).}
 
 \end{figure}%
 
@@ -1349,7 +1354,7 @@ repository
 We begin by querying the component forecasts used to generate the four
 ensembles from Zoltar \citep{reich_zoltar_2021}, a repository designed
 to archive forecasts created by the Reich Lab at UMass Amherst. Here, we
-only consider Flusight predictions in a quantile format from the
+only consider FluSight predictions in a quantile format from the
 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data
 objects, split by season, called \texttt{flu\_forecasts-raw\_21-22.rds}
 and \texttt{flu\_forecasts-raw\_22-23.rds}. Forecasts must conform to
@@ -1472,29 +1477,29 @@ R> flu_forecasts_hubverse <- dplyr::filter(
 +)
 R> mean_ensemble <- flu_forecasts_hubverse |>
 +  hubEnsembles::simple_ensemble(
-+  weights = NULL,
-+  agg_fun = "mean",
-+  model_id = "mean-ensemble"
-+)
++    weights = NULL,
++    agg_fun = "mean",
++    model_id = "mean-ensemble"
++  )
 R> median_ensemble <- flu_forecasts_hubverse |>
 +  hubEnsembles::simple_ensemble(
-+  weights = NULL,
-+  agg_fun = "median",
-+  model_id = "median-ensemble"
-+)
++    weights = NULL,
++    agg_fun = "median",
++    model_id = "median-ensemble"
++  )
 R> lp_normal <- flu_forecasts_hubverse |>
 +  hubEnsembles::linear_pool(
-+  weights = NULL,
-+  n_samples = 1e5, model_id = "lp-normal",
-+  tail_dist = "norm"
-+)
++    weights = NULL,
++    n_samples = 1e5, model_id = "lp-normal",
++    tail_dist = "norm"
++  )
 R> lp_lognormal <- flu_forecasts_hubverse |>
 +  hubEnsembles::linear_pool(
-+  weights = NULL,
-+  n_samples = 1e5,
-+  model_id = "lp-lognormal",
-+  tail_dist = "lnorm"
-+)
++    weights = NULL,
++    n_samples = 1e5,
++    model_id = "lp-lognormal",
++    tail_dist = "lnorm"
++  )
 \end{verbatim}
 
 We evaluate the performance of these ensembles using scoring metrics
@@ -1732,15 +1737,16 @@ individual model predictions into an ensemble.
 
 The \pkg{hubEnsembles} package is situated within the larger hubverse
 collection of open-source software and data tools to support
-collaborative modeling exercises. Collaborative hubs offer many
-benefits, including serving as a centralized entity to guide and elicit
-predictions from multiple independent models \citep{reich2022}. Given
-the increasing popularity of multi-model ensembles and collaborative
-hubs, there is a clear need for generalized data standards and software
-infrastructure to support these hubs. By addressing this need, the
-hubverse suite of tools can reduce duplicative efforts across existing
-hubs, support other communities engaged in collaborative efforts, and
-enable the adoption of multi-model approaches in new domains.
+collaborative modeling exercises \citep{hubverse_docs}. Collaborative
+hubs offer many benefits, including serving as a centralized entity to
+guide and elicit predictions from multiple independent models
+\citep{reich2022}. Given the increasing popularity of multi-model
+ensembles and collaborative hubs, there is a clear need for generalized
+data standards and software infrastructure to support these hubs. By
+addressing this need, the hubverse suite of tools can reduce duplicative
+efforts across existing hubs, support other communities engaged in
+collaborative efforts, and enable the adoption of multi-model approaches
+in new domains.
 
 When using \pkg{hubEnsembles}, it is important to carefully choose an
 ensemble method that is well suited for the situation. Although there

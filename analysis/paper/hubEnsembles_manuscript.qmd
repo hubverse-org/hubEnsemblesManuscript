@@ -1000,29 +1000,29 @@ flu_forecasts_hubverse <- dplyr::filter(
 )
 mean_ensemble <- flu_forecasts_hubverse |>
   hubEnsembles::simple_ensemble(
-  weights = NULL,
-  agg_fun = "mean",
-  model_id = "mean-ensemble"
-)
+    weights = NULL,
+    agg_fun = "mean",
+    model_id = "mean-ensemble"
+  )
 median_ensemble <- flu_forecasts_hubverse |>
   hubEnsembles::simple_ensemble(
-  weights = NULL,
-  agg_fun = "median",
-  model_id = "median-ensemble"
-)
+    weights = NULL,
+    agg_fun = "median",
+    model_id = "median-ensemble"
+  )
 lp_normal <- flu_forecasts_hubverse |>
   hubEnsembles::linear_pool(
-  weights = NULL,
-  n_samples = 1e5, model_id = "lp-normal",
-  tail_dist = "norm"
-)
+    weights = NULL,
+    n_samples = 1e5, model_id = "lp-normal",
+    tail_dist = "norm"
+  )
 lp_lognormal <- flu_forecasts_hubverse |>
   hubEnsembles::linear_pool(
-  weights = NULL,
-  n_samples = 1e5,
-  model_id = "lp-lognormal",
-  tail_dist = "lnorm"
-)
+    weights = NULL,
+    n_samples = 1e5,
+    model_id = "lp-lognormal",
+    tail_dist = "lnorm"
+  )
 ```
 
 We evaluate the performance of these ensembles using scoring metrics that measure the accuracy and calibration of their forecasts. Here, we use several common metrics in forecast evaluation, including mean absolute error (MAE), weighted interval score (WIS) [@bracher_evaluating_2021], 50% prediction interval (PI) coverage, and 95% PI coverage. MAE measures the average absolute error of a set of point forecasts; smaller values of MAE indicate better forecast accuracy. WIS is a generalization of MAE for probabilistic forecasts and is an alternative to other common proper scoring rules which cannot be evaluated directly for quantile forecasts [@bracher_evaluating_2021]. WIS is made up of three component penalties: (1) for over-prediction, (2) for under-prediction, and (3) for the spread of each interval (where an interval is defined by a symmetric set of two quantiles). This metric weights these penalties across all prediction intervals provided. A lower WIS value indicates a more accurate forecast [@bracher_evaluating_2021]. PI coverage provides information about whether a forecast has accurately characterized its uncertainty about future observations. The $50$% PI coverage rate measures the proportion of the time that 50% prediction intervals at that nominal level included the observed value; the 95% PI coverage rate is defined similarly. Achieving approximately nominal (50% or 95%) coverage indicates a well-calibrated forecast.

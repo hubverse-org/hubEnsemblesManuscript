@@ -61,6 +61,7 @@ keywords-formatted: [multiple models, aggregation, forecast, prediction]
 
 ```{r setup}
 #| echo: FALSE
+library(hubEnsemblesManuscript)
 library(hubEnsembles)
 library(hubUtils)
 library(hubExamples)
@@ -75,7 +76,6 @@ library(here)
 library(ggplot2)
 library(reshape2)
 library(cowplot)
-devtools::load_all()
 ```
 
 ## Introduction {#sec-intro}

@@ -18,20 +18,19 @@ Title <- "`hubEnsembles`: Ensembling Methods in R"
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript/master?urlpath=rstudio)
 
+
 This repository contains the data and code for our paper:
 
-> Authors, (2024). _`r Title`_. Name of journal/book <https://doi.org/xxx/xxx>
-
-Our pre-print is online here:
-
-> Authors, (2024). _`r Title`_. Name of journal/book, Accessed `r format(Sys.Date(), "%d %b %Y")`. Online at <https://doi.org/xxx/xxx>
+> Li Shandross, Emily Howerton, Lucie Contamin, Harry Hochheiser, Anna Krystalli, Consortium of Infectious Disease Mdodeling Hubs, Nicholas G. Reich, Evan L. Ray (in prep). *`hubEnsembles`: Ensembling Methods in R*. 
 
 
 ### How to cite
 
 Please cite this compendium as:
 
-> Authors, (`r format(Sys.Date(), "%Y")`). _Compendium of R code and data for `r Title`_. Accessed `r format(Sys.Date(), "%d %b %Y")`. Online at <https://doi.org/xxx/xxx>
+> Li Shandross, Emily Howerton, Lucie Contamin, Harry Hochheiser, Anna Krystalli, Consortium of Infectious Disease Mdodeling Hubs, Nicholas G. Reich, Evan L. Ray (in prep). *Compendium of R code and data for `hubEnsembles`:
+> Ensembling Methods in R*. Accessed 12 Apr 2024. Online at
+> <https://doi.org/xxx/xxx>
 
 ## Contents
 
@@ -58,8 +57,8 @@ You can download the compendium as a zip from from this URL:
 [master.zip](/archive/master.zip). After unzipping:
 
 - open the `.Rproj` file in RStudio
-- run `devtools::install()` to ensure you have the packages this analysis depends on (also listed in the
-[DESCRIPTION](/DESCRIPTION) file).
+- run `devtools::install(dependencies = TRUE)` to ensure you have the packages this analysis depends on (also listed in the
+[DESCRIPTION](/DESCRIPTION) file). You might need to install `devtools` first by running `install.packages("devtools")`.
 - finally, open `analysis/paper/hubEnsembles_manuscript.qmd` and knit to produce the `hubEnsembles_manuscript.html`, or run `rmarkdown::render("analysis/paper/hubEnsembles_manuscript.qmd")` in the R console
 
 ### Licenses

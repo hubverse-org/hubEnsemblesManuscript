@@ -1,6 +1,14 @@
-# Function adapted from answered question on Stack Overflow
-# Apply table formatting with a function
-# Source: https://stackoverflow.com/a/49656650
+#' Apply formatting to cells in a data frame
+#'
+#' Function adapted from answered question on Stack Overflow.
+#' Source: https://stackoverflow.com/a/49656650
+#'
+#' @param df a data.frame
+#' @param rows rows to format
+#' @param cols columns to format
+#' @param value type of formatting to apply
+#'
+#' @export
 format_cells <- function(df, rows, cols,
                          value = c("italics", "bold", "strikethrough", "code")) {
   # select the correct markup

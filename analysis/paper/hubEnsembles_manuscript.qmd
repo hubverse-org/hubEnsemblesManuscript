@@ -118,7 +118,7 @@ The different averaging methods for probabilistic predictions yield different pr
 
 ## Model implementation details {#sec-implementation}
 
-To understand how these methods are implemented in [hubEnsembles]{.pkg}, we first must define the conventions employed by the hubverse and its packages for representing and working with model predictions. We begin with a short overview of concepts and conventions needed to utilize the [hubEnsembles]{.pkg} package, supplemented by example predictions provided by the hubverse, then explain the implementation of the two ensembling functions provided by the package, `simple_ensemble` and `linear_pool`.
+To understand how these methods are implemented in [hubEnsembles]{.pkg}, we first must define the conventions employed by the hubverse and its packages for representing and working with model predictions. We begin with a short overview of concepts and conventions needed to utilize the [hubEnsembles]{.pkg} package, supplemented by example predictions provided by the hubverse, then explain the implementation of the two ensembling functions provided by the package, `simple_ensemble()` and `linear_pool()`.
 
 ### Hubverse terminology and conventions
 
@@ -213,15 +213,15 @@ The [hubEnsembles]{.pkg} package includes two functions that perform ensemble ca
 
 #### Simple ensemble {#sec-simple-ensemble}
 
-The `simple_ensemble` function directly computes an ensemble from component model outputs by combining them via some function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type).
+The `simple_ensemble()` function directly computes an ensemble from component model outputs by combining them via some function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type).
 
-By default, `simple_ensemble` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear pool method.
+By default, `simple_ensemble()` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble()` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble()` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear pool method.
 
 Any aggregation function $C$ may be specified by the user. For example, a median ensemble may also be created by specifying "median" as the aggregation function, or a custom function may be passed to the `agg_fun` argument to create other ensemble types. Similarly, model weights can be specified to create a weighted ensemble.
 
 #### Linear pool {#sec-linear-pool}
 
-The `linear_pool` function implements the linear opinion pool method for ensembling predictions. This function can be used to combine predictions with output types mean, quantile, CDF, and PMF. Unlike `simple_ensemble`, this function handles its computation differently based on the output type. For the CDF, PMF, and mean output types, the linear pool method is equivalent to calling `simple_ensemble` with a mean aggregation function (see @tbl-fns-by-output-type), since `simple_ensemble` produces a linear pool prediction (an average of individual model cumulative or bin probabilities).
+The `linear_pool()` function implements the linear opinion pool method for ensembling predictions. This function can be used to combine predictions with output types mean, quantile, CDF, and PMF. Unlike `simple_ensemble()`, this function handles its computation differently based on the output type. For the CDF, PMF, and mean output types, the linear pool method is equivalent to calling `simple_ensemble()` with a mean aggregation function (see @tbl-fns-by-output-type), since `simple_ensemble()` produces a linear pool prediction (an average of individual model cumulative or bin probabilities).
 
 However, implementation of LOP is less straightforward for the quantile output type. This is because LOP averages cumulative probabilities at each value of the target variable, but the predictions are quantiles (on the scale of the target variable) for fixed quantile levels. The value for these quantile predictions will generally differ between models, and as a result we are typically not provided cumulative probabilities at the same values of the target variable for all component predictions. This lack of alignment between cumulative probabilities for the same target variable values impedes computation of LOP from quantile predictions and is illustrated in panel A of @fig-example-quantile-average-and-linear-pool.
 
@@ -798,7 +798,7 @@ hubVis::plot_step_ahead_model_output(
 
 #### Weighting model contributions
 
-We can weight the contributions of each model in the ensemble using the `weights` argument of `simple_ensemble`. This argument takes a `data.frame` that should include a `model_id` column containing each unique model ID and a `weight` column. In the following example, we include the baseline model in the ensemble, but give it less weight than the other forecasts.
+We can weight the contributions of each model in the ensemble using the `weights` argument of `simple_ensemble()`. This argument takes a `data.frame` that should include a `model_id` column containing each unique model ID and a `weight` column. In the following example, we include the baseline model in the ensemble, but give it less weight than the other forecasts.
 
 ```{r}
 #| prompt: true
@@ -826,20 +826,21 @@ linear_pool_ens <- hubExamples::forecast_outputs |>
 
 As described above, for `quantile` model outputs, the `linear_pool` function approximates the full probability distribution for each component prediction using the value-quantile pairs provided by that model, and then obtains quasi-random samples from that distributional estimate. The number of samples drawn from the distribution of each component model defaults to `1e4`, but this can be changed using the `n_samples` argument.
 
-In @fig-plot-ex-quantile-and-linear-pool, we compare ensemble results generated by `simple_ensemble` and `linear_pool` for model outputs of output types PMF and quantile. As expected, the results from the two functions are equivalent for the PMF output type: for this output type, the `simple_ensemble` method averages the predicted probability of each category across the component models, which is the definition of the linear pool ensemble method. This is not the case for the quantile output type, because the `simple_ensemble` is computing a quantile average.
+In @fig-plot-ex-quantile-and-linear-pool, we compare ensemble results generated by `simple_ensemble()` and `linear_pool()` for model outputs of output types PMF and quantile. As expected, the results from the two functions are equivalent for the PMF output type: for this output type, the `simple_ensemble()` method averages the predicted probability of each category across the component models, which is the definition of the linear pool ensemble method. This is not the case for the quantile output type, because the `simple_ensemble()` is computing a quantile average.
 
 ```{r plot-ex-quantile-and-linear-pool}
 #| label: fig-plot-ex-quantile-and-linear-pool
 #| echo: false
-#| fig-cap: "Comparison of results from `simple_ensemble` (blue) and `linear
-#| pool` (red). (Panel A) Ensemble predictions of Massachusetts incident
-#| influenza hospitalization intensity (classified as low, moderate, high, or
-#| very high), which provide an example of PMF output type. (Panel B) Ensemble
-#| predictions of weekly incident influenza hospitalizations in Massachusetts,
-#| which provide an example of quantile output type. Note, for quantile output
-#| type, `simple_ensemble` corresponds to a quantile average.  Ensembles combine
-#| individual models from the example hub, and are represented by a median 
-#| (line), 50% and 90% prediction intervals (ribbons) (@fig-plot-ex-mods)."
+#| fig-cap: "Comparison of results from `simple_ensemble()` (blue) and 
+#| `linear_pool()` (red). (Panel A) Ensemble predictions of Massachusetts
+#| incident influenza hospitalization intensity (classified as low, moderate,
+#| high, or very high), which provide an example of PMF output type. (Panel B)
+#| Ensemble predictions of weekly incident influenza hospitalizations in
+#| Massachusetts, which provide an example of quantile output type. Note, for
+#| quantile output type, `simple_ensemble()` corresponds to a quantile average.
+#| Ensembles combine individual models from the example hub, and are represented
+#| by a median (line), 50% and 90% prediction intervals (ribbons)
+#| (@fig-plot-ex-mods)."
 #| fig-width: 10
 #| fig-height: 4
 
@@ -933,7 +934,7 @@ Since 2013, the US Centers for Disease Control and Prevention (CDC) has been sol
 
 ### Data and Methods
 
-We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. Here, we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast date` (when the forecast was made), `location`, `horizon`, and `target`.
+We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. Here, we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl()` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast date` (when the forecast was made), `location`, `horizon`, and `target`.
 
 ```{r transform data, eval=FALSE}
 #| prompt: true
@@ -1427,7 +1428,7 @@ truth_states_2122 + truth_states_2223 +
 
 In this analysis, all of the ensemble variations outperformed the baseline model; yet, different ensembling methods performed best under different circumstances. While the quantile median had the best overall results for WIS, MAE, 50% PI coverage, and 95% PI coverage, other models may perform better from week-to-week for each metric. Around the 2022-2023 season's peak in early December, the remaining four models (including the baseline) each had instances in which they achieved the lowest WIS, like the linear pool ensembles for the one week ahead horizon over several weeks of this period.
 
-The choice of an appropriate ensemble aggregation method may depend on the forecast target, the goal of forecasting, and the behavior of the individual models contributing to an ensemble. One case may call for prioritizing high coverage rates while another may prioritize accurate point forecasts. The `simple_ensemble` and `linear_pool` functions and the ability to specify component model weights and an aggregation function for `simple_ensemble` allow users to implement a variety of ensemble methods.
+The choice of an appropriate ensemble aggregation method may depend on the forecast target, the goal of forecasting, and the behavior of the individual models contributing to an ensemble. One case may call for prioritizing high coverage rates while another may prioritize accurate point forecasts. The `simple_ensemble()` and `linear_pool()` functions and the ability to specify component model weights and an aggregation function for `simple_ensemble()` allow users to implement a variety of ensemble methods.
 
 ## Summary and discussion {#sec-conclusions}
 

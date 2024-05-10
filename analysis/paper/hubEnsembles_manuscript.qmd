@@ -53,7 +53,7 @@ execute:
   message: false
 bibliography: references.bib
 abstract: |
-  Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. The [R]{.proglang} package [hubEnsembles]{.pkg} provides a flexible framework for  ensembling various types of predictions, including point estimates and probabilistic predictions. A range of common methods for generating ensembles are supported, including weighted averages, quantile averages, and linear pools. The [hubEnsembles]{.pkg} package fits within a broader framework of open-source software and data tools called the "hubverse", which facilitates the development and management of collaborative modelling exercises.
+  Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. The [R]{.proglang} package [hubEnsembles]{.pkg} provides a flexible framework for ensembling various types of predictions, including point estimates and probabilistic predictions. A range of common methods for generating ensembles are supported, including weighted averages, quantile averages, and linear pools. The [hubEnsembles]{.pkg} package fits within a broader framework of open-source software and data tools called the "hubverse", which facilitates the development and management of collaborative modelling exercises.
 
 keywords: [multiple models, aggregation, forecast, prediction]
 keywords-formatted: [multiple models, aggregation, forecast, prediction]
@@ -96,7 +96,7 @@ $$
 p_E = C(\pmb{p}, \pmb{w}) 
 $$
 
-using any function $C$ and a any set of model-specific weights $\pmb{w}$. For example, an arithmetic average of predictions yields $p_E = \sum_{i=1}^Np_iw_i$, where the weights are non-negative and sum to 1. If $w_i = 1/N$ for all $i$, all predictions will be equally weighted. This framework can also support more complex functions for aggregation, such as a (weighted) median or geometric mean.
+using any function $C$ and any set of model-specific weights $\pmb{w}$. For example, an arithmetic average of predictions yields $p_E = \sum_{i=1}^Np_iw_i$, where the weights are non-negative and sum to 1. If $w_i = 1/N$ for all $i$, all predictions will be equally weighted. This framework can also support more complex functions for aggregation, such as a (weighted) median or geometric mean.
 
 For probabilistic predictions, there are two commonly used classes of methods to average or ensemble multiple predictions: quantile averaging (also called a Vincent average [@vincent1912]) and probability averaging (also called a distributional mixture or linear opinion pool [@stone1961]) [@lichtendahl2013]. To define these two classes of methods, let $F(x)$ be a cumulative density function (CDF) defined over values $x$ of the target variable for the prediction, and $F^{-1}(\theta)$ be the corresponding quantile function defined over quantile levels $\theta \in [0, 1]$. Throughout this article, we may refer to $x$ as either a 'value of the target variable' or a 'quantile' depending on the context, and similarly we may refer to $\theta$ as either a 'quantile level' or a '(cumulative) probability'. Additionally, we will use $f(x)$ to denote a probability mass function (PMF) for a prediction of a discrete variable or a discretization (such as binned values) of a continuous variable.
 

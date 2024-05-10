@@ -17,7 +17,8 @@ Authors@R: c(
            email = "elray@umass.edu",
            role = c("aut")),
     person(given = "Anna", 
-           family = "Krystalli", , "annakrystalli@googlemail.com", 
+           family = "Krystalli", 
+           email = "annakrystalli@googlemail.com", 
            role = c("ctb"),
            comment = c(ORCID = "0000-0002-2378-4915")))
 Description: Repository containing data and analysis for a paper on hubEnsembles, 

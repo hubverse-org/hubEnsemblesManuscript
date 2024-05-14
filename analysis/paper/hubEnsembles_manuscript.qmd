@@ -53,7 +53,7 @@ execute:
   message: false
 bibliography: references.bib
 abstract: |
-  Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. The [R]{.proglang} package [hubEnsembles]{.pkg} provides a flexible framework for ensembling various types of predictions, including point estimates and probabilistic predictions. A range of common methods for generating ensembles are supported, including weighted averages, quantile averages, and linear pools. The [hubEnsembles]{.pkg} package fits within a broader framework of open-source software and data tools called the "hubverse", which facilitates the development and management of collaborative modelling exercises.
+  Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. The [R]{.proglang} package [hubEnsembles]{.pkg} provides a flexible framework for ensembling various types of predictions, including point estimates and probabili if (length(x == 10)) ifstic predictions. A range of common methods for generating ensembles are supported, including weighted averages, quantile averages, and linear pools. The [hubEnsembles]{.pkg} package fits within a broader framework of open-source software and data tools called the "hubverse", which facilitates the development and management of collaborative modelling exercises.
 
 keywords: [multiple models, aggregation, forecast, prediction]
 keywords-formatted: [multiple models, aggregation, forecast, prediction]
@@ -934,7 +934,7 @@ Since 2013, the US Centers for Disease Control and Prevention (CDC) has been sol
 
 ### Data and Methods
 
-We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. Here, we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl()` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast date` (when the forecast was made), `location`, `horizon`, and `target`.
+We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. For this analysis we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl()` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
 
 ```{r transform data, eval=FALSE}
 #| prompt: true
@@ -1014,7 +1014,8 @@ median_ensemble <- flu_forecasts_hubverse |>
 lp_normal <- flu_forecasts_hubverse |>
   hubEnsembles::linear_pool(
     weights = NULL,
-    n_samples = 1e5, model_id = "lp-normal",
+    n_samples = 1e5,
+    model_id = "lp-normal",
     tail_dist = "norm"
   )
 lp_lognormal <- flu_forecasts_hubverse |>
@@ -1026,7 +1027,7 @@ lp_lognormal <- flu_forecasts_hubverse |>
   )
 ```
 
-We evaluate the performance of these ensembles using scoring metrics that measure the accuracy and calibration of their forecasts. Here, we use several common metrics in forecast evaluation, including mean absolute error (MAE), weighted interval score (WIS) [@bracher_evaluating_2021], 50% prediction interval (PI) coverage, and 95% PI coverage. MAE measures the average absolute error of a set of point forecasts; smaller values of MAE indicate better forecast accuracy. WIS is a generalization of MAE for probabilistic forecasts and is an alternative to other common proper scoring rules which cannot be evaluated directly for quantile forecasts [@bracher_evaluating_2021]. WIS is made up of three component penalties: (1) for over-prediction, (2) for under-prediction, and (3) for the spread of each interval (where an interval is defined by a symmetric set of two quantiles). This metric weights these penalties across all prediction intervals provided. A lower WIS value indicates a more accurate forecast [@bracher_evaluating_2021]. PI coverage provides information about whether a forecast has accurately characterized its uncertainty about future observations. The $50$% PI coverage rate measures the proportion of the time that 50% prediction intervals at that nominal level included the observed value; the 95% PI coverage rate is defined similarly. Achieving approximately nominal (50% or 95%) coverage indicates a well-calibrated forecast.
+We evaluate the performance of these ensembles using scoring metrics that measure the accuracy and calibration of their forecasts. Here, we choose several common metrics in forecast evaluation, including mean absolute error (MAE), weighted interval score (WIS) [@bracher_evaluating_2021], 50% prediction interval (PI) coverage, and 95% PI coverage. MAE measures the average absolute error of a set of point forecasts; smaller values of MAE indicate better forecast accuracy. WIS is a generalization of MAE for probabilistic forecasts and is an alternative to other common proper scoring rules which cannot be evaluated directly for quantile forecasts [@bracher_evaluating_2021]. WIS is made up of three component penalties: (1) for over-prediction, (2) for under-prediction, and (3) for the spread of each interval (where an interval is defined by a symmetric set of two quantiles). This metric weights these penalties across all prediction intervals provided. A lower WIS value indicates a more accurate forecast [@bracher_evaluating_2021]. PI coverage provides information about whether a forecast has accurately characterized its uncertainty about future observations. The $50$% PI coverage rate measures the proportion of the time that 50% prediction intervals at that nominal level included the observed value; the 95% PI coverage rate is defined similarly. Achieving approximately nominal (50% or 95%) coverage indicates a well-calibrated forecast.
 
 ```{r read in forecasts and scores, echo=FALSE}
 flu_truth_all <- readr::read_rds(
@@ -1050,7 +1051,7 @@ flu_scores_all <- rbind(flu_scores_ensembles, flu_scores_baseline)
 
 We also use relative versions of WIS and MAE (rWIS and rMAE, respectively) to understand how the ensemble performance compares to that of the FluSight baseline model. These metrics are calculated as $$\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},$$ where model $m$ is any given model being compared against the baseline. For both of these metrics, a value less than one indicates better performance compared to the baseline while a value greater than one indicates worse performance. By definition, the FluSight baseline itself will always have a value of one for both of these metrics.
 
-Here, we score each unique prediction from an ensemble model, i.e., combination of task ID variables, against target data with the `score_forecasts()` function from the [covidHubUtils]{.pkg} package. This function outputs each of the metrics described above. We use median forecasts taken from the 0.5 quantile for the MAE evaluation.
+Each unique prediction from an ensemble model is scored against target data using the `score_forecasts()` function from the [covidHubUtils]{.pkg} package. This function outputs each of the metrics described above. We use median forecasts taken from the 0.5 quantile for the MAE evaluation.
 
 ### Performance results across ensembles
 
@@ -1059,7 +1060,7 @@ The quantile median ensemble had the best overall performance in terms of WIS an
 ```{r overall-evaluation, message=FALSE, warning=FALSE, echo=FALSE}
 #| label: tbl-overall-evaluation
 #| tbl-cap: "Summary of overall model performance across both seasons, averaged
-#| over all locations except the US national location. The best values for each
+#| over all locations except the US national location. The best value for each
 #| metric is bolded, though the metric values are often quite similar among
 #| the models."
 

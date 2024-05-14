@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, breakable, enhanced, boxrule=0pt, sharp corners, borderline west={3pt}{0pt}{shadecolor}, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, sharp corners, interior hidden, frame hidden, breakable]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -182,10 +182,10 @@ Ray} %% comma-separated
 a widely used practice across many fields with demonstrated performance
 benefits. The \proglang{R} package \pkg{hubEnsembles} provides a
 flexible framework for ensembling various types of predictions,
-including point estimates and probabilistic predictions. A range of
-common methods for generating ensembles are supported, including
-weighted averages, quantile averages, and linear pools. The
-\pkg{hubEnsembles} package fits within a broader framework of
+including point estimates and probabili if (length(x == 10)) ifstic
+predictions. A range of common methods for generating ensembles are
+supported, including weighted averages, quantile averages, and linear
+pools. The \pkg{hubEnsembles} package fits within a broader framework of
 open-source software and data tools called the ``hubverse'', which
 facilitates the development and management of collaborative modelling
 exercises.}
@@ -316,7 +316,7 @@ predictions
 p_E = C(\pmb{p}, \pmb{w}) 
 \]
 
-using any function \(C\) and a any set of model-specific weights
+using any function \(C\) and any set of model-specific weights
 \(\pmb{w}\). For example, an arithmetic average of predictions yields
 \(p_E = \sum_{i=1}^Np_iw_i\), where the weights are non-negative and sum
 to 1. If \(w_i = 1/N\) for all \(i\), all predictions will be equally
@@ -390,8 +390,8 @@ packages for representing and working with model predictions. We begin
 with a short overview of concepts and conventions needed to utilize the
 \pkg{hubEnsembles} package, supplemented by example predictions provided
 by the hubverse, then explain the implementation of the two ensembling
-functions provided by the package, \texttt{simple\_ensemble} and
-\texttt{linear\_pool}.
+functions provided by the package, \texttt{simple\_ensemble()} and
+\texttt{linear\_pool()}.
 
 \subsection{Hubverse terminology and
 conventions}\label{hubverse-terminology-and-conventions}
@@ -558,7 +558,8 @@ consists of the same three columns: (1) \texttt{output\_type}, (2)
 and may be one of \texttt{"mean"} or \texttt{"median"} for point
 predictions, or \texttt{"quantile"}, \texttt{"cdf"}, \texttt{"pmf"}, or
 \texttt{"sample"} for probabilistic predictions (although the sample
-output type is not yet supported by the \pkg{hubEnsembles} package). The
+output type is not yet directly supported by the \pkg{hubEnsembles}
+package, and need to be converted to another output type first). The
 \texttt{output\_type\_id} provides additional identifying information
 for a prediction and is specific to the particular \texttt{output\_type}
 (see Table~\ref{tbl-model-output-rep}). For quantile predictions, the
@@ -651,7 +652,7 @@ by output type in Table~\ref{tbl-fns-by-output-type}.
 \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{simple\_ensemble(...,\ agg\_fun="mean")}
+\texttt{simple\_ensemble(...,\ agg\_fun=mean)}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{linear\_pool()}
 \end{minipage} \\
@@ -661,7 +662,7 @@ by output type in Table~\ref{tbl-fns-by-output-type}.
 \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{output\_type}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{simple\_ensemble(...,\ agg\_fun="mean")}
+\texttt{simple\_ensemble(...,\ agg\_fun=mean)}
 \end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{linear\_pool()}
 \end{minipage} \\
@@ -697,17 +698,17 @@ model cumulative probabilities is required to compute a
 \texttt{linear\_pool()} for predictions of \texttt{quantile} output
 type; see Section~\ref{sec-linear-pool} for details. In the case of
 \texttt{simple\_ensemble()}, we report the calculations for the default
-case where \texttt{agg\_fun\ =\ "mean"}; however, if another aggregation
-function is chosen (e.g., \texttt{agg\_fun\ =\ "median"}), that
+case where \texttt{agg\_fun\ =\ mean}; however, if another aggregation
+function is chosen (e.g., \texttt{agg\_fun\ =\ median}), that
 calculation would be performed instead. For example,
-\texttt{simple\_ensemble(...,\ agg\_fun\ =\ "median")} applied to
+\texttt{simple\_ensemble(...,\ agg\_fun\ =\ median)} applied to
 predictions of mean output type would return the median of individual
 model means.}\label{tbl-fns-by-output-type}\tabularnewline
 \end{longtable}
 
 \subsubsection{Simple ensemble}\label{sec-simple-ensemble}
 
-The \texttt{simple\_ensemble} function directly computes an ensemble
+The \texttt{simple\_ensemble()} function directly computes an ensemble
 from component model outputs by combining them via some function (\(C\))
 within each unique combination of task ID variables, output types, and
 output type IDs. This function can be used to summarize predictions of
@@ -716,35 +717,35 @@ ensemble calculations are the same for each of the output types, though
 the resulting statistical ensembling method differs for different output
 types (Table~\ref{tbl-fns-by-output-type}).
 
-By default, \texttt{simple\_ensemble} uses the mean for the aggregation
-function \(C\) and equal weights for all models. For point predictions
-with a mean or median output type, the resulting ensemble prediction is
-an equally weighted average of the individual models' predictions. For
-probabilistic predictions in a quantile format, by default
-\texttt{simple\_ensemble} calculates an equally weighted average of
-individual model target variable values at each quantile level, which is
-equivalent to a quantile average. For model outputs in a CDF or PMF
-format, by default \texttt{simple\_ensemble} computes an equally
-weighted average of individual model (cumulative or bin) probabilities
-at each target variable value, which is equivalent to the linear pool
-method.
+By default, \texttt{simple\_ensemble()} uses the mean for the
+aggregation function \(C\) and equal weights for all models. For point
+predictions with a mean or median output type, the resulting ensemble
+prediction is an equally weighted average of the individual models'
+predictions. For probabilistic predictions in a quantile format, by
+default \texttt{simple\_ensemble()} calculates an equally weighted
+average of individual model target variable values at each quantile
+level, which is equivalent to a quantile average. For model outputs in a
+CDF or PMF format, by default \texttt{simple\_ensemble()} computes an
+equally weighted average of individual model (cumulative or bin)
+probabilities at each target variable value, which is equivalent to the
+linear pool method.
 
 Any aggregation function \(C\) may be specified by the user. For
-example, a median ensemble may also be created by specifying ``median''
-as the aggregation function, or a custom function may be passed to the
-\texttt{agg\_fun} argument to create other ensemble types. Similarly,
-model weights can be specified to create a weighted ensemble.
+example, a median ensemble may also be created by specifying
+\texttt{median} as the aggregation function, or a custom function may be
+passed to the \texttt{agg\_fun} argument to create other ensemble types.
+Similarly, model weights can be specified to create a weighted ensemble.
 
 \subsubsection{Linear pool}\label{sec-linear-pool}
 
-The \texttt{linear\_pool} function implements the linear opinion pool
-method for ensembling predictions. This function can be used to combine
-predictions with output types mean, quantile, CDF, and PMF. Unlike
-\texttt{simple\_ensemble}, this function handles its computation
-differently based on the output type. For the CDF, PMF, and mean output
-types, the linear pool method is equivalent to calling
-\texttt{simple\_ensemble} with a mean aggregation function (see
-Table~\ref{tbl-fns-by-output-type}), since \texttt{simple\_ensemble}
+The \texttt{linear\_pool()} function implements the linear opinion pool
+(POL) method for ensembling predictions. This function can be used to
+combine predictions with output types mean, quantile, CDF, and PMF.
+Unlike \texttt{simple\_ensemble()}, this function handles its
+computation differently based on the output type. For the CDF, PMF, and
+mean output types, the linear pool method is equivalent to calling
+\texttt{simple\_ensemble()} with a mean aggregation function (see
+Table~\ref{tbl-fns-by-output-type}), since \texttt{simple\_ensemble()}
 produces a linear pool prediction (an average of individual model
 cumulative or bin probabilities).
 
@@ -833,10 +834,7 @@ Section~\ref{sec-defs}.
 
 In this section, we provide a simple example to illustrate the two main
 functions in \pkg{hubEnsembles}, \texttt{simple\_ensemble()} and
-\texttt{linear\_pool()}. The figures from here on are generated
-reproducibly using data from rds files stored in the
-\texttt{analysis/data/raw-data} directory and scripts in the
-\texttt{inst} directory.
+\texttt{linear\_pool()}.
 
 \subsection{Example data: a forecast
 hub}\label{example-data-a-forecast-hub}
@@ -1250,7 +1248,7 @@ the quantile average approach. Ensembles are represented by a median
 contributions}\label{weighting-model-contributions}
 
 We can weight the contributions of each model in the ensemble using the
-\texttt{weights} argument of \texttt{simple\_ensemble}. This argument
+\texttt{weights} argument of \texttt{simple\_ensemble()}. This argument
 takes a \texttt{data.frame} that should include a \texttt{model\_id}
 column containing each unique model ID and a \texttt{weight} column. In
 the following example, we include the baseline model in the ensemble,
@@ -1292,14 +1290,14 @@ distribution of each component model defaults to \texttt{1e4}, but this
 can be changed using the \texttt{n\_samples} argument.
 
 In Figure~\ref{fig-plot-ex-quantile-and-linear-pool}, we compare
-ensemble results generated by \texttt{simple\_ensemble} and
-\texttt{linear\_pool} for model outputs of output types PMF and
+ensemble results generated by \texttt{simple\_ensemble()} and
+\texttt{linear\_pool()} for model outputs of output types PMF and
 quantile. As expected, the results from the two functions are equivalent
 for the PMF output type: for this output type, the
-\texttt{simple\_ensemble} method averages the predicted probability of
+\texttt{simple\_ensemble()} method averages the predicted probability of
 each category across the component models, which is the definition of
 the linear pool ensemble method. This is not the case for the quantile
-output type, because the \texttt{simple\_ensemble} is computing a
+output type, because the \texttt{simple\_ensemble()} is computing a
 quantile average.
 
 \begin{figure}
@@ -1311,16 +1309,16 @@ quantile average.
 }
 
 \caption{\label{fig-plot-ex-quantile-and-linear-pool}Comparison of
-results from \texttt{simple\_ensemble} (blue) and \texttt{linear\ pool}
-(red). (Panel A) Ensemble predictions of Massachusetts incident
-influenza hospitalization intensity (classified as low, moderate, high,
-or very high), which provide an example of PMF output type. (Panel B)
-Ensemble predictions of weekly incident influenza hospitalizations in
-Massachusetts, which provide an example of quantile output type. Note,
-for quantile output type, \texttt{simple\_ensemble} corresponds to a
-quantile average. Ensembles combine individual models from the example
-hub, and are represented by a median (line), 50\% and 90\% prediction
-intervals (ribbons) (Figure~\ref{fig-plot-ex-mods}).}
+results from \texttt{simple\_ensemble()} (blue) and
+\texttt{linear\_pool()} (red). (Panel A) Ensemble predictions of
+Massachusetts incident influenza hospitalization intensity (classified
+as low, moderate, high, or very high), which provide an example of PMF
+output type. (Panel B) Ensemble predictions of weekly incident influenza
+hospitalizations in Massachusetts, which provide an example of quantile
+output type. Note, for quantile output type, \texttt{simple\_ensemble()}
+corresponds to a quantile average. Ensembles combine individual models
+from the example hub, and are represented by a median (line), 50\% and
+90\% prediction intervals (ribbons) (Figure~\ref{fig-plot-ex-mods}).}
 
 \end{figure}%
 
@@ -1333,7 +1331,10 @@ complex example. Unlike the previous section's basic showcase of
 functionality, we use this case study to provide a more complete
 analysis that compares and evaluates ensemble model performance using
 real forecasts collected by a modeling hub, with an overarching goal of
-choosing a single best ensembling approach for the application.
+choosing a single best ensembling approach for the application. The
+figures and tables supporting this analysis are generated reproducibly
+using data from rds files stored in the \texttt{analysis/data/raw-data}
+directory and scripts in the \texttt{inst} directory.
 
 Since 2013, the US Centers for Disease Control and Prevention (CDC) has
 been soliciting forecasts of seasonal influenza from modeling teams
@@ -1353,16 +1354,18 @@ repository
 
 We begin by querying the component forecasts used to generate the four
 ensembles from Zoltar \citep{reich_zoltar_2021}, a repository designed
-to archive forecasts created by the Reich Lab at UMass Amherst. Here, we
-only consider FluSight predictions in a quantile format from the
-2021-2022 and 2022-2023 seasons. These forecasts were stored in two data
-objects, split by season, called \texttt{flu\_forecasts-raw\_21-22.rds}
-and \texttt{flu\_forecasts-raw\_22-23.rds}. Forecasts must conform to
+to archive forecasts created by the Reich Lab at UMass Amherst. For this
+analysis we only consider FluSight predictions in a quantile format from
+the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two
+data objects, split by season, called
+\texttt{flu\_forecasts-raw\_21-22.rds} and
+\texttt{flu\_forecasts-raw\_22-23.rds}. Forecasts must conform to
 hubverse standards to be fed into either of the ensembling functions, so
-we first transform the raw forecasts using \texttt{as\_model\_out\_tbl}
-function from the \pkg{hubUtils} package. Here, we specify the task ID
-variables \texttt{forecast\ date} (when the forecast was made),
-\texttt{location}, \texttt{horizon}, and \texttt{target}.
+we first transform the raw forecasts using
+\texttt{as\_model\_out\_tbl()} function from the \pkg{hubUtils} package.
+Here, we specify the task ID variables \texttt{forecast\_date} (when the
+forecast was made), \texttt{location}, \texttt{horizon}, and
+\texttt{target}.
 
 \begin{verbatim}
 R> flu_forecasts_raw_21_22 <- readr::read_rds(
@@ -1478,19 +1481,20 @@ R> flu_forecasts_hubverse <- dplyr::filter(
 R> mean_ensemble <- flu_forecasts_hubverse |>
 +  hubEnsembles::simple_ensemble(
 +    weights = NULL,
-+    agg_fun = "mean",
++    agg_fun = mean,
 +    model_id = "mean-ensemble"
 +  )
 R> median_ensemble <- flu_forecasts_hubverse |>
 +  hubEnsembles::simple_ensemble(
 +    weights = NULL,
-+    agg_fun = "median",
++    agg_fun = median,
 +    model_id = "median-ensemble"
 +  )
 R> lp_normal <- flu_forecasts_hubverse |>
 +  hubEnsembles::linear_pool(
 +    weights = NULL,
-+    n_samples = 1e5, model_id = "lp-normal",
++    n_samples = 1e5,
++    model_id = "lp-normal",
 +    tail_dist = "norm"
 +  )
 R> lp_lognormal <- flu_forecasts_hubverse |>
@@ -1504,7 +1508,7 @@ R> lp_lognormal <- flu_forecasts_hubverse |>
 
 We evaluate the performance of these ensembles using scoring metrics
 that measure the accuracy and calibration of their forecasts. Here, we
-use several common metrics in forecast evaluation, including mean
+choose several common metrics in forecast evaluation, including mean
 absolute error (MAE), weighted interval score (WIS)
 \citep{bracher_evaluating_2021}, 50\% prediction interval (PI) coverage,
 and 95\% PI coverage. MAE measures the average absolute error of a set
@@ -1535,11 +1539,11 @@ better performance compared to the baseline while a value greater than
 one indicates worse performance. By definition, the FluSight baseline
 itself will always have a value of one for both of these metrics.
 
-Here, we score each unique prediction from an ensemble model, i.e.,
-combination of task ID variables, against target data with the
-\texttt{score\_forecasts()} function from the \pkg{covidHubUtils}
-package. This function outputs each of the metrics described above. We
-use median forecasts taken from the 0.5 quantile for the MAE evaluation.
+Each unique prediction from an ensemble model is scored against target
+data using the \texttt{score\_forecasts()} function from the
+\pkg{covidHubUtils} package. This function outputs each of the metrics
+described above. We use median forecasts taken from the 0.5 quantile for
+the MAE evaluation.
 
 \subsection{Performance results across
 ensembles}\label{performance-results-across-ensembles}
@@ -1595,7 +1599,7 @@ Flusight-baseline & 22.876 & 1 & 29.315 & 1 & 0.604 & 0.881 \\
 
 \caption{\label{tbl-overall-evaluation}Summary of overall model
 performance across both seasons, averaged over all locations except the
-US national location. The best values for each metric is bolded, though
+US national location. The best value for each metric is bolded, though
 the metric values are often quite similar among the models.}
 
 \tabularnewline
@@ -1722,10 +1726,11 @@ The choice of an appropriate ensemble aggregation method may depend on
 the forecast target, the goal of forecasting, and the behavior of the
 individual models contributing to an ensemble. One case may call for
 prioritizing high coverage rates while another may prioritize accurate
-point forecasts. The \texttt{simple\_ensemble} and \texttt{linear\_pool}
-functions and the ability to specify component model weights and an
-aggregation function for \texttt{simple\_ensemble} allow users to
-implement a variety of ensemble methods.
+point forecasts. The \texttt{simple\_ensemble()} and
+\texttt{linear\_pool()} functions and the ability to specify component
+model weights and an aggregation function for
+\texttt{simple\_ensemble()} allow users to implement a variety of
+ensemble methods.
 
 \section{Summary and discussion}\label{sec-conclusions}
 
@@ -1797,10 +1802,10 @@ Consortium of Infectious Disease Modeling Hubs authors include Alvaro J.
 Castro Rivadeneira (University of Massachusetts Amherst), Lucie Contamin
 (University of Pittsburgh), Sebastian Funk (London School of Hygene and
 Tropical Medicine), Aaron Gerding (University of Massachusetts Amherst),
-Hugo Gruson (ADD AFFILIATION), Harry Hochheiser (University of
-Pittsburgh), Emily Howerton (The Pennsylvania State University), Melissa
-Kerr (University of Massachusetts Amherst), Anna Krystalli (R-RSE SMPC),
-Sara L. Loo (Johns Hopkins University), Evan L. Ray (University of
+Hugo Gruson (data.org), Harry Hochheiser (University of Pittsburgh),
+Emily Howerton (The Pennsylvania State University), Melissa Kerr
+(University of Massachusetts Amherst), Anna Krystalli (R-RSE SMPC), Sara
+L. Loo (Johns Hopkins University), Evan L. Ray (University of
 Massachusetts Amherst), Nicholas G. Reich (University of Massachusetts
 Amherst), Koji Sato (Johns Hopkins University), Li Shandross (University
 of Massachusetts Amherst), Katharine Sherratt (London School of Hygene

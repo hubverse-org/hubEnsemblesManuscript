@@ -161,7 +161,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
         prob = c(0.5, 0.99)
       ))))
   } else if (y_var == "cov95") {
-    y_lab <- "average\n PI coverage"
+    y_lab <- "average PI coverage"
     truth_data <- NULL
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
@@ -173,7 +173,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
       ggplot2::coord_cartesian(ylim = c(0, 1.05)) +
       ggplot2::geom_hline(ggplot2::aes(yintercept = 0.95))
   } else if (y_var == "cov50") {
-    y_lab <- "average\n PI coverage"
+    y_lab <- "average PI coverage"
     truth_data <- NULL
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
@@ -204,31 +204,29 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
       ggplot2::geom_point(mapping = ggplot2::aes(col = .data$model)) +
       ggplot2::geom_line(mapping = ggplot2::aes(col = .data$model)) +
       ggplot2::scale_x_date(
-        name = NULL, date_breaks = "2 months",
+        name = "forecast date", date_breaks = "2 months",
         date_labels = "%b '%y"
       ) +
       ggplot2::scale_y_continuous(
         name = y_lab,
         sec.axis = ggplot2::sec_axis(
           trans = ~ . / truth_scaling,
-          name = "average\n target data"
+          name = "average target data"
         )
       ) +
       ggplot2::scale_color_manual(breaks = model_names, values = model_colors) +
-      ggplot2::labs(title = main, x = "forecast date") +
+      ggplot2::labs(title = main) +
       ggplot2::theme_bw()
   } else {
     gg +
       ggplot2::geom_point(mapping = ggplot2::aes(col = .data$model), alpha = 0.8) +
       ggplot2::geom_line(mapping = ggplot2::aes(col = .data$model), alpha = 0.8) +
       ggplot2::scale_x_date(
-        name = NULL, date_breaks = "2 months",
+        name = "forecast date", date_breaks = "2 months",
         date_labels = "%b '%y"
       ) +
       ggplot2::scale_color_manual(breaks = model_names, values = model_colors) +
-      ggplot2::labs(
-        title = main, x = "forecast date", y = y_lab,
-      ) +
+      ggplot2::labs(title = main) +
       ggplot2::theme_bw()
   }
 }
@@ -278,13 +276,10 @@ plot_flu_truth <- function(truth_data, date_range = NULL, main = "truth data",
     ggplot2::geom_point() +
     ggplot2::geom_line() +
     ggplot2::scale_x_date(
-      name = NULL, date_breaks = "2 months",
+      name = "forecast date", date_breaks = "2 months",
       date_labels = "%b '%y"
     ) +
     ggplot2::coord_cartesian(ylim = c(0, max(truth_to_plot$value) * 1.1)) +
-    ggplot2::labs(
-      title = main, x = "forecast date",
-      y = "average value"
-    ) +
+    ggplot2::labs(title = main, y = "average value") +
     ggplot2::theme_bw()
 }

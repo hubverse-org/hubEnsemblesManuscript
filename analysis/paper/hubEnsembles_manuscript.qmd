@@ -543,8 +543,9 @@ In this section, we provide a simple example to illustrate the two main function
 #| quantile forecasts made on 2022-12-17 for Massachusetts from three distinct
 #| models; only the median, 50% prediction intervals, and 90% prediction
 #| intervals are displayed. The `location`, `reference_date` and
-#| `target_end_date` columns have been omitted for brevity. This example data is
-#| provided in the [hubExamples]{.pkg} package."
+#| `target_end_date` (date of occurrence for the outcome of interest) columns 
+#| have been omitted for brevity. This example data is provided in the
+#| [hubExamples]{.pkg} package."
 hubExamples::forecast_outputs |>
   dplyr::filter(
     output_type %in% c("quantile", "median"),

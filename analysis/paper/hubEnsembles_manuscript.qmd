@@ -731,10 +731,11 @@ We can change the function that is used to aggregate model outputs. For example,
 
 ```{r}
 #| prompt: true
-median_ens <- hubEnsembles::simple_ensemble(hubExamples::forecast_outputs,
-  agg_fun = median,
-  model_id = "simple-ensemble-median"
-)
+median_ens <- hubExamples::forecast_outputs |>
+  hubEnsembles::simple_ensemble(
+    agg_fun = median,
+    model_id = "simple-ensemble-median"
+  )
 ```
 
 Custom functions can also be passed into the `agg_fun` argument. We illustrate this by defining a custom function to compute the ensemble prediction as a geometric mean of the component model predictions. Any custom function to be used must have an argument `x` for the vector of numeric values to summarize, and if relevant, an argument `w` of numeric weights.

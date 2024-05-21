@@ -193,7 +193,7 @@ This representation of predictive model output is codified by the `model_out_tbl
 | `quantile`    | Numeric between 0.0 and 1.0: A quantile level                                               | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
 | `cdf`         | Numeric naming a possible value of the target variable | Numeric between 0.0 and 1.0: The cumulative probability of the predictive distribution at the value of the outcome variable specified by the `output_type_id` |
 | `pmf`         | String naming a possible category of a discrete outcome variable                            | Numeric between 0.0 and 1.0: The probability mass of the predictive distribution when evaluated at a specified level of a discrete outcome variable           |
-| `sample`      | String specifying sample index                                                              | Numeric: A sample from the predictive distribution                                                                                                            |
+| `sample`      | Integer or string specifying the sample index                                                              | Numeric: A sample from the predictive distribution                                                                                                            |
 
 : A table summarizing how the model output representation columns are used for predictions of different output types. Adapted from [@hubverse_docs] {#tbl-model-output-rep}
 

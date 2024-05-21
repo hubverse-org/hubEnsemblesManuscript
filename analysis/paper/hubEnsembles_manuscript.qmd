@@ -541,9 +541,9 @@ In this section, we provide a simple example to illustrate the two main function
 #| tbl-cap: "Example model output for forecasts of incident influenza
 #| hospitalizations. A subset of example model output is shown: 1-week ahead
 #| quantile forecasts made on 2022-12-17 for Massachusetts from three distinct
-#| models; only the median, 50% prediction intervals, and 90% prediction
-#| intervals are displayed. The `location`, `reference_date` and
-#| `target_end_date` columns have been omitted for brevity. This example data is
+#| models; only the median and 5th, 25th, 75th and 95th quantiles are displayed. 
+#| The `location`, `reference_date` and `target_end_date`
+#| columns have been omitted for brevity. This example data is
 #| provided in the [hubExamples]{.pkg} package."
 hubExamples::forecast_outputs |>
   dplyr::filter(
@@ -704,7 +704,7 @@ The resulting model output has the same structure as the original model output d
 #| determined by the argument `simple_ensemble(..., model_id = )`. A subset of
 #| ensemble model output is shown: 1-week ahead PMF forecasts made on 2022-12-17
 #| for Massachusetts. Results are generated for all output types. Here, we show
-#| only the median and 50% prediction interval for the quantile output type and
+#| only the median, 25th and 75th quantiles for the quantile output type and
 #| all bins for the PMF output type. The `location`, `reference_date` and
 #| `target_end_date` columns have been omitted for brevity, and the `value`
 #| column is rounded to two digits."
@@ -975,7 +975,8 @@ In both seasons, forecasts were made for the same locations (the 50 US states, W
 #| California at the 1 week ahead horizon. The forecast was generated during
 #| the FluSight forecasting challenge, then formatted according to hubverse
 #| standards post hoc. The `location`, `forecast_date`, and `season` columns
-#| have been omitted for brevity."
+#| have been omitted for brevity; quantiles representing the endpoints of the 
+#| central 50%, 80% and 95% prediction intervals are shown."
 readr::read_rds(
   here::here("analysis/data/raw_data/flu_forecasts-small.rds")
 ) |>

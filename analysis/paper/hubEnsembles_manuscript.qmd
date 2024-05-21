@@ -582,7 +582,7 @@ We can plot these forecasts and the target data using the `plot_step_ahead_model
 ```{r plot-ex-mods}
 #| label: fig-plot-ex-mods
 #| prompt: true
-#| fig-cap: "One example quantile forecast of weekly incident influenza
+#| fig-cap: "One example set of quantile forecasts of weekly incident influenza
 #| hospitalizations in Massachusetts from each of three models (panels).
 #| Forecasts are represented by a median (line), 50% and 90% prediction
 #| intervals (ribbons). Gray points represent observed incident hospitalizations."

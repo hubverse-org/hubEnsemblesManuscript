@@ -589,31 +589,31 @@ We can plot these forecasts and the target data using the `plot_step_ahead_model
 #| fig-width: 8
 #| fig-height: 4
 model_outputs_plot <- hubExamples::forecast_outputs |>
-  hubUtils::as_model_out_tbl() |>
-  dplyr::filter(
-    location == "25",
-    output_type %in% c("median", "mean", "quantile"),
-    reference_date == "2022-12-17"
-  )
+    hubUtils::as_model_out_tbl() |>
+    dplyr::filter(
+      location == "25",
+      output_type %in% c("median", "mean", "quantile"),
+      reference_date == "2022-12-17"
+    )
 target_data_plot <- hubExamples::forecast_target_ts |>
-  dplyr::filter(
-    location == "25",
-    date >= "2022-11-01", date <= "2023-02-01"
-  )
+    dplyr::filter(
+      location == "25",
+      date >= "2022-11-01", date <= "2023-02-01"
+    )
 hubVis::plot_step_ahead_model_output(
-  model_output_data = model_outputs_plot,
-  target_data = target_data_plot,
-  facet = "model_id",
-  facet_nrow = 1,
-  interactive = FALSE,
-  intervals = c(0.5, 0.9),
-  show_legend = FALSE,
-  use_median_as_point = TRUE,
-  x_col_name = "target_end_date", 
-  x_target_col_name = "date"
+    model_output_data = model_outputs_plot,
+    target_data = target_data_plot,
+    facet = "model_id",
+    facet_nrow = 1,
+    interactive = FALSE,
+    intervals = c(0.5, 0.9),
+    show_legend = FALSE,
+    use_median_as_point = TRUE,
+    x_col_name = "target_end_date", 
+    x_target_col_name = "date"
   ) +
-  theme_bw() +
-  labs(y = "incident hospitalizations")
+    theme_bw() +
+    labs(y = "incident hospitalizations")
 ```
 
 Next, we examine the PMF target in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These hospitalization intensity categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations.
@@ -690,9 +690,9 @@ Using the default options for `simple_ensemble()`, we can generate an equally we
 ```{r}
 #| prompt: true
 mean_ens <- hubEnsembles::simple_ensemble(
-  hubExamples::forecast_outputs,
-  model_id = "simple-ensemble-mean"
-)
+    hubExamples::forecast_outputs,
+    model_id = "simple-ensemble-mean"
+  )
 ```
 
 The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean` to change the name of this ensemble in the resulting model output; if not specified, the default will be "hub-ensemble".
@@ -731,9 +731,9 @@ We can change the function that is used to aggregate model outputs. For example,
 ```{r}
 #| prompt: true
 median_ens <- hubEnsembles::simple_ensemble(hubExamples::forecast_outputs,
-  agg_fun = median,
-  model_id = "simple-ensemble-median"
-)
+    agg_fun = median,
+    model_id = "simple-ensemble-median"
+  )
 ```
 
 Custom functions can also be passed into the `agg_fun` argument. We illustrate this by defining a custom function to compute the ensemble prediction as a geometric mean of the component model predictions. Any custom function to be used must have an argument `x` for the vector of numeric values to summarize, and if relevant, an argument `w` of numeric weights.
@@ -741,14 +741,14 @@ Custom functions can also be passed into the `agg_fun` argument. We illustrate t
 ```{r}
 #| prompt: true
 geometric_mean <- function(x) {
-  n <- length(x)
-  return(prod(x)^(1 / n))
-}
+    n <- length(x)
+    return(prod(x)^(1 / n))
+  }
 geometric_mean_ens <- hubExamples::forecast_outputs |>
-  hubEnsembles::simple_ensemble(
-    agg_fun = geometric_mean,
-    model_id = "simple-ensemble-geometric"
-  )
+    hubEnsembles::simple_ensemble(
+      agg_fun = geometric_mean,
+      model_id = "simple-ensemble-geometric"
+    )
 ```
 
 As expected, the mean, median, and geometric mean each give us slightly different resulting ensembles. The median point estimates, 50% prediction intervals, and 90% prediction intervals in @fig-plot-ensembles demonstrate this.
@@ -803,14 +803,14 @@ We can weight the contributions of each model in the ensemble using the `weights
 ```{r}
 #| prompt: true
 model_weights <- data.frame(
-  model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "simple_hub-baseline"),
-  weight = c(0.4, 0.4, 0.2)
-)
-weighted_mean_ens <- hubExamples::forecast_outputs |>
-  hubEnsembles::simple_ensemble(
-    weights = model_weights,
-    model_id = "simple-ensemble-weighted-mean"
+    model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "simple_hub-baseline"),
+    weight = c(0.4, 0.4, 0.2)
   )
+weighted_mean_ens <- hubExamples::forecast_outputs |>
+    hubEnsembles::simple_ensemble(
+      weights = model_weights,
+      model_id = "simple-ensemble-weighted-mean"
+    )
 ```
 
 ### Creating ensembles with linear_pool
@@ -820,8 +820,8 @@ We can also generate a linear pool ensemble, or distributional mixture, using th
 ```{r}
 #| prompt: true
 linear_pool_ens <- hubExamples::forecast_outputs |>
-  dplyr::filter(output_type != "median") |>
-  hubEnsembles::linear_pool(model_id = "linear-pool")
+    dplyr::filter(output_type != "median") |>
+    hubEnsembles::linear_pool(model_id = "linear-pool")
 ```
 
 As described above, for `quantile` model outputs, the `linear_pool` function approximates the full probability distribution for each component prediction using the value-quantile pairs provided by that model, and then obtains quasi-random samples from that distributional estimate. The number of samples drawn from the distribution of each component model defaults to `1e4`, but this can be changed using the `n_samples` argument.
@@ -939,26 +939,28 @@ We begin by querying the component forecasts used to generate the four ensembles
 ```{r transform data, eval=FALSE}
 #| prompt: true
 flu_forecasts_raw_21_22 <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
-)
-flu_forecasts_raw_22_23 <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-raw_22-23.rds")
-)
-flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22,
-                           dplyr::select(flu_forecasts_raw_22_23, -season))
-flu_forecasts_hubverse <- flu_forecasts_raw |>
-  dplyr::rename(target = target_long) |>
-  as_model_out_tbl(
-    model_id_col = "model_id",
-    output_type_col = "output_type",
-    output_type_id_col = "output_type_id",
-    value_col = "value",
-    sep = "-",
-    trim_to_task_ids = FALSE,
-    hub_con = NULL,
-    task_id_cols = c("forecast_date", "location", "horizon", "target"),
-    remove_empty = TRUE
+    here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
   )
+flu_forecasts_raw_22_23 <- readr::read_rds(
+    here::here("analysis/data/raw_data/flu_forecasts-raw_22-23.rds")
+  )
+flu_forecasts_raw <- rbind(
+    flu_forecasts_raw_21_22,
+    dplyr::select(flu_forecasts_raw_22_23, -season)
+  )
+flu_forecasts_hubverse <- flu_forecasts_raw |>
+    dplyr::rename(target = target_long) |>
+    as_model_out_tbl(
+      model_id_col = "model_id",
+      output_type_col = "output_type",
+      output_type_id_col = "output_type_id",
+      value_col = "value",
+      sep = "-",
+      trim_to_task_ids = FALSE,
+      hub_con = NULL,
+      task_id_cols = c("forecast_date", "location", "horizon", "target"),
+      remove_empty = TRUE
+    )
 ```
 
 We exclude component forecasts from the ensemble calculations if any prediction (defined by a unique combination of task ID variables) did not include all 23 quantiles specified by FluSight ($\theta \in \{.010, 0.025, .050, .100, ..., .900, .950, .990\}$). We also exclude the FluSight baseline and median ensemble models that were previously generated by the FluSight hub.
@@ -997,35 +999,35 @@ Next, we combine the component model outputs to generate predictions from each e
 #| prompt: true
 
 flu_forecasts_hubverse <- dplyr::filter(
-  flu_forecasts_hubverse,
-  model_id != "Flusight-baseline"
-)
+    flu_forecasts_hubverse,
+    model_id != "Flusight-baseline"
+  )
 mean_ensemble <- flu_forecasts_hubverse |>
-  hubEnsembles::simple_ensemble(
-    weights = NULL,
-    agg_fun = mean,
-    model_id = "mean-ensemble"
-  )
+    hubEnsembles::simple_ensemble(
+      weights = NULL,
+      agg_fun = mean,
+      model_id = "mean-ensemble"
+    )
 median_ensemble <- flu_forecasts_hubverse |>
-  hubEnsembles::simple_ensemble(
-    weights = NULL,
-    agg_fun = median,
-    model_id = "median-ensemble"
-  )
+    hubEnsembles::simple_ensemble(
+      weights = NULL,
+      agg_fun = median,
+      model_id = "median-ensemble"
+    )
 lp_normal <- flu_forecasts_hubverse |>
-  hubEnsembles::linear_pool(
-    weights = NULL,
-    n_samples = 1e5,
-    model_id = "lp-normal",
-    tail_dist = "norm"
-  )
+    hubEnsembles::linear_pool(
+      weights = NULL,
+      n_samples = 1e5,
+      model_id = "lp-normal",
+      tail_dist = "norm"
+    )
 lp_lognormal <- flu_forecasts_hubverse |>
-  hubEnsembles::linear_pool(
-    weights = NULL,
-    n_samples = 1e5,
-    model_id = "lp-lognormal",
-    tail_dist = "lnorm"
-  )
+    hubEnsembles::linear_pool(
+      weights = NULL,
+      n_samples = 1e5,
+      model_id = "lp-lognormal",
+      tail_dist = "lnorm"
+    )
 ```
 
 We evaluate the performance of these ensembles using scoring metrics that measure the accuracy and calibration of their forecasts. Here, we choose several common metrics in forecast evaluation, including mean absolute error (MAE), weighted interval score (WIS) [@bracher_evaluating_2021], 50% prediction interval (PI) coverage, and 95% PI coverage. MAE measures the average absolute error of a set of point forecasts; smaller values of MAE indicate better forecast accuracy. WIS is a generalization of MAE for probabilistic forecasts and is an alternative to other common proper scoring rules which cannot be evaluated directly for quantile forecasts [@bracher_evaluating_2021]. WIS is made up of three component penalties: (1) for over-prediction, (2) for under-prediction, and (3) for the spread of each interval (where an interval is defined by a symmetric set of two quantiles). This metric weights these penalties across all prediction intervals provided. A lower WIS value indicates a more accurate forecast [@bracher_evaluating_2021]. PI coverage provides information about whether a forecast has accurately characterized its uncertainty about future observations. The $50$% PI coverage rate measures the proportion of the time that 50% prediction intervals at that nominal level included the observed value; the 95% PI coverage rate is defined similarly. Achieving approximately nominal (50% or 95%) coverage indicates a well-calibrated forecast.

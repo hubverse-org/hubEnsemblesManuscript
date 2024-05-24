@@ -936,29 +936,39 @@ Since 2013, the US Centers for Disease Control and Prevention (CDC) has been sol
 
 ### Data and Methods
 
-We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. For this analysis we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl()` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
+We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. For this analysis we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. 
 
-```{r transform data, eval=FALSE}
+```{r read in raw data, eval=TRUE}
 #| prompt: true
 flu_forecasts_raw_21_22 <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
+  here::here("analysis/data/raw_data/flu_forecasts-zoltar_21-22.rds")
 )
 flu_forecasts_raw_22_23 <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-raw_22-23.rds")
+  here::here("analysis/data/raw_data/flu_forecasts-zoltar_22-23.rds")
 )
-flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22,
-                           dplyr::select(flu_forecasts_raw_22_23, -season))
+flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, flu_forecasts_raw_22_23)
+```
+
+Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl()` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
+
+```{r transform data, eval=TRUE}
+#| prompt: true
 flu_forecasts_hubverse <- flu_forecasts_raw |>
-  dplyr::rename(target = target_long) |>
+  dplyr::rename(forecast_date = timezero, location=unit) |>
+  tidyr::separate(target, sep = " ", convert = TRUE,
+                  into = c("horizon", "target"), extra = "merge") |>
+  dplyr::mutate(target_end_date = 
+                  ceiling_date(forecast_date + weeks(horizon), "weeks") - days(1)) |>
   as_model_out_tbl(
-    model_id_col = "model_id",
-    output_type_col = "output_type",
-    output_type_id_col = "output_type_id",
+    model_id_col = "model",
+    output_type_col = "class",
+    output_type_id_col = "quantile",
     value_col = "value",
     sep = "-",
     trim_to_task_ids = FALSE,
     hub_con = NULL,
-    task_id_cols = c("forecast_date", "location", "horizon", "target"),
+    task_id_cols = 
+      c("forecast_date", "location", "horizon", "target", target_end_date),
     remove_empty = TRUE
   )
 ```
@@ -978,9 +988,10 @@ In both seasons, forecasts were made for the same locations (the 50 US states, W
 #| the FluSight forecasting challenge, then formatted according to hubverse
 #| standards post hoc. The `location`, `forecast_date`, and `season` columns
 #| have been omitted for brevity."
-readr::read_rds(
-  here::here("analysis/data/raw_data/flu_forecasts-small.rds")
-) |>
+# readr::read_rds(
+#   here::here("analysis/data/derived_data/flu_forecasts-small.rds")
+# ) |>
+flu_forecasts_hubverse |>
   dplyr::filter(
     model_id == "UMass-trends_ensemble",
     forecast_date == "2023-05-15",
@@ -996,59 +1007,90 @@ Next, we combine the component model outputs to generate predictions from each e
 
 ```{r construct ensembles, eval=FALSE}
 #| prompt: true
-
-flu_forecasts_hubverse <- dplyr::filter(
+flu_forecasts_component <- dplyr::filter(
   flu_forecasts_hubverse,
-  model_id != "Flusight-baseline"
+  !model_id %in% c("Flusight-baseline", "Flusight-ensemble")
 )
-mean_ensemble <- flu_forecasts_hubverse |>
+
+mean_ensemble <- flu_forecasts_component |>
   hubEnsembles::simple_ensemble(
     weights = NULL,
     agg_fun = mean,
     model_id = "mean-ensemble"
   )
-median_ensemble <- flu_forecasts_hubverse |>
+median_ensemble <- flu_forecasts_component |>
   hubEnsembles::simple_ensemble(
     weights = NULL,
     agg_fun = median,
     model_id = "median-ensemble"
   )
-lp_normal <- flu_forecasts_hubverse |>
+lp_normal <- flu_forecasts_component |>
   hubEnsembles::linear_pool(
     weights = NULL,
     n_samples = 1e5,
     model_id = "lp-normal",
     tail_dist = "norm"
   )
-lp_lognormal <- flu_forecasts_hubverse |>
+lp_lognormal <- flu_forecasts_component |>
   hubEnsembles::linear_pool(
     weights = NULL,
     n_samples = 1e5,
     model_id = "lp-lognormal",
     tail_dist = "lnorm"
-  )
+  ) 
+```
+
+```{r write ensembles, eval=FALSE, echo=FALSE}
+# save forecasts
+readr::write_rds(
+  mean_ensemble,
+  here::here("analysis/data/derived_data/flu_mean-ensemble_forecasts.rds"), 
+  "xz", compression = 9L
+)
+readr::write_rds(
+  median_ensemble,
+  here::here("analysis/data/derived_data/flu_median-ensemble_forecasts.rds"), 
+  "xz", compression = 9L
+)
+readr::write_rds(
+  lp_normal,
+  here::here("analysis/data/derived_data/flu_lp-normal_forecasts.rds"), 
+  "xz", compression = 9L
+)
+readr::write_rds(
+  lp_lognormal,
+  here::here("analysis/data/derived_data/flu_lp-lognormal_forecasts.rds"), 
+  "xz", compression = 9L
+)
 ```
 
 We evaluate the performance of these ensembles using scoring metrics that measure the accuracy and calibration of their forecasts. Here, we choose several common metrics in forecast evaluation, including mean absolute error (MAE), weighted interval score (WIS) [@bracher_evaluating_2021], 50% prediction interval (PI) coverage, and 95% PI coverage. MAE measures the average absolute error of a set of point forecasts; smaller values of MAE indicate better forecast accuracy. WIS is a generalization of MAE for probabilistic forecasts and is an alternative to other common proper scoring rules which cannot be evaluated directly for quantile forecasts [@bracher_evaluating_2021]. WIS is made up of three component penalties: (1) for over-prediction, (2) for under-prediction, and (3) for the spread of each interval (where an interval is defined by a symmetric set of two quantiles). This metric weights these penalties across all prediction intervals provided. A lower WIS value indicates a more accurate forecast [@bracher_evaluating_2021]. PI coverage provides information about whether a forecast has accurately characterized its uncertainty about future observations. The $50$% PI coverage rate measures the proportion of the time that 50% prediction intervals at that nominal level included the observed value; the 95% PI coverage rate is defined similarly. Achieving approximately nominal (50% or 95%) coverage indicates a well-calibrated forecast.
 
 ```{r read in forecasts and scores, echo=FALSE}
 flu_truth_all <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_truth_all.rds")
-)
+  here::here("analysis/data/raw_data/flu_truth-zoltar.rds")
+) |>
+  dplyr::rename(location = unit, forecast_date = timezero) |>
+  dplyr::mutate(model = "flu-truth", target_variable = "inc flu hosp",
+                target_end_date = ceiling_date(forecast_date, "weeks") - days(1)) |>
+  dplyr::select(model, target_variable, target_end_date, location, value)
+  
 flu_files <- list.files(
-  path = here::here("analysis/data/raw_data"),
-  pattern = "hub",
+  path = here::here("analysis/data/derived_data"),
+  pattern = "forecasts",
   full.names = TRUE
 )
-flu_forecasts_ensembles <- purrr::map_dfr(flu_files, .f = readr::read_rds)
+flu_ensembles_forecasts <- purrr::map_dfr(flu_files, .f = readr::read_rds)
 
-flu_scores_baseline <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_baseline_scores.rds")
+flu_baseline_forecasts <- flu_forecasts_hubverse |>
+  dplyr::filter(model_id == "Flusight-baseline")
+flu_baseline_scores <- readr::read_rds(
+  here::here("analysis/data/derived_data/flu_baseline_scores.rds")
 )
-flu_scores_ensembles <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_scores_ensembles.rds")
+flu_ensembles_scores <- readr::read_rds(
+  here::here("analysis/data/derived_data/flu_ensembles_scores.rds")
 )
-flu_scores_all <- rbind(flu_scores_ensembles, flu_scores_baseline)
+flu_scores_all <- rbind(flu_ensembles_scores, flu_baseline_scores)
 ```
 
 We also use relative versions of WIS and MAE (rWIS and rMAE, respectively) to understand how the ensemble performance compares to that of the FluSight baseline model. These metrics are calculated as $$\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},$$ where model $m$ is any given model being compared against the baseline. For both of these metrics, a value less than one indicates better performance compared to the baseline while a value greater than one indicates worse performance. By definition, the FluSight baseline itself will always have a value of one for both of these metrics.
@@ -1067,7 +1109,7 @@ The quantile median ensemble has the best overall performance in terms of WIS an
 #| the models."
 
 metrics_col <- formatted_metrics_col <- c("model", "wis", "rwis", "mae", "rmae", "cov50", "cov95")
-for (i in 1: length(metrics_col)) formatted_metrics_col[i] <- paste0("`", metrics_col[i], "`")
+for (i in 1:length(metrics_col)) formatted_metrics_col[i] <- paste0("`", metrics_col[i], "`")
 
 flu_overall_states <- flu_scores_all |>
   evaluate_flu_scores(
@@ -1104,13 +1146,13 @@ flu_dates_21_22 <- as.Date("2022-01-24") + weeks(0:21)
 flu_dates_22_23 <- as.Date("2022-10-17") + weeks(0:30)
 all_flu_dates <- c(flu_dates_21_22, flu_dates_22_23)
 
-forecasts_ca <- flu_forecasts_ensembles |>
+forecasts_ca <- flu_ensembles_forecasts |>
+  rbind(flu_baseline_forecasts) |>
   dplyr::filter(
     location == "06",
     forecast_date %in% all_flu_dates[seq(1, 69, 4)] # dates once every 4 weeks
   ) |>
-  dplyr::group_by(forecast_date) |>
-  hubUtils::as_model_out_tbl()
+  dplyr::group_by(forecast_date)
 
 # Add non-forecasted weeks with NA value 
 # prevents erroneous line connecting seasons

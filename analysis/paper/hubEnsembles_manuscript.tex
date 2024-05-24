@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, sharp corners, interior hidden, frame hidden, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, interior hidden, enhanced, breakable, sharp corners]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -281,11 +281,11 @@ across such hubs. In this paper, we focus specifically on the
 functionality encompassed in \pkg{hubEnsembles}. We provide an overview
 of the methods implemented, including mathematical definitions and
 properties (Section~\ref{sec-defs}) as well as implementation details
-(Section~\ref{sec-implementation}); we give simple examples to
-demonstrate the functionality (Section~\ref{sec-simple-ex}) and a more
-complex case study (Section~\ref{sec-case-study}) that motivates a
-discussion and comparison of the various methods
-(Section~\ref{sec-conclusions}).
+(Section~\ref{sec-implementation}), a basic demonstration of
+functionality with simple examples (Section~\ref{sec-simple-ex}), and a
+more in-depth analysis using real influence of forecasts
+(Section~\ref{sec-case-study}) that motivates a discussion and
+comparison of the various methods (Section~\ref{sec-conclusions}).
 
 \section{Mathematical definitions and properties of ensemble
 methods}\label{sec-defs}
@@ -419,10 +419,10 @@ of time in the future might represent this information using a
 \texttt{target} column with the value ``wk inc flu hosp'', a
 \texttt{location} column identifying the location being predicted, a
 \texttt{reference\_date} column with the ``starting point'' of the
-forecasts, and a \texttt{horizon} column with the number of steps ahead
-that the forecast is predicting relative to the \texttt{reference\_date}
-(Table~\ref{tbl-example-forecasts}). All these variables make up the
-task ID columns.
+forecasts (not shown), and a \texttt{horizon} column with the number of
+steps ahead that the forecast is predicting relative to the
+\texttt{reference\_date} (Table~\ref{tbl-example-forecasts}). All these
+variables make up the task ID columns.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1447}}
@@ -482,15 +482,17 @@ the US at different locations, amounts of time in the future, and under
 different assumed conditions may use a \texttt{target} column of ``cum
 death'', a \texttt{location} column specifying the location being
 predicted, an \texttt{origin\_date} column specifying the date on which
-the projections were made, a \texttt{horizon} column describing the
-number of steps ahead that the projection is predicting relative to the
-\texttt{origin\_date}, and a \texttt{scenario\_id} column denoting the
-future conditions that were modeled and are projected to result in the
-specified number of incident cases (Table~\ref{tbl-example-scenarios}).
-Different modeling efforts may use different sets of task ID columns and
-values to specify their prediction goals. Additional examples of task ID
-variables are available on the hubverse documentation website
-\citep{hubverse_docs}.
+the projections were made (not shown), a \texttt{horizon} column
+describing the number of steps ahead that the projection is predicting
+relative to the \texttt{origin\_date}, and a \texttt{scenario\_id}
+column denoting the future conditions that were modeled and are
+projected to result in the specified number of incident cases
+(Table~\ref{tbl-example-scenarios}). Different modeling efforts may use
+different sets of task ID columns and values to specify their prediction
+goals, or may simply choose distinct names to represent the same concept
+(e.g., \texttt{reference\_date} versus \texttt{origin\_date} for a date
+task ID). Additional examples of task ID variables are available on the
+hubverse documentation website \citep{hubverse_docs}.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1294}}
@@ -629,7 +631,7 @@ discrete outcome variable \\
 from the predictive distribution \\
 \caption{A table summarizing how the model output representation columns
 are used for predictions of different output types. Adapted from
-\citep{hubverse_docs}}\label{tbl-model-output-rep}\tabularnewline
+(\url{https://hubverse.io/en/latest/user-guide/model-output.html\#formats-of-model-output})}\label{tbl-model-output-rep}\tabularnewline
 \end{longtable}
 
 \subsection{Ensemble functions in hubEnsembles}\label{sec-ens-fns}
@@ -739,9 +741,9 @@ Similarly, model weights can be specified to create a weighted ensemble.
 \subsubsection{Linear pool}\label{sec-linear-pool}
 
 The \texttt{linear\_pool()} function implements the linear opinion pool
-(POL) method for ensembling predictions. This function can be used to
-combine predictions with output types mean, quantile, CDF, and PMF.
-Unlike \texttt{simple\_ensemble()}, this function handles its
+(LOP) method for ensembling predictions. Currently, this function can be
+used to combine predictions with output types mean, quantile, CDF, and
+PMF. Unlike \texttt{simple\_ensemble()}, this function handles its
 computation differently based on the output type. For the CDF, PMF, and
 mean output types, the linear pool method is equivalent to calling
 \texttt{simple\_ensemble()} with a mean aggregation function (see
@@ -888,8 +890,9 @@ model output is shown: 1-week ahead quantile forecasts made on
 2022-12-17 for Massachusetts from three distinct models; only the
 median, 50\% prediction intervals, and 90\% prediction intervals are
 displayed. The \texttt{location}, \texttt{reference\_date} and
-\texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the \pkg{hubExamples} package.}
+\texttt{target\_end\_date} (date of occurrence for the outcome of
+interest) columns have been omitted for brevity. This example data is
+provided in the \pkg{hubExamples} package.}
 
 \tabularnewline
 \end{longtable}
@@ -1196,10 +1199,11 @@ submitted values for each quantile. We do so by specifying
 \texttt{agg\_fun\ =\ median}.
 
 \begin{verbatim}
-R> median_ens <- hubEnsembles::simple_ensemble(hubExamples::forecast_outputs,
-+  agg_fun = median,
-+  model_id = "simple-ensemble-median"
-+)
+R> median_ens <- hubExamples::forecast_outputs |>
++  hubEnsembles::simple_ensemble(
++    agg_fun = median,
++    model_id = "simple-ensemble-median"
++  )
 \end{verbatim}
 
 Custom functions can also be passed into the \texttt{agg\_fun} argument.
@@ -1331,10 +1335,7 @@ complex example. Unlike the previous section's basic showcase of
 functionality, we use this case study to provide a more complete
 analysis that compares and evaluates ensemble model performance using
 real forecasts collected by a modeling hub, with an overarching goal of
-choosing a single best ensembling approach for the application. The
-figures and tables supporting this analysis are generated reproducibly
-using data from rds files stored in the \texttt{analysis/data/raw-data}
-directory and scripts in the \texttt{inst} directory.
+choosing a single best ensembling approach for the application.
 
 Since 2013, the US Centers for Disease Control and Prevention (CDC) has
 been soliciting forecasts of seasonal influenza from modeling teams
@@ -1349,6 +1350,10 @@ this manuscript for brevity, although all the functions and scripts used
 to generate the case study results can be found in the associated GitHub
 repository
 (\url{https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript}).
+More specifically, the figures and tables supporting this analysis are
+generated reproducibly using data from rds files stored in the
+\texttt{analysis/data/raw-data} directory and scripts in the
+\texttt{inst} directory of the repository.
 
 \subsection{Data and Methods}\label{data-and-methods}
 
@@ -1359,43 +1364,51 @@ analysis we only consider FluSight predictions in a quantile format from
 the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two
 data objects, split by season, called
 \texttt{flu\_forecasts-raw\_21-22.rds} and
-\texttt{flu\_forecasts-raw\_22-23.rds}. Forecasts must conform to
-hubverse standards to be fed into either of the ensembling functions, so
-we first transform the raw forecasts using
+\texttt{flu\_forecasts-raw\_22-23.rds}.
+
+\begin{verbatim}
+R> flu_forecasts_raw_21_22 <- readr::read_rds(
++  here::here("analysis/data/raw_data/flu_forecasts-zoltar_21-22.rds")
++)
+R> flu_forecasts_raw_22_23 <- readr::read_rds(
++  here::here("analysis/data/raw_data/flu_forecasts-zoltar_22-23.rds")
++)
+R> flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, flu_forecasts_raw_22_23)
+\end{verbatim}
+
+Forecasts must conform to hubverse standards to be fed into either of
+the ensembling functions, so we first transform the raw forecasts using
 \texttt{as\_model\_out\_tbl()} function from the \pkg{hubUtils} package.
 Here, we specify the task ID variables \texttt{forecast\_date} (when the
 forecast was made), \texttt{location}, \texttt{horizon}, and
 \texttt{target}.
 
 \begin{verbatim}
-R> flu_forecasts_raw_21_22 <- readr::read_rds(
-+  here::here("analysis/data/raw_data/flu_forecasts-raw_21-22.rds")
-+)
-R> flu_forecasts_raw_22_23 <- readr::read_rds(
-+  here::here("analysis/data/raw_data/flu_forecasts-raw_22-23.rds")
-+)
-R> flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22,
-+                           dplyr::select(flu_forecasts_raw_22_23, -season))
 R> flu_forecasts_hubverse <- flu_forecasts_raw |>
-+  dplyr::rename(target = target_long) |>
++  dplyr::rename(forecast_date = timezero, location=unit) |>
++  tidyr::separate(target, sep = " ", convert = TRUE,
++                  into = c("horizon", "target"), extra = "merge") |>
++  dplyr::mutate(target_end_date = 
++                  ceiling_date(forecast_date + weeks(horizon), "weeks") - days(1)) |>
 +  as_model_out_tbl(
-+    model_id_col = "model_id",
-+    output_type_col = "output_type",
-+    output_type_id_col = "output_type_id",
++    model_id_col = "model",
++    output_type_col = "class",
++    output_type_id_col = "quantile",
 +    value_col = "value",
 +    sep = "-",
 +    trim_to_task_ids = FALSE,
 +    hub_con = NULL,
-+    task_id_cols = c("forecast_date", "location", "horizon", "target"),
++    task_id_cols = 
++      c("forecast_date", "location", "horizon", "target", target_end_date),
 +    remove_empty = TRUE
 +  )
 \end{verbatim}
 
-We excluded component forecasts from the ensemble calculations if any
+We exclude component forecasts from the ensemble calculations if any
 prediction (defined by a unique combination of task ID variables) did
 not include all 23 quantiles specified by FluSight
 (\(\theta \in \{.010, 0.025, .050, .100, ..., .900, .950, .990\}\)). We
-also excluded the FluSight baseline and median ensemble models that were
+also exclude the FluSight baseline and median ensemble models that were
 previously generated by the FluSight hub.
 
 With these inclusion criteria, the final data set of component forecasts
@@ -1474,36 +1487,37 @@ to store the ensemble results generated from each method we are
 interested in comparing.
 
 \begin{verbatim}
-R> flu_forecasts_hubverse <- dplyr::filter(
+R> flu_forecasts_component <- dplyr::filter(
 +  flu_forecasts_hubverse,
-+  model_id != "Flusight-baseline"
++  !model_id %in% c("Flusight-baseline", "Flusight-ensemble")
 +)
-R> mean_ensemble <- flu_forecasts_hubverse |>
+R> 
+R> mean_ensemble <- flu_forecasts_component |>
 +  hubEnsembles::simple_ensemble(
 +    weights = NULL,
 +    agg_fun = mean,
 +    model_id = "mean-ensemble"
 +  )
-R> median_ensemble <- flu_forecasts_hubverse |>
+R> median_ensemble <- flu_forecasts_component |>
 +  hubEnsembles::simple_ensemble(
 +    weights = NULL,
 +    agg_fun = median,
 +    model_id = "median-ensemble"
 +  )
-R> lp_normal <- flu_forecasts_hubverse |>
+R> lp_normal <- flu_forecasts_component |>
 +  hubEnsembles::linear_pool(
 +    weights = NULL,
 +    n_samples = 1e5,
 +    model_id = "lp-normal",
 +    tail_dist = "norm"
 +  )
-R> lp_lognormal <- flu_forecasts_hubverse |>
+R> lp_lognormal <- flu_forecasts_component |>
 +  hubEnsembles::linear_pool(
 +    weights = NULL,
 +    n_samples = 1e5,
 +    model_id = "lp-lognormal",
 +    tail_dist = "lnorm"
-+  )
++  ) 
 \end{verbatim}
 
 We evaluate the performance of these ensembles using scoring metrics
@@ -1548,15 +1562,15 @@ the MAE evaluation.
 \subsection{Performance results across
 ensembles}\label{performance-results-across-ensembles}
 
-The quantile median ensemble had the best overall performance in terms
-of WIS and MAE (and the relative versions of these metrics), and had
+The quantile median ensemble has the best overall performance in terms
+of WIS and MAE (and the relative versions of these metrics), and has
 coverage rates that were close to the nominal levels
-(Table~\ref{tbl-overall-evaluation}). The two linear opinion pools had
-very similar performance to each other. These methods had the
-second-best performance as measured by WIS and MAE, but they had the
+(Table~\ref{tbl-overall-evaluation}). The two linear opinion pools has
+very similar performance to each other. These methods have the
+second-best performance as measured by WIS and MAE, but they have the
 highest 50\% and 95\% coverage rates, with empirical coverage that was
-well above the nominal coverage rate. The quantile mean performed the
-worst of the ensembles with the highest MAE, which was substantially
+well above the nominal coverage rate. The quantile mean performs the
+worst of the ensembles with the highest MAE, which is substantially
 different from that of the other ensembles.
 
 \begin{longtable}[]{@{}
@@ -1607,13 +1621,13 @@ the metric values are often quite similar among the models.}
 
 Plots of the models' forecasts can aid our understanding about the
 origin of these accuracy differences. For example, the linear opinion
-pools consistently had some of the widest prediction intervals, and
-consequently the highest coverage rates. The median ensemble, which had
+pools consistently has some of the widest prediction intervals, and
+consequently the highest coverage rates. The median ensemble, which has
 the best WIS, balanced interval width with calibration best overall,
 with narrower intervals than the linear pools that still achieved
 near-nominal coverage on average across all time points. The quantile
-mean's interval widths varied, though it usually had narrower intervals
-than the linear pools. However, this model's point forecasts had a
+mean's interval widths varies, though it usually has narrower intervals
+than the linear pools. However, this model's point forecasts has a
 larger error margin compared to the other ensembles, especially at
 longer horizons. This pattern is demonstrated in
 Figure~\ref{fig-plot-forecasts-hubVis} for the 4-week ahead forecast in
@@ -1712,15 +1726,15 @@ black.}
 
 \end{figure}%
 
-In this analysis, all of the ensemble variations outperformed the
-baseline model; yet, different ensembling methods performed best under
-different circumstances. While the quantile median had the best overall
-results for WIS, MAE, 50\% PI coverage, and 95\% PI coverage, other
-models may perform better from week-to-week for each metric. Around the
-2022-2023 season's peak in early December, the remaining four models
-(including the baseline) each had instances in which they achieved the
-lowest WIS, like the linear pool ensembles for the one week ahead
-horizon over several weeks of this period.
+In this analysis, all of the ensemble variations outperform the baseline
+model; yet, different ensembling methods perform best under different
+circumstances. While the quantile median has the best overall results
+for WIS, MAE, 50\% PI coverage, and 95\% PI coverage, other models may
+perform better from week-to-week for each metric. Around the 2022-2023
+season's peak in early December, the remaining four models (including
+the baseline) each have instances in which they achieve the lowest WIS,
+like the linear pool ensembles for the one week ahead horizon over
+several weeks of this period.
 
 The choice of an appropriate ensemble aggregation method may depend on
 the forecast target, the goal of forecasting, and the behavior of the
@@ -1759,13 +1773,13 @@ may not be a universal ``best'' method, matching the properties of a
 given ensemble method with the features of the component models will
 likely yield best results \citep{howerton2023}. Our case study on
 seasonal influenza forecasts in the US demonstrates this point. The
-quantile median ensemble performed best overall for a range of metrics,
+quantile median ensemble performs best overall for a range of metrics,
 including weighted interval score, mean absolute error, and prediction
 interval coverage. Yet, the linear pool method, which generates an
-ensemble with wider prediction intervals, demonstrated performance
+ensemble with wider prediction intervals, demonstrates performance
 advantages during periods of rapid change, when outlying component
-forecasts were likely more important. Notably, all ensemble methods
-outperformed the baseline model. The performance improvements from
+forecasts are likely more important. Notably, all ensemble methods
+outperform the baseline model. The performance improvements from
 ensemble models motivate the use of a ``hub-based'' approach to
 prediction for infectious diseases and in other fields.
 
@@ -1800,7 +1814,7 @@ Hubs}
 
 Consortium of Infectious Disease Modeling Hubs authors include Alvaro J.
 Castro Rivadeneira (University of Massachusetts Amherst), Lucie Contamin
-(University of Pittsburgh), Sebastian Funk (London School of Hygene and
+(University of Pittsburgh), Sebastian Funk (London School of Hygiene \&
 Tropical Medicine), Aaron Gerding (University of Massachusetts Amherst),
 Hugo Gruson (data.org), Harry Hochheiser (University of Pittsburgh),
 Emily Howerton (The Pennsylvania State University), Melissa Kerr

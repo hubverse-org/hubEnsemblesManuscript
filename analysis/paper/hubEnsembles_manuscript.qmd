@@ -975,7 +975,9 @@ flu_forecasts_raw |>
   knitr::kable(col.names = formatted_zoltar_col)
 ```
 
-Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl()` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
+Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using the  `as_model_out_tbl()` function [^1] from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
+
+[^1]: https://infectious-disease-modeling-hubs.github.io/hubUtils/reference/as_model_out_tbl.html
 
 ```{r transform data, eval=TRUE}
 #| prompt: true
@@ -1121,7 +1123,9 @@ flu_scores_all <- rbind(flu_ensembles_scores, flu_baseline_scores)
 
 We also use relative versions of WIS and MAE (rWIS and rMAE, respectively) to understand how the ensemble performance compares to that of the FluSight baseline model. These metrics are calculated as $$\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},$$ where model $m$ is any given model being compared against the baseline. For both of these metrics, a value less than one indicates better performance compared to the baseline while a value greater than one indicates worse performance. By definition, the FluSight baseline itself will always have a value of one for both of these metrics.
 
-Each unique prediction from an ensemble model is scored against target data using the `score_forecasts()` function from the [covidHubUtils]{.pkg} package. This function outputs each of the metrics described above. We use median forecasts taken from the 0.5 quantile for the MAE evaluation.
+Each unique prediction from an ensemble model is scored against target data using the `score_forecasts()` function[^2] from the [covidHubUtils]{.pkg} package. This function outputs each of the metrics described above. We use median forecasts taken from the 0.5 quantile for the MAE evaluation.
+
+[^2]: https://reichlab.io/covidHubUtils/reference/score_forecasts.html
 
 ### Performance results across ensembles
 

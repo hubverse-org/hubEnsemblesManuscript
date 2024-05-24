@@ -936,7 +936,7 @@ Since 2013, the US Centers for Disease Control and Prevention (CDC) has been sol
 
 ### Data and Methods
 
-We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. For this analysis we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`. 
+We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. For this analysis we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-raw_21-22.rds` and `flu_forecasts-raw_22-23.rds`, and a subset of the the second is shown below in @tbl-raw-flu-forecasts.
 
 ```{r read in raw data, eval=TRUE}
 #| prompt: true
@@ -947,6 +947,31 @@ flu_forecasts_raw_22_23 <- readr::read_rds(
   here::here("analysis/data/raw_data/flu_forecasts-zoltar_22-23.rds")
 )
 flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, flu_forecasts_raw_22_23)
+```
+
+```{r raw flu forecasts, message=FALSE, warning=FALSE, echo=FALSE}
+#| label: tbl-raw-flu-forecasts
+#| tbl-cap: "An example prediction of weekly incident influenza
+#| hospitalizations pulled directly from Zoltar. The example forecasts were
+#| made on May 15, 2023 for California at the 1 week ahead horizon. The
+#| forecast was generated during the FluSight forecasting challenge, then
+#| formatted according to Zoltar standards for storage. The `timezero`, 
+#| `season`, `unit`, `param1`, `param2`, and `param3` columns have been
+#| omitted for brevity. (The last three 'param' columns always have a value
+#| of NA for quantile forecasts.)"
+zoltar_col <- formatted_zoltar_col <- c("model", "target", "class", "value", "cat", "prob", "sample", "quantile", "family")
+for (i in 1:length(zoltar_col)) formatted_zoltar_col[i] <- paste0("`", zoltar_col[i], "`")
+
+flu_forecasts_raw |>
+  dplyr::filter(
+    model == "UMass-trends_ensemble",
+    timezero == "2023-05-15",
+    unit == "06",
+    target == "1 wk ahead inc flu hosp",
+    quantile %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
+  ) |>
+  dplyr::select(zoltar_col) |>
+  knitr::kable(col.names = formatted_zoltar_col)
 ```
 
 Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using `as_model_out_tbl()` function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
@@ -979,7 +1004,7 @@ With these inclusion criteria, the final data set of component forecasts consist
 
 In both seasons, forecasts were made for the same locations (the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described above), and target (week ahead incident flu hospitalization). The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
 
-```{r, eval=TRUE}
+```{r formatted flu forecasts, eval=TRUE}
 #| label: tbl-case-study-flu-forecasts
 #| echo: false
 #| tbl-cap: "An example prediction of weekly incident influenza

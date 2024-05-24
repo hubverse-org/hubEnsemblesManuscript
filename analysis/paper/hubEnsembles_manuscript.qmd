@@ -957,8 +957,9 @@ flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, flu_forecasts_raw_22_23)
 #| forecast was generated during the FluSight forecasting challenge, then
 #| formatted according to Zoltar standards for storage. The `timezero`, 
 #| `season`, `unit`, `param1`, `param2`, and `param3` columns have been
-#| omitted for brevity. (The last three 'param' columns always have a value
-#| of NA for quantile forecasts.)"
+#| omitted for brevity. (The `season` column has a value of '2021-2022' or 
+#| '2022-2023' while the last three 'param' columns always have a value
+#| of NA.)"
 zoltar_col <- formatted_zoltar_col <- c("model", "target", "class", "value", "cat", "prob", "sample", "quantile", "family")
 for (i in 1:length(zoltar_col)) formatted_zoltar_col[i] <- paste0("`", zoltar_col[i], "`")
 

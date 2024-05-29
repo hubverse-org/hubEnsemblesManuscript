@@ -169,7 +169,6 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
         shape = .data$model, group = .data$model
       )
     ) +
-      #      ggplot2::geom_jitter(height = 0.05, width = 0, mapping = ggplot2::aes(color = model)) +
       ggplot2::coord_cartesian(ylim = c(0, 1.05)) +
       ggplot2::geom_hline(ggplot2::aes(yintercept = 0.95))
   } else if (y_var == "cov50") {
@@ -181,7 +180,6 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
         shape = .data$model, group = .data$model
       )
     ) +
-      #      geom_jitter(height=0.05, width=0, mapping=aes(color=model)) +
       ggplot2::coord_cartesian(ylim = c(0, 1.05)) +
       ggplot2::geom_hline(ggplot2::aes(yintercept = 0.50))
   }
@@ -226,7 +224,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
         date_labels = "%b '%y"
       ) +
       ggplot2::scale_color_manual(breaks = model_names, values = model_colors) +
-      ggplot2::labs(title = main) +
+      ggplot2::labs(title = main, y = y_lab) +
       ggplot2::theme_bw()
   }
 }

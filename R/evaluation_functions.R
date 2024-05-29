@@ -224,7 +224,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
         date_labels = "%b '%y"
       ) +
       ggplot2::scale_color_manual(breaks = model_names, values = model_colors) +
-      ggplot2::labs(title = main) +
+      ggplot2::labs(title = main, y = y_lab) +
       ggplot2::theme_bw()
   }
 }

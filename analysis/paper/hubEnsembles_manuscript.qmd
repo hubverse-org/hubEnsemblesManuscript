@@ -695,7 +695,7 @@ mean_ens <- hubEnsembles::simple_ensemble(
   )
 ```
 
-The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean` to change the name of this ensemble in the resulting model output; if not specified, the default will be "hub-ensemble".
+The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean"` to change the name of this ensemble in the resulting model output; if not specified, the default will be "hub-ensemble".
 
 ```{r, rows.print = 9}
 #| label: tbl-mean-ensemble
@@ -833,8 +833,8 @@ In @fig-plot-ex-quantile-and-linear-pool, we compare ensemble results generated 
 ```{r plot-ex-quantile-and-linear-pool}
 #| label: fig-plot-ex-quantile-and-linear-pool
 #| echo: false
-#| fig-cap: "Comparison of results from `simple_ensemble()` (blue) and 
-#| `linear_pool()` (red). (Panel A) Ensemble predictions of Massachusetts
+#| fig-cap: "Comparison of results from `linear_pool()` (blue) and
+#| `simple_ensemble()` (red) . (Panel A) Ensemble predictions of Massachusetts
 #| incident influenza hospitalization intensity (classified as low, moderate,
 #| high, or very high), which provide an example of PMF output type. (Panel B)
 #| Ensemble predictions of weekly incident influenza hospitalizations in
@@ -864,7 +864,7 @@ p1 <- dplyr::bind_rows(mean_ens, linear_pool_ens) |>
   geom_bar(stat = "identity", position = "dodge") +
   facet_wrap(vars(horizon), labeller = label_both) +
   labs(x = "incident hospitalization intensity", y = "probability") +
-  scale_fill_brewer(palette = "Set1") +
+  scale_fill_brewer(palette = "Set1", direction = -1) +
   theme_bw() +
   theme(
     legend.position = "bottom", legend.title = element_blank(),

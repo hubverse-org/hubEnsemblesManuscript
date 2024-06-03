@@ -761,8 +761,9 @@ As expected, the mean, median, and geometric mean each give us slightly differen
 #| hospitalizations in Massachusetts. Each ensemble combines individual
 #| predictions from the example hub (@fig-plot-ex-mods) using a different
 #| method: arithmetic mean, geometric mean, or median. All methods correspond to
-#| variations of the quantile average approach. Ensembles are represented by a median 
-#| (line), 50% and 90% prediction intervals (ribbons)."
+#| variations of the quantile average approach. Ensembles are represented by a 
+#| median (line), 50% and 90% prediction intervals (ribbons). Geometric mean 
+#| ensemble and simple mean ensemble generate similar estimates in this case."
 #| fig-height: 4
 #| fig-width: 8
 
@@ -1328,10 +1329,10 @@ Averaging across all time points, the median model can be seen to have the best 
 #| label: fig-mae-vs-forecast-date
 #| prompt: true
 #| fig-cap: "Mean absolute error (MAE) averaged across all locations. Average
-#| MAE is shown for each season (columns) and for 1-week and 4-week ahead
-#| forecasts (rows). Results are plotted for each ensemble model (colored
-#| points) across the entire season. Average target data across all locations
-#| is plotted in black."
+#| target data across all locations for 2021-2022 (A) and 2022-2023 (B)
+#| seasons for reference. For each season, average MAE is shown for 1-week (C-D)
+#| and 4-week ahead (E-F) forecasts. Results are plotted for each ensemble model 
+#| (colors) across the entire season. Lower values indicate better performance."
 #| fig-width: 10
 #| fig-height: 12
 model_names <- c(model_names, "average target data")
@@ -1392,18 +1393,21 @@ truth_states_2122 + truth_states_2223 +
   mae_date_plot_states1_2122 + mae_date_plot_states1_2223 +
   mae_date_plot_states4_2122 + mae_date_plot_states4_2223 +
   theme_bw() +
+  plot_annotation(tag_levels = "A") + 
   plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", 
+        plot.tag = element_text(face = 'bold'))
 ```
 
 ```{r wis-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
 #| label: fig-wis-vs-forecast-date
 #| prompt: true
 #| fig-cap: "Weighted interval score (WIS) averaged across all locations.
-#| Average WIS is shown for each season (columns) and for 1-week and 4-week
-#| ahead forecasts (rows). Results are plotted for each ensemble model (colored
-#| points) across the entire season. Average target data across all locations is
-#| plotted in black."
+#| Average target data across all locations for 2021-2022 (A) and 2022-2023 (B)
+#| seasons for reference. For each season, average WIS is shown for 1-week (C-D)
+#| and 4-week ahead (E-F) forecasts. Results are plotted for each ensemble model 
+#| (colors) across the entire season. Lower values indicate better performance."
+#| 
 #| fig-width: 10
 #| fig-height: 12
 
@@ -1443,18 +1447,22 @@ truth_states_2122 + truth_states_2223 +
   wis_date_plot_states1_2122 + wis_date_plot_states1_2223 +
   wis_date_plot_states4_2122 + wis_date_plot_states4_2223 +
   theme_bw() +
+  plot_annotation(tag_levels = "A") + 
   plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", 
+        plot.tag = element_text(face = 'bold'))
 ```
 
 ```{r cov95-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
 #| label: fig-cov95-vs-forecast-date
 #| prompt: true
 #| fig-cap: "95% prediction interval (PI) coverage averaged across all
-#| locations. Average coverage is shown for each season (columns) and for 1-week
-#| and 4-week ahead forecasts (rows). Results are plotted for each ensemble
-#| model (colored points) across the entire season. Average target data across
-#| all locations is plotted in black."
+#| locations. Average target data across all locations for 2021-2022 (A) 
+#| and 2022-2023 (B) seasons for reference. For each season, average coverage is
+#| shown for 1-week (C-D) and 4-week ahead (E-F) forecasts. Results are plotted
+#| for each ensemble model (colors) across the entire season. Ideal coverage of
+#| 95% is shown (black horizontal line); values closer to 95%indicate better 
+#| performance."
 #| fig-width: 9
 #| fig-height: 12
 
@@ -1498,8 +1506,10 @@ truth_states_2122 + truth_states_2223 +
   cov95_date_plot_states1_2122 + cov95_date_plot_states1_2223 +
   cov95_date_plot_states4_2122 + cov95_date_plot_states4_2223 +
   theme_bw() +
+  plot_annotation(tag_levels = "A") + 
   plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
-  theme(legend.position = "bottom")
+  theme(legend.position = "bottom", 
+        plot.tag = element_text(face = 'bold'))
 ```
 
 In this analysis, all of the ensemble variations outperform the baseline model; yet, different ensembling methods perform best under different circumstances. While the quantile median has the best overall results for WIS, MAE, 50% PI coverage, and 95% PI coverage, other models may perform better from week-to-week for each metric. Around the 2022-2023 season's peak in early December, the remaining four models (including the baseline) each have instances in which they achieve the lowest WIS, like the linear pool ensembles for the one week ahead horizon over several weeks of this period.

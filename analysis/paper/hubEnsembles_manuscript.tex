@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, enhanced, interior hidden, borderline west={3pt}{0pt}{shadecolor}, sharp corners, breakable, boxrule=0pt]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, borderline west={3pt}{0pt}{shadecolor}, frame hidden, enhanced, interior hidden, breakable, sharp corners]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -346,9 +346,18 @@ F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta)
 \]
 
 This computes the average value of predictions across different models
-for each fixed quantile level \(\theta\). It is also possible to use
-other combination functions, such as a weighted median, to combine
-quantile predictions.
+for each fixed quantile level \(\theta\). The resulting distribution can
+be interpreted as the distribution of the mean of random variables that
+are represented by those distributions
+(Figure~\ref{fig-example-quantile-average-and-linear-pool}, panel B).
+For a normal distribution or any distribution with a shape and scale
+parameter, the resulting quantile average will be the same distribution,
+and the shape and scale parameters will be the average of the shape and
+scale parameters from the individual distributions. In other words, this
+method inteprets the predictive probability distributions that are being
+combined as uncertain estimates of a single truth. It is also possible
+to use other combination functions, such as a weighted median, to
+combine quantile predictions.
 
 The probability average or linear pool is calculated by averaging
 probabilities across predictions for a fixed value of the target
@@ -363,8 +372,12 @@ F_{LOP}(x) = C_{LOP}(\mathcal{F}, \pmb{w}) = \sum_{i = 1}^Nw_iF_i(x).
 
 For a set of PMF values, \(\{f_i(x)|i \in 1, ..., N\}\), the linear pool
 can be equivalently calculated:
-\(f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)\). For a visual depiction of
-these equations, see
+\(f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)\). Statistically this amounts
+to a mixture of the probability distributions, and the resulting
+probability distribution can be interpreted as one where the constituent
+probability distributions represent alternative predictions of the
+future each of which has a probability \(w_i\) of being the trueone. For
+a visual depiction of these equations, see
 Figure~\ref{fig-example-quantile-average-and-linear-pool} below.
 
 The different averaging methods for probabilistic predictions yield

@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[sharp corners, frame hidden, enhanced, breakable, borderline west={3pt}{0pt}{shadecolor}, boxrule=0pt, interior hidden]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, sharp corners, breakable, borderline west={3pt}{0pt}{shadecolor}, frame hidden, interior hidden, enhanced]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -664,6 +664,17 @@ ensembling methods described in Section~\ref{sec-defs}. A short
 description of the calculation performed by each function is summarized
 by output type in Table~\ref{tbl-fns-by-output-type}.
 
+\subsubsection{Simple ensemble}\label{sec-simple-ensemble}
+
+The \texttt{simple\_ensemble()} function directly computes an ensemble
+from component model outputs by combining them via some function (\(C\))
+within each unique combination of task ID variables, output types, and
+output type IDs. This function can be used to summarize predictions of
+output types mean, median, quantile, CDF, and PMF. The mechanics of the
+ensemble calculations are the same for each of the output types, though
+the resulting statistical ensembling method differs for different output
+types (Table~\ref{tbl-fns-by-output-type}).
+
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1400}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5000}}
@@ -726,17 +737,6 @@ instead. For example,
 predictions of mean output type would return the median of individual
 model means.}\label{tbl-fns-by-output-type}\tabularnewline
 \end{longtable}
-
-\subsubsection{Simple ensemble}\label{sec-simple-ensemble}
-
-The \texttt{simple\_ensemble()} function directly computes an ensemble
-from component model outputs by combining them via some function (\(C\))
-within each unique combination of task ID variables, output types, and
-output type IDs. This function can be used to summarize predictions of
-output types mean, median, quantile, CDF, and PMF. The mechanics of the
-ensemble calculations are the same for each of the output types, though
-the resulting statistical ensembling method differs for different output
-types (Table~\ref{tbl-fns-by-output-type}).
 
 By default, \texttt{simple\_ensemble()} uses the mean for the
 aggregation function \(C\) and equal weights for all models. For point

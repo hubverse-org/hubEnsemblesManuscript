@@ -104,7 +104,7 @@ The quantile average combines a set of quantile functions, $\mathcal{Q} = \{F_i^
 F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta).
 $$
 
-This computes the average value of predictions across different models for each fixed quantile level $\theta$. The resulting distribution can be interpreted as the distribution of the mean of random variables that are represented by those distributions (@fig-example-quantile-average-and-linear-pool, panel B). For a normal distribution or any distribution with a shape and scale parameter, the resulting quantile average will be the same distribution, and the shape and scale parameters will be the average of the shape and scale parameters from the individual distributions. In other words, this method inteprets the predictive probability distributions that are being combined as uncertain estimates of a single truth. It is also possible to use other combination functions, such as a weighted median, to combine quantile predictions.
+This computes the average value of predictions across different models for each fixed quantile level $\theta$. For a normal distribution or any distribution with a shape and scale parameter, the resulting quantile average will be the same distribution, and the shape and scale parameters will be the average of the shape and scale parameters from the individual distributions (@fig-example-quantile-average-and-linear-pool, panel B). In other words, this method inteprets the predictive probability distributions that are being combined as uncertain estimates of a single true distribution. It is also possible to use other combination functions, such as a weighted median, to combine quantile predictions.
 
 The probability average or linear pool is calculated by averaging probabilities across predictions for a fixed value of the target variable, $x$. In other words, for a set $\mathcal{F} = \{F_i(x)| i \in 1,...,N \}$ containing the values of CDFs at the point $x$ and weights $\pmb{w}$, the linear pool is calculated as
 
@@ -112,7 +112,7 @@ $$
 F_{LOP}(x) = C_{LOP}(\mathcal{F}, \pmb{w}) = \sum_{i = 1}^Nw_iF_i(x). 
 $$
 
-For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be equivalently calculated: $f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)$. Statistically this amounts to a mixture of the probability distributions, and the resulting probability distribution can be interpreted as one where the constituent probability distributions represent alternative predictions of the future each of which has a probability $w_i$ of being the trueone. For a visual depiction of these equations, see @fig-example-quantile-average-and-linear-pool below.
+For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be equivalently calculated: $f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)$. Statistically this amounts to a mixture of the probability distributions, and the resulting probability distribution can be interpreted as one where the constituent probability distributions represent alternative predictions of the future, each of which has a probability $w_i$ of being the true one. For a visual depiction of these equations, see @fig-example-quantile-average-and-linear-pool below.
 
 The different averaging methods for probabilistic predictions yield different properties of the resulting ensemble distribution. For example, the variance of the linear pool is $\sigma^2_{LOP} = \sum_{i=1}^Nw_i\sigma_i^2 + \sum_{i=1}^Nw_i(\mu_i-\mu_{LOP})^2$, where $\mu_i$ is the mean and $\sigma^2_i$ is the variance of individual prediction $i$, and although there is no closed-form variance for the quantile average, the variance of the quantile average will always be less than or equal to that of the linear pool [@lichtendahl2013]. Both methods generate distributions with the same mean, $\mu_Q = \mu_{LOP} = \sum_{i=1}^Nw_i\mu_i$, which is the mean of individual model means [@lichtendahl2013]. The linear pool method preserves variation between individual models, whereas the quantile average cancels away this variation under the assumption it constitutes sampling error [@howerton2023].
 
@@ -193,7 +193,7 @@ This representation of predictive model output is codified by the `model_out_tbl
 | `mean`        | NA (not used for mean predictions)                                                          | Numeric: The mean of the predictive distribution                                                                                                              |
 | `median`      | NA (not used for median predictions)                                                        | Numeric: The median of the predictive distribution                                                                                                            |
 | `quantile`    | Numeric between 0.0 and 1.0: A quantile level                                               | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
-| `cdf`         | Numeric naming a possible value of the target variable | Numeric between 0.0 and 1.0: The cumulative probability of the predictive distribution at the value of the outcome variable specified by the `output_type_id` |
+| `cdf`         | String or numeric naming a possible value of the target variable | Numeric between 0.0 and 1.0: The cumulative probability of the predictive distribution at the value of the outcome variable specified by the `output_type_id` |
 | `pmf`         | String naming a possible category of a discrete outcome variable                            | Numeric between 0.0 and 1.0: The probability mass of the predictive distribution when evaluated at a specified level of a discrete outcome variable           |
 | `sample`*      | Integer or string specifying the sample index                                               | Numeric: A sample from the predictive distribution                                                                                                            |
 
@@ -1009,7 +1009,7 @@ flu_forecasts_hubverse <- flu_forecasts_raw |>
     )
 ```
 
-Prior to ensemble calculation (shown later in this section), we filter out any predictions (defined by a unique combination of task ID variables) that did not include all 23 quantiles specified by FluSight ($\theta \in \{.010, 0.025, .050, .100, ..., .900, .950, .990\}$). The FluSight baseline and median ensemble models generated by the FluSight hub are also excluded from the component forecasts. We chose to remove the baseline to match the composition of models used to create FluSight-median.
+Prior to ensemble calculation (shown later in this section), we filter out any predictions (defined by a unique combination of task ID variables) that did not include all 23 quantiles specified by FluSight ($\theta \in \{.010, 0.025, .050, .100, ..., .900, .950, .990\}$). The FluSight baseline and median ensemble models generated by the FluSight hub are also excluded from the component forecasts. We chose to remove the baseline to match the composition of models used to create the official FluSight ensemble.
 
 With these inclusion criteria, the final data set of component forecasts consists of predictions from 25 modeling teams and 42 distinct models, 53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target, and 23 quantiles. In the 2021-2022 season, 25 models made predictions for 22 weeks spanning from late January 2022 to late June 2022, and in the 2022-2023 season, there were 31 models making predictions for 31 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42 total models made forecasts for both seasons.
 
@@ -1135,7 +1135,7 @@ Each unique prediction from an ensemble model is scored against target data usin
 
 ### Performance results across ensembles
 
-The quantile median ensemble has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools has very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially different from that of the other ensembles.
+The quantile median ensemble has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools have very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially different from that of the other ensembles.
 
 ```{r overall-evaluation, message=FALSE, warning=FALSE, echo=FALSE}
 #| label: tbl-overall-evaluation
@@ -1160,7 +1160,7 @@ flu_overall_states |>
   knitr::kable(col.names = formatted_metrics_col)
 ```
 
-Plots of the models' forecasts can aid our understanding about the origin of these accuracy differences. For example, the linear opinion pools consistently has some of the widest prediction intervals, and consequently the highest coverage rates. The median ensemble, which has the best WIS, balanced interval width with calibration best overall, with narrower intervals than the linear pools that still achieved near-nominal coverage on average across all time points. The quantile mean's interval widths varies, though it usually has narrower intervals than the linear pools. However, this model's point forecasts has a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated in @fig-plot-forecasts-hubVis for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022. Here the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
+Plots of the models' forecasts can aid our understanding about the origin of these accuracy differences. For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The median ensemble, which has the best WIS, balanced interval width with calibration best overall, with narrower intervals than the linear pools that still achieved near-nominal coverage on average across all time points. The quantile mean's interval widths vary, though it usually has narrower intervals than the linear pools. However, this model's point forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated in @fig-plot-forecasts-hubVis for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022. Here the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
 
 ```{r plot-forecasts-hubVis, warning=FALSE, message=FALSE}
 #| label: fig-plot-forecasts-hubVis
@@ -1465,7 +1465,7 @@ truth_states_2122 + truth_states_2223 +
 #| and 2022-2023 (B) seasons for reference. For each season, average coverage is
 #| shown for 1-week (C-D) and 4-week ahead (E-F) forecasts. Results are plotted
 #| for each ensemble model (colors) across the entire season. Ideal coverage of
-#| 95% is shown (black horizontal line); values closer to 95%indicate better 
+#| 95% is shown (black horizontal line); values closer to 95% indicate better 
 #| performance."
 #| fig-width: 9
 #| fig-height: 12

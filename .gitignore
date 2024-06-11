@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 .DS_Store
+*.code-workspace
+hubEnsemblesManuscript.code-workspace
+analysis/paper/nul

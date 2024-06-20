@@ -939,7 +939,7 @@ cowplot::plot_grid(
 
 To further demonstrate the utility of the [hubEnsembles]{.pkg} package and the differences between the two ensembling functions, we examine a more complex example. Unlike the previous section's basic showcase of functionality, we use this case study to provide a more complete analysis that compares and evaluates ensemble model performance using real forecasts collected by a modeling hub, with an overarching goal of choosing a single best ensembling approach for the application.
 
-Since 2013, the US Centers for Disease Control and Prevention (CDC) has been soliciting forecasts of seasonal influenza from modeling teams through a collaborative challenge called FluSight [@cdc_flusight]. We use a subset of these predictions to create four equally-weighted ensembles with `simple_ensemble()` and `linear_pool()` and compare the resulting ensembles' performance. The ensembling methods chosen for this case study consist of a quantile (arithmetic) mean, a quantile median, a linear pool with normal tails, and a linear pool with lognormal tails. Note that only a select portion of the code is shown in this manuscript for brevity, although all the functions and scripts used to generate the case study results can be found in the associated GitHub repository (<https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript>). More specifically, the figures and tables supporting this analysis are generated reproducibly using data from rds files stored in the `analysis/data/raw-data` directory and scripts in the `inst` directory of the repository.
+Since 2013, the US Centers for Disease Control and Prevention (CDC) has been soliciting forecasts of seasonal influenza from modeling teams through a collaborative challenge called FluSight [@cdc_flusight]. We use a subset of these predictions to create four equally-weighted ensembles with `simple_ensemble()` and `linear_pool()` and compare the resulting ensembles' performance. The ensembling methods chosen for this case study consist of a quantile (arithmetic) mean, a quantile median, a linear pool with normal tails, and a linear pool with lognormal tails. Note that only a select portion of the code is shown in this manuscript for brevity, although all the functions and scripts used to generate the case study results can be found in the associated GitHub repository (<https://github.com/hubverse-org/hubEnsemblesManuscript>). More specifically, the figures and tables supporting this analysis are generated reproducibly using data from rds files stored in the `analysis/data/raw-data` directory and scripts in the `inst` directory of the repository.
 
 ### Data and Methods
 
@@ -984,7 +984,7 @@ flu_forecasts_raw |>
 
 Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using the  `as_model_out_tbl()`[^1] function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
 
-[^1]: https://infectious-disease-modeling-hubs.github.io/hubUtils/reference/as_model_out_tbl.html
+[^1]: https://hubverse-org.github.io/hubUtils/reference/as_model_out_tbl.html
 
 ```{r transform data, eval=TRUE}
 #| prompt: true

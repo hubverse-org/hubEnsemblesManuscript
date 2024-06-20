@@ -691,10 +691,11 @@ Using the default options for `simple_ensemble()`, we can generate an equally we
 
 ```{r}
 #| prompt: true
-mean_ens <- hubEnsembles::simple_ensemble(
-    hubExamples::forecast_outputs,
-    model_id = "simple-ensemble-mean"
-  )
+mean_ens <- hubExamples::forecast_outputs |>
+    dplyr::filter(output_type != "sample") |>
+    hubEnsembles::simple_ensemble(
+      model_id = "simple-ensemble-mean"
+    )
 ```
 
 The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean"` to change the name of this ensemble in the resulting model output; if not specified, the default will be "hub-ensemble".
@@ -734,6 +735,7 @@ We can change the function that is used to aggregate model outputs. For example,
 ```{r}
 #| prompt: true
 median_ens <- hubExamples::forecast_outputs |>
+    dplyr::filter(output_type != "sample") |>
     hubEnsembles::simple_ensemble(
       agg_fun = median,
       model_id = "simple-ensemble-median"
@@ -749,6 +751,7 @@ geometric_mean <- function(x) {
     return(prod(x)^(1 / n))
   }
 geometric_mean_ens <- hubExamples::forecast_outputs |>
+    dplyr::filter(output_type != "sample") |>
     hubEnsembles::simple_ensemble(
       agg_fun = geometric_mean,
       model_id = "simple-ensemble-geometric"
@@ -812,6 +815,7 @@ model_weights <- data.frame(
     weight = c(0.4, 0.4, 0.2)
   )
 weighted_mean_ens <- hubExamples::forecast_outputs |>
+    dplyr::filter(output_type != "sample") |>
     hubEnsembles::simple_ensemble(
       weights = model_weights,
       model_id = "simple-ensemble-weighted-mean"
@@ -825,7 +829,7 @@ We can also generate a linear pool ensemble, or distributional mixture, using th
 ```{r}
 #| prompt: true
 linear_pool_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "median") |>
+    dplyr::filter(!output_type %in% c("median", "sample")) |>
     hubEnsembles::linear_pool(model_id = "linear-pool")
 ```
 

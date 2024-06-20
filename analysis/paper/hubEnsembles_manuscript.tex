@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[frame hidden, sharp corners, boxrule=0pt, enhanced, interior hidden, borderline west={3pt}{0pt}{shadecolor}, breakable]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, sharp corners, breakable, borderline west={3pt}{0pt}{shadecolor}, enhanced, frame hidden, interior hidden]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -1143,10 +1143,11 @@ ensemble is a quantile average, while for the PMF output type, the
 ensemble is a linear pool.
 
 \begin{verbatim}
-R> mean_ens <- hubEnsembles::simple_ensemble(
-+    hubExamples::forecast_outputs,
-+    model_id = "simple-ensemble-mean"
-+  )
+R> mean_ens <- hubExamples::forecast_outputs |>
++    dplyr::filter(output_type != "sample") |>
++    hubEnsembles::simple_ensemble(
++      model_id = "simple-ensemble-mean"
++    )
 \end{verbatim}
 
 The resulting model output has the same structure as the original model
@@ -1220,6 +1221,7 @@ submitted values for each quantile. We do so by specifying
 
 \begin{verbatim}
 R> median_ens <- hubExamples::forecast_outputs |>
++    dplyr::filter(output_type != "sample") |>
 +    hubEnsembles::simple_ensemble(
 +      agg_fun = median,
 +      model_id = "simple-ensemble-median"
@@ -1239,6 +1241,7 @@ R> geometric_mean <- function(x) {
 +    return(prod(x)^(1 / n))
 +  }
 R> geometric_mean_ens <- hubExamples::forecast_outputs |>
++    dplyr::filter(output_type != "sample") |>
 +    hubEnsembles::simple_ensemble(
 +      agg_fun = geometric_mean,
 +      model_id = "simple-ensemble-geometric"
@@ -1286,6 +1289,7 @@ R> model_weights <- data.frame(
 +    weight = c(0.4, 0.4, 0.2)
 +  )
 R> weighted_mean_ens <- hubExamples::forecast_outputs |>
++    dplyr::filter(output_type != "sample") |>
 +    hubEnsembles::simple_ensemble(
 +      weights = model_weights,
 +      model_id = "simple-ensemble-weighted-mean"
@@ -1303,7 +1307,7 @@ the calculation.
 
 \begin{verbatim}
 R> linear_pool_ens <- hubExamples::forecast_outputs |>
-+    dplyr::filter(output_type != "median") |>
++    dplyr::filter(!output_type %in% c("median", "sample")) |>
 +    hubEnsembles::linear_pool(model_id = "linear-pool")
 \end{verbatim}
 
@@ -1371,8 +1375,8 @@ lognormal tails. Note that only a select portion of the code is shown in
 this manuscript for brevity, although all the functions and scripts used
 to generate the case study results can be found in the associated GitHub
 repository
-(\url{https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript}).
-More specifically, the figures and tables supporting this analysis are
+(\url{https://github.com/hubverse-org/hubEnsemblesManuscript}). More
+specifically, the figures and tables supporting this analysis are
 generated reproducibly using data from rds files stored in the
 \texttt{analysis/data/raw-data} directory and scripts in the
 \texttt{inst} directory of the repository.
@@ -1464,7 +1468,7 @@ have a value of NA.)}
 
 Forecasts must conform to hubverse standards to be fed into either of
 the ensembling functions, so we first transform the raw forecasts using
-the \texttt{as\_model\_out\_tbl()}\footnote{https://infectious-disease-modeling-hubs.github.io/hubUtils/reference/as\_model\_out\_tbl.html}
+the \texttt{as\_model\_out\_tbl()}\footnote{https://hubverse-org.github.io/hubUtils/reference/as\_model\_out\_tbl.html}
 function from the \pkg{hubUtils} package. Here, we specify the task ID
 variables \texttt{forecast\_date} (when the forecast was made),
 \texttt{location}, \texttt{horizon}, and \texttt{target}.

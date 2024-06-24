@@ -860,6 +860,34 @@ functions in \texttt{hubEnsembles}, \texttt{simple\_ensemble()} and
 \subsection{Example data: a forecast
 hub}\label{example-data-a-forecast-hub}
 
+We will use an example hub provided by the hubverse to demonstrate the
+functionality of the \texttt{hubEnsembles} package (Consortium of
+Infectious Disease Modeling Hubs 2024). This example hub was generated
+with modified forecasts from the FluSight forecasting challenge, which
+will be discussed in detail in Section~\ref{sec-case-study}. The example
+hub includes both example model output data and target data (sometimes
+known as ``truth'' data), which are stored in the \texttt{hubExamples}
+package as data objects named \texttt{forecast\_outputs} and
+\texttt{forecast\_target\_ts}. Note that the toy model outputs contain
+predictions for only a small subset rows of select dates, locations, and
+output type IDs, far fewer than an actual modeling hub would typically
+collect.
+
+The model output data includes quantile, mean and median forecasts of
+future incident influenza hospitalizations and PMF forecasts of
+hospitalization intensity. Each forecast is made for five task ID
+variables, including the location for which the forecast was made
+(\texttt{location}), the date on which the forecast was made
+(\texttt{reference\_date}), the number of steps ahead
+(\texttt{horizon}), the date of the forecast prediction (a combination
+of the date the forecast was made and the forecast horizon,
+\texttt{target\_end\_date}), and the forecast target (\texttt{target}).
+Table~\ref{tbl-example-model-outputs} provides an example set of
+quantile forecasts included in this example model output. In
+Table~\ref{tbl-example-model-outputs}, we show only the median, the
+50\%, and 90\% prediction intervals, although other intervals and mean
+forecasts are included in the example model output data.
+
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2169}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1928}}
@@ -915,34 +943,6 @@ PSI-DICE & wk inc flu hosp & 1 & median & NA & 613 \\
 
 \end{longtable}
 
-We will use an example hub provided by the hubverse to demonstrate the
-functionality of the \texttt{hubEnsembles} package (Consortium of
-Infectious Disease Modeling Hubs 2024). This example hub was generated
-with modified forecasts from the FluSight forecasting challenge, which
-will be discussed in detail in Section~\ref{sec-case-study}. The example
-hub includes both example model output data and target data (sometimes
-known as ``truth'' data), which are stored in the \texttt{hubExamples}
-package as data objects named \texttt{forecast\_outputs} and
-\texttt{forecast\_target\_ts}. Note that the toy model outputs contain
-predictions for only a small subset rows of select dates, locations, and
-output type IDs, far fewer than an actual modeling hub would typically
-collect.
-
-The model output data includes quantile, mean and median forecasts of
-future incident influenza hospitalizations and PMF forecasts of
-hospitalization intensity. Each forecast is made for five task ID
-variables, including the location for which the forecast was made
-(\texttt{location}), the date on which the forecast was made
-(\texttt{reference\_date}), the number of steps ahead
-(\texttt{horizon}), the date of the forecast prediction (a combination
-of the date the forecast was made and the forecast horizon,
-\texttt{target\_end\_date}), and the forecast target (\texttt{target}).
-Table~\ref{tbl-example-model-outputs} provides an example set of
-quantile forecasts included in this example model output. In
-Table~\ref{tbl-example-model-outputs}, we show only the median, the
-50\%, and 90\% prediction intervals, although other intervals and mean
-forecasts are included in the example model output data.
-
 We also have corresponding target data included in the
 \texttt{hubExamples} package (Table~\ref{tbl-example-target-data}). The
 example target data provide observed incident influenza hospitalizations
@@ -952,6 +952,8 @@ calibration data for generating forecasts or for evaluating the
 forecasts post hoc. The forecast-specific task ID variables
 \texttt{reference\_date} and \texttt{horizon} are not relevant for the
 target data.
+
+\newpage
 
 \begin{longtable}[]{@{}llr@{}}
 
@@ -1524,24 +1526,6 @@ hub are also excluded from the component forecasts. We chose to remove
 the baseline to match the composition of models used to create the
 official FluSight ensemble.
 
-With these inclusion criteria, the final data set of component forecasts
-consists of predictions from 25 modeling teams and 42 distinct models,
-53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target,
-and 23 quantiles. In the 2021-2022 season, 25 models made predictions
-for 22 weeks spanning from late January 2022 to late June 2022, and in
-the 2022-2023 season, there were 31 models making predictions for 31
-weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42
-total models made forecasts for both seasons.
-
-In both seasons, forecasts were made for the same locations (the 50 US
-states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a
-whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described
-above), and target (week ahead incident flu hospitalization). The values
-for the forecasts are always non-negative. In
-Table~\ref{tbl-case-study-flu-forecasts}, we provide an example of these
-predictions, showing select quantiles from a single model, forecast
-date, horizon, and location.
-
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
@@ -1593,6 +1577,24 @@ UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.975 &
 68 \\
 
 \end{longtable}
+
+With these inclusion criteria, the final data set of component forecasts
+consists of predictions from 25 modeling teams and 42 distinct models,
+53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target,
+and 23 quantiles. In the 2021-2022 season, 25 models made predictions
+for 22 weeks spanning from late January 2022 to late June 2022, and in
+the 2022-2023 season, there were 31 models making predictions for 31
+weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42
+total models made forecasts for both seasons.
+
+In both seasons, forecasts were made for the same locations (the 50 US
+states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a
+whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described
+above), and target (week ahead incident flu hospitalization). The values
+for the forecasts are always non-negative. In
+Table~\ref{tbl-case-study-flu-forecasts}, we provide an example of these
+predictions, showing select quantiles from a single model, forecast
+date, horizon, and location.
 
 Next, we combine the component model outputs to generate predictions
 from each ensemble model. We begin by excluding the baseline model from

@@ -3,7 +3,7 @@
 
 # hubEnsemblesManuscript
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript/master?urlpath=rstudio)
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/hubverse-org/hubEnsemblesManuscript/master?urlpath=rstudio)
 
 This repository contains the data and code for our paper:
 

@@ -44,7 +44,7 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
-URL: https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript
+URL: https://github.com/hubverse-org/hubEnsemblesManuscript
 Imports:
     dplyr (>= 1.1.2),
     ggplot2 (>= 3.4.4),
@@ -70,11 +70,11 @@ Imports:
     tools (>= 4.4.0),
     utils (>= 4.4.0)
 Remotes:
-    Infectious-Disease-Modeling-Hubs/hubEnsembles,
-    Infectious-Disease-Modeling-Hubs/hubExamples,
-    Infectious-Disease-Modeling-Hubs/hubData,
-    Infectious-Disease-Modeling-Hubs/hubUtils,
-    Infectious-Disease-Modeling-Hubs/hubVis,
+    hubverse-org/hubEnsembles,
+    hubverse-org/hubExamples,
+    hubverse-org/hubData,
+    hubverse-org/hubUtils,
+    hubverse-org/hubVis,
     reichlab/distfromq,
     reichlab/covidHubUtils,
     reichlab/zoltr

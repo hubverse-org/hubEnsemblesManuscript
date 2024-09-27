@@ -8,17 +8,17 @@
 This repository contains the data and code for our paper:
 
 > Li Shandross, Emily Howerton, Lucie Contamin, Harry Hochheiser, Anna
-> Krystalli, Consortium of Infectious Disease Mdodeling Hubs, Nicholas
-> G. Reich, Evan L. Ray (in prep). *`hubEnsembles`: Ensembling Methods
-> in R*.
+> Krystalli, Consortium of Infectious Disease Modeling Hubs, Nicholas G.
+> Reich, Evan L. Ray (in prep). *`hubEnsembles`: Ensembling Methods in
+> R*.
 
 ### How to cite
 
 Please cite this compendium as:
 
 > Li Shandross, Emily Howerton, Lucie Contamin, Harry Hochheiser, Anna
-> Krystalli, Consortium of Infectious Disease Mdodeling Hubs, Nicholas
-> G. Reich, Evan L. Ray (in prep). *Compendium of R code and data for
+> Krystalli, Consortium of Infectious Disease Modeling Hubs, Nicholas G.
+> Reich, Evan L. Ray (in prep). *Compendium of R code and data for
 > `hubEnsembles`: Ensembling Methods in R*. Accessed 12 Apr 2024. Online
 > at <https://doi.org/xxx/xxx>
 

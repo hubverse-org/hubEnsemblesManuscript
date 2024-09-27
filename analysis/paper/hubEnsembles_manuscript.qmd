@@ -1536,7 +1536,7 @@ Ongoing development of the [hubEnsembles]{.pkg} package and the larger suite of 
 
 ## Acknowledgements {.unnumbered}
 
-The authors thank all members of the hubverse community; the broader hubverse software infrastructure made this package possible. L. Shandross, A. Krystalli, N. G. Reich, and E. L. Ray were supported by the National Institutes of General Medical Sciences (R35GM119582) and the US Centers for Disease Control and Prevention (U01IP001122 and NU38FT000008). E. Howerton was supported by the Eberly College of Science Barbara McClintock Science Achievement Graduate Scholarship in Biology at the Pennsylvania State University. L. Contamin and H. Hochheiser were supported by NIGMS grant U24GM132013. The content is solely the responsibility of the authors and does not necessarily represent the official views of NIGMS, the National Institutes of Health, or CDC.
+The authors thank all members of the hubverse community; the broader hubverse software infrastructure made this package possible. L. Shandross, A. Krystalli, N. G. Reich, and E. L. Ray were supported by the National Institutes of General Medical Sciences (R35GM119582) and the US Centers for Disease Control and Prevention (U01IP001122 and NU38FT000008). E. Howerton was supported by NSF RAPID awards DEB-2126278 and DEB-2220903, as well as the Eberly College of Science Barbara McClintock Science Achievement Graduate Scholarship in Biology at the Pennsylvania State University. L. Contamin and H. Hochheiser were supported by NIGMS grant U24GM132013. The content is solely the responsibility of the authors and does not necessarily represent the official views of NIGMS, the National Institutes of Health, or CDC.
 
 ## Consortium of Infectious Disease Modeling Hubs {.unnumbered}
 

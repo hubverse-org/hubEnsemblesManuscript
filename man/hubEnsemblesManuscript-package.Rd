@@ -11,7 +11,7 @@ Repository containing data and analysis for a paper on hubEnsembles, a hubverse 
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/Infectious-Disease-Modeling-Hubs/hubEnsemblesManuscript}
+  \item \url{https://github.com/hubverse-org/hubEnsemblesManuscript}
 }
 
 }

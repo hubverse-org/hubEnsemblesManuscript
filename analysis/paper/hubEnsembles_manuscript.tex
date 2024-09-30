@@ -132,7 +132,7 @@
 \makeatletter
 \makeatother
 \makeatletter
-\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[enhanced, borderline west={3pt}{0pt}{shadecolor}, interior hidden, breakable, boxrule=0pt, frame hidden, sharp corners]}{\end{tcolorbox}}\fi
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[breakable, boxrule=0pt, frame hidden, enhanced, sharp corners, interior hidden, borderline west={3pt}{0pt}{shadecolor}]}{\end{tcolorbox}}\fi
 \makeatother
 \ifLuaTeX
   \usepackage{selnolig}  % disable illegal ligatures
@@ -348,9 +348,9 @@ F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta)
 This computes the average value of predictions across different models
 for each fixed quantile level \(\theta\). For a normal distribution or
 any distribution with a shape and scale parameter, the resulting
-quantile average will be the same distribution, and the shape and scale
-parameters will be the average of the shape and scale parameters from
-the individual distributions
+quantile average will be the same type of distribution, with shape and
+scale parameters that are the average of the shape and scale parameters
+from the individual distributions
 (Figure~\ref{fig-example-quantile-average-and-linear-pool}, panel B). In
 other words, this method inteprets the predictive probability
 distributions that are being combined as uncertain estimates of a single
@@ -430,11 +430,12 @@ forecasts of incident influenza hospitalizations in the US at different
 locations and amounts of time in the future might represent this
 information using a \texttt{target} column with the value ``wk inc flu
 hosp'', a \texttt{location} column identifying the location being
-predicted, a \texttt{reference\_date} column with the ``starting point''
-of the forecasts (not shown), and a \texttt{horizon} column with the
-number of steps ahead that the forecast is predicting relative to the
-\texttt{reference\_date} (Table~\ref{tbl-example-forecasts}). All these
-variables make up the task ID columns.
+predicted (not shown), a \texttt{reference\_date} column with the
+``starting point'' of the forecasts (not shown), and a \texttt{horizon}
+column with the number of steps ahead that the forecast is predicting
+relative to the \texttt{reference\_date}
+(Table~\ref{tbl-example-forecasts}). All these variables make up the
+task ID columns.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1447}}
@@ -482,8 +483,9 @@ Quantile predictions for the median and 50\% prediction intervals from a
 single model are shown for four distinct horizons. The \texttt{location}
 and \texttt{reference\_date} columns have been omitted for brevity; all
 forecasts in this example were made on 2022-12-17 for Massachusetts.
-This example is a modified subset of the \texttt{forecast\_outputs} data
-provided by the \pkg{hubExamples} package.}
+These predictions are a modified subset of the
+\texttt{forecast\_outputs} data provided by the \pkg{hubExamples}
+package.}
 
 \tabularnewline
 \end{longtable}
@@ -493,18 +495,19 @@ task ID columns. For example, projections of incident COVID-19 cases in
 the US at different locations, amounts of time in the future, and under
 different assumed conditions may use a \texttt{target} column of ``inc
 case'', a \texttt{location} column specifying the location being
-predicted, an \texttt{origin\_date} column specifying the date on which
-the projections were made (not shown), a \texttt{horizon} column
-describing the number of steps ahead that the projection is predicting
-relative to the \texttt{origin\_date}, and a \texttt{scenario\_id}
-column denoting the future conditions that were modeled and are
-projected to result in the specified number of incident cases
-(Table~\ref{tbl-example-scenarios}). Different modeling efforts may use
-different sets of task ID columns and values to specify their prediction
-goals, or may simply choose distinct names to represent the same concept
-(e.g., \texttt{reference\_date} versus \texttt{origin\_date} for a date
-task ID). Additional examples of task ID variables are available on the
-hubverse documentation website \citep{hubverse_docs}.
+predicted (not shown), an \texttt{origin\_date} column specifying the
+date on which the projections were made (not shown), a \texttt{horizon}
+column describing the number of steps ahead that the projection is
+predicting relative to the \texttt{origin\_date}, and a
+\texttt{scenario\_id} column denoting the future conditions that were
+modeled and are projected to result in the specified number of incident
+cases (Table~\ref{tbl-example-scenarios}). Different modeling efforts
+may use different sets of task ID columns and values to specify their
+prediction goals, or may simply choose distinct names to represent the
+same concept (e.g., \texttt{reference\_date} versus
+\texttt{origin\_date} for a date task ID). Additional examples of task
+ID variables are available on the hubverse documentation website
+\citep{hubverse_docs}.
 
 \newpage
 
@@ -557,7 +560,7 @@ Quantile predictions for the median and 50\% prediction intervals from a
 single model are shown for four distinct scenarios. The
 \texttt{location} and \texttt{origin\_date} columns have been omitted
 for brevity; all forecasts in this example were made on 2021-03-07 for
-the US. This example is a modified subset of the
+the US. These predictions are a modified subset of the
 \texttt{scenario\_outputs} data provided by the \pkg{hubExamples}
 package.}
 
@@ -573,15 +576,15 @@ consists of the same three columns: (1) \texttt{output\_type}, (2)
 \texttt{output\_type} column defines how the prediction is represented
 and may be one of \texttt{"mean"} or \texttt{"median"} for point
 predictions, or \texttt{"quantile"}, \texttt{"cdf"}, \texttt{"pmf"}, or
-\texttt{"sample"} for probabilistic predictions (although the sample
-output type is not yet directly supported by the \pkg{hubEnsembles}
-package and should be converted to another output type before computing
-an ensemble). The \texttt{output\_type\_id} provides additional
-identifying information for a prediction and is specific to the
-particular \texttt{output\_type} (see Table~\ref{tbl-model-output-rep}).
-For quantile predictions, the \texttt{output\_type\_id} is a numeric
-value between 0 and 1 specifying the cumulative probability associated
-with the quantile prediction. In the notation we defined above, the
+\texttt{"sample"} for probabilistic predictions. (The sample output type
+is not yet directly supported by the \pkg{hubEnsembles} package and
+should be converted to another output type before computing an
+ensemble.) The \texttt{output\_type\_id} provides additional identifying
+information for a prediction and is specific to the particular
+\texttt{output\_type} (see Table~\ref{tbl-model-output-rep}). For
+quantile predictions, the \texttt{output\_type\_id} is a numeric value
+between 0 and 1 specifying the cumulative probability associated with
+the quantile prediction. In the notation we defined above, the
 \texttt{output\_type\_id} corresponds to \(\theta\) and the
 \texttt{value} is the quantile prediction \(F^{-1}(\theta)\). For CDF or
 PMF predictions, the \texttt{output\_type\_id} is the target variable
@@ -718,15 +721,15 @@ bin or category probabilities at each target variable value,
 The ensemble function determines the operation that is performed, and in
 the case of probabilistic output types (quantile, CDF, PMF), this also
 determines what ensemble distribution is generated (quantile average,
-\(F_{Q}^{-1}(\theta)\), or linear pool, \(F_{LOP}(x)\)). The resulting
-ensemble will be returned in the same output type as the inputs. Thus,
+\(F_{Q}^{-1}(\theta)\), or linear pool, \(F_{LOP}(x)\)). The ensembled
+predictions are returned in the same output type as the inputs. Thus,
 the output type determines how the resulting ensemble distribution is
 summarized (as a quantile, \(F^{-1}(\theta)\), cumulative probability,
 \(F(x)\), or probability \(f(x)\)). Estimating individual model
 cumulative probabilities is required to compute a
 \texttt{linear\_pool()} for predictions of \texttt{quantile} output
 type; see Section~\ref{sec-linear-pool} on the linear pool operation for
-details. In the case of \texttt{simple\_ensemble()}, we report the
+details. In the case of \texttt{simple\_ensemble()}, we show the
 calculations for the default case where \texttt{agg\_fun\ =\ mean};
 however, if another aggregation function is chosen (e.g.,
 \texttt{agg\_fun\ =\ median}), that calculation would be performed
@@ -770,14 +773,14 @@ cumulative or bin probabilities).
 
 However, implementation of LOP is less straightforward for the quantile
 output type. This is because LOP averages cumulative probabilities at
-each value of the target variable, but the predictions are quantiles (on
-the scale of the target variable) for fixed quantile levels. The value
-for these quantile predictions will generally differ between models, and
-as a result we are typically not provided cumulative probabilities at
-the same values of the target variable for all component predictions.
-This lack of alignment between cumulative probabilities for the same
-target variable values impedes computation of LOP from quantile
-predictions and is illustrated in panel A of
+each value of the target variable, but the predictions are given as
+quantiles (on the scale of the target variable) for fixed quantile
+levels. The value for these quantile predictions will generally differ
+between models; hence, we are typically not provided cumulative
+probabilities at the same values of the target variable for all
+component predictions. This lack of alignment between cumulative
+probabilities for the same target variable values impedes computation of
+LOP from quantile predictions and is illustrated in panel A of
 Figure~\ref{fig-example-quantile-average-and-linear-pool}.
 
 \begin{figure}
@@ -789,9 +792,9 @@ Figure~\ref{fig-example-quantile-average-and-linear-pool}.
 }
 
 \caption{\label{fig-example-quantile-average-and-linear-pool}(Panel A)
-Example of quantile output type predictions. In this example, points
-show model output collected for seven fixed quantile levels (\(\theta\)
-= 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions
+Example of quantile output type predictions. Solid points show model
+output collected for seven fixed quantile levels (\(\theta\) = 0.01,
+0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions
 (\(N(100, 10)\) in purple and \(N(120, 5)\) in green), with the
 underlying cumulative distribution functions (CDFs) shown with curves.
 The y-axis ticks show each of the fixed quantile levels. The associated
@@ -915,15 +918,15 @@ example data is provided in the \pkg{hubExamples} package.}
 
 We will use an example hub provided by the hubverse to demonstrate the
 functionality of the \pkg{hubEnsembles} package \citep{hubverse_docs}.
-This example hub was generated with modified forecasts from the FluSight
-forecasting challenge, which will be discussed in detail in
-Section~\ref{sec-case-study}. The example hub includes both example
+This hub was generated using modified forecasts from the FluSight
+forecasting challenge (discussed in further detail in
+Section~\ref{sec-case-study}). The example hub includes both example
 model output data and target data (sometimes known as ``truth'' data),
 which are stored in the \pkg{hubExamples} package as data objects named
 \texttt{forecast\_outputs} and \texttt{forecast\_target\_ts}. Note that
-the toy model outputs contain predictions for only a small subset rows
-of select dates, locations, and output type IDs, far fewer than an
-actual modeling hub would typically collect.
+this model outputs data contain only a small subset of predictions for
+select dates, locations, and output type IDs, far fewer than an actual
+modeling hub would typically collect.
 
 The model output data includes quantile, mean and median forecasts of
 future incident influenza hospitalizations and PMF forecasts of
@@ -940,12 +943,11 @@ Table~\ref{tbl-example-model-outputs}, we show only the median, the
 50\%, and 90\% prediction intervals, although other intervals and mean
 forecasts are included in the example model output data.
 
-We also have corresponding target data included in the \pkg{hubExamples}
-package (Table~\ref{tbl-example-target-data}). The example target data
-provide observed incident influenza hospitalizations
-(\texttt{observation}) in a given week (\texttt{date}) and for a given
-location (\texttt{location}). This target data could be used as
-calibration data for generating forecasts or for evaluating the
+The \pkg{hubExamples} package also provides corresponding target data
+(Table~\ref{tbl-example-target-data}) that contains incident influenza
+hospitalizations (\texttt{observation}) in a given week (\texttt{date})
+for a given location (\texttt{location}). This target data can be used
+as calibration data for generating forecasts or for evaluating the
 forecasts post hoc. The forecast-specific task ID variables
 \texttt{reference\_date} and \texttt{horizon} are not relevant for the
 target data.
@@ -975,7 +977,7 @@ target data.
 
 \caption{\label{tbl-example-target-data}Example target data for incident
 influenza hospitalizations. This table includes target data from
-2022-11-01 and 2023-02-01. This target data is provided in the
+2022-11-01 and 2023-02-01. The target data is provided in the
 \pkg{hubExamples} package.}
 
 \tabularnewline
@@ -1000,6 +1002,7 @@ R> target_data_plot <- hubExamples::forecast_target_ts |>
 +      location == "25",
 +      date >= "2022-11-01", date <= "2023-02-01"
 +    )
+R> 
 R> hubVis::plot_step_ahead_model_output(
 +    model_output_data = model_outputs_plot,
 +    target_data = target_data_plot,
@@ -1025,10 +1028,10 @@ R> hubVis::plot_step_ahead_model_output(
 }
 
 \caption{\label{fig-plot-ex-mods}One example set of quantile forecasts
-of weekly incident influenza hospitalizations in Massachusetts from each
-of three models (panels). Forecasts are represented by a median (line),
-50\% and 90\% prediction intervals (ribbons). Gray points represent
-observed incident hospitalizations.}
+for weekly incident influenza hospitalizations in Massachusetts from
+each of three models (panels). Forecasts are represented by a median
+(line), 50\% and 90\% prediction intervals (ribbons). Gray points
+represent observed incident hospitalizations.}
 
 \end{figure}%
 
@@ -1091,9 +1094,9 @@ PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.70 \\
 
 \caption{\label{tbl-example-forecasts-pmf}Example PMF model output for
 forecasts of incident influenza hospitalization intensity. A subset of
-example model output is shown: 1-week ahead PMF forecasts made on
-2022-12-17 for Massachusetts from three distinct models. We round the
-forecasted probability (in the \texttt{value} column) to two digits. The
+predictions are shown: 1-week ahead PMF forecasts made on 2022-12-17 for
+Massachusetts from three distinct models. We round the forecasted
+probability (in the \texttt{value} column) to two digits. The
 \texttt{location}, \texttt{reference\_date} and
 \texttt{target\_end\_date} columns have been omitted for brevity. This
 example data is provided in the \pkg{hubExamples} package.}
@@ -1130,17 +1133,18 @@ forecasted probability.}
 
 \end{figure}%
 
+\newpage
+
 \subsection{Creating ensembles with
 simple\_ensemble}\label{creating-ensembles-with-simple_ensemble}
 
 Using the default options for \texttt{simple\_ensemble()}, we can
 generate an equally weighted mean ensemble for each unique combination
 of values for the task ID variables, the \texttt{output\_type} and the
-\texttt{output\_type\_id}. Recall that this means different ensemble
-methods will be used for different output types: for the
-\texttt{quantile} output type in our example data, the resulting
-ensemble is a quantile average, while for the PMF output type, the
-ensemble is a linear pool.
+\texttt{output\_type\_id}. Recall that this function uses different
+ensemble methods for different output types: for the quantile output
+type in our example data, the resulting ensemble is a quantile average,
+while for the PMF output type, the ensemble is a linear pool.
 
 \begin{verbatim}
 R> mean_ens <- hubExamples::forecast_outputs |>
@@ -1154,8 +1158,8 @@ The resulting model output has the same structure as the original model
 output data (Table~\ref{tbl-mean-ensemble}), with columns for model ID,
 task ID variables, output type, output type ID, and value. We also use
 \texttt{model\_id\ =\ "simple-ensemble-mean"} to change the name of this
-ensemble in the resulting model output; if not specified, the default
-will be ``hub-ensemble''.
+ensemble in the resulting model output; if not specified, the default is
+``hub-ensemble''.
 
 \newpage
 
@@ -1668,48 +1672,27 @@ well above the nominal coverage rate. The quantile mean performs the
 worst of the ensembles with the highest MAE, which is substantially
 different from that of the other ensembles.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.2469}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1358}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1235}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1235}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1235}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1235}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1235}}@{}}
+\begin{longtable}[]{@{}lrrrrrr@{}}
 
 \toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{model}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{wis}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{rwis}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{mae}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{rmae}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{cov50}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{cov95}
-\end{minipage} \\
+\texttt{model} & \texttt{wis} & \texttt{rwis} & \texttt{mae} &
+\texttt{rmae} & \texttt{cov50} & \texttt{cov95} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-\textbf{median-ensemble} & \textbf{18.158} & \textbf{0.794} &
-\textbf{27.36} & \textbf{0.933} & 0.597 & \textbf{0.922} \\
-lp-normal & 19.745 & 0.863 & 27.932 & 0.953 & 0.709 & 0.99 \\
-lp-lognormal & 19.747 & 0.863 & 27.933 & 0.953 & 0.708 & 0.99 \\
-mean-ensemble & 20.18 & 0.882 & 29.582 & 1.009 & \textbf{0.595} &
-0.889 \\
-Flusight-baseline & 22.876 & 1 & 29.315 & 1 & 0.604 & 0.881 \\
+median-ensemble & 18.158 & 0.794 & 27.360 & 0.933 & 0.597 & 0.922 \\
+lp-normal & 19.745 & 0.863 & 27.932 & 0.953 & 0.709 & 0.990 \\
+lp-lognormal & 19.747 & 0.863 & 27.933 & 0.953 & 0.708 & 0.990 \\
+mean-ensemble & 20.180 & 0.882 & 29.582 & 1.009 & 0.595 & 0.889 \\
+Flusight-baseline & 22.876 & 1.000 & 29.315 & 1.000 & 0.604 & 0.881 \\
 
 
 \caption{\label{tbl-overall-evaluation}Summary of overall model
 performance across both seasons, averaged over all locations except the
-US national location. The best value for each metric is bolded, though
-the metric values are often quite similar among the models.}
+US national location and sorted by ascending WIS. The quantile median
+ensemble has the best value for every metric except 50\% coverage rate,
+though metric values are often quite similar among the models.}
 
 \tabularnewline
 \end{longtable}
@@ -1726,7 +1709,7 @@ than the linear pools. However, this model's point forecasts have a
 larger error margin compared to the other ensembles, especially at
 longer horizons. This pattern is demonstrated in
 Figure~\ref{fig-plot-forecasts-hubVis} for the 4-week ahead forecast in
-California following the 2022-23 season peak on December 5, 2022. Here
+California following the 2022-23 season peak on December 5, 2022. Here,
 the quantile mean predicted a continued increase in hospitalizations, at
 a steeper slope than the other ensemble methods.
 

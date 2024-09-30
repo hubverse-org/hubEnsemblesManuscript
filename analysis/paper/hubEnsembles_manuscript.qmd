@@ -1147,8 +1147,9 @@ The quantile median ensemble has the best overall performance in terms of WIS an
 ```{r overall-evaluation, message=FALSE, warning=FALSE, echo=FALSE}
 #| label: tbl-overall-evaluation
 #| tbl-cap: "Summary of overall model performance across both seasons, averaged
-#| over all locations except the US national location. The best value for each
-#| metric is bolded, though the metric values are often quite similar among
+#| over all locations except the US national location and sorted by ascending
+#| WIS. The quantile median ensemble has the best value for every metric except
+#| 50% coverage rate, though metric values are often quite similar among
 #| the models."
 
 metrics_col <- formatted_metrics_col <- c("model", "wis", "rwis", "mae", "rmae", "cov50", "cov95")
@@ -1162,8 +1163,6 @@ flu_overall_states <- flu_scores_all |>
 
 flu_overall_states |>
   dplyr::select(all_of(metrics_col)) |>
-  format_cells(rows = 1, cols = c(1:5, 7), "bold") |>
-  format_cells(rows = 4, cols = 6, "bold") |>
   knitr::kable(col.names = formatted_metrics_col)
 ```
 

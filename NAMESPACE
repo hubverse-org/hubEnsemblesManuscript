@@ -2,7 +2,6 @@
 
 export(as_covid_hub_forecasts)
 export(evaluate_flu_scores)
-export(format_cells)
 export(plot_evaluated_scores_forecast_date)
 export(plot_flu_truth)
 importFrom(hubUtils,as_model_out_tbl)

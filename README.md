@@ -20,7 +20,7 @@ Please cite this compendium as:
 > Krystalli, Consortium of Infectious Disease Modeling Hubs, Nicholas G.
 > Reich, Evan L. Ray (in prep). *Compendium of R code and data for
 > `hubEnsembles`: Ensembling Methods in R*. Accessed 12 Apr 2024. Online
-> at <https://doi.org/xxx/xxx>
+> at <https://doi.org/10.1101/2024.06.24.24309416>
 
 ## Contents
 

@@ -24,6 +24,8 @@ Authors@R: c(
 Description: Repository containing data and analysis for a paper on hubEnsembles, 
     a hubverse package of ensemble methods for combining hub model outputs.
 License: MIT + file LICENSE
+Depends: 
+    R (>= 4.1)
 Suggests:
     bookdown (>= 0.37),
     covidHubUtils (>= 0.1.8),

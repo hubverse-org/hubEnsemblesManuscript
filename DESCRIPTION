@@ -31,7 +31,7 @@ Suggests:
     covidHubUtils (>= 0.1.8),
     cowplot (>= 1.1.1),
     patchwork (>= 1.1.3),
-    hubVis (== 0.0.0.9100),
+    hubVis (== 0.0.0.9201),
     plotly,
     RColorBrewer (>= 1.1-3),
     reshape2 (>= 1.4.4),

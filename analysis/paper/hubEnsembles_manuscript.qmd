@@ -1,13 +1,12 @@
 ---
 title: "[hubEnsembles]{.pkg}: Ensembling Methods in [R]{.proglang}"
 format:
-  jss-pdf:
+  pdf:
     keep-tex: true
     journal:
       type: article
       cite-shortnames: true
       suppress: [title]
-      include-jss-default: false
 author:
   - name: Li Shandross
     affiliations:
@@ -34,9 +33,7 @@ author:
     affiliations:
       - R-RSE SMPC
     orcid: 0000-0002-2378-4915
-  - name: |
-      | Consortium of 
-      | Infectious Disease Modeling Hubs
+  - name: Consortium of Infectious Disease Modeling Hubs
     affiliations:
       - A list of authors and their affiliations appears at the end of the paper
   - name: Nicholas G. Reich

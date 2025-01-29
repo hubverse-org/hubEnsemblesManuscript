@@ -41,7 +41,7 @@
 \makeatother
 \usepackage{xcolor}
 \setlength{\emergencystretch}{3em} % prevent overfull lines
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
 \ifx\paragraph\undefined\else
   \let\oldparagraph\paragraph
@@ -232,7 +232,7 @@ framework of open-source software and data tools called the
 collaborative modelling exercises.
 \end{abstract}
 
-\subsection{Introduction}\label{sec-intro}
+\section{Introduction}\label{sec-intro}
 
 Predictions of future outcomes are essential to planning and decision
 making, yet generating reliable predictions of the future is
@@ -288,7 +288,7 @@ influenza forecasts (Section~\ref{sec-case-study}) that motivates a
 discussion and comparison of the various methods
 (Section~\ref{sec-conclusions}).
 
-\subsection{Mathematical definitions and properties of ensemble
+\section{Mathematical definitions and properties of ensemble
 methods}\label{sec-defs}
 
 The {hubEnsembles} package supports both point predictions and
@@ -394,7 +394,7 @@ individual model means (Lichtendahl, Grushka-Cockayne, and Winkler
 models, whereas the quantile average cancels away this variation under
 the assumption it constitutes sampling error (Howerton et al. 2023).
 
-\subsection{Model implementation details}\label{sec-implementation}
+\section{Model implementation details}\label{sec-implementation}
 
 To understand how these methods are implemented in {hubEnsembles}, we
 first must define the conventions employed by the hubverse and its
@@ -405,7 +405,7 @@ the hubverse, then explain the implementation of the two ensembling
 functions included in the package, \texttt{simple\_ensemble()} and
 \texttt{linear\_pool()}.
 
-\subsubsection{Hubverse terminology and
+\subsection{Hubverse terminology and
 conventions}\label{hubverse-terminology-and-conventions}
 
 A central concept in the hubverse effort is ``model output''. Model
@@ -508,8 +508,6 @@ same concept (e.g., \texttt{reference\_date} versus
 \texttt{origin\_date} for a date task ID). Additional examples of task
 ID variables are available on the hubverse documentation website
 (Consortium of Infectious Disease Modeling Hubs 2024).
-
-\newpage
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1294}}
@@ -651,7 +649,7 @@ discrete outcome variable \\
 Numeric: A sample from the predictive distribution \\
 \end{longtable}
 
-\subsubsection{Ensemble functions in hubEnsembles}\label{sec-ens-fns}
+\subsection{Ensemble functions in hubEnsembles}\label{sec-ens-fns}
 
 The {hubEnsembles} package includes two functions that perform ensemble
 calculations: \texttt{simple\_ensemble()}, which applies some function
@@ -663,7 +661,7 @@ methods described in Section~\ref{sec-defs}. A short description of the
 calculation performed by each function is summarized by output type in
 Table~\ref{tbl-fns-by-output-type}.
 
-\paragraph{Simple ensemble}\label{sec-simple-ensemble}
+\subsubsection{Simple ensemble}\label{sec-simple-ensemble}
 
 The \texttt{simple\_ensemble()} function directly computes an ensemble
 from component model outputs by combining them via some function (\(C\))
@@ -756,7 +754,7 @@ example, a median ensemble may also be created by specifying
 passed to the \texttt{agg\_fun} argument to create other ensemble types.
 Similarly, model weights can be specified to create a weighted ensemble.
 
-\paragraph{Linear pool}\label{sec-linear-pool}
+\subsubsection{Linear pool}\label{sec-linear-pool}
 
 The \texttt{linear\_pool()} function implements the linear opinion pool
 (LOP) method for ensembling predictions. Currently, this function can be
@@ -849,13 +847,13 @@ two most extreme quantiles. The sampling process described in steps 2
 and 3 approximates the linear pool calculation described in
 Section~\ref{sec-defs}.
 
-\subsection{Basic demonstration of functionality}\label{sec-simple-ex}
+\section{Basic demonstration of functionality}\label{sec-simple-ex}
 
 In this section, we provide a simple example to illustrate the two main
 functions in {hubEnsembles}, \texttt{simple\_ensemble()} and
 \texttt{linear\_pool()}.
 
-\subsubsection{Example data: a forecast
+\subsection{Example data: a forecast
 hub}\label{example-data-a-forecast-hub}
 
 \begin{longtable}[]{@{}
@@ -1134,7 +1132,7 @@ forecasted probability.}
 
 \newpage
 
-\subsubsection{Creating ensembles with
+\subsection{Creating ensembles with
 simple\_ensemble}\label{creating-ensembles-with-simple_ensemble}
 
 Using the default options for \texttt{simple\_ensemble()}, we can
@@ -1216,7 +1214,7 @@ simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.75 & 704.33 \\
 
 \end{longtable}
 
-\paragraph{Changing the aggregation
+\subsubsection{Changing the aggregation
 function}\label{changing-the-aggregation-function}
 
 We can change the function that is used to aggregate model outputs. For
@@ -1282,7 +1280,7 @@ case.}
 
 \end{figure}%
 
-\paragraph{Weighting model
+\subsubsection{Weighting model
 contributions}\label{weighting-model-contributions}
 
 We can weight the contributions of each model in the ensemble using the
@@ -1307,7 +1305,7 @@ but give it less weight than the other forecasts.
 \end{Highlighting}
 \end{Shaded}
 
-\subsubsection{Creating ensembles with
+\subsection{Creating ensembles with
 linear\_pool}\label{creating-ensembles-with-linear_pool}
 
 We can also generate a linear pool ensemble, or distributional mixture,
@@ -1365,7 +1363,7 @@ from the example hub, and are represented by a median (line), 50\% and
 
 \end{figure}%
 
-\subsection{Example: in-depth analysis of forecast
+\section{Example: in-depth analysis of forecast
 data}\label{sec-case-study}
 
 To further demonstrate the utility of the {hubEnsembles} package and the
@@ -1394,7 +1392,7 @@ generated reproducibly using data from rds files stored in the
 \texttt{analysis/data/raw-data} directory and scripts in the
 \texttt{inst} directory of the repository.
 
-\subsubsection{Data and Methods}\label{data-and-methods}
+\subsection{Data and Methods}\label{data-and-methods}
 
 We begin by querying the component forecasts used to generate the four
 ensembles from Zoltar (Reich et al. 2021), a repository designed to
@@ -1672,7 +1670,7 @@ scoring and evaluation has not yet been fully implemented. This function
 outputs each of the metrics described above. We use median forecasts
 taken from the 0.5 quantile for the MAE evaluation.
 
-\subsubsection{Performance results across
+\subsection{Performance results across
 ensembles}\label{performance-results-across-ensembles}
 
 The quantile median ensemble has the best overall performance in terms
@@ -1841,7 +1839,7 @@ model weights and an aggregation function for
 \texttt{simple\_ensemble()} allow users to implement a variety of
 ensemble methods.
 
-\subsection{Summary and discussion}\label{sec-conclusions}
+\section{Summary and discussion}\label{sec-conclusions}
 
 Ensembles of independent models are a powerful tool to generate more
 accurate and more reliable predictions of future outcomes than a single
@@ -1887,8 +1885,8 @@ ultimately provide a comprehensive suite of open-source software tools
 for leveraging the power of collaborative hubs and multi-model
 ensembles.
 
-\subsection*{Acknowledgements}\label{acknowledgements}
-\addcontentsline{toc}{subsection}{Acknowledgements}
+\section*{Acknowledgements}\label{acknowledgements}
+\addcontentsline{toc}{section}{Acknowledgements}
 
 The authors thank all members of the hubverse community; the broader
 hubverse software infrastructure made this package possible. L.
@@ -1903,10 +1901,10 @@ supported by NIGMS grant U24GM132013. The content is solely the
 responsibility of the authors and does not necessarily represent the
 official views of NIGMS, the National Institutes of Health, or CDC.
 
-\subsection*{Consortium of Infectious Disease Modeling
+\section*{Consortium of Infectious Disease Modeling
 Hubs}\label{consortium-of-infectious-disease-modeling-hubs}
-\addcontentsline{toc}{subsection}{Consortium of Infectious Disease
-Modeling Hubs}
+\addcontentsline{toc}{section}{Consortium of Infectious Disease Modeling
+Hubs}
 
 Consortium of Infectious Disease Modeling Hubs authors include Alvaro J.
 Castro Rivadeneira (University of Massachusetts Amherst), Lucie Contamin
@@ -1922,8 +1920,8 @@ of Massachusetts Amherst), Katharine Sherratt (London School of Hygene
 and Tropical Medicine), Shaun Truelove (Johns Hopkins University),
 Martha Zorn (University of Massachusetts Amherst)
 
-\subsection*{References}\label{references}
-\addcontentsline{toc}{subsection}{References}
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}

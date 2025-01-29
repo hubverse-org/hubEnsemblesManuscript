@@ -239,15 +239,13 @@ making, yet generating reliable predictions of the future is
 challenging. One method for overcoming this challenge is combining
 predictions across multiple, independent models. These combination
 methods (also called aggregation or ensembling) have been repeatedly
-shown to produce predictions that are more accurate (Clemen 1989;
-Timmermann 2006) and more consistent (Hibon and Evgeniou 2005) than
-individual models. Because of the clear performance benefits,
-multi-model ensembles are commonplace across fields, including weather
-(Alley, Emanuel, and Zhang 2019), climate (Tebaldi and Knutti 2007), and
-economics (Aastveit et al. 2018). More recently, multi-model ensembles
-have been used to improve predictions of infectious disease outbreaks
-(Viboud et al. 2018; Johansson et al. 2019; McGowan et al. 2019; Reich
-et al. 2019; Cramer et al. 2022).
+shown to produce predictions that are more accurate\textsuperscript{1,2}
+and more consistent\textsuperscript{3} than individual models. Because
+of the clear performance benefits, multi-model ensembles are commonplace
+across fields, including weather\textsuperscript{4},
+climate\textsuperscript{5}, and economics\textsuperscript{6}. More
+recently, multi-model ensembles have been used to improve predictions of
+infectious disease outbreaks\textsuperscript{7--11}.
 
 In the rapidly growing field of outbreak forecasting, there are many
 proposed methods for generating ensembles. Generally, these methods
@@ -255,38 +253,36 @@ differ in at least one of two ways: (1) the function used to combine or
 ``average'' predictions, and (2) how predictions are weighted when
 performing the combination. No one method is universally ``the best''; a
 simple average of predictions works surprisingly well across a range of
-settings (McGowan et al. 2019; Paireau et al. 2022; Ray et al. 2023) for
-established theoretical reasons (Winkler 2015). However, more complex
-approaches have also been shown to have benefits in some settings
-(Yamana, Kandula, and Shaman 2016; Ray and Reich 2018; Reich et al.
-2019; Colón-González et al. 2021). Here, we present the {hubEnsembles}
-package, which provides a flexible framework for generating ensemble
-predictions from multiple models. Complementing other software for
-combining predictions from multiple models (e.g., Pedregosa et al.
-(2011); Weiss, Raviv, and Roetzer (2019); Bosse et al. (2023); Couch and
-Kuhn (2023)), {hubEnsembles} supports multiple types of predictions,
-including point estimates and different kinds of probabilistic
-predictions. Throughout, we will use the term ``prediction'' to refer to
-any kind of model output that may be combined including a forecast, a
-scenario projection, or a parameter estimate.
+settings\textsuperscript{9,12,13} for established theoretical
+reasons\textsuperscript{14}. However, more complex approaches have also
+been shown to have benefits in some settings\textsuperscript{10,15--17}.
+Here, we present the {hubEnsembles} package, which provides a flexible
+framework for generating ensemble predictions from multiple models.
+Complementing other software for combining predictions from multiple
+models
+(e.g.,\textsuperscript{18};\textsuperscript{19};\textsuperscript{20};\textsuperscript{21}),
+{hubEnsembles} supports multiple types of predictions, including point
+estimates and different kinds of probabilistic predictions. Throughout,
+we will use the term ``prediction'' to refer to any kind of model output
+that may be combined including a forecast, a scenario projection, or a
+parameter estimate.
 
 The {hubEnsembles} package is part of the ``hubverse'' collection of
 open-source software and data tools. The hubverse project facilitates
-the development and management of collaborative modelling exercises
-(Consortium of Infectious Disease Modeling Hubs 2024). The broader
-hubverse initiative is motivated by the demonstrated benefits of
-collaborative hubs (Reich et al. 2022; Borchering et al. 2023),
-including performance benefits of multi-model ensembles and the desire
-for standardization across such hubs. In this paper, we focus
-specifically on the functionality encompassed in {hubEnsembles}. We
-provide an overview of the methods implemented, including mathematical
-definitions and properties (Section~\ref{sec-defs}) as well as
-implementation details (Section~\ref{sec-implementation}), a basic
-demonstration of functionality with simple examples
-(Section~\ref{sec-simple-ex}), and a more in-depth analysis using real
-influenza forecasts (Section~\ref{sec-case-study}) that motivates a
-discussion and comparison of the various methods
-(Section~\ref{sec-conclusions}).
+the development and management of collaborative modelling
+exercises\textsuperscript{22}. The broader hubverse initiative is
+motivated by the demonstrated benefits of collaborative
+hubs\textsuperscript{23,24}, including performance benefits of
+multi-model ensembles and the desire for standardization across such
+hubs. In this paper, we focus specifically on the functionality
+encompassed in {hubEnsembles}. We provide an overview of the methods
+implemented, including mathematical definitions and properties
+(Section~\ref{sec-defs}) as well as implementation details
+(Section~\ref{sec-implementation}), a basic demonstration of
+functionality with simple examples (Section~\ref{sec-simple-ex}), and a
+more in-depth analysis using real influenza forecasts
+(Section~\ref{sec-case-study}) that motivates a discussion and
+comparison of the various methods (Section~\ref{sec-conclusions}).
 
 \section{Mathematical definitions and properties of ensemble
 methods}\label{sec-defs}
@@ -325,19 +321,19 @@ aggregation, such as a (weighted) median or geometric mean.
 
 For probabilistic predictions, there are two commonly used classes of
 methods to average or ensemble multiple predictions: quantile averaging
-(also called a Vincent average (Vincent 1912)) and probability averaging
-(also called a distributional mixture or linear opinion pool (Stone
-1961)) (Lichtendahl, Grushka-Cockayne, and Winkler 2013). To define
-these two classes of methods, let \(F(x)\) be a cumulative density
-function (CDF) defined over values \(x\) of the target variable for the
-prediction, and \(F^{-1}(\theta)\) be the corresponding quantile
-function defined over quantile levels \(\theta \in [0, 1]\). Throughout
-this article, we may refer to \(x\) as either a `value of the target
-variable' or a `quantile' depending on the context, and similarly we may
-refer to \(\theta\) as either a `quantile level' or a `(cumulative)
-probability'. Additionally, we will use \(f(x)\) to denote a probability
-mass function (PMF) for a prediction of a discrete variable or a
-discretization (such as binned values) of a continuous variable.
+(also called a Vincent average\textsuperscript{25}) and probability
+averaging (also called a distributional mixture or linear opinion
+pool\textsuperscript{26})\textsuperscript{27}. To define these two
+classes of methods, let \(F(x)\) be a cumulative density function (CDF)
+defined over values \(x\) of the target variable for the prediction, and
+\(F^{-1}(\theta)\) be the corresponding quantile function defined over
+quantile levels \(\theta \in [0, 1]\). Throughout this article, we may
+refer to \(x\) as either a `value of the target variable' or a
+`quantile' depending on the context, and similarly we may refer to
+\(\theta\) as either a `quantile level' or a `(cumulative) probability'.
+Additionally, we will use \(f(x)\) to denote a probability mass function
+(PMF) for a prediction of a discrete variable or a discretization (such
+as binned values) of a continuous variable.
 
 The quantile average combines a set of quantile functions,
 \(\mathcal{Q} = \{F_i^{-1}(\theta)| i \in 1,...,N \}\), with a given set
@@ -385,14 +381,13 @@ example, the variance of the linear pool is
 where \(\mu_i\) is the mean and \(\sigma^2_i\) is the variance of
 individual prediction \(i\), and although there is no closed-form
 variance for the quantile average, the variance of the quantile average
-will always be less than or equal to that of the linear pool
-(Lichtendahl, Grushka-Cockayne, and Winkler 2013). Both methods generate
-distributions with the same mean,
-\(\mu_Q = \mu_{LOP} = \sum_{i=1}^Nw_i\mu_i\), which is the mean of
-individual model means (Lichtendahl, Grushka-Cockayne, and Winkler
-2013). The linear pool method preserves variation between individual
-models, whereas the quantile average cancels away this variation under
-the assumption it constitutes sampling error (Howerton et al. 2023).
+will always be less than or equal to that of the linear
+pool\textsuperscript{27}. Both methods generate distributions with the
+same mean, \(\mu_Q = \mu_{LOP} = \sum_{i=1}^Nw_i\mu_i\), which is the
+mean of individual model means\textsuperscript{27}. The linear pool
+method preserves variation between individual models, whereas the
+quantile average cancels away this variation under the assumption it
+constitutes sampling error\textsuperscript{28}.
 
 \section{Model implementation details}\label{sec-implementation}
 
@@ -416,8 +411,8 @@ value. Per hubverse convention, each column serves one of three
 purposes: (i) denote which model has produced the prediction (called the
 ``model ID''), (ii) provide details about what is being predicted
 (called the ``task IDs''), or (iii) specify the prediction itself and
-how it is represented (called the ``model output representation'')
-(Consortium of Infectious Disease Modeling Hubs 2024).
+how it is represented (called the ``model output
+representation'')\textsuperscript{22}.
 
 Predictions are assumed to be generated by distinct models, typically
 developed and run by a modeling team of one or more individuals. Each
@@ -426,17 +421,17 @@ model should have a unique identifier that is stored in the
 predicted can be stored in a series of task ID columns, the second type
 of column. These task ID columns may also include additional
 information, such as any conditions or assumptions that were used to
-generate the predictions (Consortium of Infectious Disease Modeling Hubs
-2024). For example, short-term forecasts of incident influenza
-hospitalizations in the US at different locations and amounts of time in
-the future might represent this information using a \texttt{target}
-column with the value ``wk inc flu hosp'', a \texttt{location} column
-identifying the location being predicted (not shown), a
-\texttt{reference\_date} column with the ``starting point'' of the
-forecasts (not shown), and a \texttt{horizon} column with the number of
-steps ahead that the forecast is predicting relative to the
-\texttt{reference\_date} (Table~\ref{tbl-example-forecasts}). All these
-variables make up the task ID columns.
+generate the predictions\textsuperscript{22}. For example, short-term
+forecasts of incident influenza hospitalizations in the US at different
+locations and amounts of time in the future might represent this
+information using a \texttt{target} column with the value ``wk inc flu
+hosp'', a \texttt{location} column identifying the location being
+predicted (not shown), a \texttt{reference\_date} column with the
+``starting point'' of the forecasts (not shown), and a \texttt{horizon}
+column with the number of steps ahead that the forecast is predicting
+relative to the \texttt{reference\_date}
+(Table~\ref{tbl-example-forecasts}). All these variables make up the
+task ID columns.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1447}}
@@ -506,8 +501,8 @@ may use different sets of task ID columns and values to specify their
 prediction goals, or may simply choose distinct names to represent the
 same concept (e.g., \texttt{reference\_date} versus
 \texttt{origin\_date} for a date task ID). Additional examples of task
-ID variables are available on the hubverse documentation website
-(Consortium of Infectious Disease Modeling Hubs 2024).
+ID variables are available on the hubverse documentation
+website\textsuperscript{22}.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1294}}
@@ -817,8 +812,8 @@ Given that LOP cannot be directly calculated from quantile predictions,
 we must first obtain an estimate of the CDF for each component
 distribution from the provided quantiles, combine the CDFs, then
 calculate the quantiles using the ensemble's CDF. We perform this
-calculation in three main steps, assisted by the {distfromq} package
-(Ray and Gerding 2024) for the first two:
+calculation in three main steps, assisted by the {distfromq}
+package\textsuperscript{29} for the first two:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -830,7 +825,7 @@ calculation in three main steps, assisted by the {distfromq} package
 \item
   Draw samples from each component model distribution. To reduce Monte
   Carlo variability, we use quasi-random samples corresponding to
-  quantiles of the estimated distribution (Niederreiter 1992).
+  quantiles of the estimated distribution\textsuperscript{30}.
 \item
   Pool the samples from all component models and extract the desired
   quantiles.
@@ -912,16 +907,16 @@ PSI-DICE & wk inc flu hosp & 1 & median & NA & 613 \\
 \end{longtable}
 
 We will use an example hub provided by the hubverse to demonstrate the
-functionality of the {hubEnsembles} package (Consortium of Infectious
-Disease Modeling Hubs 2024). This hub was generated using modified
-forecasts from the FluSight forecasting challenge (discussed in further
-detail in Section~\ref{sec-case-study}). The example hub includes both
-example model output data and target data (sometimes known as ``truth''
-data), which are stored in the {hubExamples} package as data objects
-named \texttt{forecast\_outputs} and \texttt{forecast\_target\_ts}. Note
-that this model outputs data contain only a small subset of predictions
-for select dates, locations, and output type IDs, far fewer than an
-actual modeling hub would typically collect.
+functionality of the {hubEnsembles} package\textsuperscript{22}. This
+hub was generated using modified forecasts from the FluSight forecasting
+challenge (discussed in further detail in Section~\ref{sec-case-study}).
+The example hub includes both example model output data and target data
+(sometimes known as ``truth'' data), which are stored in the
+{hubExamples} package as data objects named \texttt{forecast\_outputs}
+and \texttt{forecast\_target\_ts}. Note that this model outputs data
+contain only a small subset of predictions for select dates, locations,
+and output type IDs, far fewer than an actual modeling hub would
+typically collect.
 
 The model output data includes quantile, mean and median forecasts of
 future incident influenza hospitalizations and PMF forecasts of
@@ -1376,12 +1371,12 @@ choosing a single best ensembling approach for the application.
 
 Since 2013, the US Centers for Disease Control and Prevention (CDC) has
 been soliciting forecasts of seasonal influenza from modeling teams
-through a collaborative challenge called FluSight (CDC 2023). We use a
-subset of these predictions to create four equally-weighted ensembles
-with \texttt{simple\_ensemble()} and \texttt{linear\_pool()} and compare
-the resulting ensembles' performance. The ensembling methods chosen for
-this case study consist of a quantile (arithmetic) mean, a quantile
-median, a linear pool with normal tails, and a linear pool with
+through a collaborative challenge called FluSight\textsuperscript{31}.
+We use a subset of these predictions to create four equally-weighted
+ensembles with \texttt{simple\_ensemble()} and \texttt{linear\_pool()}
+and compare the resulting ensembles' performance. The ensembling methods
+chosen for this case study consist of a quantile (arithmetic) mean, a
+quantile median, a linear pool with normal tails, and a linear pool with
 lognormal tails. Note that only a select portion of the code is shown in
 this manuscript for brevity, although all the functions and scripts used
 to generate the case study results can be found in the associated GitHub
@@ -1395,7 +1390,7 @@ generated reproducibly using data from rds files stored in the
 \subsection{Data and Methods}\label{data-and-methods}
 
 We begin by querying the component forecasts used to generate the four
-ensembles from Zoltar (Reich et al. 2021), a repository designed to
+ensembles from Zoltar\textsuperscript{32}, a repository designed to
 archive forecasts created by the Reich Lab at UMass Amherst. For this
 analysis we only consider FluSight predictions in a quantile format from
 the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two
@@ -1634,18 +1629,18 @@ interested in comparing.
 We evaluate the performance of these ensembles using scoring metrics
 that measure the accuracy and calibration of their forecasts. Here, we
 choose several common metrics in forecast evaluation, including mean
-absolute error (MAE), weighted interval score (WIS) (Bracher et al.
-2021), 50\% prediction interval (PI) coverage, and 95\% PI coverage. MAE
+absolute error (MAE), weighted interval score (WIS)\textsuperscript{33},
+50\% prediction interval (PI) coverage, and 95\% PI coverage. MAE
 measures the average absolute error of a set of point forecasts; smaller
 values of MAE indicate better forecast accuracy. WIS is a generalization
 of MAE for probabilistic forecasts and is an alternative to other common
 proper scoring rules which cannot be evaluated directly for quantile
-forecasts (Bracher et al. 2021). WIS is made up of three component
+forecasts\textsuperscript{33}. WIS is made up of three component
 penalties: (1) for over-prediction, (2) for under-prediction, and (3)
 for the spread of each interval (where an interval is defined by a
 symmetric set of two quantiles). This metric weights these penalties
 across all prediction intervals provided. A lower WIS value indicates a
-more accurate forecast (Bracher et al. 2021). PI coverage provides
+more accurate forecast\textsuperscript{33}. PI coverage provides
 information about whether a forecast has accurately characterized its
 uncertainty about future observations. The \(50\)\% PI coverage rate
 measures the proportion of the time that 50\% prediction intervals at
@@ -1849,22 +1844,22 @@ into an ensemble.
 
 The {hubEnsembles} package is situated within the larger hubverse
 collection of open-source software and data tools to support
-collaborative modeling exercises (Consortium of Infectious Disease
-Modeling Hubs 2024). Collaborative hubs offer many benefits, including
-serving as a centralized entity to guide and elicit predictions from
-multiple independent models (Reich et al. 2022). Given the increasing
-popularity of multi-model ensembles and collaborative hubs, there is a
-clear need for generalized data standards and software infrastructure to
-support these hubs. By addressing this need, the hubverse suite of tools
-can reduce duplicative efforts across existing hubs, support other
-communities engaged in collaborative efforts, and enable the adoption of
-multi-model approaches in new domains.
+collaborative modeling exercises\textsuperscript{22}. Collaborative hubs
+offer many benefits, including serving as a centralized entity to guide
+and elicit predictions from multiple independent
+models\textsuperscript{23}. Given the increasing popularity of
+multi-model ensembles and collaborative hubs, there is a clear need for
+generalized data standards and software infrastructure to support these
+hubs. By addressing this need, the hubverse suite of tools can reduce
+duplicative efforts across existing hubs, support other communities
+engaged in collaborative efforts, and enable the adoption of multi-model
+approaches in new domains.
 
 When using {hubEnsembles}, it is important to carefully choose an
 ensemble method that is well suited for the situation. Although there
 may not be a universal ``best'' method, matching the properties of a
 given ensemble method with the features of the component models will
-likely yield best results (Howerton et al. 2023). Our case study on
+likely yield best results\textsuperscript{28}. Our case study on
 seasonal influenza forecasts in the US demonstrates this point. The
 quantile median ensemble performs best overall for a range of metrics,
 including weighted interval score, mean absolute error, and prediction
@@ -1924,203 +1919,227 @@ Martha Zorn (University of Massachusetts Amherst)
 \addcontentsline{toc}{section}{References}
 
 \phantomsection\label{refs}
-\begin{CSLReferences}{1}{0}
-\bibitem[\citeproctext]{ref-aastveit2018}
-Aastveit, Knut Are, James Mitchell, Francesco Ravazzolo, and Herman K.
-van Dijk. 2018. {``The Evolution of Forecast Density Combinations in
-Economics.''} \emph{Tinbergen Institute Discussion Papers}.
-\url{https://hdl.handle.net/10419/185588}.
-
-\bibitem[\citeproctext]{ref-alley2019}
-Alley, Richard B., Kerry A. Emanuel, and Fuqing Zhang. 2019. {``Advances
-in Weather Prediction.''} \emph{Science} 363 (6425): 342--44.
-\url{https://doi.org/10.1126/science.aav7274}.
-
-\bibitem[\citeproctext]{ref-borchering_public_2023}
-Borchering, Rebecca K., Jessica M. Healy, Betsy L. Cadwell, Michael A.
-Johansson, Rachel B. Slayton, Megan Wallace, and Matthew Biggerstaff.
-2023. {``Public Health Impact of the {U}.{S}. {Scenario} {Modeling}
-{Hub}.''} \emph{Epidemics} 44 (September): 100705.
-\url{https://doi.org/10.1016/j.epidem.2023.100705}.
-
-\bibitem[\citeproctext]{ref-bosse_stackr_2023}
-Bosse, Nikos, Yuling Yao, Sam Abbott, and Sebastian Funk. 2023.
-\emph{Stackr: {Create} {Mixture} {Models} {From} {Predictive}
-{Samples}}.
-
-\bibitem[\citeproctext]{ref-bracher_evaluating_2021}
-Bracher, Johannes, Evan L. Ray, Tilmann Gneiting, and Nicholas G. Reich.
-2021. {``Evaluating Epidemic Forecasts in an Interval Format.''}
-\emph{PLOS Computational Biology} 17 (2): e1008618.
-\url{https://doi.org/10.1371/journal.pcbi.1008618}.
-
-\bibitem[\citeproctext]{ref-cdc_flusight}
-CDC. 2023. {``About Flu Forecasting.''}
-\url{https://www.cdc.gov/flu/weekly/flusight/how-flu-forecasting.htm}.
-
+\begin{CSLReferences}{0}{1}
 \bibitem[\citeproctext]{ref-clemen1989}
-Clemen, Robert T. 1989. {``Combining Forecasts: A Review and Annotated
-Bibliography.''} \emph{International Journal of Forecasting} 5 (4):
-559--83. \url{https://doi.org/10.1016/0169-2070(89)90012-5}.
-
-\bibitem[\citeproctext]{ref-colon-gonzalez_probabilistic_2021}
-Colón-González, Felipe J., Leonardo Soares Bastos, Barbara Hofmann,
-Alison Hopkin, Quillon Harpham, Tom Crocker, Rosanna Amato, et al. 2021.
-{``Probabilistic Seasonal Dengue Forecasting in {Vietnam}: {A} Modelling
-Study Using Superensembles.''} \emph{PLOS Medicine} 18 (3): e1003542.
-\url{https://doi.org/10.1371/journal.pmed.1003542}.
-
-\bibitem[\citeproctext]{ref-hubverse_docs}
-Consortium of Infectious Disease Modeling Hubs. 2024. {``The Hubverse:
-Open Tools for Collaborative Forecasting.''}
-\url{https://hubverse.io/en/latest/index.html}.
-
-\bibitem[\citeproctext]{ref-couch_stacks_2023}
-Couch, Simon, and Max Kuhn. 2023. \emph{Stacks: Tidy Model Stacking}.
-
-\bibitem[\citeproctext]{ref-cramer2022}
-Cramer, Estee Y., Evan L. Ray, Velma K. Lopez, Johannes Bracher, Andrea
-Brennen, Alvaro J. Castro Rivadeneira, Aaron Gerding, et al. 2022.
-{``Evaluation of Individual and Ensemble Probabilistic Forecasts of
-COVID-19 Mortality in the United States.''} \emph{Proceedings of the
-National Academy of Sciences} 119 (15): e2113561119.
-\url{https://doi.org/10.1073/pnas.2113561119}.
-
-\bibitem[\citeproctext]{ref-hibon2005}
-Hibon, Michèle, and Theodoros Evgeniou. 2005. {``To Combine or Not to
-Combine: Selecting Among Forecasts and Their Combinations.''}
-\emph{International Journal of Forecasting} 21 (1): 15--24.
-\url{https://doi.org/10.1016/j.ijforecast.2004.05.002}.
-
-\bibitem[\citeproctext]{ref-howerton2023}
-Howerton, Emily, Michael C. Runge, Tiffany L. Bogich, Rebecca K.
-Borchering, Hidetoshi Inamine, Justin Lessler, Luke C. Mullany, et al.
-2023. {``Context-Dependent Representation of Within- and Between-Model
-Uncertainty: Aggregating Probabilistic Predictions in Infectious Disease
-Epidemiology.''} \emph{Journal of The Royal Society Interface} 20 (198):
-20220659. \url{https://doi.org/10.1098/rsif.2022.0659}.
-
-\bibitem[\citeproctext]{ref-johansson2019}
-Johansson, Michael A., Karyn M. Apfeldorf, Scott Dobson, Jason Devita,
-Anna L. Buczak, Benjamin Baugher, Linda J. Moniz, et al. 2019. {``An
-open challenge to advance probabilistic forecasting for dengue
-epidemics.''} \emph{Proceedings of the National Academy of Sciences} 116
-(48): 24268--74. \url{https://doi.org/10.1073/pnas.1909865116}.
-
-\bibitem[\citeproctext]{ref-lichtendahl2013}
-Lichtendahl, Kenneth C., Yael Grushka-Cockayne, and Robert L. Winkler.
-2013. {``Is It Better to Average Probabilities or Quantiles?''}
-\emph{Management Science} 59 (7): 1594--1611.
-\url{https://doi.org/10.1287/mnsc.1120.1667}.
-
-\bibitem[\citeproctext]{ref-mcgowan2019}
-McGowan, Craig J., Matthew Biggerstaff, Michael Johansson, Karyn M.
-Apfeldorf, Michal Ben-Nun, Logan Brooks, Matteo Convertino, et al. 2019.
-{``Collaborative Efforts to Forecast Seasonal Influenza in the United
-States, 2015{\textendash}2016.''} \emph{Scientific Reports} 9 (1): 683.
-\url{https://doi.org/10.1038/s41598-018-36361-9}.
-
-\bibitem[\citeproctext]{ref-niederreiter1992quasirandom}
-Niederreiter, Harald. 1992. \emph{Random Number Generation and
-Quasi-Monte Carlo Methods}. Philadelphia PA: Society for Industrial;
-Applied Mathematics.
-
-\bibitem[\citeproctext]{ref-paireau_ensemble_2022}
-Paireau, Juliette, Alessio Andronico, Nathanaël Hozé, Maylis Layan,
-Pascal Crépey, Alix Roumagnac, Marc Lavielle, Pierre-Yves Boëlle, and
-Simon Cauchemez. 2022. {``An Ensemble Model Based on Early Predictors to
-Forecast {COVID}-19 Health Care Demand in {France}.''} \emph{Proceedings
-of the National Academy of Sciences} 119 (18): e2103302119.
-\url{https://doi.org/10.1073/pnas.2103302119}.
-
-\bibitem[\citeproctext]{ref-pedregosa_scikit-learn_2011}
-Pedregosa, Fabian, Gaël Varoquaux, Alexandre Gramfort, Vincent Michel,
-Bertrand Thirion, Olivier Grisel, Mathieu Blondel, et al. 2011.
-{``Scikit-Learn: {Machine} {Learning} in {Python}.''} \emph{Journal of
-Machine Learning Research} 12 (85): 2825--30.
-\url{https://doi.org/10.5555/1953048.2078195}.
-
-\bibitem[\citeproctext]{ref-ray_comparing_2023}
-Ray, Evan L., Logan C. Brooks, Jacob Bien, Matthew Biggerstaff, Nikos I.
-Bosse, Johannes Bracher, Estee Y. Cramer, et al. 2023. {``Comparing
-Trained and Untrained Probabilistic Ensemble Forecasts of {COVID}-19
-Cases and Deaths in the {United} {States}.''} \emph{International
-Journal of Forecasting} 39 (3): 1366--83.
-\url{https://doi.org/10.1016/j.ijforecast.2022.06.005}.
-
-\bibitem[\citeproctext]{ref-distfromq}
-Ray, Evan L., and Aaron Gerding. 2024. \emph{Distfromq: Reconstruct a
-Distribution from a Collection of Quantiles}.
-
-\bibitem[\citeproctext]{ref-ray_prediction_2018}
-Ray, Evan L., and Nicholas G. Reich. 2018. {``Prediction of Infectious
-Disease Epidemics via Weighted Density Ensembles.''} \emph{PLOS
-Computational Biology} 14 (2): e1005910.
-\url{https://doi.org/10.1371/journal.pcbi.1005910}.
-
-\bibitem[\citeproctext]{ref-reich_zoltar_2021}
-Reich, Nicholas G., Matthew Cornell, Evan L. Ray, Katie House, and Khoa
-Le. 2021. {``The {Zoltar} Forecast Archive, a Tool to Standardize and
-Store Interdisciplinary Prediction Research.''} \emph{Scientific Data} 8
-(1): 59. \url{https://doi.org/10.1038/s41597-021-00839-5}.
-
-\bibitem[\citeproctext]{ref-reich2022}
-Reich, Nicholas G., Justin Lessler, Sebastian Funk, Cecile Viboud,
-Alessandro Vespignani, Ryan J. Tibshirani, Katriona Shea, et al. 2022.
-{``Collaborative Hubs: Making the Most of Predictive Epidemic
-Modeling.''} \emph{American Journal of Public Health} 112 (6): 839--42.
-\url{https://doi.org/10.2105/AJPH.2022.306831}.
-
-\bibitem[\citeproctext]{ref-reich_accuracy_2019}
-Reich, Nicholas G., Craig J. McGowan, Teresa K. Yamana, Abhinav Tushar,
-Evan L. Ray, Dave Osthus, Sasikiran Kandula, et al. 2019. {``Accuracy of
-Real-Time Multi-Model Ensemble Forecasts for Seasonal Influenza in the
-{U}.{S}.''} \emph{PLOS Computational Biology} 15 (11): e1007486.
-\url{https://doi.org/10.1371/journal.pcbi.1007486}.
-
-\bibitem[\citeproctext]{ref-stone1961}
-Stone, M. 1961. {``The Opinion Pool.''} \emph{The Annals of Mathematical
-Statistics} 32 (4): 1339--42.
-
-\bibitem[\citeproctext]{ref-tebaldi2007}
-Tebaldi, Claudia, and Reto Knutti. 2007. {``The Use of the Multi-Model
-Ensemble in Probabilistic Climate Projections.''} \emph{Philosophical
-Transactions: Mathematical, Physical and Engineering Sciences} 365
-(1857): 2053--75. \url{https://doi.org/10.1098/rsta.2007.2076}.
+\CSLLeftMargin{1. }%
+\CSLRightInline{Clemen RT. Combining forecasts: A review and annotated
+bibliography. \emph{International Journal of Forecasting}.
+1989;5(4):559-583.
+doi:\href{https://doi.org/10.1016/0169-2070(89)90012-5}{10.1016/0169-2070(89)90012-5}}
 
 \bibitem[\citeproctext]{ref-timmermann2006}
-Timmermann, Allan. 2006. {``Chapter 4 Forecast Combinations.''} In,
-1:135--96. Elsevier.
-\url{https://doi.org/10.1016/S1574-0706(05)01004-9}.
+\CSLLeftMargin{2. }%
+\CSLRightInline{Timmermann A. Chapter 4 Forecast Combinations. In: Vol
+1. Elsevier; 2006:135-196.
+doi:\href{https://doi.org/10.1016/S1574-0706(05)01004-9}{10.1016/S1574-0706(05)01004-9}}
+
+\bibitem[\citeproctext]{ref-hibon2005}
+\CSLLeftMargin{3. }%
+\CSLRightInline{Hibon M, Evgeniou T. To combine or not to combine:
+selecting among forecasts and their combinations. \emph{International
+Journal of Forecasting}. 2005;21(1):15-24.
+doi:\href{https://doi.org/10.1016/j.ijforecast.2004.05.002}{10.1016/j.ijforecast.2004.05.002}}
+
+\bibitem[\citeproctext]{ref-alley2019}
+\CSLLeftMargin{4. }%
+\CSLRightInline{Alley RB, Emanuel KA, Zhang F. Advances in weather
+prediction. \emph{Science}. 2019;363(6425):342-344.
+doi:\href{https://doi.org/10.1126/science.aav7274}{10.1126/science.aav7274}}
+
+\bibitem[\citeproctext]{ref-tebaldi2007}
+\CSLLeftMargin{5. }%
+\CSLRightInline{Tebaldi C, Knutti R. The use of the multi-model ensemble
+in probabilistic climate projections. \emph{Philosophical Transactions:
+Mathematical, Physical and Engineering Sciences}.
+2007;365(1857):2053-2075.
+doi:\href{https://doi.org/10.1098/rsta.2007.2076}{10.1098/rsta.2007.2076}}
+
+\bibitem[\citeproctext]{ref-aastveit2018}
+\CSLLeftMargin{6. }%
+\CSLRightInline{Aastveit KA, Mitchell J, Ravazzolo F, Dijk HK van. The
+Evolution of Forecast Density Combinations in Economics. \emph{Tinbergen
+Institute Discussion Papers}. Published online 2018.
+\url{https://hdl.handle.net/10419/185588}}
 
 \bibitem[\citeproctext]{ref-viboud2018}
-Viboud, Cécile, Kaiyuan Sun, Robert Gaffey, Marco Ajelli, Laura
-Fumanelli, Stefano Merler, Qian Zhang, Gerardo Chowell, Lone Simonsen,
-and Alessandro Vespignani. 2018. {``The RAPIDD Ebola Forecasting
-Challenge: Synthesis and Lessons Learnt.''} \emph{Epidemics}, The RAPIDD
-Ebola Forecasting Challenge, 22 (March): 13--21.
-\url{https://doi.org/10.1016/j.epidem.2017.08.002}.
+\CSLLeftMargin{7. }%
+\CSLRightInline{Viboud C, Sun K, Gaffey R, et al. The RAPIDD ebola
+forecasting challenge: Synthesis and lessons learnt. \emph{Epidemics}.
+2018;22:13-21.
+doi:\href{https://doi.org/10.1016/j.epidem.2017.08.002}{10.1016/j.epidem.2017.08.002}}
 
-\bibitem[\citeproctext]{ref-vincent1912}
-Vincent, Stella Burnham. 1912. {``The Function of the Vibrissae in the
-Behavior of the White Rat.''} PhD thesis, Cambridge MA: University of
-Chicago.
+\bibitem[\citeproctext]{ref-johansson2019}
+\CSLLeftMargin{8. }%
+\CSLRightInline{Johansson MA, Apfeldorf KM, Dobson S, et al. An open
+challenge to advance probabilistic forecasting for dengue epidemics.
+\emph{Proceedings of the National Academy of Sciences}.
+2019;116(48):24268-24274.
+doi:\href{https://doi.org/10.1073/pnas.1909865116}{10.1073/pnas.1909865116}}
 
-\bibitem[\citeproctext]{ref-weiss2019}
-Weiss, Christoph,E., Eran Raviv, and Gernot Roetzer. 2019. {``Forecast
-Combinations in R Using the ForecastComb Package.''} \emph{The R
-Journal} 10 (2): 262. \url{https://doi.org/10.32614/RJ-2018-052}.
+\bibitem[\citeproctext]{ref-mcgowan2019}
+\CSLLeftMargin{9. }%
+\CSLRightInline{McGowan CJ, Biggerstaff M, Johansson M, et al.
+Collaborative efforts to forecast seasonal influenza in the United
+States, 2015{\textendash}2016. \emph{Scientific Reports}. 2019;9(1):683.
+doi:\href{https://doi.org/10.1038/s41598-018-36361-9}{10.1038/s41598-018-36361-9}}
+
+\bibitem[\citeproctext]{ref-reich_accuracy_2019}
+\CSLLeftMargin{10. }%
+\CSLRightInline{Reich NG, McGowan CJ, Yamana TK, et al. Accuracy of
+real-time multi-model ensemble forecasts for seasonal influenza in the
+{U}.{S}. \emph{PLOS computational biology}. 2019;15(11):e1007486.
+doi:\href{https://doi.org/10.1371/journal.pcbi.1007486}{10.1371/journal.pcbi.1007486}}
+
+\bibitem[\citeproctext]{ref-cramer2022}
+\CSLLeftMargin{11. }%
+\CSLRightInline{Cramer EY, Ray EL, Lopez VK, et al. Evaluation of
+individual and ensemble probabilistic forecasts of COVID-19 mortality in
+the united states. \emph{Proceedings of the National Academy of
+Sciences}. 2022;119(15):e2113561119.
+doi:\href{https://doi.org/10.1073/pnas.2113561119}{10.1073/pnas.2113561119}}
+
+\bibitem[\citeproctext]{ref-paireau_ensemble_2022}
+\CSLLeftMargin{12. }%
+\CSLRightInline{Paireau J, Andronico A, Hozé N, et al. An ensemble model
+based on early predictors to forecast {COVID}-19 health care demand in
+{France}. \emph{Proceedings of the National Academy of Sciences}.
+2022;119(18):e2103302119.
+doi:\href{https://doi.org/10.1073/pnas.2103302119}{10.1073/pnas.2103302119}}
+
+\bibitem[\citeproctext]{ref-ray_comparing_2023}
+\CSLLeftMargin{13. }%
+\CSLRightInline{Ray EL, Brooks LC, Bien J, et al. Comparing trained and
+untrained probabilistic ensemble forecasts of {COVID}-19 cases and
+deaths in the {United} {States}. \emph{International Journal of
+Forecasting}. 2023;39(3):1366-1383.
+doi:\href{https://doi.org/10.1016/j.ijforecast.2022.06.005}{10.1016/j.ijforecast.2022.06.005}}
 
 \bibitem[\citeproctext]{ref-winkler2015}
-Winkler, Robert L. 2015. {``Equal Versus Differential Weighting in
-Combining Forecasts.''} \emph{Risk Analysis} 35 (1): 16--18.
-\url{https://doi.org/10.1111/risa.12302}.
+\CSLLeftMargin{14. }%
+\CSLRightInline{Winkler RL. Equal Versus Differential Weighting in
+Combining Forecasts. \emph{Risk Analysis}. 2015;35(1):16-18.
+doi:\href{https://doi.org/10.1111/risa.12302}{10.1111/risa.12302}}
 
 \bibitem[\citeproctext]{ref-yamana_superensemble_2016}
-Yamana, Teresa K., Sasikiran Kandula, and Jeffrey Shaman. 2016.
-{``Superensemble Forecasts of Dengue Outbreaks.''} \emph{Journal of The
-Royal Society Interface} 13 (123): 20160410.
-\url{https://doi.org/10.1098/rsif.2016.0410}.
+\CSLLeftMargin{15. }%
+\CSLRightInline{Yamana TK, Kandula S, Shaman J. Superensemble forecasts
+of dengue outbreaks. \emph{Journal of The Royal Society Interface}.
+2016;13(123):20160410.
+doi:\href{https://doi.org/10.1098/rsif.2016.0410}{10.1098/rsif.2016.0410}}
+
+\bibitem[\citeproctext]{ref-ray_prediction_2018}
+\CSLLeftMargin{16. }%
+\CSLRightInline{Ray EL, Reich NG. Prediction of infectious disease
+epidemics via weighted density ensembles. \emph{PLOS computational
+biology}. 2018;14(2):e1005910.
+doi:\href{https://doi.org/10.1371/journal.pcbi.1005910}{10.1371/journal.pcbi.1005910}}
+
+\bibitem[\citeproctext]{ref-colon-gonzalez_probabilistic_2021}
+\CSLLeftMargin{17. }%
+\CSLRightInline{Colón-González FJ, Bastos LS, Hofmann B, et al.
+Probabilistic seasonal dengue forecasting in {Vietnam}: {A} modelling
+study using superensembles. \emph{PLOS Medicine}. 2021;18(3):e1003542.
+doi:\href{https://doi.org/10.1371/journal.pmed.1003542}{10.1371/journal.pmed.1003542}}
+
+\bibitem[\citeproctext]{ref-pedregosa_scikit-learn_2011}
+\CSLLeftMargin{18. }%
+\CSLRightInline{Pedregosa F, Varoquaux G, Gramfort A, et al.
+Scikit-learn: {Machine} {Learning} in {Python}. \emph{Journal of Machine
+Learning Research}. 2011;12(85):2825-2830.
+doi:\href{https://doi.org/10.5555/1953048.2078195}{10.5555/1953048.2078195}}
+
+\bibitem[\citeproctext]{ref-weiss2019}
+\CSLLeftMargin{19. }%
+\CSLRightInline{Weiss Christoph,E, Raviv E, Roetzer G. Forecast
+Combinations in R using the ForecastComb Package. \emph{The R Journal}.
+2019;10(2):262.
+doi:\href{https://doi.org/10.32614/RJ-2018-052}{10.32614/RJ-2018-052}}
+
+\bibitem[\citeproctext]{ref-bosse_stackr_2023}
+\CSLLeftMargin{20. }%
+\CSLRightInline{Bosse N, Yao Y, Abbott S, Funk S. \emph{Stackr: {Create}
+{Mixture} {Models} {From} {Predictive} {Samples}}.; 2023.}
+
+\bibitem[\citeproctext]{ref-couch_stacks_2023}
+\CSLLeftMargin{21. }%
+\CSLRightInline{Couch S, Kuhn M. \emph{Stacks: Tidy Model Stacking}.;
+2023.}
+
+\bibitem[\citeproctext]{ref-hubverse_docs}
+\CSLLeftMargin{22. }%
+\CSLRightInline{Consortium of Infectious Disease Modeling Hubs. The
+hubverse: Open tools for collaborative forecasting. Published online
+2024. \url{https://hubverse.io/en/latest/index.html}}
+
+\bibitem[\citeproctext]{ref-reich2022}
+\CSLLeftMargin{23. }%
+\CSLRightInline{Reich NG, Lessler J, Funk S, et al. Collaborative hubs:
+Making the most of predictive epidemic modeling. \emph{American Journal
+of Public Health}. 2022;112(6):839-842.
+doi:\href{https://doi.org/10.2105/AJPH.2022.306831}{10.2105/AJPH.2022.306831}}
+
+\bibitem[\citeproctext]{ref-borchering_public_2023}
+\CSLLeftMargin{24. }%
+\CSLRightInline{Borchering RK, Healy JM, Cadwell BL, et al. Public
+health impact of the {U}.{S}. {Scenario} {Modeling} {Hub}.
+\emph{Epidemics}. 2023;44:100705.
+doi:\href{https://doi.org/10.1016/j.epidem.2023.100705}{10.1016/j.epidem.2023.100705}}
+
+\bibitem[\citeproctext]{ref-vincent1912}
+\CSLLeftMargin{25. }%
+\CSLRightInline{Vincent SB. \emph{The Function of the Vibrissae in the
+Behavior of the White Rat.} PhD thesis. University of Chicago; 1912.}
+
+\bibitem[\citeproctext]{ref-stone1961}
+\CSLLeftMargin{26. }%
+\CSLRightInline{Stone M. The opinion pool. \emph{The Annals of
+Mathematical Statistics}. 1961;32(4):1339-1342.}
+
+\bibitem[\citeproctext]{ref-lichtendahl2013}
+\CSLLeftMargin{27. }%
+\CSLRightInline{Lichtendahl KC, Grushka-Cockayne Y, Winkler RL. Is it
+better to average probabilities or quantiles? \emph{Management Science}.
+2013;59(7):1594-1611.
+doi:\href{https://doi.org/10.1287/mnsc.1120.1667}{10.1287/mnsc.1120.1667}}
+
+\bibitem[\citeproctext]{ref-howerton2023}
+\CSLLeftMargin{28. }%
+\CSLRightInline{Howerton E, Runge MC, Bogich TL, et al.
+Context-dependent representation of within- and between-model
+uncertainty: Aggregating probabilistic predictions in infectious disease
+epidemiology. \emph{Journal of The Royal Society Interface}.
+2023;20(198):20220659.
+doi:\href{https://doi.org/10.1098/rsif.2022.0659}{10.1098/rsif.2022.0659}}
+
+\bibitem[\citeproctext]{ref-distfromq}
+\CSLLeftMargin{29. }%
+\CSLRightInline{Ray EL, Gerding A. \emph{Distfromq: Reconstruct a
+Distribution from a Collection of Quantiles}.; 2024.}
+
+\bibitem[\citeproctext]{ref-niederreiter1992quasirandom}
+\CSLLeftMargin{30. }%
+\CSLRightInline{Niederreiter H. \emph{Random Number Generation and
+Quasi-Monte Carlo Methods}. Society for Industrial; Applied Mathematics;
+1992.}
+
+\bibitem[\citeproctext]{ref-cdc_flusight}
+\CSLLeftMargin{31. }%
+\CSLRightInline{CDC. About flu forecasting. Published online 2023.
+\url{https://www.cdc.gov/flu/weekly/flusight/how-flu-forecasting.htm}}
+
+\bibitem[\citeproctext]{ref-reich_zoltar_2021}
+\CSLLeftMargin{32. }%
+\CSLRightInline{Reich NG, Cornell M, Ray EL, House K, Le K. The {Zoltar}
+forecast archive, a tool to standardize and store interdisciplinary
+prediction research. \emph{Scientific Data}. 2021;8(1):59.
+doi:\href{https://doi.org/10.1038/s41597-021-00839-5}{10.1038/s41597-021-00839-5}}
+
+\bibitem[\citeproctext]{ref-bracher_evaluating_2021}
+\CSLLeftMargin{33. }%
+\CSLRightInline{Bracher J, Ray EL, Gneiting T, Reich NG. Evaluating
+epidemic forecasts in an interval format. \emph{PLOS Computational
+Biology}. 2021;17(2):e1008618.
+doi:\href{https://doi.org/10.1371/journal.pcbi.1008618}{10.1371/journal.pcbi.1008618}}
 
 \end{CSLReferences}
 

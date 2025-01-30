@@ -1,13 +1,13 @@
 ---
 title: "[hubEnsembles]{.pkg}: Ensembling Methods in [R]{.proglang}"
+number-sections: true
 format:
-  jss-pdf:
+  pdf:
     keep-tex: true
     journal:
       type: article
       cite-shortnames: true
       suppress: [title]
-      include-jss-default: false
 author:
   - name: Li Shandross
     affiliations:
@@ -34,9 +34,7 @@ author:
     affiliations:
       - R-RSE SMPC
     orcid: 0000-0002-2378-4915
-  - name: |
-      | Consortium of 
-      | Infectious Disease Modeling Hubs
+  - name: Consortium of Infectious Disease Modeling Hubs
     affiliations:
       - A list of authors and their affiliations appears at the end of the paper
   - name: Nicholas G. Reich
@@ -52,6 +50,7 @@ execute:
   warning: false
   message: false
 bibliography: references.bib
+csl: american-medical-association.csl
 abstract: |
   Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. The [R]{.proglang} package [hubEnsembles]{.pkg} provides a flexible framework for ensembling various types of predictions, including point estimates and probabilistic predictions. A range of common methods for generating ensembles are supported, including weighted averages, quantile averages, and linear pools. The [hubEnsembles]{.pkg} package fits within a broader framework of open-source software and data tools called the "hubverse", which facilitates the development and management of collaborative modelling exercises.
 
@@ -155,8 +154,6 @@ hubExamples::forecast_outputs |>
 ```
 
 Alternatively, longer-term scenario projections may require different task ID columns. For example, projections of incident COVID-19 cases in the US at different locations, amounts of time in the future, and under different assumed conditions may use a `target` column of "inc case", a `location` column specifying the location being predicted (not shown), an `origin_date` column specifying the date on which the projections were made (not shown), a `horizon` column describing the number of steps ahead that the projection is predicting relative to the `origin_date`, and a `scenario_id` column denoting the future conditions that were modeled and are projected to result in the specified number of incident cases (@tbl-example-scenarios). Different modeling efforts may use different sets of task ID columns and values to specify their prediction goals, or may simply choose distinct names to represent the same concept (e.g., `reference_date` versus `origin_date` for a date task ID). Additional examples of task ID variables are available on the hubverse documentation website [@hubverse_docs].
-
-\newpage
 
 ```{r example-scenarios, echo=FALSE}
 #| label: tbl-example-scenarios

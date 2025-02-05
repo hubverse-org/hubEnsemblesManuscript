@@ -580,10 +580,17 @@ to \(\theta\) and the \texttt{value} is the quantile prediction
 \texttt{output\_type\_id} is the target variable value \(x\) at which
 the cumulative distribution function or probability mass function for
 the predictive distribution should be evaluated, and the \texttt{value}
-column contains the predicted \(F(x)\) or \(f(x)\), respectively.
-Requirements for the values of the \texttt{output\_type\_id} and
-\texttt{value} columns associated with each valid output type are
-summarized in Table~\ref{tbl-model-output-rep}.
+column contains the predicted \(F(x)\) or \(f(x)\), respectively. For
+sample predictions, those with the same \texttt{output\_type\_id} from a
+particular model may be assumed to correspond to a single sample from a
+joint distribution. This unique property originates from the fact that
+the sample output type may capture dependence in the model to outcomes
+across levels of task ID variables, unlike the other output types that
+only summarize the marginal predictive distribution for single
+combination of modeled task id variables. Requirements for the values of
+the \texttt{output\_type\_id} and \texttt{value} columns associated with
+each valid output type are summarized in
+Table~\ref{tbl-model-output-rep}.
 
 This representation of predictive model output is codified by the
 \texttt{model\_out\_tbl} S3 class in the {hubUtils} package, one of the
@@ -598,7 +605,9 @@ Section~\ref{sec-case-study}.
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3544}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4557}}@{}}
 \caption{A table summarizing how the model output representation columns
-are used for predictions of different output types. Adapted from
+are used for predictions of different output types. (*The sample output
+type is unique in that it can be used to capture dependence in the
+modeled outcomes across levels of task ID variables.) Adapted from
 \url{https://hubverse.io/en/latest/user-guide/model-output.html\#formats-of-model-output}}\label{tbl-model-output-rep}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -637,7 +646,7 @@ specified by the \texttt{output\_type\_id} \\
 variable & Numeric between 0.0 and 1.0: The probability mass of the
 predictive distribution when evaluated at a specified level of a
 discrete outcome variable \\
-\texttt{sample} & Integer or string specifying the sample index &
+\texttt{sample}* & Integer or string specifying the sample index &
 Numeric: A sample from the predictive distribution \\
 \end{longtable}
 
@@ -716,8 +725,7 @@ each target variable value, \(f_{LOP}(x)\) & mean of individual model
 bin or category probabilities at each target variable value,
 \(f_{LOP}(x)\) \\
 \texttt{sample} & NA & samples of the distribution are obtained by
-stratified draw from individual models' samples for equal
-representation \\
+stratified draw from individual models' samples \\
 \end{longtable}
 
 \subsubsection{Simple ensemble}\label{sec-simple-ensemble}

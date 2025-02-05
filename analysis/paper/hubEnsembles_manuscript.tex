@@ -568,9 +568,7 @@ consists of the same three columns: (1) \texttt{output\_type}, (2)
 \texttt{output\_type} column defines how the prediction is represented
 and may be one of \texttt{"mean"} or \texttt{"median"} for point
 predictions, or \texttt{"quantile"}, \texttt{"cdf"}, \texttt{"pmf"}, or
-\texttt{"sample"} for probabilistic predictions. (The sample output type
-is not yet directly supported by the {hubEnsembles} package and should
-be converted to another output type before computing an ensemble.) The
+\texttt{"sample"} for probabilistic predictions. The
 \texttt{output\_type\_id} provides additional identifying information
 for a prediction and is specific to the particular \texttt{output\_type}
 (see Table~\ref{tbl-model-output-rep}). For quantile predictions, the
@@ -600,8 +598,7 @@ Section~\ref{sec-case-study}.
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3544}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4557}}@{}}
 \caption{A table summarizing how the model output representation columns
-are used for predictions of different output types. *Sample output types
-are not yet supported by the {hubEnsembles} package. Adapted from
+are used for predictions of different output types. Adapted from
 \url{https://hubverse.io/en/latest/user-guide/model-output.html\#formats-of-model-output}}\label{tbl-model-output-rep}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -640,7 +637,7 @@ specified by the \texttt{output\_type\_id} \\
 variable & Numeric between 0.0 and 1.0: The probability mass of the
 predictive distribution when evaluated at a specified level of a
 discrete outcome variable \\
-\texttt{sample}* & Integer or string specifying the sample index &
+\texttt{sample} & Integer or string specifying the sample index &
 Numeric: A sample from the predictive distribution \\
 \end{longtable}
 
@@ -655,17 +652,6 @@ how these implementations correspond to the statistical ensembling
 methods described in Section~\ref{sec-defs}. A short description of the
 calculation performed by each function is summarized by output type in
 Table~\ref{tbl-fns-by-output-type}.
-
-\subsubsection{Simple ensemble}\label{sec-simple-ensemble}
-
-The \texttt{simple\_ensemble()} function directly computes an ensemble
-from component model outputs by combining them via some function (\(C\))
-within each unique combination of task ID variables, output types, and
-output type IDs. This function can be used to summarize predictions of
-output types mean, median, quantile, CDF, and PMF. The mechanics of the
-ensemble calculations are the same for each of the output types, though
-the resulting statistical ensembling method differs for different output
-types (Table~\ref{tbl-fns-by-output-type}).
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1400}}
@@ -717,9 +703,10 @@ model means.}\label{tbl-fns-by-output-type}\tabularnewline
 model means \\
 \texttt{median} & mean of individual model medians & NA \\
 \texttt{quantile} & mean of individual model target variable values at
-each quantile level, \(F^{-1}_Q(\theta)\) & quantile of the distribution
-obtained by computing the mean of estimated individual model cumulative
-probabilities at each target variable value, \(F^{-1}_{LOP}(\theta)\) \\
+each quantile level, \(F^{-1}_Q(\theta)\) & quantiles of the
+distribution are obtained by computing the mean of estimated individual
+model cumulative probabilities at each target variable value,
+\(F^{-1}_{LOP}(\theta)\) \\
 \texttt{cdf} & mean of individual model cumulative probabilities at each
 target variable value, \(F_{LOP}(x)\) & mean of individual model
 cumulative probabilities at each target variable value,
@@ -728,7 +715,21 @@ cumulative probabilities at each target variable value,
 each target variable value, \(f_{LOP}(x)\) & mean of individual model
 bin or category probabilities at each target variable value,
 \(f_{LOP}(x)\) \\
+\texttt{sample} & NA & samples of the distribution are obtained by
+stratified draw from individual models' samples for equal
+representation \\
 \end{longtable}
+
+\subsubsection{Simple ensemble}\label{sec-simple-ensemble}
+
+The \texttt{simple\_ensemble()} function directly computes an ensemble
+from component model outputs by combining them via some function (\(C\))
+within each unique combination of task ID variables, output types, and
+output type IDs. This function can be used to summarize predictions of
+output types mean, median, quantile, CDF, and PMF. The mechanics of the
+ensemble calculations are the same for each of the output types, though
+the resulting statistical ensembling method differs for different output
+types (Table~\ref{tbl-fns-by-output-type}).
 
 By default, \texttt{simple\_ensemble()} uses the mean for the
 aggregation function \(C\) and equal weights for all models. For point
@@ -753,21 +754,31 @@ Similarly, model weights can be specified to create a weighted ensemble.
 
 The \texttt{linear\_pool()} function implements the linear opinion pool
 (LOP) method for ensembling predictions. Currently, this function can be
-used to combine predictions with output types mean, quantile, CDF, and
-PMF. Unlike \texttt{simple\_ensemble()}, this function handles its
-computation differently based on the output type. For the CDF, PMF, and
-mean output types, the linear pool method is equivalent to calling
+used to combine predictions with output types mean, quantile, CDF, PMF,
+and sample. Unlike \texttt{simple\_ensemble()}, this function handles
+its computation differently based on the output type. For the CDF, PMF,
+and mean output types, the linear pool method is equivalent to calling
 \texttt{simple\_ensemble()} with a mean aggregation function (see
 Table~\ref{tbl-fns-by-output-type}), since \texttt{simple\_ensemble()}
 produces a linear pool prediction (an average of individual model
 cumulative or bin probabilities).
 
-However, implementation of LOP is less straightforward for the quantile
-output type. This is because LOP averages cumulative probabilities at
-each value of the target variable, but the predictions are given as
-quantiles (on the scale of the target variable) for fixed quantile
-levels. The value for these quantile predictions will generally differ
-between models; hence, we are typically not provided cumulative
+For the sample output type, the LOP method collects a stratified draw of
+the individual models' predictions and pools them into a single ensemble
+distribution. By default, all samples are used to create this ensemble.
+Additionally, only equally-weighted linear pools of samples are
+supported by the {hubEnsembles} package during this time. Samples may
+also be converted to another common output type such as quantiles or bin
+probabilities (as the main scientific interest often concerns a summary
+of samples), and other ensemble methods may then be utilized on the
+alternate output type.
+
+For the quantile output type, implementation of LOP is comparatively
+less straightforward. This is because LOP averages cumulative
+probabilities at each value of the target variable, but the predictions
+are given as quantiles (on the scale of the target variable) for fixed
+quantile levels. The value for these quantile predictions will generally
+differ between models; hence, we are typically not provided cumulative
 probabilities at the same values of the target variable for all
 component predictions. This lack of alignment between cumulative
 probabilities for the same target variable values impedes computation of

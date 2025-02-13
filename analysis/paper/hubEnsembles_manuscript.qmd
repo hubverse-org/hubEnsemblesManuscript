@@ -541,40 +541,41 @@ In this section, we provide a simple example to illustrate the two main function
 
 ### Example data: a forecast hub
 
+We will use an example hub provided by the hubverse to demonstrate the functionality of the [hubEnsembles]{.pkg} package [@hubverse_docs]. This hub was generated using modified forecasts from the FluSight forecasting challenge (discussed in further detail in @sec-case-study). The example hub includes both example model output data and two formats of target data (sometimes known as "truth" data), which are stored in the [hubExamples]{.pkg} package as data objects named `forecast_outputs`, `forecast_target_ts`, and `forecast_oracle_output`. Note that this model outputs data contain only a small subset of predictions for select dates, locations, and output type IDs, far fewer than an actual modeling hub would typically collect.
+
+The model output data includes mean, median, quantile, and sample forecasts of future incident influenza hospitalizations; as well as CDF and PMF forecasts of hospitalization intensity. Each forecast is made for five task ID variables, including the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`). We begin by examining the mean, median, and quantile output types, displaying a subset of each in @tbl-example-model-outputs.
+
 ```{r, cols.print=12}
 #| label: tbl-example-model-outputs
 #| echo: false
 #| tbl-cap: "Example model output for forecasts of incident influenza
 #| hospitalizations. A subset of example model output is shown: 1-week ahead
-#| quantile forecasts made on 2022-12-17 for Massachusetts from three distinct
-#| models; only the median and 5th, 25th, 75th and 95th quantiles are displayed. 
+#| forecasts made on 2022-12-17 for Massachusetts from three distinct models;
+#| only the mean, median, and 5th, 25th, 75th and 95th quantiles are displayed. 
 #| The `location`, `reference_date` and `target_end_date`
 #| columns have been omitted for brevity. This example data is
 #| provided in the [hubExamples]{.pkg} package."
 hubExamples::forecast_outputs |>
   dplyr::filter(
-    output_type %in% c("quantile", "median"),
-    output_type_id %in% c(0.05, 0.25, 0.75, 0.75, 0.95, NA),
+    output_type %in% c("mean", "median", "quantile"),
+    output_type_id %in% c(0.05, 0.25, 0.75, 0.95, NA),
     reference_date == "2022-12-17",
     location == "25",
     horizon == 1
   ) |>
+  dplyr::mutate(value = round(value, 2)) |>
   dplyr::select(all_of(abbr_fc_col)) |>
   knitr::kable(col.names = formatted_fc_col)
 ```
 
-We will use an example hub provided by the hubverse to demonstrate the functionality of the [hubEnsembles]{.pkg} package [@hubverse_docs]. This hub was generated using modified forecasts from the FluSight forecasting challenge (discussed in further detail in @sec-case-study). The example hub includes both example model output data and target data (sometimes known as "truth" data), which are stored in the [hubExamples]{.pkg} package as data objects named `forecast_outputs` and `forecast_target_ts`. Note that this model outputs data contain only a small subset of predictions for select dates, locations, and output type IDs, far fewer than an actual modeling hub would typically collect.
-
-The model output data includes quantile, mean and median forecasts of future incident influenza hospitalizations and PMF forecasts of hospitalization intensity. Each forecast is made for five task ID variables, including the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`). @tbl-example-model-outputs provides an example set of quantile forecasts included in this example model output. In @tbl-example-model-outputs, we show only the median, the 50%, and 90% prediction intervals, although other intervals and mean forecasts are included in the example model output data.
-
-The [hubExamples]{.pkg} package also provides corresponding target data (@tbl-example-target-data) that contains incident influenza hospitalizations (`observation`) in a given week (`date`) for a given location (`location`). This target data can be used as calibration data for generating forecasts or for evaluating the forecasts post hoc. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for the target data.
+The [hubExamples]{.pkg} package also provides corresponding target time series data (@tbl-example-target-time-series-data) and oracle output. Both contain the incident influenza hospitalizations in a given week for a given location but are used for different purposes. The target time series data is a more traditional representation of the observed "truth" in a time series format with columns `observation`, `date`, and `location`; this type of target data suited to be used as calibration data for generating forecasts. Oracle output, on the other hand, represents predictions that an "oracle model" would have generated had it known the observed values in advance. This format resembles that of model output data and is suited for evaluating the forecasts post hoc. 
 
 ```{r, cols.print=13}
-#| label: tbl-example-target-data
+#| label: tbl-example-target-time-series-data
 #| echo: false
-#| tbl-cap: "Example target data for incident influenza hospitalizations. This
-#| table includes target data from 2022-11-01 and 2023-02-01. The target data
-#| is provided in the [hubExamples]{.pkg} package."
+#| tbl-cap: "Example target time series data for incident influenza
+#| hospitalizations. This table includes target time series data from 2022-11-01 and
+#| 2023-02-01. The target data is provided in the [hubExamples]{.pkg} package."
 hubExamples::forecast_target_ts |>
   dplyr::filter(
     location == "25",
@@ -583,7 +584,7 @@ hubExamples::forecast_target_ts |>
   knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
 ```
 
-We can plot these forecasts and the target data using the `plot_step_ahead_model_output()` function from [hubVis]{.pkg}, another package for visualizing model outputs from the hubverse suite (@fig-plot-ex-mods). We subset the model output data and the target data to the location and time horizons we are interested in.
+We can plot these forecasts and the target time series data using the `plot_step_ahead_model_output()` function from [hubVis]{.pkg}, another package for visualizing model outputs from the hubverse suite (@fig-plot-ex-mods). We subset the model output data and the target data to the location and time horizons we are interested in.
 
 ```{r plot-ex-mods}
 #| label: fig-plot-ex-mods
@@ -598,7 +599,7 @@ model_outputs_plot <- hubExamples::forecast_outputs |>
     hubUtils::as_model_out_tbl() |>
     dplyr::filter(
       location == "25",
-      output_type %in% c("median", "mean", "quantile"),
+      output_type %in% c("median", "quantile"),
       reference_date == "2022-12-17"
     )
 target_data_plot <- hubExamples::forecast_target_ts |>

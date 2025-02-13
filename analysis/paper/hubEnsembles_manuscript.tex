@@ -874,6 +874,32 @@ functions in {hubEnsembles}, \texttt{simple\_ensemble()} and
 \subsection{Example data: a forecast
 hub}\label{example-data-a-forecast-hub}
 
+We will use an example hub provided by the hubverse to demonstrate the
+functionality of the {hubEnsembles} package\textsuperscript{22}. This
+hub was generated using modified forecasts from the FluSight forecasting
+challenge (discussed in further detail in Section~\ref{sec-case-study}).
+The example hub includes both example model output data and two formats
+of target data (sometimes known as ``truth'' data), which are stored in
+the {hubExamples} package as data objects named
+\texttt{forecast\_outputs}, \texttt{forecast\_target\_ts}, and
+\texttt{forecast\_oracle\_output}. Note that this model outputs data
+contain only a small subset of predictions for select dates, locations,
+and output type IDs, far fewer than an actual modeling hub would
+typically collect.
+
+The model output data includes mean, median, quantile, and sample
+forecasts of future incident influenza hospitalizations; as well as CDF
+and PMF forecasts of hospitalization intensity. Each forecast is made
+for five task ID variables, including the location for which the
+forecast was made (\texttt{location}), the date on which the forecast
+was made (\texttt{reference\_date}), the number of steps ahead
+(\texttt{horizon}), the date of the forecast prediction (a combination
+of the date the forecast was made and the forecast horizon,
+\texttt{target\_end\_date}), and the forecast target (\texttt{target}).
+We begin by examining the mean, median, and quantile output types,
+displaying only a subset of each in
+Table~\ref{tbl-example-model-outputs}.
+
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2169}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1928}}
@@ -884,12 +910,12 @@ hub}\label{example-data-a-forecast-hub}
 
 \caption{\label{tbl-example-model-outputs}Example model output for
 forecasts of incident influenza hospitalizations. A subset of example
-model output is shown: 1-week ahead quantile forecasts made on
-2022-12-17 for Massachusetts from three distinct models; only the median
-and 5th, 25th, 75th and 95th quantiles are displayed. The
-\texttt{location}, \texttt{reference\_date} and
-\texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the {hubExamples} package.}
+model output is shown: 1-week ahead forecasts made on 2022-12-17 for
+Massachusetts from three distinct models; only the mean, median, and
+5th, 25th, 75th and 95th quantiles are displayed. The \texttt{location},
+\texttt{reference\_date} and \texttt{target\_end\_date} columns have
+been omitted for brevity. This example data is provided in the
+{hubExamples} package.}
 
 \tabularnewline
 
@@ -916,61 +942,41 @@ Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.25 & 566 \\
 Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.75 & 598 \\
 Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.95 & 668 \\
 Flusight-baseline & wk inc flu hosp & 1 & median & NA & 582 \\
+Flusight-baseline & wk inc flu hosp & 1 & mean & NA & 582 \\
 MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.05 & 446 \\
 MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.25 & 563 \\
 MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.75 & 803 \\
 MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.95 & 1097 \\
 MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & median & NA & 664 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & mean & NA & 705 \\
 PSI-DICE & wk inc flu hosp & 1 & quantile & 0.05 & 290 \\
 PSI-DICE & wk inc flu hosp & 1 & quantile & 0.25 & 496 \\
 PSI-DICE & wk inc flu hosp & 1 & quantile & 0.75 & 712 \\
 PSI-DICE & wk inc flu hosp & 1 & quantile & 0.95 & 843 \\
 PSI-DICE & wk inc flu hosp & 1 & median & NA & 613 \\
+PSI-DICE & wk inc flu hosp & 1 & mean & NA & 594 \\
 
 \end{longtable}
 
-We will use an example hub provided by the hubverse to demonstrate the
-functionality of the {hubEnsembles} package\textsuperscript{22}. This
-hub was generated using modified forecasts from the FluSight forecasting
-challenge (discussed in further detail in Section~\ref{sec-case-study}).
-The example hub includes both example model output data and target data
-(sometimes known as ``truth'' data), which are stored in the
-{hubExamples} package as data objects named \texttt{forecast\_outputs}
-and \texttt{forecast\_target\_ts}. Note that this model outputs data
-contain only a small subset of predictions for select dates, locations,
-and output type IDs, far fewer than an actual modeling hub would
-typically collect.
-
-The model output data includes quantile, mean and median forecasts of
-future incident influenza hospitalizations and PMF forecasts of
-hospitalization intensity. Each forecast is made for five task ID
-variables, including the location for which the forecast was made
-(\texttt{location}), the date on which the forecast was made
-(\texttt{reference\_date}), the number of steps ahead
-(\texttt{horizon}), the date of the forecast prediction (a combination
-of the date the forecast was made and the forecast horizon,
-\texttt{target\_end\_date}), and the forecast target (\texttt{target}).
-Table~\ref{tbl-example-model-outputs} provides an example set of
-quantile forecasts included in this example model output. In
-Table~\ref{tbl-example-model-outputs}, we show only the median, the
-50\%, and 90\% prediction intervals, although other intervals and mean
-forecasts are included in the example model output data.
-
-The {hubExamples} package also provides corresponding target data
-(Table~\ref{tbl-example-target-data}) that contains incident influenza
-hospitalizations (\texttt{observation}) in a given week (\texttt{date})
-for a given location (\texttt{location}). This target data can be used
-as calibration data for generating forecasts or for evaluating the
-forecasts post hoc. The forecast-specific task ID variables
-\texttt{reference\_date} and \texttt{horizon} are not relevant for the
-target data.
+The {hubExamples} package also provides corresponding target time series
+data (Table~\ref{tbl-example-target-time-series-data}) and oracle
+output. Both contain the incident influenza hospitalizations in a given
+week for a given location but are used for different purposes. The
+target time series data is a more traditional representation of the
+observed ``truth'' in a time series format with columns
+\texttt{observation}, \texttt{date}, and \texttt{location}; this type of
+target data suited to be used as calibration data for generating
+forecasts. Oracle output, on the other hand, represents predictions that
+an ``oracle model'' would have generated had it known the observed
+values in advance. This format resembles that of model output data and
+is suited for evaluating the forecasts post hoc.
 
 \begin{longtable}[]{@{}llr@{}}
 
-\caption{\label{tbl-example-target-data}Example target data for incident
-influenza hospitalizations. This table includes target data from
-2022-11-01 and 2023-02-01. The target data is provided in the
-{hubExamples} package.}
+\caption{\label{tbl-example-target-time-series-data}Example target time
+series data for incident influenza hospitalizations. This table includes
+target time series data from 2022-11-01 and 2023-02-01. The target data
+is provided in the {hubExamples} package.}
 
 \tabularnewline
 
@@ -996,7 +1002,7 @@ influenza hospitalizations. This table includes target data from
 
 \end{longtable}
 
-We can plot these forecasts and the target data using the
+We can plot these forecasts and the target time series data using the
 \texttt{plot\_step\_ahead\_model\_output()} function from {hubVis},
 another package for visualizing model outputs from the hubverse suite
 (Figure~\ref{fig-plot-ex-mods}). We subset the model output data and the
@@ -1008,7 +1014,7 @@ target data to the location and time horizons we are interested in.
 \SpecialCharTok{+}\NormalTok{     hubUtils}\SpecialCharTok{::}\FunctionTok{as\_model\_out\_tbl}\NormalTok{() }\SpecialCharTok{|\textgreater{}}
 \SpecialCharTok{+}\NormalTok{     dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(}
 \SpecialCharTok{+}\NormalTok{       location }\SpecialCharTok{==} \StringTok{"25"}\NormalTok{,}
-\SpecialCharTok{+}\NormalTok{       output\_type }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"median"}\NormalTok{, }\StringTok{"mean"}\NormalTok{, }\StringTok{"quantile"}\NormalTok{),}
+\SpecialCharTok{+}\NormalTok{       output\_type }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"median"}\NormalTok{, }\StringTok{"quantile"}\NormalTok{),}
 \SpecialCharTok{+}\NormalTok{       reference\_date }\SpecialCharTok{==} \StringTok{"2022{-}12{-}17"}
 \SpecialCharTok{+}\NormalTok{     )}
 \SpecialCharTok{\textgreater{}}\NormalTok{ target\_data\_plot }\OtherTok{\textless{}{-}}\NormalTok{ hubExamples}\SpecialCharTok{::}\NormalTok{forecast\_target\_ts }\SpecialCharTok{|\textgreater{}}

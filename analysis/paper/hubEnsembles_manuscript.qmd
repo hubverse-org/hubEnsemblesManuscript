@@ -155,6 +155,8 @@ hubExamples::forecast_outputs |>
 
 Alternatively, longer-term scenario projections may require different task ID columns. For example, projections of incident COVID-19 cases in the US at different locations, amounts of time in the future, and under different assumed conditions may use a `target` column of "inc case", a `location` column specifying the location being predicted (not shown), an `origin_date` column specifying the date on which the projections were made (not shown), a `horizon` column describing the number of steps ahead that the projection is predicting relative to the `origin_date`, and a `scenario_id` column denoting the future conditions that were modeled and are projected to result in the specified number of incident cases (@tbl-example-scenarios). Different modeling efforts may use different sets of task ID columns and values to specify their prediction goals, or may simply choose distinct names to represent the same concept (e.g., `reference_date` versus `origin_date` for a date task ID). Additional examples of task ID variables are available on the hubverse documentation website [@hubverse_docs].
 
+The third group of columns in model output specify the model predictions and details about how the predictions are represented. This "model output representation" contains metadata about how the predictions are conveyed and always consists of the same two columns: (1) `output_type` and (2) `output_type_id`. The `output_type` column defines how the prediction is represented and may be one of `"mean"` or `"median"` for point predictions, or `"quantile"`, `"cdf"`, `"pmf"`, or `"sample"` for probabilistic predictions. The `output_type_id` provides additional identifying information for a prediction and is specific to the particular `output_type` (see @tbl-model-output-rep). The fourth column type `value` always contains the numeric value of the prediction, regardless of output type. Requirements for the values of the `output_type_id` and `value` columns associated with each valid output type are summarized in @tbl-model-output-rep.
+
 ```{r example-scenarios, echo=FALSE}
 #| label: tbl-example-scenarios
 #| tbl-cap: "Example of scenario projections for incident COVID-19 cases,
@@ -182,8 +184,6 @@ hubExamples::scenario_outputs |>
   ) |>
   knitr::kable(col.names = formatted_scn_col)
 ```
-
-The third group of columns in model output specify the model predictions and details about how the predictions are represented. This "model output representation" contains metadata about how the predictions are conveyed and always consists of the same two columns: (1) `output_type` and (2) `output_type_id`. The `output_type` column defines how the prediction is represented and may be one of `"mean"` or `"median"` for point predictions, or `"quantile"`, `"cdf"`, `"pmf"`, or `"sample"` for probabilistic predictions. The `output_type_id` provides additional identifying information for a prediction and is specific to the particular `output_type` (see @tbl-model-output-rep). The fourth column type `value` always contains the numeric value of the prediction, regardless of output type. Requirements for the values of the `output_type_id` and `value` columns associated with each valid output type are summarized in @tbl-model-output-rep.
 
 All output types can summarize predictions from marginal distributions. The sample output type is unique in that it can additionally represent predictions from joint predictive distributions. This means that the sample representation may encode dependence across combinations of multiple modeled task ID variables when recording samples from a joint predictive distribution. In this case, sample predictions with the same index (specified by the `output_type_id`) from a particular model may be assumed to correspond to a single sample from a joint distribution.
 
@@ -230,8 +230,6 @@ Any aggregation function $C$ may be specified by the user. For example, a median
 The `linear_pool()` function implements the linear opinion pool (LOP) method for ensembling predictions. Currently, this function can be used to combine predictions with output types mean, quantile, CDF, PMF, and sample. Unlike `simple_ensemble()`, this function handles its computation differently based on the output type. For the CDF, PMF, and mean output types, the linear pool method is equivalent to calling `simple_ensemble()` with a mean aggregation function (see @tbl-fns-by-output-type), since `simple_ensemble()` produces a linear pool prediction (an average of individual model cumulative or bin probabilities).
 
 For the sample output type, the LOP method collects a stratified draw of the individual models' predictions and pools them into a single ensemble distribution. By default, all samples are used to create this ensemble. Additionally, only equally-weighted linear pools of samples are supported by the [hubEnsembles]{.pkg} package during this time. Samples may also be converted to another common output type such as quantiles or bin probabilities (as the main scientific interest often concerns a summary of samples), and other ensemble methods may then be utilized on the alternate output type.
-
-For the quantile output type, implementation of LOP is comparatively less straightforward. This is because LOP averages cumulative probabilities at each value of the target variable, but the predictions are given as quantiles (on the scale of the target variable) for fixed quantile levels. The value for these quantile predictions will generally differ between models; hence, we are typically not provided cumulative probabilities at the same values of the target variable for all component predictions. This lack of alignment between cumulative probabilities for the same target variable values impedes computation of LOP from quantile predictions and is illustrated in panel A of @fig-example-quantile-average-and-linear-pool.
 
 ```{r example-quantile-average-and-linear-pool, echo=FALSE}
 #| label: fig-example-quantile-average-and-linear-pool
@@ -529,6 +527,8 @@ cowplot::plot_grid(
 )
 ```
 
+For the quantile output type, implementation of LOP is comparatively less straightforward. This is because LOP averages cumulative probabilities at each value of the target variable, but the predictions are given as quantiles (on the scale of the target variable) for fixed quantile levels. The value for these quantile predictions will generally differ between models; hence, we are typically not provided cumulative probabilities at the same values of the target variable for all component predictions. This lack of alignment between cumulative probabilities for the same target variable values impedes computation of LOP from quantile predictions and is illustrated in panel A of @fig-example-quantile-average-and-linear-pool.
+
 Given that LOP cannot be directly calculated from quantile predictions, we must first obtain an estimate of the CDF for each component distribution from the provided quantiles, combine the CDFs, then calculate the quantiles using the ensemble's CDF. We perform this calculation in three main steps, assisted by the [distfromq]{.pkg} package [@distfromq] for the first two:
 
 1.  Interpolate and extrapolate from the provided quantiles for each component model to obtain an estimate of the CDF of that particular distribution.
@@ -694,8 +694,6 @@ ggplot(
   )
 ```
 
-\newpage
-
 ### Creating ensembles with simple_ensemble
 
 Using the default options for `simple_ensemble()`, we can generate an equally weighted mean ensemble for each unique combination of values for the task ID variables, the `output_type` and the `output_type_id`. Recall that this function uses different ensemble methods for different output types: for the quantile output type in our example data, the resulting ensemble is a quantile average, while for the PMF output type, the ensemble is a linear pool.
@@ -710,8 +708,6 @@ mean_ens <- hubExamples::forecast_outputs |>
 ```
 
 The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean"` to change the name of this ensemble in the resulting model output; if not specified, the default is "hub-ensemble".
-
-\newpage
 
 ```{r, rows.print = 9}
 #| label: tbl-mean-ensemble

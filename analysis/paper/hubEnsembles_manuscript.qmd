@@ -831,12 +831,12 @@ weighted_mean_ens <- hubExamples::forecast_outputs |>
 
 ### Creating ensembles with linear_pool
 
-We can also generate a linear pool ensemble, or distributional mixture, using the `linear_pool()` function; this function can be applied to predictions with an `output_type` of mean, quantile, CDF, or PMF. Our example hub includes median output type, so we exclude it from the calculation.
+We can also generate a linear pool ensemble, or distributional mixture, using the `linear_pool()` function; this function can be applied to predictions with an `output_type` of mean, quantile, CDF, or PMF. Our example hub includes the median output type, so we exclude it from the calculation.
 
 ```{r}
 #| prompt: true
 linear_pool_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(!output_type %in% c("median", "sample")) |>
+    dplyr::filter(output_type != "median") |>
     hubEnsembles::linear_pool(model_id = "linear-pool")
 ```
 
@@ -943,6 +943,68 @@ cowplot::plot_grid(
   ncol = 1,
   rel_heights = c(0.95, 0.05)
 )
+```
+
+#### Weighting model contributions
+
+Like with `simple_ensemble()`, we can change the default function settings. For example, weights that determine a model's contribution to the resulting ensemble may be provided. (Note that we must exclude the sample output type here because it cannot yet be combined into weighted ensembles.)
+
+```{r weighted-linear-pool}
+#| prompt: true
+model_weights <- data.frame(
+    model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "Flusight-baseline"),
+    weight = c(0.4, 0.4, 0.2)
+  )
+  weighted_linear_pool_norm <- hubExamples::forecast_outputs |>
+    dplyr::filter(!output_type %in% c("median", "sample")) |>
+    hubEnsembles::linear_pool(
+      weights = model_weights,
+      model_id = "linear-pool-weighted"
+    )
+```
+ 
+#### Changing the parametric family used for extrapolation into distribution tails
+
+When requesting a linear pool of quantiles, we may also change the distribution that [distfromq]{.pkg} uses to approximate the tails of component models' predictive distributions to either log normal or Cauchy using the `tail_dist` argument [@distfromq]. This choice usually does not have a large impact on the resulting ensemble distribution, though, and can only be seen in its outer edges. (For more details and other function options, see the documentation in the [distfromq]{.pkg} package at <https://reichlab.io/distfromq/>.)
+
+```{r quantile-linear-pool-tails}
+#| prompt: true
+linear_pool_lnorm <- hubExamples::forecast_outputs |>
+    dplyr::filter(output_type == "quantile") |>
+    hubEnsembles::linear_pool(
+      model_id = "linear-pool-lognormal",
+      tail_dist = "lnorm"
+    )
+  linear_pool_cauchy <- hubExamples::forecast_outputs |>
+    dplyr::filter(output_type == "quantile") |>
+    hubEnsembles::linear_pool(
+      model_id = "linear-pool-cauchy",
+      tail_dist = "cauchy"
+    )
+```
+
+#### Requesting a subset of input sample predictions to be ensembled
+
+Recall that for the sample output type, `linear_pool()` defaults to create and equally-weighted ensemble by simply collecting and returning all provided sample predictions, so that the total number of samples for the ensemble is equal to the sum of the number of samples from all individual models. To change this behavior, the user may instead specify a number of sample predictions for the ensemble to return using the `n_output_samples` argument. Then, a random subset of predictions from individual models will be selected to construct a LOP of samples so that all component models are represented equally. This random selection of samples is stratified by model to ensure approximately the same number of samples from each individual model is included in the ensemble.
+
+When requesting a linear pool composed of a subset of the input sample predictions, the user must identify the task ID variables which together identify a single modeled unit. This group of independent task ID variables is called the compound task ID set and are specified using the `compound_taskid_set` parameter to ensure the subsetting of sample predictions is performed correctly. Samples summarizing a marginal distribution will have a compound task ID set made up of all the task ID variables, while samples summarizing a joint distribution will have a compound task ID set that contains only task ID variables that do not display dependence within their values.
+
+Derived task IDs are another subgroup of task ID variables that must be specified in a call to `linear_pool()` for a subsetted sample ensemble; their values are derived from a combination of the values from other task ID variables (which may or may not be part of the compound task ID set). Generally, the derived task IDs won't be included in the compound task ID set because they are not needed to identify a single modeled unit for an outcome of interest, *unless* all of the task ID variables their values depend on are already a part of the compound task ID set.
+
+Not all model outputs will contain derived task IDs, in which case the argument may be set to `NULL` (the default value). However, it is important to provide the `linear_pool()` function with any derived task IDs when calculating an ensemble of (subsetted) samples, as they are used to check that the provided compound task ID set is compatible with the input predictions and the resulting LOP is valid.
+
+```{r joint-linear-pool}
+#| prompt: true
+joint_lp <- hubExamples::forecast_outputs |>
+    dplyr::filter(output_type == "sample") |>
+    hubEnsembles::linear_pool(
+      weights = NULL,
+      model_id = "linear-pool-joint",
+      task_id_cols = c("reference_date", "location", "horizon", "target", "target_end_date"),
+      compound_taskid_set = c("reference_date", "location", "target"),
+      derived_tasks = "target_end_date",
+      n_output_samples = 100
+    )
 ```
 
 

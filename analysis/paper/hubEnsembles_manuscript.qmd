@@ -818,7 +818,7 @@ We can weight the contributions of each model in the ensemble using the `weights
 ```{r}
 #| prompt: true
 model_weights <- data.frame(
-    model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "simple_hub-baseline"),
+    model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "Flusight-baseline"),
     weight = c(0.4, 0.4, 0.2)
   )
 weighted_mean_ens <- hubExamples::forecast_outputs |>
@@ -951,10 +951,6 @@ Like with `simple_ensemble()`, we can change the default function settings. For 
 
 ```{r weighted-linear-pool}
 #| prompt: true
-model_weights <- data.frame(
-    model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "Flusight-baseline"),
-    weight = c(0.4, 0.4, 0.2)
-  )
   weighted_linear_pool_norm <- hubExamples::forecast_outputs |>
     dplyr::filter(!output_type %in% c("median", "sample")) |>
     hubEnsembles::linear_pool(
@@ -1000,7 +996,8 @@ joint_lp <- hubExamples::forecast_outputs |>
     hubEnsembles::linear_pool(
       weights = NULL,
       model_id = "linear-pool-joint",
-      task_id_cols = c("reference_date", "location", "horizon", "target", "target_end_date"),
+      task_id_cols =
+        c("reference_date", "location", "horizon", "target", "target_end_date"),
       compound_taskid_set = c("reference_date", "location", "target"),
       derived_tasks = "target_end_date",
       n_output_samples = 100
@@ -1086,8 +1083,6 @@ Prior to ensemble calculation (shown later in this section), we filter out any p
 
 With these inclusion criteria, the final data set of component forecasts consists of predictions from 25 modeling teams and 42 distinct models, 53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target, and 23 quantiles. In the 2021-2022 season, 25 models made predictions for 22 weeks spanning from late January 2022 to late June 2022, and in the 2022-2023 season, there were 31 models making predictions for 31 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42 total models made forecasts for both seasons.
 
-In both seasons, forecasts were made for the same locations (the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described above), and target (week ahead incident flu hospitalization). The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
-
 ```{r formatted flu forecasts, eval=TRUE}
 #| label: tbl-case-study-flu-forecasts
 #| echo: false
@@ -1109,6 +1104,8 @@ flu_forecasts_hubverse |>
   dplyr::select(all_of(abbr_fc_col)) |>
   knitr::kable(col.names = formatted_fc_col)
 ```
+
+In both seasons, forecasts were made for the same locations (the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described above), and target (week ahead incident flu hospitalization). The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
 
 Next, we combine the component model outputs to generate predictions from each ensemble model. We begin by excluding the baseline model from the set of predictions that will be combined. Then, we create one object to store the ensemble results generated from each method we are interested in comparing.
 

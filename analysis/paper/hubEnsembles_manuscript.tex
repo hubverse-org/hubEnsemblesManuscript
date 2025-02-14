@@ -1315,7 +1315,7 @@ but give it less weight than the other forecasts.
 \begin{Shaded}
 \begin{Highlighting}[]
 \SpecialCharTok{\textgreater{}}\NormalTok{ model\_weights }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
-\SpecialCharTok{+}     \AttributeTok{model\_id =} \FunctionTok{c}\NormalTok{(}\StringTok{"MOBS{-}GLEAM\_FLUH"}\NormalTok{, }\StringTok{"PSI{-}DICE"}\NormalTok{, }\StringTok{"simple\_hub{-}baseline"}\NormalTok{),}
+\SpecialCharTok{+}     \AttributeTok{model\_id =} \FunctionTok{c}\NormalTok{(}\StringTok{"MOBS{-}GLEAM\_FLUH"}\NormalTok{, }\StringTok{"PSI{-}DICE"}\NormalTok{, }\StringTok{"Flusight{-}baseline"}\NormalTok{),}
 \SpecialCharTok{+}     \AttributeTok{weight =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.4}\NormalTok{, }\FloatTok{0.4}\NormalTok{, }\FloatTok{0.2}\NormalTok{)}
 \SpecialCharTok{+}\NormalTok{   )}
 \SpecialCharTok{\textgreater{}}\NormalTok{ weighted\_mean\_ens }\OtherTok{\textless{}{-}}\NormalTok{ hubExamples}\SpecialCharTok{::}\NormalTok{forecast\_outputs }\SpecialCharTok{|\textgreater{}}
@@ -1396,10 +1396,6 @@ combined into weighted ensembles.)
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\SpecialCharTok{\textgreater{}}\NormalTok{ model\_weights }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
-\SpecialCharTok{+}     \AttributeTok{model\_id =} \FunctionTok{c}\NormalTok{(}\StringTok{"MOBS{-}GLEAM\_FLUH"}\NormalTok{, }\StringTok{"PSI{-}DICE"}\NormalTok{, }\StringTok{"Flusight{-}baseline"}\NormalTok{),}
-\SpecialCharTok{+}     \AttributeTok{weight =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.4}\NormalTok{, }\FloatTok{0.4}\NormalTok{, }\FloatTok{0.2}\NormalTok{)}
-\SpecialCharTok{+}\NormalTok{   )}
 \SpecialCharTok{\textgreater{}}\NormalTok{   weighted\_linear\_pool\_norm }\OtherTok{\textless{}{-}}\NormalTok{ hubExamples}\SpecialCharTok{::}\NormalTok{forecast\_outputs }\SpecialCharTok{|\textgreater{}}
 \SpecialCharTok{+}\NormalTok{     dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(}\SpecialCharTok{!}\NormalTok{output\_type }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"median"}\NormalTok{, }\StringTok{"sample"}\NormalTok{)) }\SpecialCharTok{|\textgreater{}}
 \SpecialCharTok{+}\NormalTok{     hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
@@ -1490,7 +1486,8 @@ compatible with the input predictions and the resulting LOP is valid.
 \SpecialCharTok{+}\NormalTok{     hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
 \SpecialCharTok{+}       \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
 \SpecialCharTok{+}       \AttributeTok{model\_id =} \StringTok{"linear{-}pool{-}joint"}\NormalTok{,}
-\SpecialCharTok{+}       \AttributeTok{task\_id\_cols =} \FunctionTok{c}\NormalTok{(}\StringTok{"reference\_date"}\NormalTok{, }\StringTok{"location"}\NormalTok{, }\StringTok{"horizon"}\NormalTok{, }\StringTok{"target"}\NormalTok{, }\StringTok{"target\_end\_date"}\NormalTok{),}
+\SpecialCharTok{+}       \AttributeTok{task\_id\_cols =}
+\SpecialCharTok{+}         \FunctionTok{c}\NormalTok{(}\StringTok{"reference\_date"}\NormalTok{, }\StringTok{"location"}\NormalTok{, }\StringTok{"horizon"}\NormalTok{, }\StringTok{"target"}\NormalTok{, }\StringTok{"target\_end\_date"}\NormalTok{),}
 \SpecialCharTok{+}       \AttributeTok{compound\_taskid\_set =} \FunctionTok{c}\NormalTok{(}\StringTok{"reference\_date"}\NormalTok{, }\StringTok{"location"}\NormalTok{, }\StringTok{"target"}\NormalTok{),}
 \SpecialCharTok{+}       \AttributeTok{derived\_tasks =} \StringTok{"target\_end\_date"}\NormalTok{,}
 \SpecialCharTok{+}       \AttributeTok{n\_output\_samples =} \DecValTok{100}
@@ -1663,15 +1660,6 @@ the 2022-2023 season, there were 31 models making predictions for 31
 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42
 total models made forecasts for both seasons.
 
-In both seasons, forecasts were made for the same locations (the 50 US
-states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a
-whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described
-above), and target (week ahead incident flu hospitalization). The values
-for the forecasts are always non-negative. In
-Table~\ref{tbl-case-study-flu-forecasts}, we provide an example of these
-predictions, showing select quantiles from a single model, forecast
-date, horizon, and location.
-
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
@@ -1723,6 +1711,15 @@ UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.975 &
 68 \\
 
 \end{longtable}
+
+In both seasons, forecasts were made for the same locations (the 50 US
+states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a
+whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described
+above), and target (week ahead incident flu hospitalization). The values
+for the forecasts are always non-negative. In
+Table~\ref{tbl-case-study-flu-forecasts}, we provide an example of these
+predictions, showing select quantiles from a single model, forecast
+date, horizon, and location.
 
 Next, we combine the component model outputs to generate predictions
 from each ensemble model. We begin by excluding the baseline model from

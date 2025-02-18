@@ -1105,7 +1105,7 @@ flu_forecasts_hubverse |>
   knitr::kable(col.names = formatted_fc_col)
 ```
 
-In both seasons, forecasts were made for the same locations (the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described above), and target (week ahead incident flu hospitalization). The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
+In both seasons, forecasts were made for the same locations (the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the entire US), horizons (1 to 4 weeks ahead), quantiles (the 23 described above), and target (week ahead incident flu hospitalization). The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
 
 Next, we combine the component model outputs to generate predictions from each ensemble model. We begin by excluding the baseline model from the set of predictions that will be combined. Then, we create one object to store the ensemble results generated from each method we are interested in comparing.
 
@@ -1597,7 +1597,7 @@ The [hubEnsembles]{.pkg} package is situated within the larger hubverse collecti
 
 When using [hubEnsembles]{.pkg}, it is important to carefully choose an ensemble method that is well suited for the situation. Although there may not be a universal "best" method, matching the properties of a given ensemble method with the features of the component models will likely yield best results [@howerton2023]. Our case study on seasonal influenza forecasts in the US demonstrates this point. The quantile median ensemble performs best overall for a range of metrics, including weighted interval score, mean absolute error, and prediction interval coverage. Yet, the other ensemble methods we tested also showcased a clear improvement over the baseline model and even outperformed the quantile median for certain weeks, particularly during periods of rapid change when outlying component forecasts are likely more important. The accuracy gains from ensemble models motivate the use of a "hub-based" approach to prediction for infectious diseases and in other fields.
 
-Ongoing development of the [hubEnsembles]{.pkg} package and the larger suite of hubverse tools will continue to support multi-model predictions in new ways, including for example supporting additional types of predictions, enabling scoring and evaluation of those predictions, and allowing for cloud-based data storage. All such infrastructure will ultimately provide a comprehensive suite of open-source software tools for leveraging the power of collaborative hubs and multi-model ensembles.
+Ongoing development of the [hubEnsembles]{.pkg} package and the larger suite of hubverse tools will continue to support multi-model predictions in new ways, including for example expanding support for additional types of predictions, enabling scoring and evaluation of those predictions, and building plug-and-play visualization and evaluation dashboards. All such infrastructure will ultimately provide a comprehensive suite of open-source software tools for leveraging the power of collaborative hubs and multi-model ensembles.
 
 ## Acknowledgements {.unnumbered}
 

@@ -1713,10 +1713,10 @@ UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.975 &
 \end{longtable}
 
 In both seasons, forecasts were made for the same locations (the 50 US
-states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a
-whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described
-above), and target (week ahead incident flu hospitalization). The values
-for the forecasts are always non-negative. In
+states, Washington DC, Puerto Rico, the Virgin Islands, and the entire
+US), horizons (1 to 4 weeks ahead), quantiles (the 23 described above),
+and target (week ahead incident flu hospitalization). The values for the
+forecasts are always non-negative. In
 Table~\ref{tbl-case-study-flu-forecasts}, we provide an example of these
 predictions, showing select quantiles from a single model, forecast
 date, horizon, and location.
@@ -1951,15 +1951,12 @@ horizontal line); values closer to 95\% indicate better performance.}
 
 \end{figure}%
 
-In this analysis, all of the ensemble variations outperform the baseline
-model; yet, different ensembling methods perform best under different
-circumstances. While the quantile median has the best overall results
-for WIS, MAE, 50\% PI coverage, and 95\% PI coverage, other models may
-perform better from week-to-week for each metric. Around the 2022-2023
-season's peak in early December, the remaining four models (including
-the baseline) each have instances in which they achieve the lowest WIS,
-like the linear pool ensembles for the one week ahead horizon over
-several weeks of this period.
+All of the ensemble variations outperform the baseline model in this
+analysis, led by the quantile median which had the best scores overall
+for WIS, MAE, 50\% PI coverage, and 95\% PI coverage. However, other
+models sometimes demonstrated better performance, especially around the
+season's peak. This seems to indicate that the quantile median may not
+necessarily be the top-performing model for every influenza season.
 
 The choice of an appropriate ensemble aggregation method may depend on
 the forecast target, the goal of forecasting, and the behavior of the
@@ -2000,22 +1997,22 @@ likely yield best results\textsuperscript{28}. Our case study on
 seasonal influenza forecasts in the US demonstrates this point. The
 quantile median ensemble performs best overall for a range of metrics,
 including weighted interval score, mean absolute error, and prediction
-interval coverage. Yet, the linear pool method, which generates an
-ensemble with wider prediction intervals, demonstrates performance
-advantages during periods of rapid change, when outlying component
-forecasts are likely more important. Notably, all ensemble methods
-outperform the baseline model. The performance improvements from
-ensemble models motivate the use of a ``hub-based'' approach to
-prediction for infectious diseases and in other fields.
+interval coverage. Yet, the other ensemble methods we tested also
+showcased a clear improvement over the baseline model and even
+outperformed the quantile median for certain weeks, particularly during
+periods of rapid change when outlying component forecasts are likely
+more important. The accuracy gains from ensemble models motivate the use
+of a ``hub-based'' approach to prediction for infectious diseases and in
+other fields.
 
 Ongoing development of the {hubEnsembles} package and the larger suite
 of hubverse tools will continue to support multi-model predictions in
-new ways, including for example supporting additional types of
-predictions, enabling scoring and evaluation of those predictions, and
-allowing for cloud-based data storage. All such infrastructure will
-ultimately provide a comprehensive suite of open-source software tools
-for leveraging the power of collaborative hubs and multi-model
-ensembles.
+new ways, including for example expanding support for additional types
+of predictions, enabling scoring and evaluation of those predictions,
+and building plug-and-play visualization and evaluation dashboards. All
+such infrastructure will ultimately provide a comprehensive suite of
+open-source software tools for leveraging the power of collaborative
+hubs and multi-model ensembles.
 
 \section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}

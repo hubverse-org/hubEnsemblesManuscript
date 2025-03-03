@@ -582,11 +582,11 @@ All output types can summarize predictions from marginal distributions.
 The sample output type is unique in that it can additionally represent
 predictions from joint predictive distributions. This means that the
 sample representation may encode dependence across combinations of
-multiple modeled task ID variables when recording samples from a joint
-predictive distribution. In this case, sample predictions with the same
-index (specified by the \texttt{output\_type\_id}) from a particular
-model may be assumed to correspond to a single sample from a joint
-distribution.
+multiple values for modeled task ID variables when recording samples
+from a joint predictive distribution. In this case, sample predictions
+with the same index (specified by the \texttt{output\_type\_id}) from a
+particular model may be assumed to correspond to a single sample from a
+joint distribution.
 
 For quantile predictions, the \texttt{output\_type\_id} is a numeric
 value between 0 and 1 specifying the cumulative probability associated
@@ -1026,7 +1026,7 @@ target data to the location and time horizons we are interested in.
 \SpecialCharTok{+}\NormalTok{     )}
 \SpecialCharTok{\textgreater{}} 
 \ErrorTok{\textgreater{}}\NormalTok{ hubVis}\SpecialCharTok{::}\FunctionTok{plot\_step\_ahead\_model\_output}\NormalTok{(}
-\SpecialCharTok{+}     \AttributeTok{model\_out\_tbl =}\NormalTok{ model\_outputs\_plot,}
+\SpecialCharTok{+}     \AttributeTok{model\_output\_data =}\NormalTok{ model\_outputs\_plot,}
 \SpecialCharTok{+}     \AttributeTok{target\_data =}\NormalTok{ target\_data\_plot,}
 \SpecialCharTok{+}     \AttributeTok{facet =} \StringTok{"model\_id"}\NormalTok{,}
 \SpecialCharTok{+}     \AttributeTok{facet\_nrow =} \DecValTok{1}\NormalTok{,}

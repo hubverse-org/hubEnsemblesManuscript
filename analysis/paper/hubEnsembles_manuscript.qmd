@@ -603,7 +603,8 @@ model_outputs_plot <- hubExamples::forecast_outputs |>
       location == "25",
       output_type %in% c("median", "quantile"),
       reference_date == "2022-12-17"
-    )
+    ) |>
+  dplyr::mutate(output_type_id = as.double(output_type_id))
 target_data_plot <- hubExamples::forecast_target_ts |>
     dplyr::filter(
       location == "25",
@@ -682,7 +683,6 @@ ggplot(
 ) +
   geom_tile() + 
   facet_grid(cols = vars(model_id)) +
-  scale_alpha_discrete(name = "probability") +
   scale_fill_distiller(palette = "YlOrBr", direction = 0, name = "bin probability") +
   scale_x_continuous(expand = c(0, 0), name = "horizon (weeks)") +
   scale_y_discrete(expand = c(0, 0), name = "hospitalization intensity") +
@@ -789,7 +789,8 @@ model_output_plot <- dplyr::bind_rows(
     output_type %in% c("median", "mean", "quantile"),
     reference_date == "2022-12-17"
   ) |>
-  dplyr::mutate(target_date = reference_date + horizon)
+  dplyr::mutate(target_date = reference_date + horizon, 
+                output_type_id = as.double(output_type_id))
 
 target_data_plot <- hubExamples::forecast_target_ts |>
   dplyr::filter(

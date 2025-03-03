@@ -223,14 +223,24 @@ Modeling Hubs \and Nicholas G. Reich \and Evan L. Ray}
 \begin{abstract}
 Combining predictions from multiple models into an ensemble is a widely
 used practice across many fields with demonstrated performance benefits.
-The {R} package {hubEnsembles} provides a flexible framework for
-ensembling various types of predictions, including point estimates and
-probabilistic predictions. A range of common methods for generating
-ensembles are supported, including weighted averages, quantile averages,
-and linear pools. The {hubEnsembles} package fits within a broader
-framework of open-source software and data tools called the
-``hubverse'', which facilitates the development and management of
-collaborative modelling exercises.
+Popularized through domains such as weather forecasting and climate
+modeling, multi-model ensembles are becoming increasingly common in
+public health and biological applications. For example, multi-model
+outbreak forecasting provides more accurate and reliable information
+about the timing and burden of infectious disease outbreaks to public
+health officials and medical practitioners. Yet, understanding and
+interpreting multi-model ensemble results can be difficult, as there are
+a diveristy of methods proposed in the literature with no clear
+consensus on which is best. Moreover, a lack of standard, easy-to-use
+software implementations impedes the generation of multi-model ensembles
+in practice. To address these challenges, we provide an introduction to
+the statistical foundations of applied probabilistic forecasting,
+including the role of multi-model ensembles. We introduce the
+\texttt{hubEnsembles} pacakge, a flexible framework for ensembling
+various types of predictions using a range of methods. Finally, we
+present a tutorial and case-study of ensemble methods using the
+\texttt{hubEnsembles} package on a subset of real, publicly available
+data from the US COVID-19 Forecast Hub.
 \end{abstract}
 
 \section{Introduction}\label{sec-intro}
@@ -293,10 +303,9 @@ demonstration of multi-model ensemble generation and interpretion
 influenza forecasts (Section~\ref{sec-case-study}) that motivates a
 discussion and comparison of the various methods
 (Section~\ref{sec-conclusions}). By reviewing multi-model ensemble
-methodology and synthesizing these methods standard, easy-to use
-implementation, this tutorial provides guidance on understanding,
-interpreting, and implementing multi-model ensembles in public health
-applications.
+methodology and synthesizing these methods easy-to use implementation,
+this tutorial provides guidance on understanding, interpreting, and
+implementing multi-model ensembles for public health applications.
 
 \section{Mathematical definitions and properties of ensemble
 methods}\label{sec-defs}

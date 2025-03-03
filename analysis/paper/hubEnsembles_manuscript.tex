@@ -201,7 +201,7 @@
 \IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
 \urlstyle{same} % disable monospaced font for URLs
 \hypersetup{
-  pdftitle={hubEnsembles: Ensembling Methods in R},
+  pdftitle={Multi-model ensembles in infectious disease and public health: methods, interpretation, and implementation in R},
   pdfauthor={Li Shandross; Emily Howerton; Lucie Contamin; Harry Hochheiser; Anna Krystalli; Consortium of Infectious Disease Modeling Hubs; Nicholas G. Reich; Evan L. Ray},
   pdfkeywords={multiple models, aggregation, forecast, prediction},
   colorlinks=true,
@@ -211,7 +211,8 @@
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
 
-\title{{hubEnsembles}: Ensembling Methods in {R}}
+\title{Multi-model ensembles in infectious disease and public health:
+methods, interpretation, and implementation in R}
 \author{Li Shandross \and Emily Howerton \and Lucie Contamin \and Harry
 Hochheiser \and Anna Krystalli \and Consortium of Infectious Disease
 Modeling Hubs \and Nicholas G. Reich \and Evan L. Ray}
@@ -1018,7 +1019,8 @@ target data to the location and time horizons we are interested in.
 \SpecialCharTok{+}\NormalTok{       location }\SpecialCharTok{==} \StringTok{"25"}\NormalTok{,}
 \SpecialCharTok{+}\NormalTok{       output\_type }\SpecialCharTok{\%in\%} \FunctionTok{c}\NormalTok{(}\StringTok{"median"}\NormalTok{, }\StringTok{"quantile"}\NormalTok{),}
 \SpecialCharTok{+}\NormalTok{       reference\_date }\SpecialCharTok{==} \StringTok{"2022{-}12{-}17"}
-\SpecialCharTok{+}\NormalTok{     )}
+\SpecialCharTok{+}\NormalTok{     ) }\SpecialCharTok{|\textgreater{}}
+\SpecialCharTok{+}\NormalTok{   dplyr}\SpecialCharTok{::}\FunctionTok{mutate}\NormalTok{(}\AttributeTok{output\_type\_id =} \FunctionTok{as.double}\NormalTok{(output\_type\_id))}
 \SpecialCharTok{\textgreater{}}\NormalTok{ target\_data\_plot }\OtherTok{\textless{}{-}}\NormalTok{ hubExamples}\SpecialCharTok{::}\NormalTok{forecast\_target\_ts }\SpecialCharTok{|\textgreater{}}
 \SpecialCharTok{+}\NormalTok{     dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(}
 \SpecialCharTok{+}\NormalTok{       location }\SpecialCharTok{==} \StringTok{"25"}\NormalTok{,}

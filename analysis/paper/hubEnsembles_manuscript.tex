@@ -1581,13 +1581,14 @@ compatible with the input predictions and the resulting LOP is valid.
 \section{Example: in-depth analysis of forecast
 data}\label{sec-case-study}
 
-To further demonstrate the utility of the \texttt{hubEnsembles} package
-and the differences between the two ensembling functions, we examine a
-more complex example. Unlike the previous section's basic showcase of
-functionality, we use this case study to provide a more complete
-analysis that compares and evaluates ensemble model performance using
-real forecasts collected by a modeling hub, with an overarching goal of
-choosing a single best ensembling approach for the application.
+To further demonstrate the differences between the two ensembling
+functions and the utility of the \texttt{hubEnsembles} package, we
+examine a more complex example. Unlike the previous section's basic
+showcase of functionality to create multi-model ensembles, we use this
+case study to provide a more complete analysis that compares and
+evaluates ensemble model performance using real forecasts collected by a
+modeling hub, with an overarching goal of choosing a single best
+ensembling approach for the application.
 
 Since 2013, the US Centers for Disease Control and Prevention (CDC) has
 been soliciting forecasts of seasonal influenza from modeling teams
@@ -2055,47 +2056,40 @@ ensemble methods.
 
 Ensembles of independent models are a powerful tool to generate more
 accurate and more reliable predictions of future outcomes than a single
-model alone. Here, we have demonstrated how to utilize
-\texttt{hubEnsembles}, a simple and flexible framework to combine
-individual model predictions into an ensemble.
+model alone. Here, we have provided an overview of multi-model ensemble
+methodology with the goal of improving use of ensemble results in public
+health and biological settings. Moreover, we have demonstrated how to
+utilize \texttt{hubEnsembles}, a simple and flexible framework to
+combine individual model predictions into an ensemble.
 
-The \texttt{hubEnsembles} package is situated within the larger hubverse
-collection of open-source software and data tools to support
-collaborative modeling exercises\textsuperscript{26}. Collaborative hubs
-offer many benefits, including serving as a centralized entity to guide
-and elicit predictions from multiple independent
-models\textsuperscript{35}. Given the increasing popularity of
-multi-model ensembles and collaborative hubs, there is a clear need for
-generalized data standards and software infrastructure to support these
-hubs. By addressing this need, the hubverse suite of tools can reduce
-duplicative efforts across existing hubs, support other communities
-engaged in collaborative efforts, and enable the adoption of multi-model
-approaches in new domains.
+Multi-model ensembles are becoming the gold standard for prediction
+exercises in the public health domain. Collaborative modeling hubs can
+serve as a centralized entity to guide and elicit predictions from
+multiple independent models, as well as generate and communicate
+ensemble results\textsuperscript{35,36}. Given the increasing popularity
+of multi-model ensembles and collaborative hubs, there is a clear need
+for generalized data standards and software infrastructure to support
+these hubs. By addressing this need, the hubverse suite of tools can
+reduce duplicative efforts across existing hubs, support other
+communities engaged in collaborative efforts, and enable the adoption of
+multi-model approaches in new domains.
 
-When using \texttt{hubEnsembles}, it is important to carefully choose an
-ensemble method that is well suited for the situation. Although there
-may not be a universal ``best'' method, matching the properties of a
-given ensemble method with the features of the component models will
-likely yield best results\textsuperscript{20}. Our case study on
-seasonal influenza forecasts in the US demonstrates this point. The
-quantile median ensemble performs best overall for a range of metrics,
-including weighted interval score, mean absolute error, and prediction
-interval coverage. Yet, the other ensemble methods we tested also
-showcased a clear improvement over the baseline model and even
-outperformed the quantile median for certain weeks, particularly during
-periods of rapid change when outlying component forecasts are likely
-more important. The accuracy gains from ensemble models motivate the use
-of a ``hub-based'' approach to prediction for infectious diseases and in
-other fields.
-
-Ongoing development of the \texttt{hubEnsembles} package and the larger
-suite of hubverse tools will continue to support multi-model predictions
-in new ways, including for example expanding support for additional
-types of predictions, enabling scoring and evaluation of those
-predictions, and building plug-and-play visualization and evaluation
-dashboards. All such infrastructure will ultimately provide a
-comprehensive suite of open-source software tools for leveraging the
-power of collaborative hubs and multi-model ensembles.
+When generating and interpreting an ensemble prediction, it is important
+to understand the methods underlying the ensemble, as methodological
+choices can have meaningful effects on the resulting ensemble and its
+performance. Although there may not be a universal ``best'' method,
+matching the properties of a given ensemble method with the features of
+the component models will likely yield best results\textsuperscript{20}.
+Our case study on seasonal influenza forecasts in the US demonstrates
+this point. The quantile median ensemble performs best overall for a
+range of metrics, including weighted interval score, mean absolute
+error, and prediction interval coverage. Yet, the other ensemble methods
+we tested also showcased a clear improvement over the baseline model and
+even outperformed the quantile median for certain weeks, particularly
+during periods of rapid change when outlying component forecasts are
+likely more important. The accuracy gains from ensemble models motivate
+the use of a ``hub-based'' approach to prediction for infectious
+diseases, public health, and in other fields.
 
 \section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}
@@ -2374,6 +2368,13 @@ doi:\href{https://doi.org/10.1371/journal.pcbi.1008618}{10.1371/journal.pcbi.100
 Making the most of predictive epidemic modeling. \emph{American Journal
 of Public Health}. 2022;112(6):839-842.
 doi:\href{https://doi.org/10.2105/AJPH.2022.306831}{10.2105/AJPH.2022.306831}}
+
+\bibitem[\citeproctext]{ref-borchering_public_2023}
+\CSLLeftMargin{36. }%
+\CSLRightInline{Borchering RK, Healy JM, Cadwell BL, et al. Public
+health impact of the {U}.{S}. {Scenario} {Modeling} {Hub}.
+\emph{Epidemics}. 2023;44:100705.
+doi:\href{https://doi.org/10.1016/j.epidem.2023.100705}{10.1016/j.epidem.2023.100705}}
 
 \end{CSLReferences}
 

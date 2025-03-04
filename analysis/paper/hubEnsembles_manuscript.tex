@@ -308,29 +308,72 @@ implementation, this tutorial provides guidance on understanding,
 interpreting, and implementing multi-model ensembles for public health
 applications.
 
-\section{Mathematical definitions and properties of ensemble
-methods}\label{sec-defs}
+\section{How to generate a multi-model ensemble}\label{sec-defs}
 
-The {hubEnsembles} package supports both point predictions and
-probabilistic predictions of different formats. A point prediction gives
-a single estimate of a future outcome while a probabilistic prediction
-provides an estimated probability distribution over a set of future
-outcomes. We use \(N\) to denote the total number of individual
-predictions that the ensemble will combine. For example, these
-predictions will often be produced by different statistical or
-mathematical models, and \(N\) is the total number of models that have
+In this section, we provide an overview of the process to generate a
+multi-model ensemble, including basic definitions of key concepts in
+statistical forecasting, and an overview of the classes of methods that
+are typically used for generating a multi-model ensemble.
+
+\subsection{Key concepts in statistical
+forecasting}\label{key-concepts-in-statistical-forecasting}
+
+Generating an ensemble requires multiple predictions to be combined, and
+a combination method for calculating the ensemble from these predictions
+(Figure~\ref{fig-ensemble-schematic}). These predictions will often be
+produced by different statistical or mathematical models, and the model
+output being combined will vary based on the setting. For example, some
+public health questions, such as short-term resource allocation, may
+depend on a forecast of public health outcomes weeks into the future,
+whereas longer-term decisions about vaccination schedules may require
+projections months into the future across multiple possible scenarios.
+Some intervention decisions, such as quarantine and isolation policy,
+may depend on estimates of key biological parameters (in this case, the
+generation interval for an infectious pathogen). Throughout, we will use
+the general term ``prediction'' to encapsulate all such outcomes that
+could be combined. Predictions can also capture varying degrees of
+uncertainty in the outcome. A \emph{point prediction} gives a single
+estimate of an outcome while a \emph{probabilistic prediction} provides
+an estimated probability distribution over a set of outcomes. In either
+case, the basic steps required to generate an ensemble are the same.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{ensemble-overview-schematic.pdf}
+
+}
+
+\caption{\label{fig-ensemble-schematic}Overview of process to generate a
+multi-model ensemble. Predictions, \(p_i\) are generated from \(N\)
+independent models (step 1). Then those predictions,
+\(\pmb{p} = \{p_i|i \in 1, ..., N\}\), are combined with some function,
+\(C\), and set of weights, \(\pmb{w} = \{w_i|i \in 1, ..., N\}\). This
+figure illustrates example probabilistic forecasts for incidence
+influenza hospitalizations, where the median (line) and 90/\% prediction
+interval are shown. The resulting ensembe uses the linear pool method
+(\(F_{LOP}(x)\)\}).}
+
+\end{figure}%
+
+\subsection{Mathematical definitions and properties of ensemble
+methods}\label{mathematical-definitions-and-properties-of-ensemble-methods}
+
+Here, we use \(N\) to denote the total number of individual predictions
+that the ensemble will combine. For example, if predictions are produced
+by different models, \(N\) is the total number of models that have
 provided predictions. Individual predictions will be indexed by the
-subscript \(i\). Optionally, the package allows for calculating
-ensembles that use a weight \(w_i\) for each prediction; we define the
-set of model-specific weights as
-\(\pmb{w} = \{w_i | i \in 1, ..., N\}\). Informally, predictions with a
-larger weight have a greater influence on the ensemble prediction,
-though the details of this depend on the ensemble method (described
-further below).
+subscript \(i\). Optionally, one can calculate an ensemble that use a
+weight \(w_i\) for each prediction; we define the set of model-specific
+weights as \(\pmb{w} = \{w_i | i \in 1, ..., N\}\). Informally,
+predictions with a larger weight have a greater influence on the
+ensemble prediction, though the details of this depend on the ensemble
+method (described further below).
 
-For a set of \(N\) point predictions,
+Then, for a set of \(N\) point predictions,
 \(\pmb{p} = \{p_i|i \in 1, ..., N\}\), each from a distinct model \(i\),
-the {hubEnsembles} package can compute an ensemble of these predictions
+an ensemble of these predictions is
 
 \[
 p_E = C(\pmb{p}, \pmb{w}) 
@@ -340,8 +383,8 @@ using any function \(C\) and any set of model-specific weights
 \(\pmb{w}\). For example, an arithmetic average of predictions yields
 \(p_E = \sum_{i=1}^Np_iw_i\), where the weights are non-negative and sum
 to 1. If \(w_i = 1/N\) for all \(i\), all predictions will be equally
-weighted. This framework can also support more complex functions for
-aggregation, such as a (weighted) median or geometric mean.
+weighted. More complex functions for aggregation are also possible, such
+as a (weighted) median or geometric mean.
 
 For probabilistic predictions, there are two commonly used classes of
 methods to average or ensemble multiple predictions: quantile averaging
@@ -372,7 +415,7 @@ quantile average will be the same type of distribution, with shape and
 scale parameters that are the average of the shape and scale parameters
 from the individual distributions
 (Figure~\ref{fig-example-quantile-average-and-linear-pool}, panel B). In
-other words, this method inteprets the predictive probability
+other words, this method interprets the predictive probability
 distributions that are being combined as uncertain estimates of a single
 true distribution. It is also possible to use other combination
 functions, such as a weighted median, to combine quantile predictions.
@@ -412,6 +455,9 @@ mean of individual model means\textsuperscript{29}. The linear pool
 method preserves variation between individual models, whereas the
 quantile average cancels away this variation under the assumption it
 constitutes sampling error\textsuperscript{20}.
+
+{[}PARAGRAPH HERE WITH SOME REFERENCES TO DISCUSSION/COMPARISON OF THESE
+METHODS IN PUBLIC HEALTH SETTINGS?{]}
 
 \section{Model implementation details}\label{sec-implementation}
 
@@ -632,9 +678,9 @@ from {hubUtils}. An example of this transformation is provided in
 Section~\ref{sec-case-study}.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2361}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2500}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4306}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4167}}@{}}
 \caption{A table summarizing how the model output representation columns
 are used for predictions of different output types. (*The sample output
 type is unique in that it can be used to capture dependence in the

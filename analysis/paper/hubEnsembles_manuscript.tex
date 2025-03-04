@@ -525,7 +525,8 @@ single model are shown for four distinct horizons. The \texttt{location}
 and \texttt{reference\_date} columns have been omitted for brevity; all
 forecasts in this example were made on 2022-12-17 for Massachusetts.
 These predictions are a modified subset of the
-\texttt{forecast\_outputs} data provided by the {hubExamples} package.}
+\texttt{forecast\_outputs} data provided by the \texttt{hubExamples}
+package.}
 
 \tabularnewline
 
@@ -615,7 +616,8 @@ single model are shown for four distinct scenarios. The
 \texttt{location} and \texttt{origin\_date} columns have been omitted
 for brevity; all forecasts in this example were made on 2021-03-07 for
 the US. These predictions are a modified subset of the
-\texttt{scenario\_outputs} data provided by the {hubExamples} package.}
+\texttt{scenario\_outputs} data provided by the \texttt{hubExamples}
+package.}
 
 \tabularnewline
 
@@ -676,12 +678,13 @@ the \texttt{value} column contains the predicted \(F(x)\) or \(f(x)\),
 respectively.
 
 This representation of predictive model output is codified by the
-\texttt{model\_out\_tbl} S3 class in the {hubUtils} package, one of the
-foundational hubverse packages. Although this S3 class is required for
-all \texttt{hubEnsembles} functions, model predictions in other formats
-can easily be transformed using the \texttt{as\_model\_out\_tbl()}
-function from {hubUtils}. An example of this transformation is provided
-in Section~\ref{sec-case-study}.
+\texttt{model\_out\_tbl} S3 class in the \texttt{hubUtils} package, one
+of the foundational hubverse packages. Although this S3 class is
+required for all \texttt{hubEnsembles} functions, model predictions in
+other formats can easily be transformed using the
+\texttt{as\_model\_out\_tbl()} function from \texttt{hubUtils}. An
+example of this transformation is provided in
+Section~\ref{sec-case-study}.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2500}}
@@ -914,7 +917,7 @@ Given that LOP cannot be directly calculated from quantile predictions,
 we must first obtain an estimate of the CDF for each component
 distribution from the provided quantiles, combine the CDFs, then
 calculate the quantiles using the ensemble's CDF. We perform this
-calculation in three main steps, assisted by the {distfromq}
+calculation in three main steps, assisted by the \texttt{distfromq}
 package\textsuperscript{30} for the first two:
 
 \begin{enumerate}
@@ -933,8 +936,8 @@ package\textsuperscript{30} for the first two:
   quantiles.
 \end{enumerate}
 
-For step 1, functionality in the {distfromq} package uses a monotonic
-cubic spline for interpolation on the interior of the provided
+For step 1, functionality in the \texttt{distfromq} package uses a
+monotonic cubic spline for interpolation on the interior of the provided
 quantiles. The user may choose one of several distributions to perform
 extrapolation of the CDF tails. These include normal, lognormal, and
 cauchy distributions, with ``normal'' set as the default. A
@@ -944,10 +947,12 @@ two most extreme quantiles. The sampling process described in steps 2
 and 3 approximates the linear pool calculation described in
 Section~\ref{sec-defs}.
 
-\section{Basic demonstration of functionality}\label{sec-simple-ex}
+\section{A simple demonstration of multi-model
+ensembles}\label{sec-simple-ex}
 
-In this section, we provide a simple example to illustrate the two main
-functions in \texttt{hubEnsembles}, \texttt{simple\_ensemble()} and
+In this section, we provide a simple example to illustrate and compare
+the simple classes multi-model ensembles, using two main functions in
+\texttt{hubEnsembles}, \texttt{simple\_ensemble()} and
 \texttt{linear\_pool()}.
 
 \subsection{Example data: a forecast
@@ -959,12 +964,12 @@ This hub was generated using modified forecasts from the FluSight
 forecasting challenge (discussed in further detail in
 Section~\ref{sec-case-study}). The example hub includes both example
 model output data and two formats of target data (sometimes known as
-``truth'' data), which are stored in the {hubExamples} package as data
-objects named \texttt{forecast\_outputs}, \texttt{forecast\_target\_ts},
-and \texttt{forecast\_oracle\_output}. Note that this model outputs data
-contain only a small subset of predictions for select dates, locations,
-and output type IDs, far fewer than an actual modeling hub would
-typically collect.
+``truth'' data), which are stored in the \texttt{hubExamples} package as
+data objects named \texttt{forecast\_outputs},
+\texttt{forecast\_target\_ts}, and \texttt{forecast\_oracle\_output}.
+Note that this model outputs data contain only a small subset of
+predictions for select dates, locations, and output type IDs, far fewer
+than an actual modeling hub would typically collect.
 
 The model output data includes mean, median, quantile, and sample
 forecasts of future incident influenza hospitalizations; as well as CDF
@@ -993,7 +998,7 @@ Massachusetts from three distinct models; only the mean, median, and
 5th, 25th, 75th and 95th quantiles are displayed. The \texttt{location},
 \texttt{reference\_date} and \texttt{target\_end\_date} columns have
 been omitted for brevity. This example data is provided in the
-{hubExamples} package.}
+\texttt{hubExamples} package.}
 
 \tabularnewline
 
@@ -1036,8 +1041,8 @@ PSI-DICE & wk inc flu hosp & 1 & mean & NA & 594.46 \\
 
 \end{longtable}
 
-The {hubExamples} package also provides corresponding target time series
-data (Table~\ref{tbl-example-target-time-series-data}) and oracle
+The \texttt{hubExamples} package also provides corresponding target time
+series data (Table~\ref{tbl-example-target-time-series-data}) and oracle
 output. Both contain the incident influenza hospitalizations in a given
 week for a given location but are used for different purposes. The
 target time series data is a more traditional representation of the
@@ -1054,7 +1059,7 @@ is suited for evaluating the forecasts post hoc.
 \caption{\label{tbl-example-target-time-series-data}Example target time
 series data for incident influenza hospitalizations. This table includes
 target time series data from 2022-11-01 and 2023-02-01. The target data
-is provided in the {hubExamples} package.}
+is provided in the \texttt{hubExamples} package.}
 
 \tabularnewline
 
@@ -1081,10 +1086,11 @@ is provided in the {hubExamples} package.}
 \end{longtable}
 
 We can plot these forecasts and the target time series data using the
-\texttt{plot\_step\_ahead\_model\_output()} function from {hubVis},
-another package for visualizing model outputs from the hubverse suite
-(Figure~\ref{fig-plot-ex-mods}). We subset the model output data and the
-target data to the location and time horizons we are interested in.
+\texttt{plot\_step\_ahead\_model\_output()} function from
+\texttt{hubVis}, another package for visualizing model outputs from the
+hubverse suite (Figure~\ref{fig-plot-ex-mods}). We subset the model
+output data and the target data to the location and time horizons we are
+interested in.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1163,7 +1169,7 @@ Massachusetts from three distinct models. We round the forecasted
 probability (in the \texttt{value} column) to two digits. The
 \texttt{location}, \texttt{reference\_date} and
 \texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the {hubExamples} package.}
+example data is provided in the \texttt{hubExamples} package.}
 
 \tabularnewline
 
@@ -1487,13 +1493,13 @@ into distribution
 tails}\label{changing-the-parametric-family-used-for-extrapolation-into-distribution-tails}
 
 When requesting a linear pool of quantiles, we may also change the
-distribution that {distfromq} uses to approximate the tails of component
-models' predictive distributions to either log normal or Cauchy using
-the \texttt{tail\_dist} argument\textsuperscript{30}. This choice
-usually does not have a large impact on the resulting ensemble
+distribution that \texttt{distfromq} uses to approximate the tails of
+component models' predictive distributions to either log normal or
+Cauchy using the \texttt{tail\_dist} argument\textsuperscript{30}. This
+choice usually does not have a large impact on the resulting ensemble
 distribution, though, and can only be seen in its outer edges. (For more
 details and other function options, see the documentation in the
-{distfromq} package at \url{https://reichlab.io/distfromq/}.)
+\texttt{distfromq} package at \url{https://reichlab.io/distfromq/}.)
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1691,8 +1697,8 @@ NA & NA & 0.975 & NA \\
 Forecasts must conform to hubverse standards to be fed into either of
 the ensembling functions, so we first transform the raw forecasts using
 the \texttt{as\_model\_out\_tbl()}\footnote{https://hubverse-org.github.io/hubUtils/reference/as\_model\_out\_tbl.html}
-function from the {hubUtils} package. Here, we specify the task ID
-variables \texttt{forecast\_date} (when the forecast was made),
+function from the \texttt{hubUtils} package. Here, we specify the task
+ID variables \texttt{forecast\_date} (when the forecast was made),
 \texttt{location}, \texttt{horizon}, and \texttt{target}.
 
 \begin{Shaded}
@@ -1874,10 +1880,10 @@ itself will always have a value of one for both of these metrics.
 
 Each unique prediction from an ensemble model is scored against target
 data using the \texttt{score\_forecasts()}\footnote{https://reichlab.io/covidHubUtils/reference/score\_forecasts.html}
-function from the {covidHubUtils} package, as a hubverse package for
-scoring and evaluation has not yet been fully implemented. This function
-outputs each of the metrics described above. We use median forecasts
-taken from the 0.5 quantile for the MAE evaluation.
+function from the \texttt{covidHubUtils} package, as a hubverse package
+for scoring and evaluation has not yet been fully implemented. This
+function outputs each of the metrics described above. We use median
+forecasts taken from the 0.5 quantile for the MAE evaluation.
 
 \subsection{Performance results across
 ensembles}\label{performance-results-across-ensembles}

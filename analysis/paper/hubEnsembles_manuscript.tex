@@ -456,19 +456,25 @@ method preserves variation between individual models, whereas the
 quantile average cancels away this variation under the assumption it
 constitutes sampling error\textsuperscript{20}.
 
-{[}PARAGRAPH HERE WITH SOME REFERENCES TO DISCUSSION/COMPARISON OF THESE
-METHODS IN PUBLIC HEALTH SETTINGS?{]}
+\subsection{Applications in public health and infectious disease
+outbreaks}\label{applications-in-public-health-and-infectious-disease-outbreaks}
 
-\section{Model implementation details}\label{sec-implementation}
+{[}PARAGRAPH OR TWO HERE WITH SOME REFERENCES TO DISCUSSION/COMPARISON
+OF THESE METHODS IN PUBLIC HEALTH SETTINGS? IS THIS WORTH INCLUDING?{]}
 
-To understand how these methods are implemented in {hubEnsembles}, we
-first must define the conventions employed by the hubverse and its
-packages for representing and working with model predictions. We begin
-with a short overview of concepts and conventions needed to utilize the
-{hubEnsembles} package, supplemented by example predictions provided by
-the hubverse, then explain the implementation of the two ensembling
-functions included in the package, \texttt{simple\_ensemble()} and
-\texttt{linear\_pool()}.
+\section{How to implement ensemble
+calculations}\label{sec-implementation}
+
+The methods described in Section~\ref{sec-defs} are implemented in the
+\texttt{hubEnsembles} package in a flexible, easy-to-use framework.
+Importantly, \texttt{hubEnsembles} is situated within the broader
+hubverse software infrastructure, which provides data standards and
+conventions for representing and working with model predictions. We
+begin with a short overview of hubverse concepts and conventions needed
+to utilize the \texttt{hubEnsembles} package, supplemented by example
+predictions provided by the hubverse, then explain the implementation of
+the two primary ensembling functions included in the package,
+\texttt{simple\_ensemble()} and \texttt{linear\_pool()}.
 
 \subsection{Hubverse terminology and
 conventions}\label{hubverse-terminology-and-conventions}
@@ -672,10 +678,10 @@ respectively.
 This representation of predictive model output is codified by the
 \texttt{model\_out\_tbl} S3 class in the {hubUtils} package, one of the
 foundational hubverse packages. Although this S3 class is required for
-all {hubEnsembles} functions, model predictions in other formats can
-easily be transformed using the \texttt{as\_model\_out\_tbl()} function
-from {hubUtils}. An example of this transformation is provided in
-Section~\ref{sec-case-study}.
+all \texttt{hubEnsembles} functions, model predictions in other formats
+can easily be transformed using the \texttt{as\_model\_out\_tbl()}
+function from {hubUtils}. An example of this transformation is provided
+in Section~\ref{sec-case-study}.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2500}}
@@ -729,15 +735,15 @@ Numeric: A sample from the predictive distribution \\
 
 \subsection{Ensemble functions in hubEnsembles}\label{sec-ens-fns}
 
-The {hubEnsembles} package includes two functions that perform ensemble
-calculations: \texttt{simple\_ensemble()}, which applies some function
-to each model prediction, and \texttt{linear\_pool()}, which computes an
-ensemble using the linear opinion pool method. In the following
-sections, we outline the implementation details for each function and
-how these implementations correspond to the statistical ensembling
-methods described in Section~\ref{sec-defs}. A short description of the
-calculation performed by each function is summarized by output type in
-Table~\ref{tbl-fns-by-output-type}.
+The \texttt{hubEnsembles} package includes two functions that perform
+ensemble calculations: \texttt{simple\_ensemble()}, which applies some
+function to each model prediction, and \texttt{linear\_pool()}, which
+computes an ensemble using the linear opinion pool method. In the
+following sections, we outline the implementation details for each
+function and how these implementations correspond to the statistical
+ensembling methods described in Section~\ref{sec-defs}. A short
+description of the calculation performed by each function is summarized
+by output type in Table~\ref{tbl-fns-by-output-type}.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1400}}
@@ -852,11 +858,11 @@ For the sample output type, the LOP method collects a stratified draw of
 the individual models' predictions and pools them into a single ensemble
 distribution. By default, all samples are used to create this ensemble.
 Additionally, only equally-weighted linear pools of samples are
-supported by the {hubEnsembles} package during this time. Samples may
-also be converted to another common output type such as quantiles or bin
-probabilities (as the main scientific interest often concerns a summary
-of samples), and other ensemble methods may then be utilized on the
-alternate output type.
+supported by the \texttt{hubEnsembles} package during this time. Samples
+may also be converted to another common output type such as quantiles or
+bin probabilities (as the main scientific interest often concerns a
+summary of samples), and other ensemble methods may then be utilized on
+the alternate output type.
 
 \begin{figure}
 
@@ -941,21 +947,21 @@ Section~\ref{sec-defs}.
 \section{Basic demonstration of functionality}\label{sec-simple-ex}
 
 In this section, we provide a simple example to illustrate the two main
-functions in {hubEnsembles}, \texttt{simple\_ensemble()} and
+functions in \texttt{hubEnsembles}, \texttt{simple\_ensemble()} and
 \texttt{linear\_pool()}.
 
 \subsection{Example data: a forecast
 hub}\label{example-data-a-forecast-hub}
 
 We will use an example hub provided by the hubverse to demonstrate the
-functionality of the {hubEnsembles} package\textsuperscript{26}. This
-hub was generated using modified forecasts from the FluSight forecasting
-challenge (discussed in further detail in Section~\ref{sec-case-study}).
-The example hub includes both example model output data and two formats
-of target data (sometimes known as ``truth'' data), which are stored in
-the {hubExamples} package as data objects named
-\texttt{forecast\_outputs}, \texttt{forecast\_target\_ts}, and
-\texttt{forecast\_oracle\_output}. Note that this model outputs data
+functionality of the \texttt{hubEnsembles} package\textsuperscript{26}.
+This hub was generated using modified forecasts from the FluSight
+forecasting challenge (discussed in further detail in
+Section~\ref{sec-case-study}). The example hub includes both example
+model output data and two formats of target data (sometimes known as
+``truth'' data), which are stored in the {hubExamples} package as data
+objects named \texttt{forecast\_outputs}, \texttt{forecast\_target\_ts},
+and \texttt{forecast\_oracle\_output}. Note that this model outputs data
 contain only a small subset of predictions for select dates, locations,
 and output type IDs, far fewer than an actual modeling hub would
 typically collect.
@@ -1569,9 +1575,9 @@ compatible with the input predictions and the resulting LOP is valid.
 \section{Example: in-depth analysis of forecast
 data}\label{sec-case-study}
 
-To further demonstrate the utility of the {hubEnsembles} package and the
-differences between the two ensembling functions, we examine a more
-complex example. Unlike the previous section's basic showcase of
+To further demonstrate the utility of the \texttt{hubEnsembles} package
+and the differences between the two ensembling functions, we examine a
+more complex example. Unlike the previous section's basic showcase of
 functionality, we use this case study to provide a more complete
 analysis that compares and evaluates ensemble model performance using
 real forecasts collected by a modeling hub, with an overarching goal of
@@ -2043,11 +2049,11 @@ ensemble methods.
 
 Ensembles of independent models are a powerful tool to generate more
 accurate and more reliable predictions of future outcomes than a single
-model alone. Here, we have demonstrated how to utilize {hubEnsembles}, a
-simple and flexible framework to combine individual model predictions
-into an ensemble.
+model alone. Here, we have demonstrated how to utilize
+\texttt{hubEnsembles}, a simple and flexible framework to combine
+individual model predictions into an ensemble.
 
-The {hubEnsembles} package is situated within the larger hubverse
+The \texttt{hubEnsembles} package is situated within the larger hubverse
 collection of open-source software and data tools to support
 collaborative modeling exercises\textsuperscript{26}. Collaborative hubs
 offer many benefits, including serving as a centralized entity to guide
@@ -2060,7 +2066,7 @@ duplicative efforts across existing hubs, support other communities
 engaged in collaborative efforts, and enable the adoption of multi-model
 approaches in new domains.
 
-When using {hubEnsembles}, it is important to carefully choose an
+When using \texttt{hubEnsembles}, it is important to carefully choose an
 ensemble method that is well suited for the situation. Although there
 may not be a universal ``best'' method, matching the properties of a
 given ensemble method with the features of the component models will
@@ -2076,14 +2082,14 @@ more important. The accuracy gains from ensemble models motivate the use
 of a ``hub-based'' approach to prediction for infectious diseases and in
 other fields.
 
-Ongoing development of the {hubEnsembles} package and the larger suite
-of hubverse tools will continue to support multi-model predictions in
-new ways, including for example expanding support for additional types
-of predictions, enabling scoring and evaluation of those predictions,
-and building plug-and-play visualization and evaluation dashboards. All
-such infrastructure will ultimately provide a comprehensive suite of
-open-source software tools for leveraging the power of collaborative
-hubs and multi-model ensembles.
+Ongoing development of the \texttt{hubEnsembles} package and the larger
+suite of hubverse tools will continue to support multi-model predictions
+in new ways, including for example expanding support for additional
+types of predictions, enabling scoring and evaluation of those
+predictions, and building plug-and-play visualization and evaluation
+dashboards. All such infrastructure will ultimately provide a
+comprehensive suite of open-source software tools for leveraging the
+power of collaborative hubs and multi-model ensembles.
 
 \section*{Acknowledgements}\label{acknowledgements}
 \addcontentsline{toc}{section}{Acknowledgements}

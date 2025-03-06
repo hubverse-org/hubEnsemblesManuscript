@@ -101,7 +101,7 @@ Generating an ensemble requires multiple predictions to be combined, and a combi
 #| fig-width: 6
 #| fig-height: 3
 
-knitr::include_graphics("ensemble-overview-schematic.pdf")
+knitr::include_graphics("overview_fig_FULL.pdf")
 ```
 
 ### Mathematical definitions and properties of ensemble methods

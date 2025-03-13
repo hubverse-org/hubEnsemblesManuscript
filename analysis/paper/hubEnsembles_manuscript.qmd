@@ -148,26 +148,27 @@ The growing body of literature on multi-model ensembles in public health domains
 
 ## How to implement ensemble calculations {#sec-implementation}
 
-The methods described in @sec-defs are implemented in the `hubEnsembles` package in a flexible, easy-to-use framework. Importantly, `hubEnsembles` is situated within the broader hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions. We begin with a short overview of hubverse concepts and conventions needed to utilize the `hubEnsembles` package, supplemented by example predictions provided by the hubverse, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`.
+The methods described in @sec-defs are implemented in the `hubEnsembles` package in a flexible, easy-to-use framework. Importantly, `hubEnsembles` is situated within the broader hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions. We begin with a short overview of hubverse concepts and conventions that support the process of combining model predictions, supplemented by example predictions provided by the hubverse, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`.
 
-### Hubverse terminology and conventions
+### Terminology and data standards in the hubverse
 
-In the hubverse, model predictions are always represented in a standardized tabular format called "model output". Each row represents a single, unique prediction with each column providing information about what is being predicted, its scope, and its value. These columns will fall into one of four categories with the following purposes: (i) denote which model has produced the prediction (the "model ID"), (ii) provide details about what is being predicted (the "task IDs"), (iii) specify the type of prediction and identifying information (the "model output representation"), and (iv) give the value of the prediction itself [@hubverse_docs].
+In the hubverse, predictions are always represented in a standardized tabular format called "model output", codified by the `model_out_tbl` S3 class in `hubUtils` (a package of basic utility functions). Each row represents a single, unique prediction while the columns provide information about what is being predicted, its scope, and value. A single model output object can store and organize many predictions while remaining easy to parse at a glance, which is particularly useful when collecting predictions from multiple models to combine into an ensemble. Any tabular predictions can be transformed into model output using the `as_model_out_tbl()` function from `hubUtils` (see @sec-case-study for an example).
 
-Each model's identifier given in the `model_id` column must be unique and is generally a concatenation of a short team name and model name using a hyphen ("-"). The task ID columns may vary in number and make-up to capture the details of the desired modeling outcome, as well as any conditions or assumptions used to generate the predictions [@hubverse_docs]. As an example, consider the modeling task of predicting weekly flu hospitalizations for different US locations. This information might be represented by task ID variables such as a `target` column with the value "wk inc flu hosp", a `location` column identifying location being predicted, a `reference_date` column of the "starting point" of the forecasts (not shown), and a `horizon` column of the number of weeks ahead into the future that the forecast is predicting for relative to the `reference_date` (@tbl-example-forecasts).
+The `model_out_tbl` class is defined by four standard types of columns: (i) the model ID, which denotes which model has produced the prediction; (ii) the task IDs (also referred to as "task ID variables" or "task ID columns"), which provide details about what is being predicted; (iii) the model output representation, which specify the type of prediction and other identifying information; and (iv) the value of the prediction itself. While most of these columns are fixed, the task ID variables may vary according to the needs of the modeling hub or modeling task [@hubverse_docs].
+
+@tbl-example-forecasts provides an example of model output that stores short-term forecasts of weekly flu hospitalizations for different US states and territories. By reading across the table, we can see that these are quantile predictions (`output_type`) of the quartiles (output type ID: `otid`) from a single model (`model_id` of "team1-mod") for four distinct forecast horizons. Here, details about the prediction related to modeling task are represented by the task ID variables `loc` (location abbreviation), `ref_date` (reference date: the "starting point" of the forecasts), `h` (horizon: how many weeks into the future, relative to the `ref_date`), and `target` (what is being predicted).
 
 ```{r example-forecasts, echo=FALSE}
 #| label: tbl-example-forecasts
 #| tbl-cap: "Example of forecasts for incident influenza hospitalizations,
 #| formatted according to hubverse standards. Quantile predictions for the
 #| median and 50% prediction intervals from a single model are shown for four
-#| distinct horizons. The `location` and `reference_date` columns have been
-#| omitted for brevity; all forecasts in this example were made on 2022-12-17
-#| for Massachusetts. These predictions are a modified subset of the
+#| distct horizons. The `output_type_id` column's name has been shortened to
+#| `otid` for brevity. These predictions are a modified subset of the
 #| `forecast_outputs` data provided by the `hubExamples` package."
 
-abbr_fc_col <- formatted_fc_col <- c("model_id", "target", "horizon", "output_type", "output_type_id", "value")
-for (i in 1: length(abbr_fc_col)) formatted_fc_col[i] <- paste0("`", abbr_fc_col[i], "`")
+abbr_col <- formatted_col <- c("model_id", "loc", "ref_date", "h", "target", "output_type", "otid", "value")
+for (i in 1:length(abbr_col)) formatted_col[i] <- paste0("`", abbr_col[i], "`")
 
 hubExamples::forecast_outputs |>
   dplyr::filter(
@@ -177,51 +178,16 @@ hubExamples::forecast_outputs |>
     output_type == "quantile",
     output_type_id %in% c(0.25, 0.5, 0.75)
   ) |>
-  dplyr::mutate(value = round(value, 2), model_id = "model-X") |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  dplyr::arrange(horizon) |>
-  knitr::kable(col.names = formatted_fc_col)
+  dplyr::mutate(value = round(value, 0), location = "MA", target = "wk flu hosp", model_id = "team1-mod") |>
+  dplyr::rename(loc = "location", ref_date = "reference_date", h = "horizon", otid = output_type_id) |>
+  dplyr::select(all_of(abbr_col)) |>
+  dplyr::arrange(h) |>
+  knitr::kable(col.names = formatted_col)
 ```
 
-Just like short-term forecasts, long-term scenario projections can be represented as model output. Consider scenario projections of incident COVID-19 cases in the US at different locations, for varying amounts of time in the future, and under different assumed conditions (like vaccination rates). Here, the task ID variables may consist of a `target` column of "inc case", a `location` column of the location being predicted (not shown), a `horizon` column specifying the date on which the projections were made (not shown), a `horizon` column of the number of steps ahead that the projection is being made for relative to the `origin_date`, and a `scenario_id` denoting the assumption of future conditions for which the model is making predictions. 
-
-Different modeling efforts may use different sets of task ID columns with different values to define their prediction goals, or may simply choose distinct names to represent the same concept (as is the case with our two examples with `reference_date` and `origin_date` for a date task identifier). Some standard examples of task ID variables are available on the hubverse documentation website [@hubverse_docs].
+As mentioned previously, task ID variables are not fixed in name, number, or composition to incorporate flexibility in the `model_out_tbl` class. Different modeling efforts may use different sets of task ID columns with different values to define their prediction goals, or may simply choose distinct names to represent the same concept. For example, the date task column was named `ref_date` above but could easily be called `origin_date` or `forecast_date` instead. Some standard examples of task ID variables are available on the hubverse documentation website [@hubverse_docs].
 
 The "model output representation" columns `output_type` and `output_type_id` contain metadata about how the predictions are conveyed and are always the same. The `output_type` column defines how a prediction is represented and may be `"mean"` or `"median"` for point predictions, or one of `"quantile"`, `"cdf"`, `"pmf"`, or `"sample"` for probabilistic predictions. The `output_type_id` provides additional identifying information for prediction and is specific to the particular `output_type` (see @tbl-model-output-rep). The last column `value` always contains the numeric value of the prediction, regardless of output type. Requirements for the values of the `output_type_id` and `value` columns associated with each valid output type are summarized in @tbl-model-output-rep.
-
-```{r example-scenarios, echo=FALSE}
-#| label: tbl-example-scenarios
-#| tbl-cap: "Example of scenario projections for incident COVID-19 cases,
-#| formatted according to hubverse standards. Quantile predictions for the
-#| median and 50% prediction intervals from a single model are shown for four
-#| distinct scenarios. The `location` and `origin_date` columns have been
-#| omitted for brevity; all forecasts in this example were made on 2021-03-07
-#| for the US. These predictions are a modified subset of the `scenario_outputs`
-#| data provided by the `hubExamples` package."
-
-abbr_scn_col <- formatted_scn_col <- c("model_id", "target", "horizon", "scenario_id", "output_type", "output_type_id", "value")
-for (i in 1: length(abbr_scn_col)) formatted_scn_col[i] <- paste0("`", abbr_scn_col[i], "`")
-
-hubExamples::scenario_outputs |>
-  dplyr::filter(
-    model_id == "HUBuni-simexamp", 
-    location == "US", 
-    horizon == "26", 
-    output_type_id %in% c(0.25, 0.5, 0.75)
-  ) |>
-  dplyr::select(all_of(abbr_scn_col)) |>
-  dplyr::mutate(
-    model_id = "model-Y",
-    scenario_id = substr(scenario_id, 1, 1)
-  ) |>
-  knitr::kable(col.names = formatted_scn_col)
-```
-
-All output types can summarize predictions from marginal distributions. The sample output type is unique in that it can additionally represent predictions from joint predictive distributions. This means that the sample representation may encode dependence across combinations of multiple values for modeled task ID variables when recording samples from a joint predictive distribution. In this case, sample predictions with the same index (specified by the `output_type_id`) from a particular model may be assumed to correspond to a single sample from a joint distribution.
-
-For quantile predictions, the `output_type_id` is a numeric value between 0 and 1 specifying the cumulative probability associated with the quantile prediction. In the notation we defined above, the `output_type_id` corresponds to $\theta$ and the `value` is the quantile prediction $F^{-1}(\theta)$. For CDF or PMF predictions, the `output_type_id` is the target variable value $x$ at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the `value` column contains the predicted $F(x)$ or $f(x)$, respectively.
-
-The concept of model output is codified by the `model_out_tbl` S3 class in the `hubUtils` package and is required by nearly every package in the hubverse, including `hubEnsembles`. Any tabular model predictions can be transformed to conform to the standards of this S3 class using the `as_model_out_tbl()` function from `hubUtils`. An example is provided in @sec-case-study.
 
 | `output_type` | `output_type_id`                                                 | `value`                                                                                                                                                       |
 |:------------------|:-----------------------|:-----------------------------|
@@ -233,6 +199,12 @@ The concept of model output is codified by the `model_out_tbl` S3 class in the `
 | `sample`\*    | Integer or string specifying the sample index                    | Numeric: A sample from the predictive distribution                                                                                                            |
 
 : A table summarizing how the model output representation columns are used for predictions of different output types. (\*The sample output type is unique in that it can be used to capture dependence in the modeled outcomes across levels of task ID variables.) Adapted from <https://hubverse.io/en/latest/user-guide/model-output.html#formats-of-model-output> {#tbl-model-output-rep}
+
+All output types can summarize predictions from marginal distributions. The sample output type is unique in that it can additionally represent predictions from joint predictive distributions. This means that the sample representation may encode dependence across combinations of multiple values for modeled task ID variables when recording samples from a joint predictive distribution. In this case, sample predictions with the same index (specified by the `output_type_id`) from a particular model may be assumed to correspond to a single sample from a joint distribution.
+
+For quantile predictions, the `output_type_id` is a numeric value between 0 and 1 specifying the cumulative probability associated with the quantile prediction. In the notation we defined in @sec-defs, the `output_type_id` corresponds to $\theta$ and the `value` is the quantile prediction $F^{-1}(\theta)$. For CDF or PMF predictions, the `output_type_id` is the target variable value $x$ at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the `value` column contains the predicted $F(x)$ or $f(x)$, respectively.
+
+The hubverse also provides standards for "truth" data, which can be stored in one of two target data formats: target time series or oracle output. The two tabular representations differ in terms of columns and purposes. Target time series data is a more traditional representation of the observed "truth" in a time series format with minimal columns; this format usually serves as calibration data for generating forecasts. Oracle output, on the other hand, represents prediction that and "oracle model" would have made had it known the observed values in advance. This format resembles model output data and is suited for evaluating forecasts post hoc. Some examples of target data are given in @sec-simple-ex.
 
 ### Ensemble functions in hubEnsembles {#sec-ens-fns}
 
@@ -589,6 +561,8 @@ The model output data includes mean, median, quantile, and sample forecasts of f
 #| The `location`, `reference_date` and `target_end_date`
 #| columns have been omitted for brevity. This example data is
 #| provided in the `hubExamples` package."
+abbr_fc_col <- formatted_fc_col <- c("model_id", "target", "horizon", "output_type", "output_type_id", "value")
+for (i in 1: length(abbr_fc_col)) formatted_fc_col[i] <- paste0("`", abbr_fc_col[i], "`")
 hubExamples::forecast_outputs |>
   dplyr::filter(
     output_type %in% c("mean", "median", "quantile"),
@@ -602,7 +576,7 @@ hubExamples::forecast_outputs |>
   knitr::kable(col.names = formatted_fc_col)
 ```
 
-The `hubExamples` package also provides corresponding target time series data (@tbl-example-target-time-series-data) and oracle output. Both contain the incident influenza hospitalizations in a given week for a given location but are used for different purposes. The target time series data is a more traditional representation of the observed "truth" in a time series format with columns `observation`, `date`, and `location`; this type of target data suited to be used as calibration data for generating forecasts. Oracle output, on the other hand, represents predictions that an "oracle model" would have generated had it known the observed values in advance. This format resembles that of model output data and is suited for evaluating the forecasts post hoc.
+While the `hubExamples` package provides both corresponding target time series data (@tbl-example-target-time-series-data) and oracle output, we focus on the former which is convenient for making forecasts and plotting. The target time series data provides observed incident influenza hospitalizations in a given week for given location using columns `observation`, `date`, and `location`. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for this time series representation of the target data.
 
 ```{r, cols.print=13}
 #| label: tbl-example-target-time-series-data

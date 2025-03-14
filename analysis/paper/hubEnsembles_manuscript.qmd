@@ -543,24 +543,25 @@ For step 1, functionality in the `distfromq` package uses a monotonic cubic spli
 
 ## A simple demonstration of multi-model ensembles {#sec-simple-ex}
 
-In this section, we provide a simple example to illustrate and compare the simple classes multi-model ensembles, using two main functions in `hubEnsembles`, `simple_ensemble()` and `linear_pool()`.
+In this section, we provide a simple example to illustrate how to compute a multi-model ensemble and compare the methods supported by the functions of `hubEnsembles`.
 
 ### Example data: a forecast hub
 
-We will use an example hub provided by the hubverse to demonstrate the functionality of the `hubEnsembles` package [@hubverse_docs]. This hub was generated using modified forecasts from the FluSight forecasting challenge (discussed in further detail in @sec-case-study). The example hub includes both example model output data and two formats of target data (sometimes known as "truth" data), which are stored in the `hubExamples` package as data objects named `forecast_outputs`, `forecast_target_ts`, and `forecast_oracle_output`. Note that this model outputs data contain only a small subset of predictions for select dates, locations, and output type IDs, far fewer than an actual modeling hub would typically collect.
+The first step in generating a multi-model ensemble is to gather the predictions we wish to combine. In this example, we use some short-term forecasts already formatted as model output data from the `hubExamples` package. These model outputs are from a larger example modeling hub, created using a modified subset of predictions from the Flusight Forecasting challenge (discussed in further detail in @sec-case-study). In addition to toy model output data, the example hub also includes observational data in the form of target time series data and oracle output.
 
-The model output data includes mean, median, quantile, and sample forecasts of future incident influenza hospitalizations; as well as CDF and PMF forecasts of hospitalization intensity. Each forecast is made for five task ID variables, including the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`). We begin by examining the mean, median, and quantile output types, displaying a subset of each in @tbl-example-model-outputs.
+The model output is stored in a data object named `forecast_outputs` and contains mean, median, quantile, and sample forecasts of future incident influenza hospitalizations, as well as CDF and PMF forecasts of hospitalization intensity. Each prediction is made for five task ID variables: the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`). We begin by examining the predictions for weekly incident influenza hospitalizations, displaying a subset of each output type in @tbl-example-model-outputs.
 
 ```{r, cols.print=12}
 #| label: tbl-example-model-outputs
 #| echo: false
-#| tbl-cap: "Example model output for forecasts of incident influenza
+#| tbl-cap: "Example model output for forecasts of weekly incident influenza
 #| hospitalizations. A subset of example model output is shown: 1-week ahead
 #| forecasts made on 2022-12-17 for Massachusetts from three distinct models;
 #| only the mean, median, and 5th, 25th, 75th and 95th quantiles are displayed. 
 #| The `location`, `reference_date` and `target_end_date`
 #| columns have been omitted for brevity. This example data is
 #| provided in the `hubExamples` package."
+
 abbr_fc_col <- formatted_fc_col <- c("model_id", "target", "horizon", "output_type", "output_type_id", "value")
 for (i in 1: length(abbr_fc_col)) formatted_fc_col[i] <- paste0("`", abbr_fc_col[i], "`")
 hubExamples::forecast_outputs |>
@@ -576,7 +577,7 @@ hubExamples::forecast_outputs |>
   knitr::kable(col.names = formatted_fc_col)
 ```
 
-While the `hubExamples` package provides both corresponding target time series data (@tbl-example-target-time-series-data) and oracle output, we focus on the former which is convenient for making forecasts and plotting. The target time series data provides observed incident influenza hospitalizations in a given week for given location using columns `observation`, `date`, and `location`. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for this time series representation of the target data.
+While the `hubExamples` package provides both formats of target data, we focus on the target time series data (@tbl-example-target-time-series-data) which is convenient for making forecasts and plotting. The `forecast_target_ts` data object provides observed incident influenza hospitalizations in a given week for given location using columns `observation`, `date`, and `location`. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for this time series representation of the target data, and are thus not included as columns.
 
 ```{r, cols.print=13}
 #| label: tbl-example-target-time-series-data
@@ -592,7 +593,7 @@ hubExamples::forecast_target_ts |>
   knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
 ```
 
-We can plot these forecasts and the target time series data using the `plot_step_ahead_model_output()` function from `hubVis`, another package for visualizing model outputs from the hubverse suite (@fig-plot-ex-mods). We subset the model output data and the target data to the location and time horizons we are interested in.
+We can plot these forecasts and the target time series data (@fig-plot-ex-mods) using the `plot_step_ahead_model_output()` function from `hubVis`, another package in the hubverse suite for visualizing model outputs. We subset the model output data and the target data to the location and time horizons we are interested in.
 
 ```{r plot-ex-mods}
 #| label: fig-plot-ex-mods
@@ -633,7 +634,7 @@ hubVis::plot_step_ahead_model_output(
     labs(y = "incident hospitalizations")
 ```
 
-Next, we examine the PMF target in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These hospitalization intensity categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations, other than the target, which is "wk flu hosp rate category" for these categorical predictions.
+Next, we examine the PMF forecasts for hospitalization intensity in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These four categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations except for the target, which is "wk flu hosp rate category" for these categorical predictions.
 
 ```{r, cols.print=9}
 #| label: tbl-example-forecasts-pmf
@@ -702,7 +703,7 @@ ggplot(
 
 ### Creating ensembles with simple_ensemble
 
-Using the default options for `simple_ensemble()`, we can generate an equally weighted mean ensemble for each unique combination of values for the task ID variables, the `output_type` and the `output_type_id`. Recall that this function uses different ensemble methods for different output types: for the quantile output type in our example data, the resulting ensemble is a quantile average, while for the PMF output type, the ensemble is a linear pool.
+Using the default options for `simple_ensemble()`, we can generate an equally weighted mean ensemble for each unique combination of values for the task ID variables, the `output_type` and the `output_type_id`. Recall that this function uses different ensemble methods for different output types: for the quantile output type in our example data, the resulting ensemble is a quantile average, while for the mean, median, CDF and PMF output types, the ensemble is a linear pool.
 
 ```{r}
 #| prompt: true
@@ -727,7 +728,7 @@ The resulting model output has the same structure as the original model output d
 #| for brevity, and the `value` column is rounded to two digits."
 mean_ens |>
   dplyr::filter(
-    output_type %in% c("quantile", "median", "pmf"),
+    output_type %in% c("quantile", "mean", "median", "pmf"),
     output_type_id %in% c(
       0.025, 0.25, 0.75, 0.975, NA,
       "low", "moderate", "high", "very high"
@@ -969,7 +970,7 @@ Like with `simple_ensemble()`, we can change the default function settings. For 
 
 #### Changing the parametric family used for extrapolation into distribution tails
 
-When requesting a linear pool of quantiles, we may also change the distribution that `distfromq` uses to approximate the tails of component models' predictive distributions to either log normal or Cauchy using the `tail_dist` argument [@distfromq]. This choice usually does not have a large impact on the resulting ensemble distribution, though, and can only be seen in its outer edges. (For more details and other function options, see the documentation in the `distfromq` package at <https://reichlab.io/distfromq/>.)
+When requesting a linear pool of quantiles, we may also change the distribution that `distfromq` uses to approximate the tails of component models' predictive distributions to either log normal or Cauchy using the `tail_dist` argument (the default is normal) [@distfromq]. This choice usually does not have a large impact on the resulting ensemble distribution, though, and can only be seen in its outer edges. (For more details and other function options, see the documentation in the `distfromq` package at <https://reichlab.io/distfromq/>.)
 
 ```{r quantile-linear-pool-tails}
 #| prompt: true

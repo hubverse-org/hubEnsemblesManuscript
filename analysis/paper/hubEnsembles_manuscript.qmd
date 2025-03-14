@@ -605,33 +605,33 @@ We can plot these forecasts and the target time series data (@fig-plot-ex-mods) 
 #| fig-width: 8
 #| fig-height: 4
 model_outputs_plot <- hubExamples::forecast_outputs |>
-    hubUtils::as_model_out_tbl() |>
-    dplyr::filter(
-      location == "25",
-      output_type %in% c("median", "quantile"),
-      reference_date == "2022-12-17"
-    ) |>
+  hubUtils::as_model_out_tbl() |>
+  dplyr::filter(
+    location == "25",
+    output_type %in% c("median", "quantile"),
+    reference_date == "2022-12-17"
+  ) |>
   dplyr::mutate(output_type_id = as.double(output_type_id))
 target_data_plot <- hubExamples::forecast_target_ts |>
-    dplyr::filter(
-      location == "25",
-      date >= "2022-11-01", date <= "2023-02-01"
-    )
+  dplyr::filter(
+    location == "25",
+    date >= "2022-11-01", date <= "2023-02-01"
+  )
 
 hubVis::plot_step_ahead_model_output(
-    model_out_tbl = model_outputs_plot,
-    target_data = target_data_plot,
-    facet = "model_id",
-    facet_nrow = 1,
-    interactive = FALSE,
-    intervals = c(0.5, 0.9),
-    show_legend = FALSE,
-    use_median_as_point = TRUE,
-    x_col_name = "target_end_date", 
-    x_target_col_name = "date"
-  ) +
-    theme_bw() +
-    labs(y = "incident hospitalizations")
+  model_out_tbl = model_outputs_plot,
+  target_data = target_data_plot,
+  facet = "model_id",
+  facet_nrow = 1,
+  interactive = FALSE,
+  intervals = c(0.5, 0.9),
+  show_legend = FALSE,
+  use_median_as_point = TRUE,
+  x_col_name = "target_end_date", 
+  x_target_col_name = "date"
+) +
+  theme_bw() +
+  labs(y = "incident hospitalizations")
 ```
 
 Next, we examine the PMF forecasts for hospitalization intensity in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These four categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations except for the target, which is "wk flu hosp rate category" for these categorical predictions.
@@ -708,10 +708,10 @@ Using the default options for `simple_ensemble()`, we can generate an equally we
 ```{r}
 #| prompt: true
 mean_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "sample") |>
-    hubEnsembles::simple_ensemble(
-      model_id = "simple-ensemble-mean"
-    )
+  dplyr::filter(output_type != "sample") |>
+  hubEnsembles::simple_ensemble(
+    model_id = "simple-ensemble-mean"
+  )
 ```
 
 The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean"` to change the name of this ensemble in the resulting model output; if not specified, the default is "hub-ensemble".
@@ -749,11 +749,11 @@ We can change the function that is used to aggregate model outputs. For example,
 ```{r}
 #| prompt: true
 median_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "sample") |>
-    hubEnsembles::simple_ensemble(
-      agg_fun = median,
-      model_id = "simple-ensemble-median"
-    )
+  dplyr::filter(output_type != "sample") |>
+  hubEnsembles::simple_ensemble(
+    agg_fun = median,
+    model_id = "simple-ensemble-median"
+  )
 ```
 
 Custom functions can also be passed into the `agg_fun` argument. We illustrate this by defining a custom function to compute the ensemble prediction as a geometric mean of the component model predictions. Any custom function to be used must have an argument `x` for the vector of numeric values to summarize, and if relevant, an argument `w` of numeric weights.
@@ -761,15 +761,15 @@ Custom functions can also be passed into the `agg_fun` argument. We illustrate t
 ```{r}
 #| prompt: true
 geometric_mean <- function(x) {
-    n <- length(x)
-    return(prod(x)^(1 / n))
-  }
+  n <- length(x)
+  prod(x)^(1 / n)
+}
 geometric_mean_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "sample") |>
-    hubEnsembles::simple_ensemble(
-      agg_fun = geometric_mean,
-      model_id = "simple-ensemble-geometric"
-    )
+  dplyr::filter(output_type != "sample") |>
+  hubEnsembles::simple_ensemble(
+    agg_fun = geometric_mean,
+    model_id = "simple-ensemble-geometric"
+  )
 ```
 
 As expected, the mean, median, and geometric mean each give us slightly different resulting ensembles. The median point estimates, 50% prediction intervals, and 90% prediction intervals in @fig-plot-ensembles demonstrate this.
@@ -827,15 +827,15 @@ We can weight the contributions of each model in the ensemble using the `weights
 ```{r}
 #| prompt: true
 model_weights <- data.frame(
-    model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "Flusight-baseline"),
-    weight = c(0.4, 0.4, 0.2)
-  )
+  model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "Flusight-baseline"),
+  weight = c(0.4, 0.4, 0.2)
+)
 weighted_mean_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "sample") |>
-    hubEnsembles::simple_ensemble(
-      weights = model_weights,
-      model_id = "simple-ensemble-weighted-mean"
-    )
+  dplyr::filter(output_type != "sample") |>
+  hubEnsembles::simple_ensemble(
+    weights = model_weights,
+    model_id = "simple-ensemble-weighted-mean"
+  )
 ```
 
 ### Creating ensembles with linear_pool
@@ -845,8 +845,8 @@ We can also generate a linear pool ensemble, or distributional mixture, using th
 ```{r}
 #| prompt: true
 linear_pool_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "median") |>
-    hubEnsembles::linear_pool(model_id = "linear-pool")
+  dplyr::filter(output_type != "median") |>
+  hubEnsembles::linear_pool(model_id = "linear-pool")
 ```
 
 As described above, for `quantile` model outputs, the `linear_pool` function approximates the full probability distribution for each component prediction using the value-quantile pairs provided by that model, and then obtains quasi-random samples from that distributional estimate. The number of samples drawn from the distribution of each component model defaults to `1e4`, but this can be changed using the `n_samples` argument.
@@ -960,12 +960,12 @@ Like with `simple_ensemble()`, we can change the default function settings. For 
 
 ```{r weighted-linear-pool}
 #| prompt: true
-  weighted_linear_pool_norm <- hubExamples::forecast_outputs |>
-    dplyr::filter(!output_type %in% c("median", "sample")) |>
-    hubEnsembles::linear_pool(
-      weights = model_weights,
-      model_id = "linear-pool-weighted"
-    )
+weighted_linear_pool_norm <- hubExamples::forecast_outputs |>
+  dplyr::filter(!output_type %in% c("median", "sample")) |>
+  hubEnsembles::linear_pool(
+    weights = model_weights,
+    model_id = "linear-pool-weighted"
+)
 ```
 
 #### Changing the parametric family used for extrapolation into distribution tails
@@ -975,17 +975,17 @@ When requesting a linear pool of quantiles, we may also change the distribution 
 ```{r quantile-linear-pool-tails}
 #| prompt: true
 linear_pool_lnorm <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type == "quantile") |>
-    hubEnsembles::linear_pool(
-      model_id = "linear-pool-lognormal",
-      tail_dist = "lnorm"
-    )
-  linear_pool_cauchy <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type == "quantile") |>
-    hubEnsembles::linear_pool(
-      model_id = "linear-pool-cauchy",
-      tail_dist = "cauchy"
-    )
+  dplyr::filter(output_type == "quantile") |>
+  hubEnsembles::linear_pool(
+    model_id = "linear-pool-lognormal",
+    tail_dist = "lnorm"
+  )
+linear_pool_cauchy <- hubExamples::forecast_outputs |>
+  dplyr::filter(output_type == "quantile") |>
+  hubEnsembles::linear_pool(
+    model_id = "linear-pool-cauchy",
+    tail_dist = "cauchy"
+  )
 ```
 
 #### Requesting a subset of input sample predictions to be ensembled
@@ -1001,16 +1001,16 @@ Not all model outputs will contain derived task IDs, in which case the argument 
 ```{r joint-linear-pool}
 #| prompt: true
 joint_lp <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type == "sample") |>
-    hubEnsembles::linear_pool(
-      weights = NULL,
-      model_id = "linear-pool-joint",
-      task_id_cols =
-        c("reference_date", "location", "horizon", "target", "target_end_date"),
-      compound_taskid_set = c("reference_date", "location", "target"),
-      derived_tasks = "target_end_date",
-      n_output_samples = 100
-    )
+  dplyr::filter(output_type == "sample") |>
+  hubEnsembles::linear_pool(
+    weights = NULL,
+    model_id = "linear-pool-joint",
+    task_id_cols =
+      c("reference_date", "location", "horizon", "target", "target_end_date"),
+    compound_taskid_set = c("reference_date", "location", "target"),
+    derived_tasks = "target_end_date",
+    n_output_samples = 100
+  )
 ```
 
 ## Example: in-depth analysis of forecast data {#sec-case-study}
@@ -1026,11 +1026,11 @@ We begin by querying the component forecasts used to generate the four ensembles
 ```{r read in raw data, eval=TRUE}
 #| prompt: true
 flu_forecasts_raw_21_22 <- readr::read_rds(
-    here::here("analysis/data/raw_data/flu_forecasts-zoltar_21-22.rds")
-  )
+  here::here("analysis/data/raw_data/flu_forecasts-zoltar_21-22.rds")
+)
 flu_forecasts_raw_22_23 <- readr::read_rds(
-    here::here("analysis/data/raw_data/flu_forecasts-zoltar_22-23.rds")
-  )
+  here::here("analysis/data/raw_data/flu_forecasts-zoltar_22-23.rds")
+)
 flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, flu_forecasts_raw_22_23)
 ```
 
@@ -1067,24 +1067,24 @@ Forecasts must conform to hubverse standards to be fed into either of the ensemb
 ```{r transform data, eval=TRUE}
 #| prompt: true
 flu_forecasts_hubverse <- flu_forecasts_raw |>
-    dplyr::rename(forecast_date = timezero, location = unit) |>
-    tidyr::separate(target, sep = " ", convert = TRUE,
-                    into = c("horizon", "target"), extra = "merge") |>
-    dplyr::mutate(target_end_date = 
-                    ceiling_date(forecast_date + weeks(horizon), "weeks") -
-                      days(1)) |>
-    as_model_out_tbl(
-      model_id_col = "model",
-      output_type_col = "class",
-      output_type_id_col = "quantile",
-      value_col = "value",
-      sep = "-",
-      trim_to_task_ids = FALSE,
-      hub_con = NULL,
-      task_id_cols = 
-        c("forecast_date", "location", "horizon", "target", target_end_date),
-      remove_empty = TRUE
-    )
+  dplyr::rename(forecast_date = timezero, location = unit) |>
+  tidyr::separate(target, sep = " ", convert = TRUE,
+                  into = c("horizon", "target"), extra = "merge") |>
+  dplyr::mutate(target_end_date = 
+                  ceiling_date(forecast_date + weeks(horizon), "weeks") -
+                    days(1)) |>
+  as_model_out_tbl(
+    model_id_col = "model",
+    output_type_col = "class",
+    output_type_id_col = "quantile",
+    value_col = "value",
+    sep = "-",
+    trim_to_task_ids = FALSE,
+    hub_con = NULL,
+    task_id_cols = 
+      c("forecast_date", "location", "horizon", "target", target_end_date),
+    remove_empty = TRUE
+  )
 ```
 
 Prior to ensemble calculation (shown later in this section), we filter out any predictions (defined by a unique combination of task ID variables) that did not include all 23 quantiles specified by FluSight ($\theta \in \{.010, 0.025, .050, .100, ..., .900, .950, .990\}$). The FluSight baseline and median ensemble models generated by the FluSight hub are also excluded from the component forecasts. We chose to remove the baseline to match the composition of models used to create the official FluSight ensemble.
@@ -1120,36 +1120,36 @@ Next, we combine the component model outputs to generate predictions from each e
 ```{r construct ensembles, eval=FALSE}
 #| prompt: true
 flu_forecasts_component <- dplyr::filter(
-    flu_forecasts_hubverse,
-    !model_id %in% c("Flusight-baseline", "Flusight-ensemble")
-  )
+  flu_forecasts_hubverse,
+  !model_id %in% c("Flusight-baseline", "Flusight-ensemble")
+)
 
-mean_ensemble <- flu_forecasts_component |>
-    hubEnsembles::simple_ensemble(
-      weights = NULL,
-      agg_fun = mean,
-      model_id = "mean-ensemble"
-    )
-median_ensemble <- flu_forecasts_component |>
-    hubEnsembles::simple_ensemble(
-      weights = NULL,
-      agg_fun = median,
-      model_id = "median-ensemble"
-    )
-lp_normal <- flu_forecasts_component |>
-    hubEnsembles::linear_pool(
-      weights = NULL,
-      n_samples = 1e5,
-      model_id = "lp-normal",
-      tail_dist = "norm"
-    )
-lp_lognormal <- flu_forecasts_component |>
-    hubEnsembles::linear_pool(
-      weights = NULL,
-      n_samples = 1e5,
-      model_id = "lp-lognormal",
-      tail_dist = "lnorm"
-    ) 
+mean_ensemble <- hubEnsembles::simple_ensemble(
+  flu_forecasts_component,
+  weights = NULL,
+  agg_fun = mean,
+  model_id = "mean-ensemble"
+)
+median_ensemble <- hubEnsembles::simple_ensemble(
+  flu_forecasts_component,
+    weights = NULL,
+    agg_fun = median,
+    model_id = "median-ensemble"
+  )
+lp_normal <- hubEnsembles::linear_pool(
+  flu_forecasts_component,
+  weights = NULL,
+  n_samples = 1e5,
+  model_id = "lp-normal",
+  tail_dist = "norm"
+)
+lp_lognormal <- hubEnsembles::linear_pool(
+  flu_forecasts_component,
+  weights = NULL,
+  n_samples = 1e5,
+  model_id = "lp-lognormal",
+  tail_dist = "lnorm"
+) 
 ```
 
 ```{r write ensembles, eval=FALSE, echo=FALSE}
@@ -1226,11 +1226,11 @@ The quantile median ensemble has the best overall performance in terms of WIS an
 metrics_col <- formatted_metrics_col <- c("model", "wis", "rwis", "mae", "rmae", "cov50", "cov95")
 for (i in 1:length(metrics_col)) formatted_metrics_col[i] <- paste0("`", metrics_col[i], "`")
 
-flu_overall_states <- flu_scores_all |>
-  evaluate_flu_scores(
-    grouping_variables = NULL,
-    baseline_name = "Flusight-baseline", us_only = FALSE
-  )
+flu_overall_states <- evaluate_flu_scores(
+  flu_scores_all,
+  grouping_variables = NULL,
+  baseline_name = "Flusight-baseline", us_only = FALSE
+)
 
 flu_overall_states |>
   dplyr::select(all_of(metrics_col)) |>
@@ -1420,23 +1420,23 @@ model_names <- c(model_names, "average target data")
 model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
 
 # Summarize flu scores by horizon, forecast_date, and season
-flu_date_horizon_season_states <- flu_scores_all |>
-  evaluate_flu_scores(
-    grouping_variables = c("horizon", "forecast_date", "season"),
-    baseline_name = "Flusight-baseline", us_only = FALSE
-  )
+flu_date_horizon_season_states <- evaluate_flu_scores(
+  flu_scores_all,
+  grouping_variables = c("horizon", "forecast_date", "season"),
+  baseline_name = "Flusight-baseline", us_only = FALSE
+)
 
 # Plot truth data, faceted by season
-truth_states_2122 <- flu_truth_all |>
-  plot_flu_truth(
-    date_range = flu_dates_21_22[c(1, 22)],
-    main = "Target Data 2021-22 (wk inc flu hosp)"
-  )
-truth_states_2223 <- flu_truth_all |>
-  plot_flu_truth(
-    date_range = flu_dates_22_23[c(1, 31)],
-    main = "Target Data 2022-23 (wk inc flu hosp)"
-  )
+truth_states_2122 <- plot_flu_truth(
+  flu_truth_all,
+  date_range = flu_dates_21_22[c(1, 22)],
+  main = "Target Data 2021-22 (wk inc flu hosp)"
+)
+truth_states_2223 <- plot_flu_truth(
+  flu_truth_all,
+  date_range = flu_dates_22_23[c(1, 31)],
+  main = "Target Data 2022-23 (wk inc flu hosp)"
+)
 
 mae_date_plot_states1_2122 <- flu_date_horizon_season_states |>
   dplyr::filter(season == "2021-2022") |>

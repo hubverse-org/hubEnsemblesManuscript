@@ -1,8 +1,8 @@
 ---
 title: "Multi-model ensembles in infectious disease and public health: methods, interpretation, and implementation in R"
-number-sections: true
 format:
   pdf:
+    number-sections: true
     keep-tex: true
     journal:
       type: article

@@ -1834,32 +1834,32 @@ data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\SpecialCharTok{\textgreater{}}\NormalTok{ mean\_ensemble }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{simple\_ensemble}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{   flu\_forecasts\_component,}
-\SpecialCharTok{+}   \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{agg\_fun =}\NormalTok{ mean,}
-\SpecialCharTok{+}   \AttributeTok{model\_id =} \StringTok{"mean{-}ensemble"}
-\SpecialCharTok{+}\NormalTok{ )}
-\SpecialCharTok{\textgreater{}}\NormalTok{ median\_ensemble }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{simple\_ensemble}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{   flu\_forecasts\_component,}
-\SpecialCharTok{+}     \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
-\SpecialCharTok{+}     \AttributeTok{agg\_fun =}\NormalTok{ median,}
-\SpecialCharTok{+}     \AttributeTok{model\_id =} \StringTok{"median{-}ensemble"}
-\SpecialCharTok{+}\NormalTok{   )}
-\SpecialCharTok{\textgreater{}}\NormalTok{ lp\_normal }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{   flu\_forecasts\_component,}
-\SpecialCharTok{+}   \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{n\_samples =} \FloatTok{1e5}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{model\_id =} \StringTok{"lp{-}normal"}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{tail\_dist =} \StringTok{"norm"}
-\SpecialCharTok{+}\NormalTok{ )}
-\SpecialCharTok{\textgreater{}}\NormalTok{ lp\_lognormal }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{   flu\_forecasts\_component,}
-\SpecialCharTok{+}   \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{n\_samples =} \FloatTok{1e5}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{model\_id =} \StringTok{"lp{-}lognormal"}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{tail\_dist =} \StringTok{"lnorm"}
-\SpecialCharTok{+}\NormalTok{ ) }
+\NormalTok{mean\_ensemble }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{simple\_ensemble}\NormalTok{(}
+\NormalTok{  flu\_forecasts\_component,}
+  \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
+  \AttributeTok{agg\_fun =}\NormalTok{ mean,}
+  \AttributeTok{model\_id =} \StringTok{"mean{-}ensemble"}
+\NormalTok{)}
+\NormalTok{median\_ensemble }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{simple\_ensemble}\NormalTok{(}
+\NormalTok{  flu\_forecasts\_component,}
+    \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
+    \AttributeTok{agg\_fun =}\NormalTok{ median,}
+    \AttributeTok{model\_id =} \StringTok{"median{-}ensemble"}
+\NormalTok{  )}
+\NormalTok{lp\_normal }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
+\NormalTok{  flu\_forecasts\_component,}
+  \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
+  \AttributeTok{n\_samples =} \FloatTok{1e5}\NormalTok{,}
+  \AttributeTok{model\_id =} \StringTok{"lp{-}normal"}\NormalTok{,}
+  \AttributeTok{tail\_dist =} \StringTok{"norm"}
+\NormalTok{)}
+\NormalTok{lp\_lognormal }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
+\NormalTok{  flu\_forecasts\_component,}
+  \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
+  \AttributeTok{n\_samples =} \FloatTok{1e5}\NormalTok{,}
+  \AttributeTok{model\_id =} \StringTok{"lp{-}lognormal"}\NormalTok{,}
+  \AttributeTok{tail\_dist =} \StringTok{"lnorm"}
+\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 

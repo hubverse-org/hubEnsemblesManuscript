@@ -6,3 +6,5 @@
 *.code-workspace
 hubEnsemblesManuscript.code-workspace
 analysis/paper/nul
+analysis/paper/**/*.html
+./analysis/paper/hubEnsembles_manuscript_files/

@@ -444,9 +444,7 @@ The growing body of literature on multi-model ensembles in public health domains
 
 ## How to implement ensemble calculations {#sec-implementation}
 
-The methods described in @sec-defs are implemented in the `hubEnsembles` package in a flexible, easy-to-use framework. Importantly, `hubEnsembles` is situated within the broader Hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions.
-<!-- Add a citation to the Hubverse here. including perhaps references to specific packages as they are mentioned below. I wonder if it might help, since we don't have a hubverse paper to cite yet, to add a sentence saying something like "In 2024-2025, the Hubverse supported over a dozen collaborative modeling hubs used by public health agencies across the globe." -->
-We begin with a short overview of hubverse concepts and conventions that support the process of combining model predictions, supplemented by example predictions provided by the hubverse, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`.
+The methods described in @sec-defs are implemented in a flexible, easy-to-use framework via the `hubEnsembles` package. Importantly, `hubEnsembles` is situated within the broader hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions [@hubverse_docs], including for example, collecting and manipulating predictions (`hubUtils`) as well as visualization (`hubVis`). In 2024-2025, the hubverse supported over a dozen collaborative modeling hubs used by public health agencies across the globe. We begin with a short overview of hubverse concepts and conventions that support the process of combining model predictions, supplemented by example predictions provided by the hubverse in `hubExamples`, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`.
 
 ### Terminology and data standards in the hubverse
 
@@ -496,8 +494,8 @@ The "model output representation" columns `output_type` and `output_type_id` con
 | `pmf`         | String naming a possible category of a discrete outcome variable | Numeric between 0.0 and 1.0: The probability mass of the predictive distribution when evaluated at a specified level of a discrete outcome variable           |
 | `sample`\*    | Integer or string specifying the sample index                    | Numeric: A sample from the predictive distribution                                                                                                            |
 
-: A table summarizing how the model output representation columns are used for predictions of different output types. (\*The sample output type is unique in that it can be used to capture dependence in the modeled outcomes across levels of task ID variables.) Adapted from <https://hubverse.io/en/latest/user-guide/model-output.html#formats-of-model-output> {#tbl-model-output-rep}
-# it feels "dangerous" to me to add a specific url to the paper, which will likely outlast the url. maybe just link to the main hubverse.io site?
+: A table summarizing how the model output representation columns are used for predictions of different output types; adapted from hubverse documentation[@hubverse_docs]. (\*The sample output type is unique in that it can be used to capture dependence in the modeled outcomes across levels of task ID variables.) 
+{#tbl-model-output-rep}
 
 All output types can summarize predictions from marginal distributions. The sample output type is unique in that it can additionally represent predictions from joint predictive distributions. This means that the sample representation may encode dependence across combinations of multiple values for modeled task ID variables when recording samples from a joint predictive distribution. In this case, sample predictions with the same index (specified by the `output_type_id`) from a particular model may be assumed to correspond to a single sample from a joint distribution.
 

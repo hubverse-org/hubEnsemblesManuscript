@@ -1982,47 +1982,28 @@ hospitalizations.}
 
 \end{figure}%
 
-Averaging across all time points, the median model can be seen to have
-the best scores for every metric. It outperforms the mean ensemble by a
-similar amount for both MAE and WIS, particularly around local times of
-change (see Figure~\ref{fig-mae-vs-forecast-date} and
+Averaging across all time points, the median ensemble has the best
+scores for every metric. (Note that we only show plots of WIS vs
+forecast date, faceted by season and horizon, due to similar trends
+being observed with MAE and 95\% prediction interval coverage). The
+quantile median outperforms the mean ensemble by a similar amount for
+both WIS and MAE, particularly around local times of change (see
 Figure~\ref{fig-wis-vs-forecast-date}). The median ensemble also has
 better coverage rates than the mean ensemble in the tails of the
-distribution (95\% intervals, see
-Figure~\ref{fig-cov95-vs-forecast-date}) and similar coverage in the
-center (50\% intervals). The median model also outperforms the linear
-pools for most weeks, with the greatest differences in scores being for
-WIS and coverage rates (Figure~\ref{fig-wis-vs-forecast-date} and
-Figure~\ref{fig-cov95-vs-forecast-date}). This seems to indicate that
-the linear pools' estimates are usually too conservative, with their
-wide intervals and higher-than-nominal coverage rates being penalized by
-WIS. However, during the 2022-2023 season there are several localized
-times when the linear pools showcased better one-week-ahead forecasts
-than the median ensemble (Figure~\ref{fig-wis-vs-forecast-date}). These
-localized instances are characterized by similar MAE values
-(Figure~\ref{fig-wis-vs-forecast-date}) for the two methods and poor
-median ensemble coverage rates
-(Figure~\ref{fig-cov95-vs-forecast-date}). In these instances, the wide
-intervals from the linear pools were useful in capturing the
-eventually-observed hospitalizations, usually during times of rapid
-change.
-
-\begin{figure}
-
-\centering{
-
-\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-mae-vs-forecast-date-1.pdf}
-
-}
-
-\caption{\label{fig-mae-vs-forecast-date}Mean absolute error (MAE)
-averaged across all locations. Average target data across all locations
-for 2021-2022 (A) and 2022-2023 (B) seasons for reference. For each
-season, average MAE is shown for 1-week (C-D) and 4-week ahead (E-F)
-forecasts. Results are plotted for each ensemble model (colors) across
-the entire season. Lower values indicate better performance.}
-
-\end{figure}%
+distribution (95\% intervals) and similar coverage in the center (50\%
+intervals). The median model also outperforms the linear pools for most
+weeks, with the greatest differences in scores being for WIS and
+coverage rates (Figure~\ref{fig-wis-vs-forecast-date}). This seems to
+indicate that the linear pools' estimates are usually too conservative,
+with their wide intervals and higher-than-nominal coverage rates being
+penalized by WIS. However, during the 2022-2023 season there are several
+localized times when the linear pools showcased better one-week-ahead
+forecasts than the median ensemble
+(Figure~\ref{fig-wis-vs-forecast-date}). These localized instances are
+characterized by similar MAE values for the two methods and poor median
+ensemble coverage rates. In these instances, the wide intervals from the
+linear pools were useful in capturing the eventually-observed
+hospitalizations, usually during times of rapid change.
 
 \begin{figure}
 
@@ -2038,24 +2019,6 @@ for 2021-2022 (A) and 2022-2023 (B) seasons for reference. For each
 season, average WIS is shown for 1-week (C-D) and 4-week ahead (E-F)
 forecasts. Results are plotted for each ensemble model (colors) across
 the entire season. Lower values indicate better performance.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-cov95-vs-forecast-date-1.pdf}
-
-}
-
-\caption{\label{fig-cov95-vs-forecast-date}95\% prediction interval (PI)
-coverage averaged across all locations. Average target data across all
-locations for 2021-2022 (A) and 2022-2023 (B) seasons for reference. For
-each season, average coverage is shown for 1-week (C-D) and 4-week ahead
-(E-F) forecasts. Results are plotted for each ensemble model (colors)
-across the entire season. Ideal coverage of 95\% is shown (black
-horizontal line); values closer to 95\% indicate better performance.}
 
 \end{figure}%
 

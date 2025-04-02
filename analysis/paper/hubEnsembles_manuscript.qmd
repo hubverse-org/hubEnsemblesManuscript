@@ -1408,16 +1408,19 @@ ca_plot_all <-
   ))
 ```
 
-Averaging across all time points, the median model can be seen to have the best scores for every metric. It outperforms the mean ensemble by a similar amount for both MAE and WIS, particularly around local times of change (see @fig-mae-vs-forecast-date and @fig-wis-vs-forecast-date). The median ensemble also has better coverage rates than the mean ensemble in the tails of the distribution (95% intervals, see @fig-cov95-vs-forecast-date) and similar coverage in the center (50% intervals). The median model also outperforms the linear pools for most weeks, with the greatest differences in scores being for WIS and coverage rates (@fig-wis-vs-forecast-date and @fig-cov95-vs-forecast-date). This seems to indicate that the linear pools' estimates are usually too conservative, with their wide intervals and higher-than-nominal coverage rates being penalized by WIS. However, during the 2022-2023 season there are several localized times when the linear pools showcased better one-week-ahead forecasts than the median ensemble (@fig-wis-vs-forecast-date). These localized instances are characterized by similar MAE values (@fig-wis-vs-forecast-date) for the two methods and poor median ensemble coverage rates (@fig-cov95-vs-forecast-date). In these instances, the wide intervals from the linear pools were useful in capturing the eventually-observed hospitalizations, usually during times of rapid change.
+Averaging across all time points, the median ensemble has the best scores for every metric. (Note that we only show plots of WIS vs forecast date, faceted by season and horizon, due to similar trends being observed with MAE and 95% prediction interval coverage). The quantile median outperforms the mean ensemble by a similar amount for both WIS and MAE, particularly around local times of change (see @fig-wis-vs-forecast-date). The median ensemble also has better coverage rates than the mean ensemble in the tails of the distribution (95% intervals) and similar coverage in the center (50% intervals). The median model also outperforms the linear pools for most weeks, with the greatest differences in scores being for WIS and coverage rates (@fig-wis-vs-forecast-date). This seems to indicate that the linear pools' estimates are usually too conservative, with their wide intervals and higher-than-nominal coverage rates being penalized by WIS. However, during the 2022-2023 season there are several localized times when the linear pools showcased better one-week-ahead forecasts than the median ensemble (@fig-wis-vs-forecast-date). These localized instances are characterized by similar MAE values for the two methods and poor median ensemble coverage rates. In these instances, the wide intervals from the linear pools were useful in capturing the eventually-observed hospitalizations, usually during times of rapid change.
 
-```{r mae-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
-#| label: fig-mae-vs-forecast-date
-#| prompt: true
-#| fig-cap: "Mean absolute error (MAE) averaged across all locations. Average
-#| target data across all locations for 2021-2022 (A) and 2022-2023 (B)
-#| seasons for reference. For each season, average MAE is shown for 1-week (C-D)
+```{r wis-vs-forecast-date}
+#| label: fig-wis-vs-forecast-date
+#| echo: false
+#| message: false
+#| warning: false
+#| fig-cap: "Weighted interval score (WIS) averaged across all locations.
+#| Average target data across all locations for 2021-2022 (A) and 2022-2023 (B)
+#| seasons for reference. For each season, average WIS is shown for 1-week (C-D)
 #| and 4-week ahead (E-F) forecasts. Results are plotted for each ensemble model 
 #| (colors) across the entire season. Lower values indicate better performance."
+#| 
 #| fig-width: 10
 #| fig-height: 12
 model_names <- c(model_names, "average target data")
@@ -1441,60 +1444,6 @@ truth_states_2223 <- plot_flu_truth(
   date_range = flu_dates_22_23[c(1, 31)],
   main = "Target Data 2022-23 (wk inc flu hosp)"
 )
-
-mae_date_plot_states1_2122 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 1, y_var = "mae",
-    main = "MAE 2021-2022, 1 week ahead"
-  )
-mae_date_plot_states4_2122 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 4, y_var = "mae",
-    main = "MAE 2021-2022, 4 week ahead"
-  )
-
-# Plot MAE by forecast_date, faceted by horizon and season
-mae_date_plot_states1_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 1, y_var = "mae",
-    main = "MAE 2022-2023, 1 week ahead"
-  )
-mae_date_plot_states4_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 4, y_var = "mae",
-    main = "MAE 2022-2023, 4 week ahead"
-  )
-
-# Assemble plots into larger MAE figure
-truth_states_2122 + truth_states_2223 +
-  mae_date_plot_states1_2122 + mae_date_plot_states1_2223 +
-  mae_date_plot_states4_2122 + mae_date_plot_states4_2223 +
-  theme_bw() +
-  plot_annotation(tag_levels = "A") + 
-  plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
-  theme(legend.position = "bottom", 
-        plot.tag = element_text(face = 'bold'))
-```
-
-```{r wis-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
-#| label: fig-wis-vs-forecast-date
-#| prompt: true
-#| fig-cap: "Weighted interval score (WIS) averaged across all locations.
-#| Average target data across all locations for 2021-2022 (A) and 2022-2023 (B)
-#| seasons for reference. For each season, average WIS is shown for 1-week (C-D)
-#| and 4-week ahead (E-F) forecasts. Results are plotted for each ensemble model 
-#| (colors) across the entire season. Lower values indicate better performance."
-#| 
-#| fig-width: 10
-#| fig-height: 12
 
 # Plot WIS by forecast_date, faceted by horizon and season
 wis_date_plot_states1_2122 <- flu_date_horizon_season_states |>
@@ -1531,66 +1480,6 @@ wis_date_plot_states4_2223 <- flu_date_horizon_season_states |>
 truth_states_2122 + truth_states_2223 +
   wis_date_plot_states1_2122 + wis_date_plot_states1_2223 +
   wis_date_plot_states4_2122 + wis_date_plot_states4_2223 +
-  theme_bw() +
-  plot_annotation(tag_levels = "A") + 
-  plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
-  theme(legend.position = "bottom", 
-        plot.tag = element_text(face = 'bold'))
-```
-<!-- NGR: I generally feel that plots 8, 9 and 10 are sort of redundant. Maybe only one of them is needed? -->
-
-```{r cov95-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
-#| label: fig-cov95-vs-forecast-date
-#| prompt: true
-#| fig-cap: "95% prediction interval (PI) coverage averaged across all
-#| locations. Average target data across all locations for 2021-2022 (A) 
-#| and 2022-2023 (B) seasons for reference. For each season, average coverage is
-#| shown for 1-week (C-D) and 4-week ahead (E-F) forecasts. Results are plotted
-#| for each ensemble model (colors) across the entire season. Ideal coverage of
-#| 95% is shown (black horizontal line); values closer to 95% indicate better 
-#| performance."
-#| fig-width: 9
-#| fig-height: 12
-
-# Plot 95% coverage by forecast_date, faceted by horizon and season
-cov95_date_plot_states1_2122 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 1, y_var = "cov95",
-    main = "95% Coverage 2021-22, 1 week ahead"
-  ) +
-  coord_cartesian(ylim = c(0, 1.05))
-cov95_date_plot_states4_2122 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 4, y_var = "cov95",
-    main = "95% Coverage 2021-22, 4 week ahead"
-  ) +
-  coord_cartesian(ylim = c(0, 1.05))
-
-cov95_date_plot_states1_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 1, y_var = "cov95",
-    main = "95% Coverage 2022-23, 1 week ahead"
-  ) +
-  coord_cartesian(ylim = c(0, 1.05))
-cov95_date_plot_states4_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 4, y_var = "cov95",
-    main = "95% Coverage 2022-23, 4 week ahead"
-  ) +
-  coord_cartesian(ylim = c(0, 1.05))
-
-# Assemble plots into larger 95% coverage figure
-truth_states_2122 + truth_states_2223 +
-  cov95_date_plot_states1_2122 + cov95_date_plot_states1_2223 +
-  cov95_date_plot_states4_2122 + cov95_date_plot_states4_2223 +
   theme_bw() +
   plot_annotation(tag_levels = "A") + 
   plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &

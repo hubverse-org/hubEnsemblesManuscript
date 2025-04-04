@@ -264,16 +264,16 @@ the effects of potential interventions has demonstrated utility for
 public health officials and medical practitioners. Underlying these
 predictions are mathematical models that use historical disease
 incidence data to make probabilistic predictions of incidence in the
-future\textsuperscript{7--9} \textbf{{[}EH: suggestions on references
-here would be great{]}}. Given the performance benefits of multi-model
-ensembles, it is becoming increasingly common to convene multiple
-modeling teams into a collaborative ``hub''\textsuperscript{10}, where
-each team generates independent predictions that are aggregated to
-collectively produce an ensemble. For example, this approach has been
-used to make real-time, multi-model predictions for seasonal
-influenza\textsuperscript{11,12}, dengue\textsuperscript{13}, West Nile
-virus\textsuperscript{14}, and more recently
-SARS-CoV-2\textsuperscript{15--17}.
+future\textsuperscript{7--10,\textbf{rodriguez\_machine\_2024?}}
+\textbf{{[}EH: suggestions on references here would be great.{]}}. Given
+the performance benefits of multi-model ensembles, it is becoming
+increasingly common to convene multiple modeling teams into a
+collaborative ``hub''\textsuperscript{11}, where each team generates
+independent predictions that are aggregated to collectively produce an
+ensemble. For example, this approach has been used to make real-time,
+multi-model predictions for seasonal influenza\textsuperscript{10,12},
+dengue\textsuperscript{13}, West Nile virus\textsuperscript{14}, and
+more recently SARS-CoV-2\textsuperscript{15--17}.
 
 Generating multi-model ensmebles or interpreting results depends on
 understanding the underlying statistical methodology. There are many
@@ -307,21 +307,23 @@ ensemble generation and interpretion (Section~\ref{sec-simple-ex}), and
 a more in-depth analysis using real influenza forecasts
 (Section~\ref{sec-case-study}). Together, these case studies motivate a
 discussion and comparison of the various methods
-(Section~\ref{sec-conclusions}). By reviewing multi-model ensemble
-methodology and synthesizing these methods into an easy-to use
+(Section~\ref{sec-conclusions}). While the case studies focus on
+infectious disease applications, the software and tools presented are
+general and could be used for applications in other areas of biomedical
+and public health research, or other domains. By reviewing multi-model
+ensemble methodology and synthesizing these methods into an easy-to use
 implementation, this tutorial provides guidance on understanding,
-interpreting, and implementing multi-model ensembles for public health
-applications.
+interpreting, and implementing multi-model ensembles.
 
 \section{How to generate a multi-model ensemble}\label{sec-defs}
 
 In this section, we provide an overview of the process to generate a
-multi-model ensemble, including basic definitions of key concepts in
-statistical forecasting, and an overview of the classes of methods that
-are typically used for generating a multi-model ensemble.
+multi-model ensemble, including basic definitions of key statistical
+concepts in probabilistic forecasting, and an overview of the classes of
+methods that are typically used for generating a multi-model ensemble.
 
-\subsection{Key concepts in statistical
-forecasting}\label{key-concepts-in-statistical-forecasting}
+\subsection{Key statistical concepts in
+forecasting}\label{key-statistical-concepts-in-forecasting}
 
 Generating an ensemble requires multiple predictions to be combined, and
 a combination method for calculating the ensemble from these predictions
@@ -370,7 +372,7 @@ Here, we use \(N\) to denote the total number of individual predictions
 that the ensemble will combine. For example, if predictions are produced
 by different models, \(N\) is the total number of models that have
 provided predictions. Individual predictions will be indexed by the
-subscript \(i\). Optionally, one can calculate an ensemble that use a
+subscript \(i\). Optionally, one can calculate an ensemble that uses a
 weight \(w_i\) for each prediction; we define the set of model-specific
 weights as \(\pmb{w} = \{w_i | i \in 1, ..., N\}\). Informally,
 predictions with a larger weight have a greater influence on the
@@ -408,30 +410,30 @@ Additionally, we will use \(f(x)\) to denote a probability mass function
 (PMF) for a prediction of a discrete variable or a discretization (such
 as binned values) of a continuous variable.
 
-The quantile average combines a set of quantile functions,
+The quantile function resulting from a quantile average,
+\(F^{-1}_Q(\theta)\), combines a set of quantile functions,
 \(\mathcal{Q} = \{F_i^{-1}(\theta)| i \in 1,...,N \}\), with a given set
 of weights, \(\pmb{w}\), as \[
-F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta).
-\]
-
-This computes the average value of predictions across different models
-for each fixed quantile level \(\theta\). For a normal distribution or
-any distribution with a shape and scale parameter, the resulting
-quantile average will be the same type of distribution, with shape and
-scale parameters that are the average of the shape and scale parameters
-from the individual distributions
+F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^N w_iF^{-1}_i(\theta).
+\] This computes the average value of predictions across different
+models for each fixed quantile level \(\theta\). For a normal
+distribution or any distribution with a shape and scale parameter, the
+resulting quantile average will be the same type of distribution, with
+shape and scale parameters that are the average of the shape and scale
+parameters from the individual distributions
 (Figure~\ref{fig-example-quantile-average-and-linear-pool}, panel B). In
 other words, this method interprets the predictive probability
 distributions that are being combined as uncertain estimates of a single
 true distribution. It is also possible to use other combination
-functions, such as a weighted median, to combine quantile predictions.
+functions, such as a weighted or unweighted median, to combine quantile
+predictions.
 
 The probability average or linear pool is calculated by averaging
 probabilities across predictions for a fixed value of the target
 variable, \(x\). In other words, for a set
 \(\mathcal{F} = \{F_i(x)| i \in 1,...,N \}\) containing the values of
-CDFs at the point \(x\) and weights \(\pmb{w}\), the linear pool is
-calculated as
+CDFs at the point \(x\) and weights \(\pmb{w}\), the CDF for a linear
+pool is calculated as
 
 \[
 F_{LOP}(x) = C_{LOP}(\mathcal{F}, \pmb{w}) = \sum_{i = 1}^Nw_iF_i(x). 
@@ -446,6 +448,41 @@ probability distributions represent alternative predictions of the
 future, each of which has a probability \(w_i\) of being the true one.
 For a visual depiction of these equations, see
 Figure~\ref{fig-example-quantile-average-and-linear-pool} below.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf}
+
+}
+
+\caption{\label{fig-example-quantile-average-and-linear-pool}(Panel A)
+Example predictions from two distributions (\(N(100, 10)\) in purple and
+\(N(120, 5)\) in green) shown as cumulative distribution functions
+(CDFs). To ease submission to a hub, the prediction can be summarized at
+a fixed number of points along the distribution. Here, the solid points
+show model output for seven fixed quantile levels (\(\theta\) = 0.01,
+0.1, 0.3, 0.5, 0.7, 0.9, and 0.99). The y-axis ticks show each of the
+fixed quantile levels. The associated values for each fixed quantile
+level are shown with vertical lines. (Panel B) Quantile average
+ensemble, which is calculated by averaging values for each fixed
+quantile level (represented by horizontal dashed gray lines). The
+distributions and corresponding model outputs from panel A are
+re-plotted and the black line shows the resulting quantile average
+ensemble. Inset shows corresponding probability density functions
+(PDFs). (Panel C) Linear pool ensemble, which is calculated by averaging
+cumulative probabilities for each fixed value (represented by vertical
+dashed gray lines). The distributions and corresponding model outputs
+from panel A are re-plotted. To calculate the linear pool in this case,
+where model outputs are not defined for the same values (i.e., vertical
+lines in Panel A do not line up), the model outputs are used to
+interpolate the full CDF for each distribution from which quantiles can
+be extracted for fixed values (shown with open circles). The black line
+shows the resulting linear pool average ensemble. Inset shows
+corresponding PDFs.}
+
+\end{figure}%
 
 The different averaging methods for probabilistic predictions yield
 different properties of the resulting ensemble distribution. For
@@ -469,7 +506,7 @@ outbreaks}\label{applications-in-public-health-and-infectious-disease-outbreaks}
 
 Multi-model ensembles have become the gold standard for forecasting and
 prediction efforts that support public health in real
-time\textsuperscript{10,33--35}. One prominent domain is forecasting key
+time\textsuperscript{11,33--35}. One prominent domain is forecasting key
 characteristics of infectious disease outbreaks, including weekly
 incidence or healthcare demand over future weeks, disease burden for the
 entire season, and timing and magnitude of the outbreak
@@ -484,7 +521,7 @@ have also been established\textsuperscript{41}.
 Across a variety of pathogens and outbreak settings, multi-model
 ensembles have been shown to produce forecasts that are as good or
 better than the individual models that compose the
-ensemble\textsuperscript{11--13,15--18,22}. Notably, the ensemble does
+ensemble\textsuperscript{10,12,13,15--18,22}. Notably, the ensemble does
 not always outperform the best model, but typically offers improved
 consistency and robustness over individual
 models\textsuperscript{15,16,19,42}. However, in one instance, a
@@ -524,16 +561,21 @@ countries will enable further methodological development.
 \section{How to implement ensemble
 calculations}\label{sec-implementation}
 
-The methods described in Section~\ref{sec-defs} are implemented in the
-\texttt{hubEnsembles} package in a flexible, easy-to-use framework.
+The methods described in Section~\ref{sec-defs} are implemented in a
+flexible, easy-to-use framework via the \texttt{hubEnsembles} package.
 Importantly, \texttt{hubEnsembles} is situated within the broader
 hubverse software infrastructure, which provides data standards and
-conventions for representing and working with model predictions. We
-begin with a short overview of hubverse concepts and conventions that
-support the process of combining model predictions, supplemented by
-example predictions provided by the hubverse, then explain the
-implementation of the two primary ensembling functions included in the
-package, \texttt{simple\_ensemble()} and \texttt{linear\_pool()}.
+conventions for representing and working with model
+predictions\textsuperscript{29}, including for example, collecting and
+manipulating predictions (\texttt{hubUtils}) as well as visualization
+(\texttt{hubVis}). In 2024-2025, the hubverse supported over a dozen
+collaborative modeling hubs used by public health agencies across the
+globe. We begin with a short overview of hubverse concepts and
+conventions that support the process of combining model predictions,
+supplemented by example predictions provided by the hubverse in
+\texttt{hubExamples}, then explain the implementation of the two primary
+ensembling functions included in the package,
+\texttt{simple\_ensemble()} and \texttt{linear\_pool()}.
 
 \subsection{Terminology and data standards in the
 hubverse}\label{terminology-and-data-standards-in-the-hubverse}
@@ -663,10 +705,11 @@ Table~\ref{tbl-model-output-rep}.
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3288}}
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4110}}@{}}
 \caption{A table summarizing how the model output representation columns
-are used for predictions of different output types. (*The sample output
-type is unique in that it can be used to capture dependence in the
-modeled outcomes across levels of task ID variables.) Adapted from
-\url{https://hubverse.io/en/latest/user-guide/model-output.html\#formats-of-model-output}}\label{tbl-model-output-rep}\tabularnewline
+are used for predictions of different output types; adapted from
+hubverse documentation\textsuperscript{29}. (*The sample output type is
+unique in that it can be used to capture dependence in the modeled
+outcomes across levels of task ID variables.)
+}\label{tbl-model-output-rep}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
 \texttt{output\_type}
@@ -871,40 +914,6 @@ may also be converted to another common output type such as quantiles or
 bin probabilities (as the main scientific interest often concerns a
 summary of samples), and other ensemble methods may then be utilized for
 that output type.
-
-\begin{figure}
-
-\centering{
-
-\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf}
-
-}
-
-\caption{\label{fig-example-quantile-average-and-linear-pool}(Panel A)
-Example of quantile output type predictions. Solid points show model
-output collected for seven fixed quantile levels (\(\theta\) = 0.01,
-0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions
-(\(N(100, 10)\) in purple and \(N(120, 5)\) in green), with the
-underlying cumulative distribution functions (CDFs) shown with curves.
-The y-axis ticks show each of the fixed quantile levels. The associated
-values for each fixed quantile level do not align across distributions
-(vertical lines). (Panel B) Quantile average ensemble, which is
-calculated by averaging values for each fixed quantile level
-(represented by horizontal dashed gray lines). The distributions and
-corresponding model outputs from panel A are re-plotted and the black
-line shows the resulting quantile average ensemble. Inset shows
-corresponding probability density functions (PDFs). (Panel C) Linear
-pool ensemble, which is calculated by averaging cumulative probabilities
-for each fixed value (represented by vertical dashed gray lines). The
-distributions and corresponding model outputs from panel A are
-re-plotted. To calculate the linear pool in this case, where model
-outputs are not defined for the same values, the model outputs are used
-to interpolate the full CDF for each distribution from which quantiles
-can be extracted for fixed values (shown with open circles). The black
-line shows the resulting linear pool average ensemble. Inset shows
-corresponding PDFs.}
-
-\end{figure}%
 
 For the quantile output type, implementation of LOP is comparatively
 less straightforward. This is because LOP averages cumulative
@@ -1974,47 +1983,28 @@ hospitalizations.}
 
 \end{figure}%
 
-Averaging across all time points, the median model can be seen to have
-the best scores for every metric. It outperforms the mean ensemble by a
-similar amount for both MAE and WIS, particularly around local times of
-change (see Figure~\ref{fig-mae-vs-forecast-date} and
+Averaging across all time points, the median ensemble has the best
+scores for every metric. (Note that we only show plots of WIS vs
+forecast date, faceted by season and horizon, due to similar trends
+being observed with MAE and 95\% prediction interval coverage). The
+quantile median outperforms the mean ensemble by a similar amount for
+both WIS and MAE, particularly around local times of change (see
 Figure~\ref{fig-wis-vs-forecast-date}). The median ensemble also has
 better coverage rates than the mean ensemble in the tails of the
-distribution (95\% intervals, see
-Figure~\ref{fig-cov95-vs-forecast-date}) and similar coverage in the
-center (50\% intervals). The median model also outperforms the linear
-pools for most weeks, with the greatest differences in scores being for
-WIS and coverage rates (Figure~\ref{fig-wis-vs-forecast-date} and
-Figure~\ref{fig-cov95-vs-forecast-date}). This seems to indicate that
-the linear pools' estimates are usually too conservative, with their
-wide intervals and higher-than-nominal coverage rates being penalized by
-WIS. However, during the 2022-2023 season there are several localized
-times when the linear pools showcased better one-week-ahead forecasts
-than the median ensemble (Figure~\ref{fig-wis-vs-forecast-date}). These
-localized instances are characterized by similar MAE values
-(Figure~\ref{fig-wis-vs-forecast-date}) for the two methods and poor
-median ensemble coverage rates
-(Figure~\ref{fig-cov95-vs-forecast-date}). In these instances, the wide
-intervals from the linear pools were useful in capturing the
-eventually-observed hospitalizations, usually during times of rapid
-change.
-
-\begin{figure}
-
-\centering{
-
-\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-mae-vs-forecast-date-1.pdf}
-
-}
-
-\caption{\label{fig-mae-vs-forecast-date}Mean absolute error (MAE)
-averaged across all locations. Average target data across all locations
-for 2021-2022 (A) and 2022-2023 (B) seasons for reference. For each
-season, average MAE is shown for 1-week (C-D) and 4-week ahead (E-F)
-forecasts. Results are plotted for each ensemble model (colors) across
-the entire season. Lower values indicate better performance.}
-
-\end{figure}%
+distribution (95\% intervals) and similar coverage in the center (50\%
+intervals). The median model also outperforms the linear pools for most
+weeks, with the greatest differences in scores being for WIS and
+coverage rates (Figure~\ref{fig-wis-vs-forecast-date}). This seems to
+indicate that the linear pools' estimates are usually too conservative,
+with their wide intervals and higher-than-nominal coverage rates being
+penalized by WIS. However, during the 2022-2023 season there are several
+localized times when the linear pools showcased better one-week-ahead
+forecasts than the median ensemble
+(Figure~\ref{fig-wis-vs-forecast-date}). These localized instances are
+characterized by similar MAE values for the two methods and poor median
+ensemble coverage rates. In these instances, the wide intervals from the
+linear pools were useful in capturing the eventually-observed
+hospitalizations, usually during times of rapid change.
 
 \begin{figure}
 
@@ -2030,24 +2020,6 @@ for 2021-2022 (A) and 2022-2023 (B) seasons for reference. For each
 season, average WIS is shown for 1-week (C-D) and 4-week ahead (E-F)
 forecasts. Results are plotted for each ensemble model (colors) across
 the entire season. Lower values indicate better performance.}
-
-\end{figure}%
-
-\begin{figure}
-
-\centering{
-
-\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-cov95-vs-forecast-date-1.pdf}
-
-}
-
-\caption{\label{fig-cov95-vs-forecast-date}95\% prediction interval (PI)
-coverage averaged across all locations. Average target data across all
-locations for 2021-2022 (A) and 2022-2023 (B) seasons for reference. For
-each season, average coverage is shown for 1-week (C-D) and 4-week ahead
-(E-F) forecasts. Results are plotted for each ensemble model (colors)
-across the entire season. Ideal coverage of 95\% is shown (black
-horizontal line); values closer to 95\% indicate better performance.}
 
 \end{figure}%
 
@@ -2078,15 +2050,16 @@ Ensembles of independent models are a powerful tool to generate more
 accurate and more reliable predictions of future outcomes than a single
 model alone. Here, we have provided an overview of multi-model ensemble
 methodology with the goal of improving use of ensemble results in public
-health and biological settings. Moreover, we have demonstrated how to
+health and biomedical research settings, as well as other domains that
+use probabilistic forecasting. Moreover, we have demonstrated how to
 utilize \texttt{hubEnsembles}, a simple and flexible framework to
 combine individual model predictions into an ensemble.
 
 Multi-model ensembles are becoming the gold standard for prediction
 exercises in the public health domain. Collaborative modeling hubs can
 serve as a centralized entity to guide and elicit predictions from
-multiple independent models, as well as generate and communicate
-ensemble results\textsuperscript{10,35}. Given the increasing popularity
+multiple independent models, as well as to generate and communicate
+ensemble results\textsuperscript{11,35}. Given the increasing popularity
 of multi-model ensembles and collaborative hubs, there is a clear need
 for generalized data standards and software infrastructure to support
 these hubs. By addressing this need, the hubverse suite of tools can
@@ -2214,26 +2187,26 @@ Infectious disease prediction with kernel conditional density
 estimation. \emph{Statistics in Medicine}. 2017;36(30):4908-4929.
 doi:\href{https://doi.org/10.1002/sim.7488}{10.1002/sim.7488}}
 
-\bibitem[\citeproctext]{ref-reich2022}
+\bibitem[\citeproctext]{ref-reich_accuracy_2019}
 \CSLLeftMargin{10. }%
+\CSLRightInline{Reich NG, McGowan CJ, Yamana TK, et al. Accuracy of
+real-time multi-model ensemble forecasts for seasonal influenza in the
+{U}.{S}. \emph{PLOS computational biology}. 2019;15(11):e1007486.
+doi:\href{https://doi.org/10.1371/journal.pcbi.1007486}{10.1371/journal.pcbi.1007486}}
+
+\bibitem[\citeproctext]{ref-reich2022}
+\CSLLeftMargin{11. }%
 \CSLRightInline{Reich NG, Lessler J, Funk S, et al. Collaborative hubs:
 Making the most of predictive epidemic modeling. \emph{American Journal
 of Public Health}. 2022;112(6):839-842.
 doi:\href{https://doi.org/10.2105/AJPH.2022.306831}{10.2105/AJPH.2022.306831}}
 
 \bibitem[\citeproctext]{ref-mcgowan2019}
-\CSLLeftMargin{11. }%
+\CSLLeftMargin{12. }%
 \CSLRightInline{McGowan CJ, Biggerstaff M, Johansson M, et al.
 Collaborative efforts to forecast seasonal influenza in the United
 States, 2015{\textendash}2016. \emph{Scientific Reports}. 2019;9(1):683.
 doi:\href{https://doi.org/10.1038/s41598-018-36361-9}{10.1038/s41598-018-36361-9}}
-
-\bibitem[\citeproctext]{ref-reich_accuracy_2019}
-\CSLLeftMargin{12. }%
-\CSLRightInline{Reich NG, McGowan CJ, Yamana TK, et al. Accuracy of
-real-time multi-model ensemble forecasts for seasonal influenza in the
-{U}.{S}. \emph{PLOS computational biology}. 2019;15(11):e1007486.
-doi:\href{https://doi.org/10.1371/journal.pcbi.1007486}{10.1371/journal.pcbi.1007486}}
 
 \bibitem[\citeproctext]{ref-johansson2019}
 \CSLLeftMargin{13. }%

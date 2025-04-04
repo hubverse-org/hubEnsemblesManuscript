@@ -249,7 +249,7 @@ Predictions of future outcomes are essential to planning and decision
 making, yet generating reliable predictions of the future is
 challenging. One method for overcoming this challenge is combining
 predictions across multiple, independent models. These combination
-methods (also called aggregation or ensembling) have been repeatedly
+methods (also called aggregatiions or ensembles) have been repeatedly
 shown to produce predictions that are more accurate\textsuperscript{1,2}
 and more consistent\textsuperscript{3} than individual models. Because
 of the clear performance benefits, multi-model ensembles are a widely
@@ -275,7 +275,7 @@ influenza\textsuperscript{11,12}, dengue\textsuperscript{13}, West Nile
 virus\textsuperscript{14}, and more recently
 SARS-CoV-2\textsuperscript{15--17}.
 
-Generating multi-model ensmebles or interpreting results depends on
+Generating multi-model ensmebles and interpreting results depends on
 understanding the underlying statistical methodology. There are many
 proposed methods for generating ensembles, and these methods differ in
 at least one of two ways: (1) the function used to combine or
@@ -301,8 +301,8 @@ common methods and prediction types; it is situated within the broader
 facilitate the development and management of collaborative modeling
 exercises\textsuperscript{29}. These two factors together, a simple
 implementation framework across methods and integration with hubverse
-data standards and tools, makes \texttt{hubEnsembles} accessible and
-easy to use. Finally, we present a basic demonstration of multi-model
+data standards and tools, make \texttt{hubEnsembles} accessible and easy
+to use. Finally, we present a basic demonstration of multi-model
 ensemble generation and interpretion (Section~\ref{sec-simple-ex}), and
 a more in-depth analysis using real influenza forecasts
 (Section~\ref{sec-case-study}). Together, these case studies motivate a
@@ -317,8 +317,8 @@ applications.
 
 In this section, we provide an overview of the process to generate a
 multi-model ensemble, including basic definitions of key concepts in
-statistical forecasting, and an overview of the classes of methods that
-are typically used for generating a multi-model ensemble.
+statistical forecasting, and an overview of the classes of methods
+typically used for generating a multi-model ensemble.
 
 \subsection{Key concepts in statistical
 forecasting}\label{key-concepts-in-statistical-forecasting}
@@ -527,13 +527,14 @@ calculations}\label{sec-implementation}
 The methods described in Section~\ref{sec-defs} are implemented in the
 \texttt{hubEnsembles} package in a flexible, easy-to-use framework.
 Importantly, \texttt{hubEnsembles} is situated within the broader
-hubverse software infrastructure, which provides data standards and
-conventions for representing and working with model predictions. We
-begin with a short overview of hubverse concepts and conventions that
-support the process of combining model predictions, supplemented by
-example predictions provided by the hubverse, then explain the
-implementation of the two primary ensembling functions included in the
-package, \texttt{simple\_ensemble()} and \texttt{linear\_pool()}.
+hubverse software infrastructure\textsuperscript{29}, which provides
+data standards and conventions for representing and working with model
+predictions. We begin with a short overview of hubverse concepts and
+conventions that support the process of combining model predictions,
+supplemented by example predictions provided by the hubverse, then
+explain the implementation of the two primary ensembling functions
+included in the package, \texttt{simple\_ensemble()} and
+\texttt{linear\_pool()}.
 
 \subsection{Terminology and data standards in the
 hubverse}\label{terminology-and-data-standards-in-the-hubverse}
@@ -2074,9 +2075,9 @@ ensemble methods.
 
 \section{Summary and discussion}\label{sec-conclusions}
 
-Ensembles of independent models are a powerful tool to generate more
-accurate and more reliable predictions of future outcomes than a single
-model alone. Here, we have provided an overview of multi-model ensemble
+Ensembles of independent models are powerful tools for generating more
+accurate and reliable predictions of future outcomes than a single model
+alone. Here, we have provided an overview of multi-model ensemble
 methodology with the goal of improving use of ensemble results in public
 health and biological settings. Moreover, we have demonstrated how to
 utilize \texttt{hubEnsembles}, a simple and flexible framework to
@@ -2123,9 +2124,10 @@ NU38FT000008). E. Howerton was supported by NSF RAPID awards DEB-2126278
 and DEB-2220903, as well as the Eberly College of Science Barbara
 McClintock Science Achievement Graduate Scholarship in Biology at the
 Pennsylvania State University. L. Contamin and H. Hochheiser were
-supported by NIGMS grant U24GM132013. The content is solely the
-responsibility of the authors and does not necessarily represent the
-official views of NIGMS, the National Institutes of Health, or CDC.
+supported by NIGMS grants U24GM132013 and R24GM153920. The content is
+solely the responsibility of the authors and does not necessarily
+represent the official views of NIGMS, the National Institutes of
+Health, or CDC.
 
 \section*{Consortium of Infectious Disease Modeling
 Hubs}\label{consortium-of-infectious-disease-modeling-hubs}

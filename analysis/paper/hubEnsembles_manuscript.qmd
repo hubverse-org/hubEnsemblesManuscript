@@ -134,13 +134,14 @@ For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be eq
 
 ```{r example-quantile-average-and-linear-pool, echo=FALSE}
 #| label: fig-example-quantile-average-and-linear-pool
-#| fig-cap: "(Panel A) Example of quantile output type predictions. Solid
-#| points show model output collected for seven fixed quantile levels
-#| ($\\theta$ = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions
-#| ($N(100, 10)$ in purple and $N(120, 5)$ in green), with the underlying
-#| cumulative distribution functions (CDFs) shown with curves. The y-axis ticks
-#| show each of the fixed quantile levels. The associated values for each fixed
-#| quantile level do not align across distributions (vertical lines).
+#| fig-cap: "(Panel A) Example predictions from two distributions ($N(100, 10)$
+#| in purple and $N(120, 5)$ in green) shown as cumulative distribution
+#| functions (CDFs). To ease submission to a hub, the prediction can
+#| be summarized at a fixed number of points along the distribution. Here, the
+#| solid points show model output for seven fixed quantile levels ($\\theta$ =
+#| 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99). The y-axis ticks show each of the 
+#| fixed quantile levels. The associated values for each fixed quantile level
+#| are shown with vertical lines.
 #| (Panel B) Quantile average ensemble, which is calculated by
 #| averaging values for each fixed quantile level (represented by horizontal
 #| dashed gray lines). The distributions and corresponding model outputs from
@@ -150,10 +151,11 @@ For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be eq
 #| cumulative probabilities for each fixed value (represented by vertical
 #| dashed gray lines). The distributions and corresponding model outputs from
 #| panel A are re-plotted. To calculate the linear pool in this case, where
-#| model outputs are not defined for the same values, the model outputs are used
-#| to interpolate the full CDF for each distribution from which quantiles can be
-#| extracted for fixed values (shown with open circles). The black line shows
-#| the resulting linear pool average ensemble. Inset shows corresponding PDFs."
+#| model outputs are not defined for the same values (i.e., vertical lines in
+#| Panel A do not line up), the model outputs are used to interpolate the full
+#| CDF for each distribution from which quantiles can be extracted for fixed
+#| values (shown with open circles). The black line shows the resulting linear
+#| pool average ensemble. Inset shows corresponding PDFs."
 #| fig-width: 10
 #| fig-height: 4
 
@@ -242,8 +244,9 @@ pa <- ggplot(
   coord_cartesian(xlim = c(75, 140)) +
   labs(
     x = "value", y = "cumulative probability (quantile)",
-    subtitle = "quantile predictions from two distributions"
+    subtitle = "two predictions to ensemble"
   ) +
+  facet_wrap(vars(distribution), ncol = 1) + 
   scale_color_manual(
     name = "distributions",
     labels = c("N(100, 10)", "N(120, 5)"),
@@ -256,6 +259,8 @@ pa <- ggplot(
   theme_bw() +
   theme(
     legend.position = "bottom",
+    strip.background = element_blank(),
+    strip.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank()
   )
@@ -418,7 +423,7 @@ l2 <- cowplot::get_plot_component(pc, "guide-box", return_all = TRUE)[[3]]
 cowplot::plot_grid(
   cowplot::plot_grid(
     pa + theme(legend.position = "none"), pb_fin, pc_fin,
-    labels = LETTERS[1:3], nrow = 1, rel_widths = c(0.34, 0.33, 0.33)
+    labels = LETTERS[1:3], nrow = 1, rel_widths = c(0.3, 0.35, 0.35)
   ),
   cowplot::plot_grid(
     NULL, l, l2, NULL,

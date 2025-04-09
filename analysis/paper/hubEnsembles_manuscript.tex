@@ -249,7 +249,7 @@ Predictions of future outcomes are essential to planning and decision
 making, yet generating reliable predictions of the future is
 challenging. One method for overcoming this challenge is combining
 predictions across multiple, independent models. These combination
-methods (also called aggregation or ensembling) have been repeatedly
+methods (also called aggregations or ensembles) have been repeatedly
 shown to produce predictions that are more accurate\textsuperscript{1,2}
 and more consistent\textsuperscript{3} than individual models. Because
 of the clear performance benefits, multi-model ensembles are a widely
@@ -275,7 +275,7 @@ multi-model predictions for seasonal influenza\textsuperscript{10,12},
 dengue\textsuperscript{13}, West Nile virus\textsuperscript{14}, and
 more recently SARS-CoV-2\textsuperscript{15--17}.
 
-Generating multi-model ensmebles or interpreting results depends on
+Generating multi-model ensembles or interpreting results depends on
 understanding the underlying statistical methodology. There are many
 proposed methods for generating ensembles, and these methods differ in
 at least one of two ways: (1) the function used to combine or
@@ -301,10 +301,10 @@ common methods and prediction types; it is situated within the broader
 facilitate the development and management of collaborative modeling
 exercises\textsuperscript{29}. These two factors together, a simple
 implementation framework across methods and integration with hubverse
-data standards and tools, makes \texttt{hubEnsembles} accessible and
-easy to use. Finally, we present a basic demonstration of multi-model
-ensemble generation and interpretion (Section~\ref{sec-simple-ex}), and
-a more in-depth analysis using real influenza forecasts
+data standards and tools, make \texttt{hubEnsembles} accessible and easy
+to use. Finally, we present a basic demonstration of multi-model
+ensemble generation and interpretation (Section~\ref{sec-simple-ex}),
+and a more in-depth analysis using real influenza forecasts
 (Section~\ref{sec-case-study}). Together, these case studies motivate a
 discussion and comparison of the various methods
 (Section~\ref{sec-conclusions}). While the case studies focus on
@@ -410,23 +410,23 @@ Additionally, we will use \(f(x)\) to denote a probability mass function
 (PMF) for a prediction of a discrete variable or a discretization (such
 as binned values) of a continuous variable.
 
-The quantile function resulting from a quantile average,
-\(F^{-1}_Q(\theta)\), combines a set of quantile functions,
+The quantile average combines a set of quantile functions,
 \(\mathcal{Q} = \{F_i^{-1}(\theta)| i \in 1,...,N \}\), with a given set
 of weights, \(\pmb{w}\), as \[
-F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^N w_iF^{-1}_i(\theta).
-\] This computes the average value of predictions across different
-models for each fixed quantile level \(\theta\). For a normal
-distribution or any distribution with a shape and scale parameter, the
-resulting quantile average will be the same type of distribution, with
-shape and scale parameters that are the average of the shape and scale
-parameters from the individual distributions
+F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta).
+\]
+
+This computes the average value of predictions across different models
+for each fixed quantile level \(\theta\). For a normal distribution or
+any distribution with a shape and scale parameter, the resulting
+quantile average will be the same type of distribution, with shape and
+scale parameters that are the average of the shape and scale parameters
+from the individual distributions
 (Figure~\ref{fig-example-quantile-average-and-linear-pool}, panel B). In
 other words, this method interprets the predictive probability
 distributions that are being combined as uncertain estimates of a single
 true distribution. It is also possible to use other combination
-functions, such as a weighted or unweighted median, to combine quantile
-predictions.
+functions, such as a weighted median, to combine quantile predictions.
 
 The probability average or linear pool is calculated by averaging
 probabilities across predictions for a fixed value of the target
@@ -706,9 +706,10 @@ Table~\ref{tbl-model-output-rep}.
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4110}}@{}}
 \caption{A table summarizing how the model output representation columns
 are used for predictions of different output types; adapted from
-hubverse documentation\textsuperscript{29}. (*The sample output type is
-unique in that it can be used to capture dependence in the modeled
-outcomes across levels of task ID variables.)
+hubverse documentation\textsuperscript{29}. (*Rows of sample predictions
+from a particular model that share an output type ID value may be
+assumed to represent a single sample from a joint distribution across
+multiple levels of the task ID variables.)
 }\label{tbl-model-output-rep}\tabularnewline
 \toprule\noalign{}
 \begin{minipage}[b]{\linewidth}\raggedright
@@ -746,20 +747,21 @@ specified by the \texttt{output\_type\_id} \\
 \texttt{pmf} & String naming a possible category of a discrete outcome
 variable & Numeric between 0.0 and 1.0: The probability mass of the
 predictive distribution when evaluated at a specified level of a
-discrete outcome variable \\
-\texttt{sample}* & Integer or string specifying the sample index &
-Numeric: A sample from the predictive distribution \\
+categorical outcome variable \\
+\texttt{sample} & Integer or string identifying the sample* & Numeric: A
+single sample value from the predictive distribution \\
 \end{longtable}
 
 All output types can summarize predictions from marginal distributions.
-The sample output type is unique in that it can additionally represent
-predictions from joint predictive distributions. This means that the
-sample representation may encode dependence across combinations of
+The sample output type, which represents randomly drawn values from a
+probabilistic predictive distribution, is unique in that it can
+additionally represent predictions from joint predictive distributions.
+This means that samples may encode dependence across combinations of
 multiple values for modeled task ID variables when recording samples
-from a joint predictive distribution. In this case, sample predictions
-with the same index (specified by the \texttt{output\_type\_id}) from a
-particular model may be assumed to correspond to a single sample from a
-joint distribution.
+from a joint predictive distribution. In this case, rows of sample
+predictions with the same index (specified by the
+\texttt{output\_type\_id}) from a particular model may be assumed to
+correspond to a single sample from a joint distribution.
 
 For quantile predictions, the \texttt{output\_type\_id} is a numeric
 value between 0 and 1 specifying the cumulative probability associated
@@ -778,10 +780,10 @@ output. The two tabular representations differ in terms of columns and
 purposes. Target time series data is a more traditional representation
 of the observed ``truth'' in a time series format with minimal columns;
 this format usually serves as calibration data for generating forecasts.
-Oracle output, on the other hand, represents prediction that and
-``oracle model'' would have made had it known the observed values in
-advance. This format resembles model output data and is suited for
-evaluating forecasts post hoc. Some examples of target data are given in
+Oracle output, on the other hand, represents prediction that an ``oracle
+model'' would have made had it known the observed values in advance.
+This format resembles model output data and is suited for evaluating
+forecasts post hoc. Some examples of target data are given in
 Section~\ref{sec-simple-ex}.
 
 \subsection{Ensemble functions in hubEnsembles}\label{sec-ens-fns}
@@ -954,7 +956,7 @@ For step 1, functionality in the \texttt{distfromq} package uses a
 monotonic cubic spline for interpolation on the interior of the provided
 quantiles. The user may choose one of several distributions to perform
 extrapolation of the CDF tails. These include normal, lognormal, and
-cauchy distributions, with ``normal'' set as the default. A
+Cauchy distributions, with ``normal'' set as the default. A
 location-scale parameterization is used, with separate location and
 scale parameters chosen in the lower and upper tails so as to match the
 two most extreme quantiles. The sampling process described in steps 2
@@ -976,7 +978,7 @@ predictions we wish to combine. In this example, we use some short-term
 forecasts already formatted as model output data from the
 \texttt{hubExamples} package. These model outputs are from a larger
 example modeling hub, created using a modified subset of predictions
-from the Flusight Forecasting challenge (discussed in further detail in
+from the FluSight Forecasting challenge (discussed in further detail in
 Section~\ref{sec-case-study}). In addition to toy model output data, the
 example hub also includes observational data in the form of target time
 series data and oracle output.
@@ -1202,22 +1204,23 @@ example data is provided in the \texttt{hubExamples} package.}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-Flusight-baseline & wk flu hosp rate category & 1 & pmf & low & 0.00 \\
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & low & 0.000 \\
 Flusight-baseline & wk flu hosp rate category & 1 & pmf & moderate &
-0.00 \\
-Flusight-baseline & wk flu hosp rate category & 1 & pmf & high & 0.07 \\
+0.003 \\
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & high &
+0.073 \\
 Flusight-baseline & wk flu hosp rate category & 1 & pmf & very high &
-0.92 \\
-MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & low & 0.00 \\
+0.924 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & low & 0.000 \\
 MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & moderate &
-0.00 \\
-MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & high & 0.16 \\
+0.002 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & high & 0.163 \\
 MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & very high &
-0.83 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & low & 0.01 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & moderate & 0.07 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & high & 0.22 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.70 \\
+0.835 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & low & 0.013 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & moderate & 0.065 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & high & 0.218 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.704 \\
 
 \end{longtable}
 
@@ -1843,32 +1846,32 @@ data.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\SpecialCharTok{\textgreater{}}\NormalTok{ mean\_ensemble }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{simple\_ensemble}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{   flu\_forecasts\_component,}
-\SpecialCharTok{+}   \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{agg\_fun =}\NormalTok{ mean,}
-\SpecialCharTok{+}   \AttributeTok{model\_id =} \StringTok{"mean{-}ensemble"}
-\SpecialCharTok{+}\NormalTok{ )}
-\SpecialCharTok{\textgreater{}}\NormalTok{ median\_ensemble }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{simple\_ensemble}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{   flu\_forecasts\_component,}
-\SpecialCharTok{+}     \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
-\SpecialCharTok{+}     \AttributeTok{agg\_fun =}\NormalTok{ median,}
-\SpecialCharTok{+}     \AttributeTok{model\_id =} \StringTok{"median{-}ensemble"}
-\SpecialCharTok{+}\NormalTok{   )}
-\SpecialCharTok{\textgreater{}}\NormalTok{ lp\_normal }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{   flu\_forecasts\_component,}
-\SpecialCharTok{+}   \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{n\_samples =} \FloatTok{1e5}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{model\_id =} \StringTok{"lp{-}normal"}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{tail\_dist =} \StringTok{"norm"}
-\SpecialCharTok{+}\NormalTok{ )}
-\SpecialCharTok{\textgreater{}}\NormalTok{ lp\_lognormal }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{   flu\_forecasts\_component,}
-\SpecialCharTok{+}   \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{n\_samples =} \FloatTok{1e5}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{model\_id =} \StringTok{"lp{-}lognormal"}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{tail\_dist =} \StringTok{"lnorm"}
-\SpecialCharTok{+}\NormalTok{ ) }
+\NormalTok{mean\_ensemble }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{simple\_ensemble}\NormalTok{(}
+\NormalTok{  flu\_forecasts\_component,}
+  \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
+  \AttributeTok{agg\_fun =}\NormalTok{ mean,}
+  \AttributeTok{model\_id =} \StringTok{"mean{-}ensemble"}
+\NormalTok{)}
+\NormalTok{median\_ensemble }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{simple\_ensemble}\NormalTok{(}
+\NormalTok{  flu\_forecasts\_component,}
+    \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
+    \AttributeTok{agg\_fun =}\NormalTok{ median,}
+    \AttributeTok{model\_id =} \StringTok{"median{-}ensemble"}
+\NormalTok{  )}
+\NormalTok{lp\_normal }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
+\NormalTok{  flu\_forecasts\_component,}
+  \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
+  \AttributeTok{n\_samples =} \FloatTok{1e5}\NormalTok{,}
+  \AttributeTok{model\_id =} \StringTok{"lp{-}normal"}\NormalTok{,}
+  \AttributeTok{tail\_dist =} \StringTok{"norm"}
+\NormalTok{)}
+\NormalTok{lp\_lognormal }\OtherTok{\textless{}{-}}\NormalTok{ hubEnsembles}\SpecialCharTok{::}\FunctionTok{linear\_pool}\NormalTok{(}
+\NormalTok{  flu\_forecasts\_component,}
+  \AttributeTok{weights =} \ConstantTok{NULL}\NormalTok{,}
+  \AttributeTok{n\_samples =} \FloatTok{1e5}\NormalTok{,}
+  \AttributeTok{model\_id =} \StringTok{"lp{-}lognormal"}\NormalTok{,}
+  \AttributeTok{tail\_dist =} \StringTok{"lnorm"}
+\NormalTok{) }
 \end{Highlighting}
 \end{Shaded}
 
@@ -2096,9 +2099,10 @@ NU38FT000008). E. Howerton was supported by NSF RAPID awards DEB-2126278
 and DEB-2220903, as well as the Eberly College of Science Barbara
 McClintock Science Achievement Graduate Scholarship in Biology at the
 Pennsylvania State University. L. Contamin and H. Hochheiser were
-supported by NIGMS grant U24GM132013. The content is solely the
-responsibility of the authors and does not necessarily represent the
-official views of NIGMS, the National Institutes of Health, or CDC.
+supported by NIGMS grants U24GM132013 and R24GM153920. The content is
+solely the responsibility of the authors and does not necessarily
+represent the official views of NIGMS, the National Institutes of
+Health, or CDC.
 
 \section*{Consortium of Infectious Disease Modeling
 Hubs}\label{consortium-of-infectious-disease-modeling-hubs}

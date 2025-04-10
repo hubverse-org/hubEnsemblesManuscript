@@ -133,6 +133,7 @@ $$
 
 For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be equivalently calculated as $f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)$. Statistically this amounts to a mixture of the probability distributions, and the resulting probability distribution can be interpreted as one where the constituent probability distributions represent alternative predictions of the future, each of which has a probability $w_i$ of being the true one. For a visual depiction of these equations, see @fig-example-quantile-average-and-linear-pool below.
 
+```{r example-quantile-average-and-linear-pool}
 #| label: fig-example-quantile-average-and-linear-pool
 #| echo: false
 #| fig-cap: "(Panel A) Example predictions from two distributions ($N(100, 10)$

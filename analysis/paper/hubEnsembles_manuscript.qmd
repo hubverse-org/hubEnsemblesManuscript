@@ -1265,8 +1265,6 @@ flu_overall_states |>
 
 Plots of the models' forecasts can aid our understanding about the origin of these accuracy differences. For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The median ensemble, which has the best WIS, balanced interval width with calibration best overall, with narrower intervals than the linear pools that still achieved near-nominal coverage on average across all time points. The quantile mean's interval widths vary, though it usually has narrower intervals than the linear pools. However, this model's point forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated in @fig-plot-forecasts-hubVis for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022. Here, the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
 
-**\[ELR: In this figure, it would be good to use the same colors for each model in the top left panel (all models) as in the other panels.  For example, right now it looks like maybe the green color is used for the baseline in the "all models" panel, but is used for the median-ensemble in the lower right panel. \]**
-
 ```{r plot-forecasts-hubVis}
 #| label: fig-plot-forecasts-hubVis
 #| echo: false
@@ -1369,6 +1367,7 @@ ca_plot_baseline <-
     facet_scales = "free_y",
     facet_nrow = 1,
     interactive = FALSE,
+    pal_color = "Set2",
     fill_transparency = 0.45,
     intervals = c(0.5, 0.95),
     title = NULL,
@@ -1402,6 +1401,7 @@ ca_plot_all <-
     show_legend = FALSE,
     facet = "facet_name",
     interactive = FALSE,
+    pal_color = "Set2",
     fill_transparency = 0.45,
     intervals = c(0.5, 0.95),
     title = NULL,
@@ -1413,6 +1413,14 @@ ca_plot_all <-
       as.Date("2023-06-08")
     ),
     date_breaks = "4 months", date_labels = "%b '%y"
+  ) +
+  scale_color_manual(
+    breaks = model_names,
+    values = RColorBrewer::brewer.pal(5, "Set2")
+  ) +
+  scale_fill_manual(
+    breaks = model_names,
+    values = RColorBrewer::brewer.pal(5, "Set2")
   ) +
   theme_bw() +
   theme(

@@ -1090,7 +1090,7 @@ flu_forecasts_hubverse <- flu_forecasts_raw |>
   tidyr::separate(target, sep = " ", convert = TRUE,
                   into = c("horizon", "target"), extra = "merge") |>
   dplyr::mutate(target_end_date = 
-                  ceiling_date(forecast_date + weeks(horizon), "weeks") -
+                  round_date(forecast_date + weeks(horizon), "weeks") -
                     days(1)) |>
   as_model_out_tbl(
     model_id_col = "model",

@@ -773,17 +773,18 @@ the cumulative distribution function or probability mass function for
 the predictive distribution should be evaluated, and the \texttt{value}
 column contains the predicted \(F(x)\) or \(f(x)\), respectively.
 
-The hubverse also provides standards for target data, which can be
-stored in one of two formats: target time series or oracle output. The
-two tabular representations differ in terms of columns and purposes.
-Target time series data is a more traditional representation of the
-observed ``truth'' in a time series format with minimal columns; this
-format usually serves as calibration data for generating forecasts.
-Oracle output, on the other hand, represents prediction that an ``oracle
-model'' would have made had it known the observed values in advance.
-This format resembles model output data and is suited for evaluating
-forecasts. Some examples of target data are given in
-Section~\ref{sec-simple-ex}.
+The hubverse also provides standards for target data (i.e., observed
+data corresponding to each prediction target), which can be stored in
+one of two formats: target time series or oracle output. The two tabular
+representations differ in terms of columns and purposes. Target time
+series data is a more traditional representation of the observed
+``truth'' in a time series format with minimal columns; this format
+usually serves as calibration data for generating forecasts or might be
+used for visualization of predictions. Oracle output, on the other hand,
+represents prediction that an ``oracle model'' would have made had it
+known the observed values in advance. This format resembles model output
+data and is suited for evaluating forecasts. Some examples of target
+data are given in Section~\ref{sec-simple-ex}.
 
 \subsection{Ensemble functions in hubEnsembles}\label{sec-ens-fns}
 
@@ -866,13 +867,13 @@ stratified draw from individual models' samples \\
 \subsubsection{Simple ensemble}\label{sec-simple-ensemble}
 
 The \texttt{simple\_ensemble()} function directly computes an ensemble
-from component model outputs by combining them via some function (\(C\))
-within each unique combination of task ID variables, output types, and
-output type IDs. This function can be used to summarize predictions of
-output types mean, median, quantile, CDF, and PMF. The mechanics of the
-ensemble calculations are the same for each of the output types, though
-the resulting statistical ensembling method differs for different output
-types (Table~\ref{tbl-fns-by-output-type}).
+from component model outputs by combining them via an aggregation
+function (\(C\)) within each unique combination of task ID variables,
+output types, and output type IDs. This function can be used to
+summarize predictions of output types mean, median, quantile, CDF, and
+PMF. The mechanics of the ensemble calculations are the same for each of
+the output types, though the resulting statistical ensembling method
+differs for different output types (Table~\ref{tbl-fns-by-output-type}).
 
 By default, \texttt{simple\_ensemble()} uses the mean for the
 aggregation function \(C\) and equal weights for all models. For point
@@ -1123,8 +1124,7 @@ the location and time horizons we are interested in.
 \SpecialCharTok{+}   \AttributeTok{intervals =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.5}\NormalTok{, }\FloatTok{0.9}\NormalTok{),}
 \SpecialCharTok{+}   \AttributeTok{show\_legend =} \ConstantTok{FALSE}\NormalTok{,}
 \SpecialCharTok{+}   \AttributeTok{use\_median\_as\_point =} \ConstantTok{TRUE}\NormalTok{,}
-\SpecialCharTok{+}   \AttributeTok{x\_col\_name =} \StringTok{"target\_end\_date"}\NormalTok{, }
-\SpecialCharTok{+}   \AttributeTok{x\_target\_col\_name =} \StringTok{"date"}
+\SpecialCharTok{+}   \AttributeTok{x\_col\_name =} \StringTok{"target\_end\_date"}
 \SpecialCharTok{+}\NormalTok{ ) }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"incident hospitalizations"}\NormalTok{)}
@@ -1257,7 +1257,8 @@ of values for the task ID variables, the \texttt{output\_type} and the
 different statistical ensemble methods for different output types: for
 the quantile output type in our example data, the resulting ensemble is
 a quantile average, while for the mean, median, CDF and PMF output
-types, the ensemble is a linear pool.
+types, the ensemble is a linear pool
+(Table~\ref{tbl-fns-by-output-type}).
 
 \begin{Shaded}
 \begin{Highlighting}[]

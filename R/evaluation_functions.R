@@ -139,29 +139,23 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
   }
 
   if (y_var == "wis") {
-    y_lab <- "average wis"
+    y_lab <- "Average WIS"
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
         x = .data$forecast_date, y = .data$wis,
         shape = .data$model, group = .data$model
       )
-    ) +
-      ggplot2::coord_cartesian(ylim = c(0, sum(stats::quantile(data_to_plot$wis,
-        prob = c(0.5, 0.99)
-      ))))
+    )
   } else if (y_var == "mae") {
-    y_lab <- "mae"
+    y_lab <- "MAE"
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
         x = .data$forecast_date, y = .data$mae,
         shape = .data$model, group = .data$model
       )
-    ) +
-      ggplot2::coord_cartesian(ylim = c(0, sum(stats::quantile(data_to_plot$mae,
-        prob = c(0.5, 0.99)
-      ))))
+    )
   } else if (y_var == "cov95") {
-    y_lab <- "average PI coverage"
+    y_lab <- "Average PI Coverage"
     truth_data <- NULL
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
@@ -172,7 +166,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
       ggplot2::coord_cartesian(ylim = c(0, 1.05)) +
       ggplot2::geom_hline(ggplot2::aes(yintercept = 0.95))
   } else if (y_var == "cov50") {
-    y_lab <- "average PI coverage"
+    y_lab <- "Average PI Coverage"
     truth_data <- NULL
     gg <- ggplot2::ggplot(data_to_plot,
       mapping = ggplot2::aes(
@@ -196,20 +190,20 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
       ggplot2::geom_line(truth_to_plot,
         mapping = ggplot2::aes(
           x = .data$target_end_date, y = .data$value,
-        shape = .data$model, group = .data$model
+          shape = .data$model, group = .data$model
         ), col = "black"
       ) +
       ggplot2::geom_point(mapping = ggplot2::aes(col = .data$model)) +
       ggplot2::geom_line(mapping = ggplot2::aes(col = .data$model)) +
       ggplot2::scale_x_date(
-        name = "forecast date", date_breaks = "2 months",
+        name = "Forecast Date", date_breaks = "2 months",
         date_labels = "%b '%y"
       ) +
       ggplot2::scale_y_continuous(
         name = y_lab,
         sec.axis = ggplot2::sec_axis(
           trans = ~ . / truth_scaling,
-          name = "average target data"
+          name = "Average Target Data"
         )
       ) +
       ggplot2::scale_color_manual(breaks = model_names, values = model_colors) +
@@ -220,7 +214,7 @@ plot_evaluated_scores_forecast_date <- function(summarized_scores, model_names,
       ggplot2::geom_point(mapping = ggplot2::aes(col = .data$model), alpha = 0.8) +
       ggplot2::geom_line(mapping = ggplot2::aes(col = .data$model), alpha = 0.8) +
       ggplot2::scale_x_date(
-        name = "forecast date", date_breaks = "2 months",
+        name = "Forecast Date", date_breaks = "2 months",
         date_labels = "%b '%y"
       ) +
       ggplot2::scale_color_manual(breaks = model_names, values = model_colors) +
@@ -274,10 +268,10 @@ plot_flu_truth <- function(truth_data, date_range = NULL, main = "truth data",
     ggplot2::geom_point() +
     ggplot2::geom_line() +
     ggplot2::scale_x_date(
-      name = "forecast date", date_breaks = "2 months",
+      name = "Forecast Date", date_breaks = "2 months",
       date_labels = "%b '%y"
     ) +
     ggplot2::coord_cartesian(ylim = c(0, max(truth_to_plot$value) * 1.1)) +
-    ggplot2::labs(title = main, y = "average value") +
+    ggplot2::labs(title = main, y = "Average Value") +
     ggplot2::theme_bw()
 }

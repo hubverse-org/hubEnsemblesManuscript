@@ -1256,9 +1256,8 @@ of values for the task ID variables, the \texttt{output\_type} and the
 \texttt{output\_type\_id}. Recall that this function corresponds to
 different statistical ensemble methods for different output types: for
 the quantile output type in our example data, the resulting ensemble is
-a quantile average, while for the mean, median, CDF and PMF output
-types, the ensemble is a linear pool
-(Table~\ref{tbl-fns-by-output-type}).
+a quantile average, while for the CDF and PMF output types, the ensemble
+is a linear pool (Table~\ref{tbl-fns-by-output-type}).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -1289,8 +1288,8 @@ ensemble in the resulting model output; if not specified, the default is
 in the \texttt{model\_id} column are set by the argument
 \texttt{simple\_ensemble(...,\ model\_id)}. Results are generated for
 all output types, but only a subset are shown: 1-week ahead forecasts
-made on 2022-12-17 for Massachusetts, with only the median, 25th and
-75th quantiles for the quantile output type and all bins for the PMF
+made on 2022-12-17 for Massachusetts, with only the mean, median, 25th
+and 75th quantilesfor the quantile output type and all bins for the PMF
 output type. The \texttt{location}, \texttt{reference\_date} and
 \texttt{target\_end\_date} columns have been omitted for brevity, and
 the \texttt{value} column is rounded to two digits.}

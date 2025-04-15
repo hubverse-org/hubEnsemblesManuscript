@@ -1,5 +1,5 @@
 ---
-title: "Multi-model ensembles in infectious disease and public health: methods, interpretation, and implementation in R"
+title: "Multi-model ensembles in infectious disease and public health: Methods, interpretation, and implementation in R"
 format:
   pdf:
     number-sections: true

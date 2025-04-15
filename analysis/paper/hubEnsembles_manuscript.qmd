@@ -52,7 +52,9 @@ execute:
 bibliography: references.bib
 csl: american-medical-association.csl
 abstract: |
+
   Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. Popularized through domains such as weather forecasting and climate modeling, multi-model ensembles are becoming increasingly common in public health and biological applications. For example, multi-model outbreak forecasting provides more accurate and reliable information about the timing and burden of infectious disease outbreaks to public health officials and medical practitioners. Yet, understanding and interpreting multi-model ensemble results can be difficult, as there are a diversity of methods proposed in the literature with no clear consensus on which is best. Moreover, a lack of standard, easy-to-use software implementations impedes the generation of multi-model ensembles in practice. To address these challenges, we provide an introduction to the statistical foundations of applied probabilistic forecasting, including the role of multi-model ensembles. We introduce the `hubEnsembles` package, a flexible framework for ensembling various types of predictions using a range of methods. Finally, we present a tutorial and case-study of ensemble methods using the `hubEnsembles` package on a subset of real, publicly available data from the FluSight Forecast Hub.
+
 
 keywords: [multiple models, aggregation, forecast, prediction]
 keywords-formatted: [multiple models, aggregation, forecast, prediction]
@@ -506,7 +508,7 @@ All output types can summarize predictions from univariate marginal distribution
 
 For quantile predictions, the `output_type_id` is a numeric value between 0 and 1 specifying the cumulative probability associated with the quantile prediction. In the notation we defined in @sec-defs, the `output_type_id` corresponds to $\theta$ and the `value` is the quantile prediction $F^{-1}(\theta)$. For CDF or PMF predictions, the `output_type_id` is the target variable value $x$ at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the `value` column contains the predicted $F(x)$ or $f(x)$, respectively.
 
-The hubverse also provides standards for target data, which can be stored in one of two formats: target time series or oracle output. The two tabular representations differ in terms of columns and purposes. Target time series data is a more traditional representation of the observed "truth" in a time series format with minimal columns; this format usually serves as calibration data for generating forecasts. Oracle output, on the other hand, represents prediction that an "oracle model" would have made had it known the observed values in advance. This format resembles model output data and is suited for evaluating forecasts. Some examples of target data are given in @sec-simple-ex.
+The hubverse also provides standards for target data (i.e., observed data corresponding to each prediction target), which can be stored in one of two formats: target time series or oracle output. The two tabular representations differ in terms of columns and purposes. Target time series data is a more traditional representation of the observed "truth" in a time series format with minimal columns; this format usually serves as calibration data for generating forecasts or might be used for visualization of predictions. Oracle output, on the other hand, represents prediction that an "oracle model" would have made had it known the observed values in advance. This format resembles model output data and is suited for evaluating forecasts. Some examples of target data are given in @sec-simple-ex.
 
 ### Ensemble functions in hubEnsembles {#sec-ens-fns}
 
@@ -525,7 +527,7 @@ The `hubEnsembles` package contains two functions that perform ensemble calculat
 
 #### Simple ensemble {#sec-simple-ensemble}
 
-The `simple_ensemble()` function directly computes an ensemble from component model outputs by combining them via some function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type).
+The `simple_ensemble()` function directly computes an ensemble from component model outputs by combining them via an aggregation function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type).
 
 By default, `simple_ensemble()` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble()` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble()` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear pool method.
 
@@ -644,8 +646,7 @@ hubVis::plot_step_ahead_model_output(
   intervals = c(0.5, 0.9),
   show_legend = FALSE,
   use_median_as_point = TRUE,
-  x_col_name = "target_end_date", 
-  x_target_col_name = "date"
+  x_col_name = "target_end_date"
 ) +
   theme_bw() +
   labs(y = "incident hospitalizations")
@@ -721,7 +722,7 @@ ggplot(
 
 ### Creating ensembles with simple_ensemble
 
-Using the default options for `simple_ensemble()`, we can generate an equally weighted mean ensemble for each unique combination of values for the task ID variables, the `output_type` and the `output_type_id`. Recall that this function corresponds to different statistical ensemble methods for different output types: for the quantile output type in our example data, the resulting ensemble is a quantile average, while for the mean, median, CDF and PMF output types, the ensemble is a linear pool.
+Using the default options for `simple_ensemble()`, we can generate an equally weighted mean ensemble for each unique combination of values for the task ID variables, the `output_type` and the `output_type_id`. Recall that this function corresponds to different statistical ensemble methods for different output types: for the quantile output type in our example data, the resulting ensemble is a quantile average, while for the mean, median, CDF and PMF output types, the ensemble is a linear pool (@tbl-fns-by-output-type).
 
 ```{r}
 #| prompt: true
@@ -832,8 +833,7 @@ hubVis::plot_step_ahead_model_output(
   intervals = c(0.5, 0.90),
   show_legend = TRUE,
   pal_color = "Accent",
-  x_col_name = "target_end_date", 
-  x_target_col_name = "date"
+  x_col_name = "target_end_date"
 ) +
   theme_bw() +
   labs(y = "incident hospitalizations")
@@ -950,8 +950,7 @@ p2 <-
     intervals = c(0.5, 0.9),
     pal_color = "Set1",
     show_legend = TRUE,
-    x_col_name = "target_end_date", 
-    x_target_col_name = "date"
+    x_col_name = "target_end_date"
   ) +
   theme_bw() +
   labs(y = "incident hospitalizations")

@@ -264,16 +264,15 @@ the effects of potential interventions has demonstrated utility for
 public health officials and medical practitioners. Underlying these
 predictions are mathematical models that use historical disease
 incidence data to make probabilistic predictions of incidence in the
-future\textsuperscript{7--11} \textbf{{[}EH: suggestions on references
-here would be great.{]}}. Given the performance benefits of multi-model
-ensembles, it is becoming increasingly common to convene multiple
-modeling teams into a collaborative ``hub''\textsuperscript{12}, where
-each team generates independent predictions that are aggregated to
-collectively produce an ensemble. For example, this approach has been
-used to make real-time, multi-model predictions for seasonal
-influenza\textsuperscript{10,13}, dengue\textsuperscript{14}, West Nile
-virus\textsuperscript{15}, and more recently
-SARS-CoV-2\textsuperscript{16--18}.
+future\textsuperscript{7--11}. Given the performance benefits of
+multi-model ensembles, it is becoming increasingly common to convene
+multiple modeling teams into a collaborative
+``hub''\textsuperscript{12}, where each team generates independent
+predictions that are aggregated to collectively produce an ensemble. For
+example, this approach has been used to make real-time, multi-model
+predictions for seasonal influenza\textsuperscript{10,13},
+dengue\textsuperscript{14}, West Nile virus\textsuperscript{15}, and
+more recently SARS-CoV-2\textsuperscript{16--18}.
 
 Generating multi-model ensembles or interpreting the resulting
 predictions depends on understanding the underlying statistical
@@ -419,31 +418,21 @@ F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta)
 
 This computes the average value of predictions across different models
 for each fixed quantile level \(\theta\). For a normal distribution or
-any distribution with a shape and scale parameter, the resulting
-quantile average will be the same type of distribution, with shape and
-scale parameters that are the average of the shape and scale parameters
-from the individual distributions
-(Figure~\ref{fig-example-quantile-average-and-linear-pool}, panel B)
-\textbf{{[}ELR: Should this refer to location and scale parameterws
-rather than shape and scale parameters? {]}}. In other words, this
-method interprets the predictive probability distributions that are
-being combined as uncertain estimates of a single true distribution. It
-is also possible to use other combination functions, such as a weighted
-median, to combine quantile predictions.
+any distribution with a location and scale parameter, the resulting
+quantile average will be the same type of distribution, with location
+and scale parameters that are the average of the location and scale
+parameters from the individual distributions
+(Figure~\ref{fig-example-quantile-average-and-linear-pool}, panel B). In
+other words, this method interprets the predictive probability
+distributions that are being combined as uncertain estimates of a single
+true distribution. It is also possible to use other combination
+functions, such as a weighted median, to combine quantile predictions.
 
 The probability average or linear pool is calculated by averaging
 probabilities across predictions for a fixed value of the target
-variable, \(x\). In other words, for a set
-\(\mathcal{F} = \{F_i(x)| i \in 1,...,N \}\) containing the values of
-CDFs at the point \(x\) \textbf{{[}ELR: There is some inconsistency in
-how we describe the set \(\mathcal{F}\) here and how we describe
-\(\mathcal{Q}\) above. Here we say that \(\mathcal{F}\) is a set of
-values of CDFs, while above we say that \(\mathcal{Q}\) is a set of
-quantile \emph{functions}. I think either is ok, but we should pick
-whether we want both to be functions (quantile functions or cumulative
-distribution functions) or we want both to be sets of function values
-(quantiles or probabilities). {]}} and weights \(\pmb{w}\), the CDF for
-a linear pool is calculated as
+variable, \(x\). In other words, for a set of CDFs
+\(\mathcal{F} = \{F_i(x)| i \in 1,...,N \}\) and weights \(\pmb{w}\),
+the linear pool is calculated as
 
 \[
 F_{LOP}(x) = C_{LOP}(\mathcal{F}, \pmb{w}) = \sum_{i = 1}^Nw_iF_i(x). 
@@ -511,8 +500,6 @@ constitutes sampling error\textsuperscript{24}.
 
 \subsection{Applications in public health and infectious disease
 outbreaks}\label{applications-in-public-health-and-infectious-disease-outbreaks}
-
-\textbf{{[}EH: THOUGHTS/EDITS TO THIS SECTION ARE WELCOME!{]}}
 
 Multi-model ensembles have become the gold standard for forecasting and
 prediction efforts that support public health in real

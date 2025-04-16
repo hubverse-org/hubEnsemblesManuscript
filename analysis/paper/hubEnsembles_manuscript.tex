@@ -4,9 +4,7 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-  letterpaper,
-  DIV=11,
-  numbers=noendperiod]{scrartcl}
+]{article}
 
 \usepackage{amsmath,amssymb}
 \usepackage{iftex}
@@ -40,6 +38,7 @@
   \KOMAoptions{parskip=half}}
 \makeatother
 \usepackage{xcolor}
+\usepackage[top=30mm,left=20mm]{geometry}
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \setcounter{secnumdepth}{5}
 % Make \paragraph and \subparagraph free-standing
@@ -151,7 +150,7 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-\KOMAoption{captions}{tableheading}
+\usepackage{authblk}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -213,19 +212,33 @@
 
 \title{Multi-model ensembles in infectious disease and public health:
 Methods, interpretation, and implementation in R}
-\author{Li Shandross \and Emily Howerton \and Lucie Contamin \and Harry
-Hochheiser \and Anna Krystalli \and Consortium of Infectious Disease
-Modeling Hubs \and Nicholas G. Reich \and Evan L. Ray}
-\date{}
+
+
+\author[1]{Li Shandross}
+\author[2]{Emily Howerton}
+\author[3]{Lucie Contamin}
+\author[3]{Harry Hochheiser}
+\author[4]{Anna Krystalli}
+\author[5]{Consortium of Infectious Disease Modeling Hubs}
+\author[1]{Nicholas G. Reich}
+\author[1]{Evan L. Ray}
+
+\affil[1]{University of Massachusetts Amherst}
+\affil[2]{The Pennsylvania State University}
+\affil[3]{University of Pittsburgh}
+\affil[4]{R-RSE SMPC}
+\affil[5]{A list of authors and affiliations appears at the end of the
+paper}
 
 \begin{document}
 \maketitle
-\begin{abstract}
-Combining predictions from multiple models into an ensemble is a widely
-used practice across many fields with demonstrated performance benefits.
-Popularized through domains such as weather forecasting and climate
-modeling, multi-model ensembles are becoming increasingly common in
-public health and biological applications. For example, multi-model
+
+%% an abstract and keywords
+\abstract{Combining predictions from multiple models into an ensemble is
+a widely used practice across many fields with demonstrated performance
+benefits. Popularized through domains such as weather forecasting and
+climate modeling, multi-model ensembles are becoming increasingly common
+in public health and biological applications. For example, multi-model
 outbreak forecasting provides more accurate and reliable information
 about the timing and burden of infectious disease outbreaks to public
 health officials and medical practitioners. Yet, understanding and
@@ -240,8 +253,13 @@ including the role of multi-model ensembles. We introduce the
 various types of predictions using a range of methods. Finally, we
 present a tutorial and case-study of ensemble methods using the
 \texttt{hubEnsembles} package on a subset of real, publicly available
-data from the FluSight Forecast Hub.
-\end{abstract}
+data from the FluSight Forecast Hub.}
+
+%% at least one keyword must be supplied
+\hfill
+
+\noindent
+\textbf{Keywords:} multiple models, aggregation, forecast, prediction
 
 \section{Introduction}\label{sec-intro}
 

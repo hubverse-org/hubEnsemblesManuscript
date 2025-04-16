@@ -2,49 +2,64 @@
 title: "Multi-model ensembles in infectious disease and public health: Methods, interpretation, and implementation in R"
 format:
   pdf:
+    template-partials:
+      - before-body.tex
+      - title.tex
+    include-in-header:  
+        - text: |
+            \usepackage{authblk}
     number-sections: true
     keep-tex: true
+    geometry:
+      - top=30mm
+      - left=20mm
     journal:
       type: article
       cite-shortnames: true
       suppress: [title]
 author:
   - name: Li Shandross
-    affiliations:
-      - name: University of Massachusetts Amherst
+    affil-id: 1
     orcid: 0009-0008-1348-1954
     attributes:
       equal-contributor: true
     email: lshandross@umass.edu
   - name: Emily Howerton
-    affiliations:
-      - The Pennsylvania State University
+    affil-id: 2
     orcid: 0000-0002-0639-3728
     attributes:
       equal-contributor: true
+      corresponding: true
   - name: Lucie Contamin
-    affiliations:
-      - University of Pittsburgh
+    affil-id: 3
     orcid: 0000-0001-5797-1279
   - name: Harry Hochheiser
-    affiliations:
-      - University of Pittsburgh
+    affil-id: 3 
     orcid: 0000-0001-8793-9982
   - name: Anna Krystalli
-    affiliations:
-      - R-RSE SMPC
+    affil-id: 4
     orcid: 0000-0002-2378-4915
   - name: Consortium of Infectious Disease Modeling Hubs
-    affiliations:
-      - A list of authors and their affiliations appears at the end of the paper
+    affil-id: 5 
   - name: Nicholas G. Reich
-    affiliations:
-      - University of Massachusetts Amherst
+    affil-id: 1
     orcid: 0000-0003-3503-9899
   - name: Evan L. Ray
-    affiliations:
-      - University of Massachusetts Amherst
+    affil-id: 1
     orcid: 0000-0003-4035-0243
+
+affiliations: 
+  - id: 1
+    name: University of Massachusetts Amherst
+  - id: 2
+    name: The Pennsylvania State University
+  - id: 3
+    name: University of Pittsburgh
+  - id: 4
+    name: R-RSE SMPC
+  - id: 5
+    name: A list of authors and affiliations appears at the end of the paper
+  
 execute:
   echo: true
   warning: false
@@ -53,9 +68,9 @@ bibliography: references.bib
 csl: american-medical-association.csl
 abstract: |
 
-  Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. Popularized through domains such as weather forecasting and climate modeling, multi-model ensembles are becoming increasingly common in public health and biological applications. For example, multi-model outbreak forecasting provides more accurate and reliable information about the timing and burden of infectious disease outbreaks to public health officials and medical practitioners. Yet, understanding and interpreting multi-model ensemble results can be difficult, as there are a diversity of methods proposed in the literature with no clear consensus on which is best. Moreover, a lack of standard, easy-to-use software implementations impedes the generation of multi-model ensembles in practice. To address these challenges, we provide an introduction to the statistical foundations of applied probabilistic forecasting, including the role of multi-model ensembles. We introduce the `hubEnsembles` package, a flexible framework for ensembling various types of predictions using a range of methods. Finally, we present a tutorial and case-study of ensemble methods using the `hubEnsembles` package on a subset of real, publicly available data from the FluSight Forecast Hub.
-
-
+  Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. Popularized through domains such as weather forecasting and climate modeling, multi-model ensembles are becoming increasingly common in public health and biological applications. For example, multi-model outbreak forecasting provides more accurate and reliable information about the timing and burden of infectious disease outbreaks to public health officials and medical practitioners. Yet, understanding and interpreting multi-model ensemble results can be difficult, as there are a diversity of methods proposed in the literature with no clear consensus on which is best. Moreover, a lack of standard, easy-to-use software implementations impedes the generation of multi-model ensembles in practice. To address these challenges, we provide an introduction to the statistical foundations of applied probabilistic forecasting, including the role of multi-model ensembles. We introduce the `hubEnsembles` package, a flexible framework for ensembling various types of predictions using a range of methods. Finally, we present a tutorial and case-study of ensemble methods using the `hubEnsembles` package on a subset of real, publicly available data from the FluSight Forecast Hub. 
+  
+  
 keywords: [multiple models, aggregation, forecast, prediction]
 keywords-formatted: [multiple models, aggregation, forecast, prediction]
 ---

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.5.13)  16 APR 2025 14:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2024) (preloaded format=pdflatex 2024.5.13)  18 APR 2025 10:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -462,8 +462,8 @@ File: bkm-pdftex.def 2023-12-10 v1.31 bookmark driver for pdfTeX and luaTeX (HO)
 )) (/usr/local/texlive/2024/texmf-dist/tex/latex/xurl/xurl.sty
 Package: xurl 2022/01/09 v 0.10 modify URL breaks
 )
-Package hyperref Info: Option `colorlinks' set `true' on input line 211.
-LaTeX Font Info:    Trying to load font information for T1+lmr on input line 233.
+Package hyperref Info: Option `colorlinks' set `true' on input line 212.
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 236.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/lm/t1lmr.fd
 File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) (/usr/local/texlive/2024/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
@@ -480,37 +480,37 @@ LaTeX Warning: Label `tbl-example-forecasts-pmf' multiply defined.
 )
 \openout1 = `hubEnsembles_manuscript.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 233.
-LaTeX Font Info:    ... okay on input line 233.
-LaTeX Info: Redefining \microtypecontext on input line 233.
-Package microtype Info: Applying patch `item' on input line 233.
-Package microtype Info: Applying patch `toc' on input line 233.
-Package microtype Info: Applying patch `eqnum' on input line 233.
-Package microtype Info: Applying patch `footnote' on input line 233.
-Package microtype Info: Applying patch `verbatim' on input line 233.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 236.
+LaTeX Font Info:    ... okay on input line 236.
+LaTeX Info: Redefining \microtypecontext on input line 236.
+Package microtype Info: Applying patch `item' on input line 236.
+Package microtype Info: Applying patch `toc' on input line 236.
+Package microtype Info: Applying patch `eqnum' on input line 236.
+Package microtype Info: Applying patch `footnote' on input line 236.
+Package microtype Info: Applying patch `verbatim' on input line 236.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using protrusion set `basicmath'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 233.
+LaTeX Info: Redefining \showhyphens on input line 236.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -573,49 +573,49 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 233.
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 235.
+Package hyperref Info: Link coloring ON on input line 236.
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 238.
 (/usr/local/texlive/2024/texmf-dist/tex/latex/lm/ot1lmr.fd
 File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 235.
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 238.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/lm/omllmm.fd
 File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 235.
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 238.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/lm/omslmsy.fd
 File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 235.
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 238.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/lm/omxlmex.fd
 File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 235.
+(Font)              <12> on input line 238.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 235.
+(Font)              <8> on input line 238.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 235.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 235.
+(Font)              <6> on input line 238.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 238.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/usr/local/texlive/2024/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 235.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 238.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/local/texlive/2024/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 252.
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 255.
  (/usr/local/texlive/2024/texmf-dist/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <9> on input line 271.
+(Font)              <9> on input line 274.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 271.
+(Font)              <5> on input line 274.
  [1
 
 {/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}]
@@ -624,20 +624,20 @@ pdfTeX warning: pdflatex (file ./overview_fig_FULL.pdf): PDF inclusion: found PD
 <overview_fig_FULL.pdf, id=24, 938.06459pt x 582.79935pt>
 File: overview_fig_FULL.pdf Graphic file (type pdf)
 <use overview_fig_FULL.pdf>
-Package pdftex.def Info: overview_fig_FULL.pdf  used on input line 370.
+Package pdftex.def Info: overview_fig_FULL.pdf  used on input line 373.
 (pdftex.def)             Requested size: 465.25233pt x 289.05125pt.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 382.
+(Font)              <10> on input line 385.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 382.
-[2{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}] [3{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc} <./overview_fig_FULL.pdf>]
-<hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf, id=94, 712.6625pt x 283.0575pt>
+(Font)              <7> on input line 385.
+[2] [3{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc} <./overview_fig_FULL.pdf>]
+<hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf, id=92, 712.6625pt x 283.0575pt>
 File: hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf Graphic file (type pdf)
 <use hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf>
-Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf  used on input line 473.
+Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf  used on input line 476.
 (pdftex.def)             Requested size: 465.2369pt x 184.78421pt.
  [4{/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}] [5 <./hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf>] [6] [7]
-Overfull \hbox (6.64352pt too wide) in paragraph at lines 809--818
+Overfull \hbox (6.64352pt too wide) in paragraph at lines 812--821
 \T1/lmr/m/n/9 (-20) The \T1/lmtt/m/n/9 hubEnsembles \T1/lmr/m/n/9 (-20) pack-age con-tains two func-tions that per-form en-sem-ble cal-cu-la-tions: \T1/lmtt/m/n/9 simple_ensemble()\T1/lmr/m/n/9 (-20) ,
  []
 
@@ -645,53 +645,53 @@ Overfull \hbox (6.64352pt too wide) in paragraph at lines 809--818
 <hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf, id=188, 573.14125pt x 277.035pt>
 File: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf Graphic file (type pdf)
 <use hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf>
-Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf  used on input line 1160.
+Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf  used on input line 1163.
 (pdftex.def)             Requested size: 465.25633pt x 224.88747pt.
  [12] [13 <./hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf>]
 <hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf, id=213, 568.1225pt x 272.01625pt>
 File: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf Graphic file (type pdf)
 <use hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf>
-Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf  used on input line 1259.
+Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf  used on input line 1262.
 (pdftex.def)             Requested size: 465.2653pt x 222.76837pt.
  [14 <./hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf>] [15]
 <hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf, id=237, 562.1pt x 277.035pt>
 File: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf Graphic file (type pdf)
 <use hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf>
-Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf  used on input line 1404.
+Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf  used on input line 1407.
 (pdftex.def)             Requested size: 465.24777pt x 229.30067pt.
  [16 <./hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf>]
 <hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf, id=257, 716.6775pt x 285.065pt>
 File: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf Graphic file (type pdf)
 <use hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf>
-Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf  used on input line 1485.
+Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf  used on input line 1488.
 (pdftex.def)             Requested size: 465.25528pt x 185.05951pt.
  [17 <./hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf>] [18] [19] [20] [21] [22]
 <hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf, id=317, 630.355pt x 852.18375pt>
 File: hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf Graphic file (type pdf)
 <use hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf>
-Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf  used on input line 1997.
+Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf  used on input line 2000.
 (pdftex.def)             Requested size: 454.35541pt x 614.248pt.
 
 
-LaTeX Warning: Float too large for page by 46.03365pt on input line 2008.
+LaTeX Warning: Float too large for page by 46.03365pt on input line 2011.
 
 <hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf, id=321, 701.62125pt x 836.12375pt>
 File: hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf Graphic file (type pdf)
 <use hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf>
-Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf  used on input line 2037.
+Package pdftex.def Info: hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf  used on input line 2040.
 (pdftex.def)             Requested size: 465.25545pt x 554.44606pt.
 [23] [24 <./hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf>] [25 <./hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf>] [26]
-Underfull \hbox (badness 1014) in paragraph at lines 2243--2243
+Underfull \hbox (badness 1014) in paragraph at lines 2246--2246
 \T1/lmr/m/n/9 (+20) dic-tive epi-demic mod-el-ing. \T1/lmr/m/it/9 (+20) Amer-i-can Jour-nal of Pub-lic Health\T1/lmr/m/n/9 (+20) . 2022;112(6):839-842.
  []
 
 [27] [28]
-Underfull \hbox (badness 1852) in paragraph at lines 2448--2448
+Underfull \hbox (badness 1852) in paragraph at lines 2451--2451
 []|\T1/lmr/m/n/9 (+20) Dean NE, Pa-s-tore y Pi-o-ntti A, Madewell ZJ, et al. En-sem-ble fore-cast mod-el-ing
  []
 
 
-Underfull \hbox (badness 1028) in paragraph at lines 2448--2448
+Underfull \hbox (badness 1028) in paragraph at lines 2451--2451
 \T1/lmr/m/n/9 (+20) for the de-sign of COVID-19 vac-cine ef-fi-cacy tri-als. \T1/lmr/m/it/9 (+20) Vac-cine\T1/lmr/m/n/9 (+20) . 2020;38(46):7213-7216.
  []
 
@@ -706,15 +706,15 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 16889 strings out of 474116
- 274501 string characters out of 5743682
- 1961187 words of memory out of 5000000
+ 16891 strings out of 474116
+ 274523 string characters out of 5743682
+ 1962187 words of memory out of 5000000
  38618 multiletter control sequences out of 15000+600000
- 641672 words of font info for 207 fonts, out of 8000000 for 9000
+ 641763 words of font info for 208 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  83i,12n,93p,1822b,594s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmbx9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmmi7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmmi9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr17.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmr9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmri9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmsy7.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmsy9.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></usr/local/texlive/2024/texmf-dist/fonts/type1/public/lm/lmtt9.pfb>
-Output written on hubEnsembles_manuscript.pdf (30 pages, 714035 bytes).
+Output written on hubEnsembles_manuscript.pdf (30 pages, 714935 bytes).
 PDF statistics:
  702 PDF objects out of 1000 (max. 8388607)
  573 compressed objects within 6 object streams

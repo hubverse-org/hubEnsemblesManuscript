@@ -5,9 +5,10 @@ format:
     template-partials:
       - before-body.tex
       - title.tex
-    include-in-header:  
-        - text: |
-            \usepackage{authblk}
+    include-in-header:
+      text: |
+        \usepackage{authblk}
+        \setcounter{Maxaffil}{1}
     number-sections: true
     keep-tex: true
     geometry:
@@ -19,13 +20,13 @@ format:
       suppress: [title]
 author:
   - name: Li Shandross
-    affil-id: 1
+    affil-id: 1,*
     orcid: 0009-0008-1348-1954
     attributes:
       equal-contributor: true
     email: lshandross@umass.edu
   - name: Emily Howerton
-    affil-id: 2
+    affil-id: 2,*,a
     orcid: 0000-0002-0639-3728
     attributes:
       equal-contributor: true
@@ -59,7 +60,11 @@ affiliations:
     name: R-RSE SMPC
   - id: 5
     name: A list of authors and affiliations appears at the end of the paper
-  
+  - id: '*'
+    name: Equal contributors
+  - id: a
+    name: Corresponding author, ehowerton@psu.edu
+    
 execute:
   echo: true
   warning: false

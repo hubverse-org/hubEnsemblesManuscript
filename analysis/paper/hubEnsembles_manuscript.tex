@@ -151,6 +151,7 @@
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
 \usepackage{authblk}
+\setcounter{Maxaffil}{1}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -214,8 +215,8 @@
 Methods, interpretation, and implementation in R}
 
 
-\author[1]{Li Shandross}
-\author[2]{Emily Howerton}
+\author[1,*]{Li Shandross}
+\author[2,*,a]{Emily Howerton}
 \author[3]{Lucie Contamin}
 \author[3]{Harry Hochheiser}
 \author[4]{Anna Krystalli}
@@ -229,6 +230,8 @@ Methods, interpretation, and implementation in R}
 \affil[4]{R-RSE SMPC}
 \affil[5]{A list of authors and affiliations appears at the end of the
 paper}
+\affil[*]{Equal contributors}
+\affil[a]{Corresponding author, ehowerton@psu.edu}
 
 \begin{document}
 \maketitle

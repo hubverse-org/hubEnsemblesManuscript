@@ -1,6 +1,6 @@
 # Fdb version 4
-["pdflatex"] 1744827831.25554 "/Users/emilyhowerton/Documents/GitHub/hubEnsemblesManuscript/analysis/paper/hubEnsembles_manuscript.tex" "hubEnsembles_manuscript.pdf" "hubEnsembles_manuscript" 1744827832.23116 0
-  "/Users/emilyhowerton/Documents/GitHub/hubEnsemblesManuscript/analysis/paper/hubEnsembles_manuscript.tex" 1744827827.57811 129730 c5e80e772c5ddd4fd4ac61712d7df0d8 ""
+["pdflatex"] 1744987307.94308 "/Users/emilyhowerton/Documents/GitHub/hubEnsemblesManuscript/analysis/paper/hubEnsembles_manuscript.tex" "hubEnsembles_manuscript.pdf" "hubEnsembles_manuscript" 1744987308.90734 0
+  "/Users/emilyhowerton/Documents/GitHub/hubEnsemblesManuscript/analysis/paper/hubEnsembles_manuscript.tex" 1744986893.35075 129842 e33aeaf6564c3fc8c920ddb0fe8b853d ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc" 1254269338 2375 baa924870cfb487815765f9094cf3728 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc" 1202520719 3486 c7eadf5dcc57b3b2d11736679f6636ba ""
   "/usr/local/texlive/2024/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc" 1202520719 2405 5dcf2c1b967ee25cc46c58cd52244aed ""
@@ -167,15 +167,15 @@
   "/usr/local/texlive/2024/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1715615425.93261 5467645 128b85b7cde5f5edc5cb7f1dd7ff8736 ""
   "/usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1715615387 8221423 4585f4e850e670e603a3cebd5ae54f2e ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
-  "hubEnsembles_manuscript.aux" 1744827832.11064 44416 89a4da83b26436168b562f19c9ac678b "pdflatex"
-  "hubEnsembles_manuscript.tex" 1744827827.57811 129730 c5e80e772c5ddd4fd4ac61712d7df0d8 ""
-  "hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf" 1744827742.60539 46226 82813b35cbbf6b756cfa6a86773f9531 ""
-  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf" 1744827743.69456 7408 6b497c3deb9699b302f376419ec06a3e ""
-  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf" 1744827742.96896 9006 99d37e443c0b06f26a119bbf1aa51cd3 ""
-  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf" 1744827743.2495 7217 2150c71f398eb9c004e8e06d47df9744 ""
-  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf" 1744827744.55636 8555 f5408082c675b429c09d153d3f308474 ""
-  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf" 1744827824.07504 39203 ff4dd201950d461447744a7a6ffe2d20 ""
-  "hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf" 1744827825.12539 30482 deb9442de1a55e303dc1f35b165b800a ""
+  "hubEnsembles_manuscript.aux" 1744987308.75086 44416 1ecde5e411d689d4cecf650a0ad1aca8 "pdflatex"
+  "hubEnsembles_manuscript.tex" 1744986893.35075 129842 e33aeaf6564c3fc8c920ddb0fe8b853d ""
+  "hubEnsembles_manuscript_files/figure-pdf/fig-example-quantile-average-and-linear-pool-1.pdf" 1744986805.80813 46226 de639723091dbf082cd54389fa35bb18 ""
+  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-ensembles-1.pdf" 1744986806.83933 7408 71058e846ab3413dd45b7c830bd02fe8 ""
+  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-1.pdf" 1744986806.16496 9006 829ae81dba24df453711e05582a6dbda ""
+  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mods-pmf-1.pdf" 1744986806.42359 7217 8ad8f2899a95529dcdb22a92ff397efd ""
+  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-quantile-and-linear-pool-1.pdf" 1744986807.65841 8555 002b8b356f186a4458ea1f3912ed9aa0 ""
+  "hubEnsembles_manuscript_files/figure-pdf/fig-plot-forecasts-hubVis-1.pdf" 1744986890.06297 39203 a9e1cc32c19f6db98ff76fd5666ff38c ""
+  "hubEnsembles_manuscript_files/figure-pdf/fig-wis-vs-forecast-date-1.pdf" 1744986891.046 30482 660105536e1a2c7b47b527d51b5bc47e ""
   "overview_fig_FULL.pdf" 1743450369.39463 120389 0fa8ac1cd5755bd92ba758e9dd04908d ""
   (generated)
   "hubEnsembles_manuscript.aux"

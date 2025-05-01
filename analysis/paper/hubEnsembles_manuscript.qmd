@@ -197,7 +197,7 @@ This representation of predictive model output is codified by the `model_out_tbl
 | `pmf`         | String naming a possible category of a discrete outcome variable                            | Numeric between 0.0 and 1.0: The probability mass of the predictive distribution when evaluated at a specified level of a discrete outcome variable           |
 | `sample`*      | Integer or string specifying the sample index                                               | Numeric: A sample from the predictive distribution                                                                                                            |
 
-: A table summarizing how the model output representation columns are used for predictions of different output types. *Sample output types are not yet supported by the [hubEnsembles]{.pkg} package. Adapted from <https://hubverse.io/en/latest/user-guide/model-output.html#formats-of-model-output> {#tbl-model-output-rep}
+: A table summarizing how the model output representation columns are used for predictions of different output types. *Sample output types are not yet supported by the [hubEnsembles]{.pkg} package. Adapted from <https://docs.hubverse.io/en/latest/user-guide/model-output.html#formats-of-model-output> {#tbl-model-output-rep}
 
 ### Ensemble functions in hubEnsembles {#sec-ens-fns}
 

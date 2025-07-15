@@ -314,27 +314,27 @@ Here, we provide an introduction to the statistical foundations of
 multi-model ensembles in applied probabilistic forecasting
 (Section~\ref{sec-defs}). In addition, to improve accessibility,
 reproducibility, and interoperability, we have developed a comprehensive
-R package \texttt{hubEnsembles} that implements these methods. The
-\texttt{hubEnsembles} package provides a flexible framework for
-generating ensemble predictions from multiple models across a range of
-common methods and prediction types; it is situated within the broader
-``hubverse'' collection of open-source software and data tools to
-facilitate the development and management of collaborative modeling
-exercises\textsuperscript{30}. These two factors together, a simple
-implementation framework across methods and integration with hubverse
-data standards and tools, make \texttt{hubEnsembles} accessible and easy
-to use. Finally, we present a basic demonstration of multi-model
-ensemble generation and interpretation (Section~\ref{sec-simple-ex}),
-and a more in-depth analysis using real influenza forecasts
-(Section~\ref{sec-case-study}). Together, these case studies motivate a
-discussion and comparison of the various methods
-(Section~\ref{sec-conclusions}). While the case studies focus on
-infectious disease applications, the software and tools presented are
-general and could be used for applications in other areas of biomedical
-and public health research, or other domains. By reviewing multi-model
-ensemble methodology and synthesizing these methods into an easy-to use
-implementation, this tutorial provides guidance on understanding,
-interpreting, and implementing multi-model ensembles.
+R package \texttt{hubEnsembles} that implements these methods
+(Section~\ref{sec-implementation}). The \texttt{hubEnsembles} package
+provides a flexible framework for generating ensemble predictions from
+multiple models across a range of common methods and prediction types;
+it is situated within the broader ``hubverse'' collection of open-source
+software and data tools to facilitate the development and management of
+collaborative modeling exercises\textsuperscript{30}. These two factors
+together, a simple implementation framework across methods and
+integration with hubverse data standards and tools, make
+\texttt{hubEnsembles} accessible and easy to use. Finally, we present a
+basic demonstration of multi-model ensemble generation and
+interpretation (Section~\ref{sec-simple-ex}), and a more in-depth
+analysis using real influenza forecasts (Section~\ref{sec-case-study}).
+Together, these case studies motivate a discussion and comparison of the
+various methods (Section~\ref{sec-conclusions}). While the case studies
+focus on infectious disease applications, the software and tools
+presented are general and could be used for applications in other areas
+of biomedical and public health research, or other domains. By reviewing
+multi-model ensemble methodology and synthesizing these methods into an
+easy-to use implementation, this tutorial provides guidance on
+understanding, interpreting, and implementing multi-model ensembles.
 
 \section{How to generate a multi-model ensemble}\label{sec-defs}
 
@@ -359,10 +359,11 @@ into the future across multiple possible scenarios. Some intervention
 decisions, such as quarantine and isolation policy, may depend on
 estimates of key biological parameters such as the generation interval
 for an infectious pathogen. Throughout, we will use the general term
-``prediction'' to encapsulate all such outcomes that could be modeled.
-Predictions can also capture varying degrees of uncertainty in the
-outcome. A \emph{point prediction} gives a single estimate of an outcome
-while a \emph{probabilistic prediction} provides an estimated
+``prediction'' to encapsulate all such outcomes that could be modeled,
+encompassing short-term forecasts, scenario projections, and parameter
+estimates. Predictions can also capture varying degrees of uncertainty
+in the outcome. A \emph{point prediction} gives a single estimate of an
+outcome while a \emph{probabilistic prediction} provides an estimated
 probability distribution over a set of outcomes. In either case, the
 basic steps required to generate an ensemble are the same.
 
@@ -449,9 +450,9 @@ distributions that are being combined as uncertain estimates of a single
 true distribution. It is also possible to use other combination
 functions, such as a weighted median, to combine quantile predictions.
 
-The probability average or linear pool is calculated by averaging
-probabilities across predictions for a fixed value of the target
-variable, \(x\). In other words, for a set of CDFs
+The probability average or linear opinion pool (LOP) is calculated by
+averaging probabilities across predictions for a fixed value of the
+target variable, \(x\). In other words, for a set of CDFs
 \(\mathcal{F} = \{F_i(x)| i \in 1,...,N \}\) and weights \(\pmb{w}\),
 the linear pool is calculated as
 
@@ -623,10 +624,10 @@ according to the needs of the modeling hub or modeling
 task\textsuperscript{30}.
 
 Table~\ref{tbl-example-forecasts} provides an example of model output
-that stores short-term forecasts of weekly flu hospitalizations for
-different US states and territories. By reading across the table, we can
-see that these are quantile predictions (\texttt{output\_type}) of the
-quartiles (output type ID: \texttt{otid}) from a single model
+that stores short-term forecasts of weekly influenza hospitalizations
+for different US states and territories. By reading across the table, we
+can see that these are quantile predictions (\texttt{output\_type}) of
+the quartiles (output type ID: \texttt{otid}) from a single model
 (\texttt{model\_id} of ``team1-mod'') for four distinct forecast
 horizons. Here, details about the prediction related to modeling task
 are represented by the task ID variables \texttt{loc} (location
@@ -2372,7 +2373,7 @@ doi:\href{https://doi.org/10.32614/RJ-2018-052}{10.32614/RJ-2018-052}}
 \CSLLeftMargin{30. }%
 \CSLRightInline{Consortium of Infectious Disease Modeling Hubs. The
 hubverse: Open tools for collaborative forecasting. Published online
-2025. \url{https://hubverse.io/en/latest/index.html}}
+2025. \url{https://docs.hubverse.io/en/latest/index.html}}
 
 \bibitem[\citeproctext]{ref-vincent1912}
 \CSLLeftMargin{31. }%

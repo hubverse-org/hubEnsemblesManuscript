@@ -284,7 +284,8 @@ In particular, predicting infectious disease outbreaks and anticipating
 the effects of potential interventions has demonstrated utility for
 public health officials and medical practitioners. Underlying these
 predictions are mathematical models that use historical disease
-incidence data to make probabilistic predictions of incidence in the
+incidence data, including cases, hospitalizations, and deaths, to make
+probabilistic predictions of incidence in the
 future\textsuperscript{7--11}. Given the performance benefits of
 multi-model ensembles, it is becoming increasingly common to convene
 multiple modeling teams into a collaborative
@@ -471,7 +472,9 @@ to a mixture of the probability distributions, and the resulting
 probability distribution can be interpreted as one where the constituent
 probability distributions represent alternative predictions of the
 future, each of which has a probability \(w_i\) of being the true one.
-For a visual depiction of these equations, see
+If individual samples from the predictive distributions are collected,
+the LOP is equivalent to collecting samples across all models. For a
+visual depiction of these equations, see
 Figure~\ref{fig-example-quantile-average-and-linear-pool} below.
 
 \begin{figure}
@@ -531,15 +534,15 @@ Multi-model ensembles have become the gold standard for forecasting and
 prediction efforts that support public health in real
 time\textsuperscript{12,34--36}. One prominent domain is forecasting key
 characteristics of infectious disease outbreaks, including weekly
-incidence or healthcare demand over future weeks, disease burden for the
-entire season, and timing and magnitude of the outbreak
+disease incidence or healthcare demand over future weeks, disease burden
+for the entire season, and timing and magnitude of the outbreak
 peak\textsuperscript{14--16,23,37}. Projections of disease outcomes
 under multiple possible future scenarios have also been used to estimate
 intervention effectiveness to inform policy\textsuperscript{38--40}, and
-it has been proposed to use short-term forecasts of incidence to inform
-vaccine efficacy trials\textsuperscript{41}. Standard guidelines for
-reporting of prediction efforts in outbreak and public health settings
-have also been established\textsuperscript{42}.
+it has been proposed to use short-term forecasts of disease incidence to
+inform vaccine efficacy trials\textsuperscript{41}. Standard guidelines
+for reporting of prediction efforts in outbreak and public health
+settings have also been established\textsuperscript{42}.
 
 Across a variety of pathogens and outbreak settings, multi-model
 ensembles have been shown to produce forecasts that are as good or

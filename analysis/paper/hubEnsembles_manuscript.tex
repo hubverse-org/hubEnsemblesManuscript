@@ -317,24 +317,28 @@ reproducibility, and interoperability, we have developed a comprehensive
 R package \texttt{hubEnsembles} that implements these methods
 (Section~\ref{sec-implementation}). The \texttt{hubEnsembles} package
 provides a flexible framework for generating ensemble predictions from
-multiple models across a range of common methods and prediction types;
-it is situated within the broader ``hubverse'' collection of open-source
-software and data tools to facilitate the development and management of
-collaborative modeling exercises\textsuperscript{30}. These two factors
-together, a simple implementation framework across methods and
-integration with hubverse data standards and tools, make
-\texttt{hubEnsembles} accessible and easy to use. Finally, we present a
-basic demonstration of multi-model ensemble generation and
-interpretation (Section~\ref{sec-simple-ex}), and a more in-depth
-analysis using real influenza forecasts (Section~\ref{sec-case-study}).
-Together, these case studies motivate a discussion and comparison of the
-various methods (Section~\ref{sec-conclusions}). While the case studies
-focus on infectious disease applications, the software and tools
-presented are general and could be used for applications in other areas
-of biomedical and public health research, or other domains. By reviewing
-multi-model ensemble methodology and synthesizing these methods into an
-easy-to use implementation, this tutorial provides guidance on
-understanding, interpreting, and implementing multi-model ensembles.
+multiple models across a range of common methods and prediction types,
+including both discrete and continuous outcomes. It is situated within
+the broader ``hubverse'' collection of open-source software and data
+tools to facilitate the development and management of collaborative
+modeling exercises\textsuperscript{30}. These two factors together, a
+simple implementation framework across methods and integration with
+hubverse data standards and tools, make \texttt{hubEnsembles} accessible
+and easy to use.
+
+Finally, we present a basic demonstration of multi-model ensemble
+generation and interpretation (Section~\ref{sec-simple-ex}), and a more
+in-depth analysis using real influenza forecasts
+(Section~\ref{sec-case-study}). The case studies demonstrate the utility
+of hubEnsembles to support a range of prediction types Together, these
+case studies motivate a discussion and comparison of the various methods
+(Section~\ref{sec-conclusions}). While the case studies focus on
+infectious disease applications, the software and tools presented are
+general and could be used for applications in other areas of biomedical
+and public health research, or other domains. By reviewing multi-model
+ensemble methodology and synthesizing these methods into an easy-to use
+implementation, this tutorial provides guidance on understanding,
+interpreting, and implementing multi-model ensembles.
 
 \section{How to generate a multi-model ensemble}\label{sec-defs}
 
@@ -1170,6 +1174,55 @@ for weekly incident influenza hospitalizations in Massachusetts from
 each of three models (panels). Forecasts are represented by a median
 (line), 50\% and 90\% prediction intervals (ribbons). Gray points
 represent observed incident hospitalizations.}
+
+\end{figure}%
+
+Some hubs request modeling teams submit samples instead of, or in
+addition to, predicted distributions
+(Figure~\ref{fig-plot-ex-mod-samps}). Samples can be useful for
+capturing additional correlations across targets that are difficult to
+represent when predictions are summarized using quantile or CDF output
+types. In this example, weekly probabilistic predictions of incident
+influenza hospitalizations cannot capture the shape of individual
+epidemic trajectories, but samples can. We filter to the sample output
+type and plot. These samples are representative draws from the
+distributions plotted in Figure~\ref{fig-plot-ex-mods}.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\SpecialCharTok{\textgreater{}}\NormalTok{ plot\_samples }\OtherTok{\textless{}{-}}\NormalTok{ hubExamples}\SpecialCharTok{::}\NormalTok{forecast\_outputs }\SpecialCharTok{|\textgreater{}}
+\SpecialCharTok{+}\NormalTok{   dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(}
+\SpecialCharTok{+}\NormalTok{     output\_type }\SpecialCharTok{==} \StringTok{"sample"}\NormalTok{, }
+\SpecialCharTok{+}\NormalTok{     reference\_date }\SpecialCharTok{==} \StringTok{"2022{-}12{-}17"}\NormalTok{,}
+\SpecialCharTok{+}\NormalTok{     location }\SpecialCharTok{==} \StringTok{"25"}
+\SpecialCharTok{+}\NormalTok{   )}
+\SpecialCharTok{\textgreater{}}   
+\ErrorTok{\textgreater{}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ plot\_samples) }\SpecialCharTok{+} 
+\SpecialCharTok{+}   \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data =}\NormalTok{ target\_data\_plot, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ date, }\AttributeTok{y =}\NormalTok{ observation),}\AttributeTok{color =} \StringTok{"darkgray"}\NormalTok{) }\SpecialCharTok{+}
+\SpecialCharTok{+}   \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{data =}\NormalTok{ target\_data\_plot, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ date, }\AttributeTok{y =}\NormalTok{ observation), }\AttributeTok{color =} \StringTok{"darkgray"}\NormalTok{) }\SpecialCharTok{+}
+\SpecialCharTok{+}   \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ target\_end\_date, }\AttributeTok{y =}\NormalTok{ value, }\AttributeTok{group =}\NormalTok{ output\_type\_id, }\AttributeTok{color =}\NormalTok{ model\_id), }
+\SpecialCharTok{+}             \AttributeTok{alpha =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+} 
+\SpecialCharTok{+}   \FunctionTok{facet\_wrap}\NormalTok{(}\FunctionTok{vars}\NormalTok{(model\_id)) }\SpecialCharTok{+} 
+\SpecialCharTok{+}   \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Date"}\NormalTok{, }\AttributeTok{y =} \StringTok{"incident hospitalizations"}\NormalTok{) }\SpecialCharTok{+}
+\SpecialCharTok{+}   \FunctionTok{scale\_color\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set2"}\NormalTok{) }\SpecialCharTok{+}
+\SpecialCharTok{+}   \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+} 
+\SpecialCharTok{+}   \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"none"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}[H]
+
+\centering{
+
+\includegraphics{hubEnsembles_manuscript_files/figure-pdf/fig-plot-ex-mod-samps-1.pdf}
+
+}
+
+\caption{\label{fig-plot-ex-mod-samps}One example set of sample
+forecasts for weekly incident influenza hospitalizations in
+Massachusetts from each of three models (panels). Each sample is
+represented by a single line. Gray points represent observed incident
+hospitalizations.}
 
 \end{figure}%
 

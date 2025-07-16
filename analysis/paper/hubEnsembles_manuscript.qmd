@@ -673,6 +673,37 @@ hubVis::plot_step_ahead_model_output(
   labs(y = "incident hospitalizations")
 ```
 
+
+Some hubs request modeling teams submit samples instead of, or in addition to, predicted distributions (@fig-plot-ex-mod-samps). Samples can be useful for capturing additional correlations across targets that are difficult to represent when predictions are summarized using quantile or CDF output types. In this example, weekly probabilistic predictions of incident influenza hospitalizations cannot capture the shape of individual epidemic trajectories, but samples can. We filter to the sample output type and plot. These samples are representative draws from the distributions plotted in @fig-plot-ex-mods. 
+
+```{r}
+#| label: fig-plot-ex-mod-samps
+#| prompt: true
+#| fig-cap: "One example set of sample forecasts for weekly incident influenza
+#| hospitalizations in Massachusetts from each of three models (panels).
+#| Each sample is represented by a single line. Gray points represent observed incident hospitalizations."
+#| fig-width: 8
+#| fig-height: 3
+plot_samples <- hubExamples::forecast_outputs |>
+  dplyr::filter(
+    output_type == "sample", 
+    reference_date == "2022-12-17",
+    location == "25"
+  )
+  
+ggplot(data = plot_samples) + 
+  geom_point(data = target_data_plot, aes(x = date, y = observation),color = "darkgray") +
+  geom_line(data = target_data_plot, aes(x = date, y = observation), color = "darkgray") +
+  geom_line(aes(x = target_end_date, y = value, group = output_type_id, color = model_id), 
+            alpha = 0.3) + 
+  facet_wrap(vars(model_id)) + 
+  labs(x = "Date", y = "incident hospitalizations") +
+  scale_color_brewer(palette = "Set2") +
+  theme_bw() + 
+  theme(legend.position = "none")
+
+```
+
 Next, we examine the PMF forecasts for hospitalization intensity in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These four categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations except for the target, which is "wk flu hosp rate category" for these categorical predictions.
 
 ```{r}

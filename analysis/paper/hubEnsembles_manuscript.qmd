@@ -1104,7 +1104,7 @@ joint_lp_subset <- hubExamples::forecast_outputs |>
     task_id_cols =
       c("reference_date", "location", "horizon", "target", "target_end_date"),
     compound_taskid_set = c("reference_date", "location", "target"),
-    derived_tasks = "target_end_date",
+    derived_task_ids = "target_end_date",
     n_output_samples = 100
   )
 ```
@@ -1198,7 +1198,7 @@ flu_forecasts_component <- dplyr::filter(
 )
 ```
 
-With these inclusion criteria, the final data set of component forecasts consists of predictions from 25 modeling teams and 42 distinct models, 53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target, and 23 quantiles. In the 2021-2022 season, 25 models made predictions for 22 weeks spanning from late January 2022 to late June 2022, and in the 2022-2023 season, there were 31 models making predictions for 31 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42 total models made forecasts for both seasons. Locations consist of the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the entire US; horizons 1 to 4 weeks ahead, quantiles the 23 described above, and target week ahead incident flu hospitalization. The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
+With these inclusion criteria, the final data set of component forecasts consists of predictions from 25 modeling teams and 42 distinct models, 53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target, and 23 quantiles. In the 2021-2022 season, 25 models made predictions for 22 weeks spanning from late January 2022 to late June 2022, and in the 2022-2023 season, there were 31 models making predictions for 31 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42 total models made forecasts for both seasons. Locations consist of the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the entire US; horizons 1 to 4 weeks ahead, quantiles the 23 described above, and target week ahead incident influenza hospitalization. The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
 
 ```{r formatted flu forecasts}
 #| label: tbl-case-study-flu-forecasts

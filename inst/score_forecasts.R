@@ -22,6 +22,14 @@ flu_ensembles_forecasts <- purrr::map_dfr(flu_ensemble_files, .f = read_rds) |>
   dplyr::select(model, forecast_date, location, horizon, temporal_resolution,
                 target_variable, target_end_date, type, quantile, value)
 
+flu_component_files <- list.files(path = "analysis/data/raw_data", pattern = "forecasts-zoltar", full.names = TRUE)
+flu_component_forecasts <- purrr::map_dfr(flu_component_files, .f = read_rds) |>
+  dplyr::filter(!model %in% c("Flusight-baseline", "Flusight-ensemble")) |>
+  zoltar_to_model_out() |>
+  as_covid_hub_forecasts() |>
+  dplyr::select(model, forecast_date, location, horizon, temporal_resolution,
+                target_variable, target_end_date, type, quantile, value)
+
 # Score Forecasts
 flu_baseline_scores <- flu_baseline_forecasts |>
   covidHubUtils::score_forecasts(flu_truth, return_format = "wide", use_median_as_point = TRUE)
@@ -30,3 +38,9 @@ readr::write_rds(flu_baseline_scores, "analysis/data/derived_data/flu_baseline_s
 flu_ensembles_scores <- flu_ensembles_forecasts |>
   covidHubUtils::score_forecasts(flu_truth, return_format = "wide", use_median_as_point = TRUE)
 readr::write_rds(flu_ensembles_scores, "analysis/data/derived_data/flu_ensembles_scores.rds", "xz", compression = 9L)
+
+flu_component_scores <- flu_component_forecasts |>
+  split(flu_component_forecasts$model) |>
+  purrr::map(covidHubUtils::score_forecasts, flu_truth, return_format = "wide", use_median_as_point = TRUE) |>
+  purrr::list_rbind()
+readr::write_rds(flu_component_scores, "analysis/data/derived_data/flu_component_scores.rds", "xz", compression = 9L)

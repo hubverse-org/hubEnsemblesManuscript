@@ -4,7 +4,13 @@
 \alias{evaluate_flu_scores}
 \title{Evaluate forecasts (from scores) across different evaluation groupings}
 \usage{
-evaluate_flu_scores(scores, grouping_variables, baseline_name, us_only = FALSE)
+evaluate_flu_scores(
+  scores,
+  grouping_variables,
+  baseline_name,
+  us_only = FALSE,
+  show_num_forecasts = FALSE
+)
 }
 \arguments{
 \item{scores}{A data frame of forecast scores to be summarized. Must have
@@ -20,6 +26,9 @@ model to calculate relative metrics against}
 
 \item{us_only}{A boolean specifying whether to summarize metrics for the US
 national level only or just states}
+
+\item{show_num_forecasts}{A boolean specifying whether to display the number of
+forecasts being summarized.}
 }
 \value{
 A data frame of summarized forecast score metrics across all

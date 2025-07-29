@@ -1301,13 +1301,17 @@ flu_ensembles_forecasts <- purrr::map_dfr(flu_files, .f = readr::read_rds)
 
 flu_baseline_forecasts <- flu_forecasts_hubverse |>
   dplyr::filter(model_id == "Flusight-baseline")
+
+flu_component_scores <- readr::read_rds(
+  here::here("analysis/data/derived_data/flu_component_scores.rds")
+)
 flu_baseline_scores <- readr::read_rds(
   here::here("analysis/data/derived_data/flu_baseline_scores.rds")
 )
 flu_ensembles_scores <- readr::read_rds(
   here::here("analysis/data/derived_data/flu_ensembles_scores.rds")
 )
-flu_scores_all <- rbind(flu_ensembles_scores, flu_baseline_scores)
+flu_ensembles_baseline_scores <- rbind(flu_ensembles_scores, flu_baseline_scores)
 ```
 
 We also use relative versions of WIS and MAE (rWIS and rMAE, respectively) to understand how the ensemble performance compares to that of the FluSight baseline model. These metrics are calculated as $$\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},$$ where model $m$ is any given model being compared against the baseline. For both of these metrics, a value less than one indicates better performance compared to the baseline while a value greater than one indicates worse performance. By definition, the FluSight baseline itself will always have a value of one for both of these metrics.
@@ -1318,7 +1322,7 @@ Each unique prediction from an ensemble model is scored against target data usin
 
 ### Performance results across ensembles
 
-The quantile median ensemble has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools have very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially different from that of the other ensembles.
+The four ensembles rank at the top in terms of accuracy when compared to the individual component models. Out of the ensembles, the quantile median has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools have very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially greater than that of the other ensembles. Note that the 2022-2023 season was especially difficult to forecast due to its large peak (see @fig-plot-forecasts-hubVis and @fig-wis-vs-forecast-date), resulting in overall WIS and MAE values close to that of the baseline for even the best models. However, Figures @fig-plot-forecasts-hubVis and @fig-wis-vs-forecast-date show that the ensembles actually often outperform the baseline model, despite this being obscured by a few weeks of very poor performance when summarizing evaluation metrics over two seasons.
 
 ```{r overall-evaluation}
 #| label: tbl-overall-evaluation
@@ -1327,25 +1331,29 @@ The quantile median ensemble has the best overall performance in terms of WIS an
 #| warning: false
 #| tbl-cap: "Summary of overall model performance across both seasons, averaged
 #| over all locations except the US national location and sorted by ascending
-#| WIS. The quantile median ensemble has the best value for every metric except
+#| WIS. Both the individual FluSight component models and the resulting ensembles
+#| are included in the table, as long as they forecasted for at least 80% of both
+#| seasons. The ensembles rank at the top in terms of accuracy among all the models.
+#| The quantile median in particular has the best value for every metric except
 #| 50% coverage rate, though metric values are often quite similar among
-#| the models."
+#| the ensembles."
 
 metrics_col <- formatted_metrics_col <- c("model", "wis", "rwis", "mae", "rmae", "cov50", "cov95")
 for (i in 1:length(metrics_col)) formatted_metrics_col[i] <- paste0("`", metrics_col[i], "`")
 
 flu_overall_states <- evaluate_flu_scores(
-  flu_scores_all,
-  grouping_variables = NULL,
-  baseline_name = "Flusight-baseline", us_only = FALSE
+  rbind(flu_ensembles_baseline_scores, flu_component_scores),
+  grouping_variables = NULL, baseline_name = "Flusight-baseline",
+  us_only = FALSE, show_num_forecasts = TRUE
 )
 
 flu_overall_states |>
+  dplyr::filter(num_forecasts > 0.8 * 11236) |>
   dplyr::select(all_of(metrics_col)) |>
   knitr::kable(col.names = formatted_metrics_col)
 ```
 
-Plots of the models' forecasts can aid our understanding about the origin of these accuracy differences. For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The median ensemble, which has the best WIS, balanced interval width with calibration best overall, with narrower intervals than the linear pools that still achieved near-nominal coverage on average across all time points. The quantile mean's interval widths vary, though it usually has narrower intervals than the linear pools. However, this model's point forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated in @fig-plot-forecasts-hubVis for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022. Here, the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
+Plots of the ensemble models' forecasts can aid our understanding about the origin of these accuracy differences. For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The median ensemble, which has the best WIS, balanced interval width with calibration best overall, with narrower intervals than the linear pools that still achieved near-nominal coverage on average across all time points. The quantile mean's interval widths vary, though it usually has narrower intervals than the linear pools. However, this model's point forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated in @fig-plot-forecasts-hubVis for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022. Here, the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
 
 ```{r plot-forecasts-hubVis}
 #| label: fig-plot-forecasts-hubVis
@@ -1544,7 +1552,7 @@ model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
 
 # Summarize flu scores by horizon, forecast_date, and season
 flu_date_horizon_season_states <- evaluate_flu_scores(
-  flu_scores_all,
+  flu_ensembles_baseline_scores,
   grouping_variables = c("horizon", "forecast_date", "season"),
   baseline_name = "Flusight-baseline", us_only = FALSE
 )

@@ -1361,12 +1361,13 @@ Plots of the ensemble models' forecasts can aid our understanding about the orig
 #| message: false
 #| warning: false
 #| fig-cap: "One to four week ahead forecasts for select dates plotted against
-#| target data for California. The first panel shows all models on the same 
-#| scale. All other panels show forecasts for each individual model, with
-#| varying y-axis scales, and their prediction accuracy as compared to
-#| observed influenza hospitalizations."
+#| target data for California. Panel A shows the baseline and four ensembles
+#| plotted together on the same scale. Panel B contains facets plotting forecasts
+#| for each individual model, with varying y-axis scales. All plots show the 
+#| various forecasts' prediction accuracy as compared to observed influenza
+#| hospitalizations."
 #| fig-width: 9
-#| fig-height: 12
+#| fig-height: 11
 
 model_names <- c(
   "Flusight-baseline", "lp-lognormal", "lp-normal",
@@ -1443,42 +1444,6 @@ ca_plot_ensembles <- ca_plot_ensembles +
     legend.position = "none"
   )
 
-# Plot separate baseline "facet"
-ca_plot_baseline <-
-  plot_step_ahead_model_output(
-    forecasts_ca |> filter(model_id == "Flusight-baseline"),
-    truth_ca,
-    use_median_as_point = TRUE,
-    show_plot = TRUE,
-    x_col_name = "target_end_date",
-    x_target_col_name = "target_end_date",
-    show_legend = FALSE,
-    facet = "model_id",
-    facet_scales = "free_y",
-    facet_nrow = 1,
-    interactive = FALSE,
-    pal_color = "Set2",
-    fill_transparency = 0.45,
-    intervals = c(0.5, 0.95),
-    title = NULL,
-    group = "forecast_date"
-  ) +
-  scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
-  ) +
-  theme_bw() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.ticks.length.x = unit(0, "cm"),
-    axis.text.x = element_blank(),
-    axis.title.y = element_blank(),
-    legend.position = "none"
-  )
-
 # Plot all models on same graph (for scale comparison)
 ca_plot_all <-
   plot_step_ahead_model_output(
@@ -1492,7 +1457,7 @@ ca_plot_all <-
     facet = "facet_name",
     interactive = FALSE,
     pal_color = "Set2",
-    fill_transparency = 0.45,
+    fill_transparency = 0.25,
     intervals = c(0.5, 0.95),
     title = NULL,
     group = "forecast_date"
@@ -1522,14 +1487,17 @@ ca_plot_all <-
   )
 
 # Assemble plots
-((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
+(ca_plot_all / ca_plot_ensembles) +
   theme_bw() +
-  plot_layout(guides = "collect", heights = c(1, 2)) +
-  plot_annotation(title = paste0(
+  plot_layout(guides = "collect", heights = c(1, 1)) +
+  plot_annotation(
+   title = paste0(
     "Weekly Incident ",
     "Hospitalizations for Influenza ",
     "in California"
-  ))
+    ),
+  tag_levels = "A"
+  )
 ```
 
 Averaging across all time points, the median ensemble has the best scores for every metric. (Note that we only show plots of WIS vs forecast date, faceted by season and horizon, due to similar trends being observed with MAE and 95% prediction interval coverage). The quantile median outperforms the mean ensemble by a similar amount for both WIS and MAE, particularly around local times of change (see @fig-wis-vs-forecast-date). The median ensemble also has better coverage rates than the mean ensemble in the tails of the distribution (95% intervals) and similar coverage in the center (50% intervals). The median model also outperforms the linear pools for most weeks, with the greatest differences in scores being for WIS and coverage rates (@fig-wis-vs-forecast-date). This seems to indicate that the linear pools' estimates are usually too conservative, with their wide intervals and higher-than-nominal coverage rates being penalized by WIS. However, during the 2022-2023 season there are several localized times when the linear pools showcased better one-week-ahead forecasts than the median ensemble (@fig-wis-vs-forecast-date). These localized instances are characterized by similar MAE values for the two methods and poor median ensemble coverage rates. In these instances, the wide intervals from the linear pools were useful in capturing the eventually-observed hospitalizations, usually during times of rapid change.

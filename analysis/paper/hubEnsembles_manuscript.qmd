@@ -1322,7 +1322,7 @@ Each unique prediction from an ensemble model is scored against target data usin
 
 ### Performance results across ensembles
 
-The four ensembles rank at the top in terms of accuracy when compared to the individual component models. Out of the ensembles, the quantile median has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools have very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially greater than that of the other ensembles. Note that the 2022-2023 season was especially difficult to forecast due to its large peak (see @fig-plot-forecasts-hubVis and @fig-wis-vs-forecast-date), resulting in overall WIS and MAE values close to that of the baseline for even the best models. However, Figures @fig-plot-forecasts-hubVis and @fig-wis-vs-forecast-date show that the ensembles actually often outperform the baseline model, despite this being obscured by a few weeks of very poor performance when summarizing evaluation metrics over two seasons.
+The four ensembles rank at the top in terms of accuracy when compared to the individual component models. Out of the ensembles, the quantile median has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools have very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially greater than that of the other ensembles. Note that the 2022-2023 season was especially difficult to forecast due to its large peak (see @fig-plot-forecasts-hubVis and @fig-wis-vs-forecast-date), resulting in overall WIS and MAE values close to that of the baseline for even the best models. However, the ensembles often outperform the baseline model, despite this being obscured by a few weeks of very poor performance when summarizing evaluation metrics over two seasons (@fig-wis-vs-forecast-date).
 
 ```{r overall-evaluation}
 #| label: tbl-overall-evaluation
@@ -1353,21 +1353,22 @@ flu_overall_states |>
   knitr::kable(col.names = formatted_metrics_col)
 ```
 
-Plots of the ensemble models' forecasts can aid our understanding about the origin of these accuracy differences. For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The median ensemble, which has the best WIS, balanced interval width with calibration best overall, with narrower intervals than the linear pools that still achieved near-nominal coverage on average across all time points. The quantile mean's interval widths vary, though it usually has narrower intervals than the linear pools. However, this model's point forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated in @fig-plot-forecasts-hubVis for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022. Here, the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
+Plots of the ensemble models' forecasts can aid our understanding about the origin of these accuracy differences (@fig-plot-forecasts-hubVis). For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The median ensemble, which has the best WIS, balanced interval width with calibration best overall, with narrower intervals than the linear pools that still achieved near-nominal coverage on average across all time points. The quantile mean's interval widths vary, though it usually has narrower intervals than the linear pools. However, this model's point forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022 (@fig-plot-forecasts-hubVis). Here, the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
 
 ```{r plot-forecasts-hubVis}
 #| label: fig-plot-forecasts-hubVis
 #| echo: false
 #| message: false
 #| warning: false
-#| fig-cap: "One to four week ahead forecasts for select dates plotted against
-#| target data for California. Panel A shows the baseline and four ensembles
-#| plotted together on the same scale. Panel B contains facets plotting forecasts
-#| for each individual model, with varying y-axis scales. All plots show the 
-#| various forecasts' prediction accuracy as compared to observed influenza
-#| hospitalizations."
-#| fig-width: 9
-#| fig-height: 11
+#| fig-cap: "One to four week ahead forecasts plotted against target data for
+#| California. Each panel shows the baseline and four ensembles being evaluated. 
+#| All plots show the various forecasts' prediction summarized by the median
+#| (line) and 50% and 95% prediction intervals (darker and lighter ribbon, 
+#| repsectively), as compared to observed influenza hospitalizations
+#| (gray points and line). For simplicity, only forecasts from a select four 
+#| weeks during the 2022-2023 influenza season are shown. "
+#| fig-width: 8
+#| fig-height: 8
 
 model_names <- c(
   "Flusight-baseline", "lp-lognormal", "lp-normal",
@@ -1382,28 +1383,24 @@ forecasts_ca <- flu_ensembles_forecasts |>
   rbind(flu_baseline_forecasts) |>
   dplyr::filter(
     location == "06",
-    forecast_date %in% all_flu_dates[seq(1, 69, 4)] # dates once every 4 weeks
+    forecast_date %in% all_flu_dates[seq(1, 69, 4)], # dates once every 4 weeks
+    target_end_date >= as.Date("2022-11-01"), # only show subset of 2022-2023 season
+    target_end_date <= as.Date("2023-02-15")
   ) |>
   dplyr::group_by(forecast_date)
 
-# Add non-forecasted weeks with NA value 
-# prevents erroneous line connecting seasons
 truth_ca <- flu_truth_all |>
-  dplyr::filter(location == "06") |>
-  dplyr::rename(observation = value) |>
-  rbind(expand.grid(
-    model = "flu-truth",
-    target_variable = "inc flu hosp",
-    target_end_date = flu_dates_21_22[22] + lubridate::weeks(1:16),
-    location = unique(flu_truth_all$location),
-    observation = NA
-  ))
+  dplyr::filter(location == "06", 
+                target_end_date >= as.Date("2022-11-01"), # only show subset of 2022-2023 season
+                target_end_date <= as.Date("2023-02-15")
+  ) |>
+  dplyr::rename(observation = value)
 
 
 # Plot ensembles' forecasts only
 ca_plot_ensembles <-
   plot_step_ahead_model_output(
-    forecasts_ca |> filter(model_id != "Flusight-baseline"),
+    forecasts_ca,
     truth_ca,
     use_median_as_point = TRUE,
     show_plot = FALSE,
@@ -1411,7 +1408,6 @@ ca_plot_ensembles <-
     x_target_col_name = "target_end_date",
     show_legend = FALSE,
     facet = "model_id",
-    facet_scales = "free_y",
     facet_nrow = 3,
     interactive = FALSE,
     pal_color = "Set2",
@@ -1423,19 +1419,15 @@ ca_plot_ensembles <-
 
 ca_plot_ensembles <- ca_plot_ensembles +
   scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
+    name = NULL, date_breaks = "1 months", date_labels = "%b '%y"
   ) +
   scale_color_manual(
-    breaks = model_names[2:5],
-    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
+    breaks = model_names[1:5],
+    values = RColorBrewer::brewer.pal(5, "Set2")[1:5]
   ) +
   scale_fill_manual(
-    breaks = model_names[2:5],
-    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
+    breaks = model_names[1:5],
+    values = RColorBrewer::brewer.pal(5, "Set2")[1:5]
   ) +
   theme(
     axis.ticks.length.x = unit(0.5, "cm"),
@@ -1444,59 +1436,15 @@ ca_plot_ensembles <- ca_plot_ensembles +
     legend.position = "none"
   )
 
-# Plot all models on same graph (for scale comparison)
-ca_plot_all <-
-  plot_step_ahead_model_output(
-    forecasts_ca |> mutate(facet_name = "All models, same scale"),
-    truth_ca,
-    use_median_as_point = TRUE,
-    show_plot = TRUE,
-    x_col_name = "target_end_date",
-    x_target_col_name = "target_end_date",
-    show_legend = FALSE,
-    facet = "facet_name",
-    interactive = FALSE,
-    pal_color = "Set2",
-    fill_transparency = 0.25,
-    intervals = c(0.5, 0.95),
-    title = NULL,
-    group = "forecast_date"
-  ) +
-  scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
-  ) +
-  scale_color_manual(
-    breaks = model_names,
-    values = RColorBrewer::brewer.pal(5, "Set2")
-  ) +
-  scale_fill_manual(
-    breaks = model_names,
-    values = RColorBrewer::brewer.pal(5, "Set2")
-  ) +
-  theme_bw() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.length.x = unit(0, "cm"),
-    axis.title.y = element_blank(),
-    legend.position = "none"
-  )
 
-# Assemble plots
-(ca_plot_all / ca_plot_ensembles) +
+ca_plot_ensembles +
   theme_bw() +
-  plot_layout(guides = "collect", heights = c(1, 1)) +
   plot_annotation(
    title = paste0(
     "Weekly Incident ",
     "Hospitalizations for Influenza ",
     "in California"
-    ),
-  tag_levels = "A"
+    )
   )
 ```
 

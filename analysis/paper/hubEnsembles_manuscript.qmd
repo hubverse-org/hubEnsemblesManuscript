@@ -107,13 +107,13 @@ In particular, predicting infectious disease outbreaks and anticipating the effe
 
 Generating multi-model ensembles or interpreting the resulting predictions depends on understanding the underlying statistical methodology. There are many proposed methods for generating ensembles, and these methods differ in at least one of two ways: (1) the function used to combine or "average" predictions, and (2) how predictions are weighted when performing the combination. A few methodological papers have discussed theory of multi-model ensembles and tested various ensembling methods in public health applications specifically [@yamana_superensemble_2016; @ray_prediction_2018; @viboud2018; @colon-gonzalez_probabilistic_2021; @paireau_ensemble_2022; @howerton2023; @ray_comparing_2023], yet there is no consensus on which method should be favored. There are software packages that support various aspects of multi-model ensembling [@pedregosa_scikit-learn_2011; @weiss2019; @bosse_stackr_2023; @couch_stacks_2023]. However, these packages only support a subset of methods and prediction types, illustrating the need for standard, easy-to-use implementations of common methods.
 
-Here, we provide an introduction to the statistical foundations of multi-model ensembles in applied probabilistic forecasting (@sec-defs). In addition, to improve accessibility, reproducibility, and interoperability, we have developed a comprehensive R package `hubEnsembles` that implements these methods (@sec-implementation). The `hubEnsembles` package provides a flexible framework for generating ensemble predictions from multiple models across a range of common methods and prediction types, including both discrete and continuous outcomes. It is situated within the broader "hubverse" collection of open-source software and data tools to facilitate the development and management of collaborative modeling exercises [@hubverse_docs]. These two factors together, a simple implementation framework across methods and integration with hubverse data standards and tools, make `hubEnsembles` accessible and easy to use. 
+Here, we provide an introduction to the statistical foundations of multi-model ensembles in applied probabilistic forecasting (@sec-defs). In addition, to improve accessibility, reproducibility, and interoperability, we have developed a comprehensive R package `hubEnsembles` that implements these methods (@sec-implementation). The `hubEnsembles` package provides a flexible framework for generating ensemble predictions from multiple models across a range of common methods and prediction types, including both discrete and continuous outcomes. It is situated within the broader "hubverse" collection of open-source software and data tools to facilitate the development and management of collaborative modeling exercises [@hubverse_docs]. These two factors together, a simple implementation framework across methods and integration with hubverse data standards and tools, make `hubEnsembles` accessible and easy to use.
 
-Finally, we present a basic demonstration of multi-model ensemble generation and interpretation (@sec-simple-ex), and a more in-depth analysis using real influenza forecasts (@sec-case-study). The case studies demonstrate the utility of hubEnsembles to support a range of prediction types  Together, these case studies motivate a discussion and comparison of the various methods (@sec-conclusions). While the case studies focus on infectious disease applications, the software and tools presented are general and could be used for applications in other areas of biomedical and public health research, or other domains. By reviewing multi-model ensemble methodology and synthesizing these methods into an easy-to use implementation, this tutorial provides guidance on understanding, interpreting, and implementing multi-model ensembles.
+Finally, we present a basic demonstration of multi-model ensemble generation and interpretation (@sec-simple-ex), and a more in-depth analysis using real influenza forecasts (@sec-case-study). The case studies demonstrate the utility of hubEnsembles to support a range of prediction types. Together, these case studies motivate a discussion and comparison of the various methods (@sec-conclusions). While the case studies focus on infectious disease applications, the software and tools presented are general and could be used for applications in other areas of biomedical and public health research, or other domains. By reviewing multi-model ensemble methodology and synthesizing these methods into an easy-to use implementation, this tutorial provides guidance on understanding, interpreting, and implementing multi-model ensembles.
 
 ## How to generate a multi-model ensemble {#sec-defs}
 
-In this section, we provide an overview of the process to generate a multi-model ensemble, including basic definitions of key statistical concepts in probabilistic forecasting, and an overview of the classes of methods that are typically used for generating a multi-model ensemble.
+In this section, we provide an overview of the process to generate a multi-model ensemble, including an outline of key statistical concepts in probabilistic forecasting, and an overview of the classes of methods that are typically used for generating a multi-model ensemble. See Box 1 for a glossary of key terms and definitions.
 
 ### Key statistical concepts in forecasting
 
@@ -471,9 +471,49 @@ Examinations of ensemble methodology in infectious disease contexts suggest ther
 
 The growing body of literature on multi-model ensembles in public health domains emphasizes the utility of these approaches to inform response in real time. Future research on optimizing ensemble performance for different targets and time horizons will further improve utility. Moreover, expanding the use of these methods to other pathogens and countries will enable further methodological development.
 
+::: {.callout-tip title="Keywords and Definitions"}
+**Concepts in statistical forecasting**
+
+-   *Ensemble*: the combination of outputs from multiple models into a single, aggregate prediction
+
+-   *Forecast*: a specific quantified prediction of an observable event or trend that has yet to be observed, conditional on data that has been observed up to a specified time.
+
+-   *Horizon*: time frame over which predictions are generated (e.g., 4 weeks ahead)
+
+-   *Linear opinion pool*: method for ensembling probabilistic predictions, which treats constituent probability distributions as alternative predictions of the future. Also called probability average.
+
+-   *Scenario projection*: estimates of future observations of future trends conditional on specific assumptions about a given scenario. Scenarios describe possible future conditions in terms of model parameters that might be varied, such as transmissibility, vaccine adoption, vaccine efficacy, the emergence of a new variant, etc.
+
+-   *Prediction*: estimate of current or future outcomes, typically generated from a model. Here, used to encompass a range of outcomes that could be modeled, encompassing short-term forecasts, scenario projections, and parameter estimates.
+
+-   *Point prediction*: a prediction represented by one single estimate, which typically represents the most likely future outcome (e.g., a mean or median)
+
+-   *Probabilistic prediction*: a prediction that quantifies the a probability distribution over future outcomes. This enables quantification of most likely outcomes and the risk of extreme events.
+
+-   *Model weighting*: a set of real numbers that defines the relative contribution of each constituent prediction in the ensemble (e.g., equal weighting or performance-based weighting).
+
+-   *Quantile average*: method for ensembling probabilistic predictions, which treats constituent probability distributions as uncertain estimates of a single true distribution. Also called Vincent average.
+
+-   *Quantile level/cumulative probability*: the $y$ value in a cumulative distribution function, representing the cumulative probability of a future value (e.g., 50% cumulative probability)
+
+-   *Value of the target variable/quantile*: the $x$ value in a cumulative distribution function, or the future values over which the probability distribution is defined (e.g., incident hospitalizations)
+
+**Terminology from the hubverse**
+
+-   *Target*: a quantitative outcome of interest for a modeling hub (e.g., "incident case counts"). Targets typically (and sometimes implicitly) refer to a value of an observable variable in a given window of time, a given location, and possibly other stratifications (such as age group).
+
+-   *Model output*: a set of target results in tabular format generated in response to some modeling task for a specific round. A model might result from a single team’s response to the task or from an ensemble of results representing the outcomes of multiple efforts.
+
+-   *Round*: a time period for which a set of specific model outputs are solicited. Rounds define the “cadence” of submission for a modeling hub. For example, some hubs might accept daily submissions, where each day is considered a different round. Other hubs might have one round every month, with a submission period that may be open for multiple days.
+
+-   *Task*: a definition of the goals of a modeling effort, possibly including conditions, assumptions, and targets (collectively known as task ID variables). Some tasks may be fixed across rounds, such as for forecast hubs that regularly solicit predictions for a set time horizon in the near-term future. Other tasks may be more variable; for example, those in scenario hubs that model hypothetical futures with different assumptions for different modeling rounds.
+
+-   *Task ID variables*: a collection of conditions, assumptions, and potentially targets that are used to parameterize a model task. These represent columns in the model output. A more detailed explanation of task ID variables can be found in the documentation.
+:::
+
 ## How to implement ensemble calculations {#sec-implementation}
 
-The methods described in @sec-defs are implemented via the `hubEnsembles` package in a flexible, easy-to-use framework. Importantly, `hubEnsembles` is situated within the broader hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions [@hubverse_docs], including for example, collecting and manipulating predictions (`hubUtils`) as well as visualization (`hubVis`). In 2024-2025, the hubverse supported over a dozen collaborative modeling hubs used by public health agencies across the globe. We begin with a short overview of hubverse concepts and conventions that support the process of combining model predictions, supplemented by example predictions provided by the hubverse in `hubExamples`, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`.
+The methods described in @sec-defs are implemented via the `hubEnsembles` package in a flexible, easy-to-use framework. Importantly, `hubEnsembles` is situated within the broader hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions [@hubverse_docs], including for example, collecting and manipulating predictions (`hubUtils`) as well as visualization (`hubVis`). In 2024-2025, the hubverse supported over a dozen collaborative modeling hubs used by public health agencies across the globe. We begin with a short overview of hubverse concepts and conventions that support the process of combining model predictions, supplemented by example predictions provided by the hubverse in `hubExamples`, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`. Again, Box 1 provides a glossary of key hubverse terms and definitions for reference.
 
 ### Terminology and data standards in the hubverse
 
@@ -689,8 +729,7 @@ hubVis::plot_step_ahead_model_output(
   labs(y = "incident hospitalizations")
 ```
 
-
-Some hubs request modeling teams submit samples instead of, or in addition to, predicted distributions (@fig-plot-ex-mod-samps). Samples can be useful for capturing additional correlations across targets that are difficult to represent when predictions are summarized using quantile or CDF output types. In this example, weekly probabilistic predictions of incident influenza hospitalizations cannot capture the shape of individual epidemic trajectories, but samples can. We filter to the sample output type and plot. These samples are representative draws from the distributions plotted in @fig-plot-ex-mods. 
+Some hubs request modeling teams submit samples instead of, or in addition to, predicted distributions (@fig-plot-ex-mod-samps). Samples can be useful for capturing additional correlations across targets that are difficult to represent when predictions are summarized using quantile or CDF output types. In this example, weekly probabilistic predictions of incident influenza hospitalizations cannot capture the shape of individual epidemic trajectories, but samples can. We filter to the sample output type and plot. These samples are representative draws from the distributions plotted in @fig-plot-ex-mods.
 
 ```{r}
 #| label: fig-plot-ex-mod-samps
@@ -1076,7 +1115,7 @@ linear_pool_cauchy <- hubExamples::forecast_outputs |>
 
 #### Requesting a subset of input sample predictions to be ensembled
 
-Recall that for the sample output type, `linear_pool()` simply collects and pools the input sample predictions into a single distribution. By default, the resulting ensemble model output contains all provided sample predictions so that the total number of samples for the ensemble is equal to the sum of the number of samples from all individual models. 
+Recall that for the sample output type, `linear_pool()` simply collects and pools the input sample predictions into a single distribution. By default, the resulting ensemble model output contains all provided sample predictions so that the total number of samples for the ensemble is equal to the sum of the number of samples from all individual models.
 
 ```{r joint-linear-pool-default}
 #| prompt: true

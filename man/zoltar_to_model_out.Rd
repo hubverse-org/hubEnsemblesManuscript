@@ -8,7 +8,7 @@
 zoltar_to_model_out(zoltar_forecasts)
 }
 \arguments{
-\item{model_outputs}{a data frame of forecasts formatted according to zoltar
+\item{zoltar_forecasts}{a data frame of forecasts formatted according to zoltar
 standards with the following columns: model, forecast_date, location, horizon,
 temporal_resolution, target_variable, target_end_date, type, quantile, value.}
 }

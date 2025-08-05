@@ -1,7 +1,7 @@
 #' Reformat a data frame of forecasts stored in the zoltar format to that of a
 #' `model_output_tbl` object defined by the hubverse
 #'
-#' @param model_outputs a data frame of forecasts formatted according to zoltar
+#' @param zoltar_forecasts a data frame of forecasts formatted according to zoltar
 #'   standards with the following columns: model, forecast_date, location, horizon,
 #'   temporal_resolution, target_variable, target_end_date, type, quantile, value.
 #'
@@ -18,7 +18,7 @@ zoltar_to_model_out <- function(zoltar_forecasts) {
   zoltar_forecasts |>
     dplyr::rename(forecast_date = .data[["timezero"]], location = .data[["unit"]]) |>
     tidyr::separate(
-      .data[["target"]], sep = " ", convert = TRUE,
+      "target", sep = " ", convert = TRUE,
       into = c("horizon", "target"), extra = "merge"
     ) |>
     dplyr::mutate(

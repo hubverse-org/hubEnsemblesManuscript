@@ -109,7 +109,7 @@ Generating multi-model ensembles or interpreting the resulting predictions depen
 
 Here, we provide an introduction to the statistical foundations of multi-model ensembles in applied probabilistic forecasting (@sec-defs). In addition, to improve accessibility, reproducibility, and interoperability, we have developed a comprehensive R package `hubEnsembles` that implements these methods (@sec-implementation). The `hubEnsembles` package provides a flexible framework for generating ensemble predictions from multiple models across a range of common methods and prediction types, including both discrete and continuous outcomes. It is situated within the broader "hubverse" collection of open-source software and data tools to facilitate the development and management of collaborative modeling exercises [@hubverse_docs]. These two factors together, a simple implementation framework across methods and integration with hubverse data standards and tools, make `hubEnsembles` accessible and easy to use.
 
-Finally, we present a basic demonstration of multi-model ensemble generation and interpretation (@sec-simple-ex), and a more in-depth analysis using real influenza forecasts (@sec-case-study). The case studies demonstrate the utility of hubEnsembles to support a range of prediction types. Together, these case studies motivate a discussion and comparison of the various methods (@sec-conclusions). While the case studies focus on infectious disease applications, the software and tools presented are general and could be used for applications in other areas of biomedical and public health research, or other domains. By reviewing multi-model ensemble methodology and synthesizing these methods into an easy-to use implementation, this tutorial provides guidance on understanding, interpreting, and implementing multi-model ensembles.
+Finally, we present a basic demonstration of multi-model ensemble generation and interpretation (@sec-simple-ex), and a more in-depth analysis using real influenza forecasts (@sec-case-study). The case studies demonstrate the utility of hubEnsembles to support a range of prediction types, and together motivate a discussion and comparison of the various methods (@sec-conclusions). While the case studies focus on infectious disease applications, the software and tools presented are general and could be used for applications in other areas of biomedical and public health research, or other domains. By reviewing multi-model ensemble methodology and synthesizing these methods into an easy-to use implementation, this tutorial provides guidance on understanding, interpreting, and implementing multi-model ensembles.
 
 ## How to generate a multi-model ensemble {#sec-defs}
 
@@ -488,7 +488,7 @@ The growing body of literature on multi-model ensembles in public health domains
 
 -   *Point prediction*: a prediction represented by one single estimate, which typically represents the most likely future outcome (e.g., a mean or median)
 
--   *Probabilistic prediction*: a prediction that quantifies the a probability distribution over future outcomes. This enables quantification of most likely outcomes and the risk of extreme events.
+-   *Probabilistic prediction*: a prediction that quantifies a probability distribution over future outcomes. This enables quantification of most likely outcomes and the risk of extreme events.
 
 -   *Model weighting*: a set of real numbers that defines the relative contribution of each constituent prediction in the ensemble (e.g., equal weighting or performance-based weighting).
 
@@ -500,15 +500,19 @@ The growing body of literature on multi-model ensembles in public health domains
 
 **Terminology from the hubverse**
 
--   *Target*: a quantitative outcome of interest for a modeling hub (e.g., "incident case counts"). Targets typically (and sometimes implicitly) refer to a value of an observable variable in a given window of time, a given location, and possibly other stratifications (such as age group).
+-   *Compound modeling task*: a single, modeled unit with a multi-various outcome of interest, such as an epidemic trajectory across multiple weeks
 
 -   *Model output*: a set of target results in tabular format generated in response to some modeling task for a specific round. A model might result from a single team’s response to the task or from an ensemble of results representing the outcomes of multiple efforts.
+
+-   *Output type*: classifications of model output that is supported by the hubverse (i.e., the types of predictions that can be processed). See Table @tbl-model-output-rep for definitions of each.
 
 -   *Round*: a time period for which a set of specific model outputs are solicited. Rounds define the “cadence” of submission for a modeling hub. For example, some hubs might accept daily submissions, where each day is considered a different round. Other hubs might have one round every month, with a submission period that may be open for multiple days.
 
 -   *Task*: a definition of the goals of a modeling effort, possibly including conditions, assumptions, and targets (collectively known as task ID variables). Some tasks may be fixed across rounds, such as for forecast hubs that regularly solicit predictions for a set time horizon in the near-term future. Other tasks may be more variable; for example, those in scenario hubs that model hypothetical futures with different assumptions for different modeling rounds.
 
 -   *Task ID variables*: a collection of conditions, assumptions, and potentially targets that are used to parameterize a model task. These represent columns in the model output. A more detailed explanation of task ID variables can be found in the documentation.
+
+-   *Target*: a quantitative outcome of interest for a modeling hub (e.g., "incident case counts"). Targets typically (and sometimes implicitly) refer to a value of an observable variable in a given window of time, a given location, and possibly other stratifications (such as age group).
 :::
 
 ## How to implement ensemble calculations {#sec-implementation}
@@ -567,7 +571,7 @@ The "model output representation" columns `output_type` and `output_type_id` con
 
 In addition to these six output types mentioned above, other types of predictions not explicitly defined in the hubverse may be represented within model output. For example, trajectories may be encoded using the "sample" output type while predictions of binary events can be captured using the "pmf" output type.
 
-All output types can summarize predictions from univariate marginal distributions, e.g. for a single location and time point. The sample output type---which represents randomly drawn values from a probabilistic predictive distribution---is unique in that it can additionally represent trajectories, i.e. predictions from joint predictive distributions. This means that samples may encode dependence across combinations of multiple values for task ID variables, for example across multiple locations and/or time points. In this case, rows of sample predictions with the same index (specified by the `output_type_id`) from a particular model may be assumed to correspond to a single sample from a joint distribution.
+All output types can summarize predictions from univariate marginal distributions, e.g. for a single location and time point. The sample output type---which represents randomly drawn values from a probabilistic predictive distribution---is unique in that it can additionally represent predictions from joint predictive distributions. This means that samples may encode dependence across combinations of multiple values for task ID variables, for example across multiple locations and/or time points. One common example is a trajectory that represents a single model run across all time time points, and in such cases collecting predictions as samples can offer benefits [@sherratt_characterising_2024]. In this case, rows of sample predictions with the same index (specified by the `output_type_id`) from a particular model may be assumed to correspond to a single sample from a joint distribution.
 
 For quantile predictions, the `output_type_id` is a numeric value between 0 and 1 specifying the cumulative probability associated with the quantile prediction. In the notation we defined in @sec-defs, the `output_type_id` corresponds to $\theta$ and the `value` is the quantile prediction $F^{-1}(\theta)$. For CDF or PMF predictions, the `output_type_id` is the target variable value $x$ at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the `value` column contains the predicted $F(x)$ or $f(x)$, respectively.
 
@@ -590,7 +594,7 @@ The `hubEnsembles` package contains two functions that perform ensemble calculat
 
 #### Simple ensemble {#sec-simple-ensemble}
 
-The `simple_ensemble()` function directly computes an ensemble from component model outputs by combining them via an aggregation function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. (Samples cannot be combined using this function because their output type IDs are used to denote individual trajectories from a single model and do not carry any shared meaning across models; however, samples may be converted to a different, supported output type, if desired.) The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type).
+The `simple_ensemble()` function directly computes an ensemble from component model outputs by combining them via an aggregation function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. Samples must be converted to a different output type (e.g., summarized into a CDF) in order to be ensembled using this function, as there is no meaningful equivlant for individual predictive draws. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type).
 
 By default, `simple_ensemble()` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble()` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble()` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear pool method.
 
@@ -598,7 +602,7 @@ Any aggregation function $C$ may be specified by the user. For example, a median
 
 #### Linear pool {#sec-linear-pool}
 
-The `linear_pool()` function implements the linear opinion pool (LOP) method for ensembling predictions. This function can be used to combine predictions with output types mean, quantile, CDF, PMF, and sample. (Since LOP is an average of probabilities, it does not support ensembles of medians.) Unlike `simple_ensemble()`, this function handles its computation differently based on the output type. For the CDF, PMF, and mean output types, the linear pool method is equivalent to calling `simple_ensemble()` with a mean aggregation function (see @tbl-fns-by-output-type), since `simple_ensemble()` produces a linear pool prediction (an average of individual model cumulative or bin probabilities).
+The `linear_pool()` function implements the linear opinion pool (LOP) method for ensembling predictions. This function can be used to combine predictions with output types mean, quantile, CDF, PMF, and sample. Since LOP is an average of probabilities, it does not support ensembles of medians. Unlike `simple_ensemble()`, this function handles its computation differently based on the output type. For the CDF, PMF, and mean output types, the linear pool method is equivalent to calling `simple_ensemble()` with a mean aggregation function (see @tbl-fns-by-output-type), since `simple_ensemble()` produces a linear pool prediction (an average of individual model cumulative or bin probabilities).
 
 ##### Linear pool of samples
 
@@ -606,7 +610,7 @@ For the sample output type, the LOP method collects a stratified draw of the ind
 
 When requesting a subsetted ensemble of samples, it becomes important to distinguish between marginal and joint predictive distributions so that the dependence structure can be passed to `linear_pool()`. The concepts of the compound task ID set and derived task ID variables are introduced here, as they help identify the underpinnings the dependence structure of the ensembled predictive distributions.
 
-As stated in the previous section, the sample output type is unique in that it can represent predictions from both marginal distributions and joint distributions (trajectories). Hence, samples can encode dependence across combinations of multiple values for task ID variables, e.g. across multiple locations and/or time points. In this case, sample predictions with the same index (output type ID) from a given model may be assumed to correspond to a single trajectory.
+As stated in the previous section, the sample output type is unique in that it can represent predictions from both marginal distributions and joint distributions. Hence, samples can encode dependence across combinations of multiple values for task ID variables, e.g. across multiple locations and/or time points. In this case, sample predictions with the same index (output type ID) from a given model may be assumed to correspond to a single trajectory.
 
 The compound task id set consists of independent task id variables that, together, identify a "compound modeling task" corresponding to a single, modeled unit with a multi-various outcome of interest. Samples summarizing a marginal distribution will generally have a compound task ID set composed of all the task ID variables (except for derived task IDs). Conversely, samples summarizing a joint distribution will have a compound task ID set only containing task ID variables for which the joint distribution does not capture dependences. For example, if a joint distribution is estimated across multiple forecast horizons separately for each location (i.e., horizon-based trajectories), the task ID "location" would be included in the compound task ID set but "horizon" would not.
 
@@ -699,7 +703,7 @@ We can plot the quantile and median forecasts and the target time series data (@
 #| Forecasts are represented by a median (line), 50% and 90% prediction
 #| intervals (ribbons). Gray points represent observed incident hospitalizations."
 #| fig-width: 8
-#| fig-height: 4
+#| fig-height: 3
 model_outputs_plot <- hubExamples::forecast_outputs |>
   hubUtils::as_model_out_tbl() |>
   dplyr::filter(
@@ -1353,7 +1357,7 @@ flu_ensembles_scores <- readr::read_rds(
 flu_ensembles_baseline_scores <- rbind(flu_ensembles_scores, flu_baseline_scores)
 ```
 
-We also use relative versions of WIS and MAE (rWIS and rMAE, respectively) to understand how the ensemble performance compares to that of the FluSight baseline model. These metrics are calculated as $$\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},$$ where model $m$ is any given model being compared against the baseline. For both of these metrics, a value less than one indicates better performance compared to the baseline while a value greater than one indicates worse performance. By definition, the FluSight baseline itself will always have a value of one for both of these metrics.
+We also use relative versions of WIS and MAE (rWIS and rMAE, respectively) to understand how the ensemble performance compares to that of the FluSight baseline model. These metrics are calculated as $$\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},$$where model $m$ is any given model being compared against the baseline. For both of these metrics, a value less than one indicates better performance compared to the baseline while a value greater than one indicates worse performance. Because the baseline model is designed to represent a naive prediction, relative scores less than one indicate the model is outperforming a simple prediction that could be made in the absence of a model. By definition, the FluSight baseline itself will always have a value of one for both of these metrics.
 
 Each unique prediction from an ensemble model is scored against target data using the `score_forecasts()`[^2] function from the `covidHubUtils` package, made for scoring tabular infectious disease data with commonly used evaluation metrics including those mentioned above. We use median forecasts taken from the 0.5 quantile for the MAE evaluation.
 
@@ -1361,7 +1365,7 @@ Each unique prediction from an ensemble model is scored against target data usin
 
 ### Performance results across ensembles
 
-The four ensembles rank at the top in terms of accuracy when compared to the individual component models. Out of the ensembles, the quantile median has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools have very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially greater than that of the other ensembles. Note that the 2022-2023 season was especially difficult to forecast due to its large peak (see @fig-plot-forecasts-hubVis and @fig-wis-vs-forecast-date), resulting in overall WIS and MAE values close to that of the baseline for even the best models. However, the ensembles often outperform the baseline model, despite this being obscured by a few weeks of very poor performance when summarizing evaluation metrics over two seasons (@fig-wis-vs-forecast-date).
+The four ensembles rank at the top in terms of accuracy when compared to the individual component models. Out of the ensembles, the quantile median has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools have very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially greater than that of the other ensembles. Note that the 2022-2023 season was especially difficult to forecast due to its unusual timing and large peak (see @fig-plot-forecasts-hubVis and @fig-wis-vs-forecast-date), resulting in overall WIS and MAE values close to that of the baseline for even the best models. However, the ensembles often outperform the baseline model, despite this being obscured by a few weeks of very poor performance when summarizing evaluation metrics over two seasons (@fig-wis-vs-forecast-date).
 
 ```{r overall-evaluation}
 #| label: tbl-overall-evaluation

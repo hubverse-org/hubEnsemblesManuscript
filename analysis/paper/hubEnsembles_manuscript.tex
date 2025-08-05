@@ -291,8 +291,8 @@ shown to produce predictions that are more accurate\textsuperscript{1,2}
 and more consistent\textsuperscript{3} than individual models. Because
 of the clear performance benefits, multi-model ensembles are a widely
 used statistical tool across fields, including weather
-forecasting\textsuperscript{4}, climate modeling\textsuperscript{5}, and
-economics\textsuperscript{6}. In the last decade, the number of
+forecasting,\textsuperscript{4} climate modeling,\textsuperscript{5} and
+economics.\textsuperscript{6} In the last decade, the number of
 multi-model ensemble predictions generated and used in real time for
 public health planning and response has grown rapidly.
 
@@ -302,15 +302,15 @@ public health officials and medical practitioners. Underlying these
 predictions are mathematical models that use historical disease
 incidence data, including cases, hospitalizations, and deaths, to make
 probabilistic predictions of incidence in the
-future\textsuperscript{7--11}. Given the performance benefits of
+future.\textsuperscript{7--11} Given the performance benefits of
 multi-model ensembles, it is becoming increasingly common to convene
 multiple modeling teams into a collaborative
-``hub''\textsuperscript{12}, where each team generates independent
+``hub'',\textsuperscript{12} where each team generates independent
 predictions that are aggregated to collectively produce an ensemble. For
 example, this approach has been used to make real-time, multi-model
-predictions for seasonal influenza\textsuperscript{10,13},
-dengue\textsuperscript{14}, West Nile virus\textsuperscript{15}, and
-more recently SARS-CoV-2\textsuperscript{16--18}.
+predictions for seasonal influenza,\textsuperscript{10,13}
+dengue,\textsuperscript{14} West Nile virus,\textsuperscript{15} and
+more recently SARS-CoV-2.\textsuperscript{16--18}
 
 Generating multi-model ensembles or interpreting the resulting
 predictions depends on understanding the underlying statistical
@@ -320,9 +320,9 @@ used to combine or ``average'' predictions, and (2) how predictions are
 weighted when performing the combination. A few methodological papers
 have discussed theory of multi-model ensembles and tested various
 ensembling methods in public health applications
-specifically\textsuperscript{19--25}, yet there is no consensus on which
+specifically,\textsuperscript{19--25} yet there is no consensus on which
 method should be favored. There are software packages that support
-various aspects of multi-model ensembling\textsuperscript{26--29}.
+various aspects of multi-model ensembling.\textsuperscript{26--29}
 However, these packages only support a subset of methods and prediction
 types, illustrating the need for standard, easy-to-use implementations
 of common methods.
@@ -338,7 +338,7 @@ multiple models across a range of common methods and prediction types,
 including both discrete and continuous outcomes. It is situated within
 the broader ``hubverse'' collection of open-source software and data
 tools to facilitate the development and management of collaborative
-modeling exercises\textsuperscript{30}. These two factors together, a
+modeling exercises.\textsuperscript{30} These two factors together, a
 simple implementation framework across methods and integration with
 hubverse data standards and tools, make \texttt{hubEnsembles} accessible
 and easy to use.
@@ -347,8 +347,8 @@ Finally, we present a basic demonstration of multi-model ensemble
 generation and interpretation (Section~\ref{sec-simple-ex}), and a more
 in-depth analysis using real influenza forecasts
 (Section~\ref{sec-case-study}). The case studies demonstrate the utility
-of hubEnsembles to support a range of prediction types. Together, these
-case studies motivate a discussion and comparison of the various methods
+of hubEnsembles to support a range of prediction types, and together
+motivate a discussion and comparison of the various methods
 (Section~\ref{sec-conclusions}). While the case studies focus on
 infectious disease applications, the software and tools presented are
 general and could be used for applications in other areas of biomedical
@@ -442,7 +442,7 @@ For probabilistic predictions, there are two commonly used classes of
 methods to average or ensemble multiple predictions: quantile averaging
 (also called a Vincent average\textsuperscript{31}) and probability
 averaging (also called a distributional mixture or linear opinion
-pool\textsuperscript{32})\textsuperscript{33}. To define these two
+pool\textsuperscript{32}).\textsuperscript{33} To define these two
 classes of methods, let \(F(x)\) be a cumulative density function (CDF)
 defined over values \(x\) of the target variable for the prediction, and
 \(F^{-1}(\theta)\) be the corresponding quantile function defined over
@@ -538,40 +538,40 @@ where \(\mu_i\) is the mean and \(\sigma^2_i\) is the variance of
 individual prediction \(i\), and although there is no closed-form
 variance for the quantile average, the variance of the quantile average
 will always be less than or equal to that of the linear
-pool\textsuperscript{33}. Both methods generate distributions with the
+pool.\textsuperscript{33} Both methods generate distributions with the
 same mean, \(\mu_Q = \mu_{LOP} = \sum_{i=1}^Nw_i\mu_i\), which is the
-mean of individual model means\textsuperscript{33}. The linear pool
+mean of individual model means.\textsuperscript{33} The linear pool
 method preserves variation between individual models, whereas the
 quantile average cancels away this variation under the assumption it
-constitutes sampling error\textsuperscript{24}.
+constitutes sampling error.\textsuperscript{24}
 
 \subsection{Applications in public health and infectious disease
 outbreaks}\label{applications-in-public-health-and-infectious-disease-outbreaks}
 
 Multi-model ensembles have become the gold standard for forecasting and
 prediction efforts that support public health in real
-time\textsuperscript{12,34--36}. One prominent domain is forecasting key
+time.\textsuperscript{12,34--36} One prominent domain is forecasting key
 characteristics of infectious disease outbreaks, including weekly
 disease incidence or healthcare demand over future weeks, disease burden
 for the entire season, and timing and magnitude of the outbreak
-peak\textsuperscript{14--16,23,37}. Projections of disease outcomes
+peak.\textsuperscript{14--16,23,37} Projections of disease outcomes
 under multiple possible future scenarios have also been used to estimate
-intervention effectiveness to inform policy\textsuperscript{38--40}, and
+intervention effectiveness to inform policy,\textsuperscript{38--40} and
 it has been proposed to use short-term forecasts of disease incidence to
-inform vaccine efficacy trials\textsuperscript{41}. Standard guidelines
+inform vaccine efficacy trials.\textsuperscript{41} Standard guidelines
 for reporting of prediction efforts in outbreak and public health
-settings have also been established\textsuperscript{42}.
+settings have also been established.\textsuperscript{42}
 
 Across a variety of pathogens and outbreak settings, multi-model
 ensembles have been shown to produce forecasts that are as good or
 better than the individual models that compose the
-ensemble\textsuperscript{10,13,14,16--19,23}. Notably, the ensemble does
+ensemble.\textsuperscript{10,13,14,16--19,23} Notably, the ensemble does
 not always outperform the best model, but typically offers improved
 consistency and robustness over individual
-models\textsuperscript{16,17,20,43}. However, in one instance, a
+models.\textsuperscript{16,17,20,43} However, in one instance, a
 baseline historical average of West Nile Virus cases in the US
 outperformed most model predictions, including the
-ensemble\textsuperscript{15}.
+ensemble.\textsuperscript{15}
 
 Examinations of ensemble methodology in infectious disease contexts
 suggest there is not one method that universally performs best. In
@@ -583,17 +583,17 @@ weighting\textsuperscript{45} have been suggested to mitigate this
 problem. A median quantile average has been shown to provide similar
 performance to a weighted mean in short-term forecasting challenges,
 while also offering robustness to changes in performance across
-individuals models\textsuperscript{25}, and was thus used as the primary
-ensemble for short-term forecasts of COVID-19\textsuperscript{16,17}.
+individuals models,\textsuperscript{25} and was thus used as the primary
+ensemble for short-term forecasts of COVID-19.\textsuperscript{16,17}
 For longer-term predictions of COVID-19, a trimmed LOP ensemble
 performed best, as models tended to be more overconfident in this
-setting\textsuperscript{18}. The number of models submitting real-time
+setting.\textsuperscript{18} The number of models submitting real-time
 predictions has varied dramatically (from as few as four models for
 longer-term predictions of COVID-19\textsuperscript{18} to more than 40
 for short-term forecasts of COVID-19\textsuperscript{16}). Research
 including applications across influenza and COVID-19 suggests that at
 least 3 models are needed, with diminishing returns for every model that
-is added\textsuperscript{46}.
+is added.\textsuperscript{46}
 
 The growing body of literature on multi-model ensembles in public health
 domains emphasizes the utility of these approaches to inform response in
@@ -602,7 +602,7 @@ different targets and time horizons will further improve utility.
 Moreover, expanding the use of these methods to other pathogens and
 countries will enable further methodological development.
 
-\begin{tcolorbox}[enhanced jigsaw, leftrule=.75mm, toptitle=1mm, toprule=.15mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, breakable, colframe=quarto-callout-tip-color-frame, opacitybacktitle=0.6, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and Definitions}, titlerule=0mm, opacityback=0, coltitle=black, bottomrule=.15mm, bottomtitle=1mm, arc=.35mm, left=2mm, colback=white]
+\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, titlerule=0mm, colback=white, leftrule=.75mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and Definitions}, breakable, toprule=.15mm, arc=.35mm, colframe=quarto-callout-tip-color-frame, coltitle=black, colbacktitle=quarto-callout-tip-color!10!white, opacityback=0, left=2mm, bottomrule=.15mm, bottomtitle=1mm]
 
 \textbf{Concepts in statistical forecasting}
 
@@ -638,7 +638,7 @@ countries will enable further methodological development.
   estimate, which typically represents the most likely future outcome
   (e.g., a mean or median)
 \item
-  \emph{Probabilistic prediction}: a prediction that quantifies the a
+  \emph{Probabilistic prediction}: a prediction that quantifies a
   probability distribution over future outcomes. This enables
   quantification of most likely outcomes and the risk of extreme events.
 \item
@@ -664,16 +664,19 @@ countries will enable further methodological development.
 
 \begin{itemize}
 \item
-  \emph{Target}: a quantitative outcome of interest for a modeling hub
-  (e.g., ``incident case counts''). Targets typically (and sometimes
-  implicitly) refer to a value of an observable variable in a given
-  window of time, a given location, and possibly other stratifications
-  (such as age group).
+  \emph{Compound modeling task}: a single, modeled unit with a
+  multi-various outcome of interest, such as an epidemic trajectory
+  across multiple weeks
 \item
   \emph{Model output}: a set of target results in tabular format
   generated in response to some modeling task for a specific round. A
   model might result from a single team's response to the task or from
   an ensemble of results representing the outcomes of multiple efforts.
+\item
+  \emph{Output type}: classifications of model output that is supported
+  by the hubverse (i.e., the types of predictions that can be
+  processed). See Table Table~\ref{tbl-model-output-rep} for definitions
+  of each.
 \item
   \emph{Round}: a time period for which a set of specific model outputs
   are solicited. Rounds define the ``cadence'' of submission for a
@@ -694,6 +697,12 @@ countries will enable further methodological development.
   potentially targets that are used to parameterize a model task. These
   represent columns in the model output. A more detailed explanation of
   task ID variables can be found in the documentation.
+\item
+  \emph{Target}: a quantitative outcome of interest for a modeling hub
+  (e.g., ``incident case counts''). Targets typically (and sometimes
+  implicitly) refer to a value of an observable variable in a given
+  window of time, a given location, and possibly other stratifications
+  (such as age group).
 \end{itemize}
 
 \end{tcolorbox}
@@ -706,7 +715,7 @@ The methods described in Section~\ref{sec-defs} are implemented via the
 Importantly, \texttt{hubEnsembles} is situated within the broader
 hubverse software infrastructure, which provides data standards and
 conventions for representing and working with model
-predictions\textsuperscript{30}, including for example, collecting and
+predictions,\textsuperscript{30} including for example, collecting and
 manipulating predictions (\texttt{hubUtils}) as well as visualization
 (\texttt{hubVis}). In 2024-2025, the hubverse supported over a dozen
 collaborative modeling hubs used by public health agencies across the
@@ -743,7 +752,7 @@ of prediction and other identifying information; and (iv) the value of
 the prediction itself. While most of these columns are always required
 and have standardized column names, the task ID variables may vary
 according to the needs of the modeling hub or modeling
-task\textsuperscript{30}.
+task.\textsuperscript{30}
 
 Table~\ref{tbl-example-forecasts} provides an example of model output
 that stores short-term forecasts of weekly influenza hospitalizations
@@ -825,7 +834,7 @@ same concept. For example, the date task column was named
 \texttt{ref\_date} above but could easily be called
 \texttt{origin\_date} or \texttt{forecast\_date} instead. Some standard
 examples of task ID variables are available on the hubverse
-documentation website\textsuperscript{30}.
+documentation website.\textsuperscript{30}
 
 The ``model output representation'' columns \texttt{output\_type} and
 \texttt{output\_type\_id} contain metadata about how the predictions are
@@ -849,7 +858,7 @@ Table~\ref{tbl-model-output-rep}.
   >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4028}}@{}}
 \caption{A table summarizing how the model output representation columns
 are used for predictions of different output types; adapted from
-hubverse documentation\textsuperscript{30}. (*Rows of sample predictions
+hubverse documentation.\textsuperscript{30} (*Rows of sample predictions
 from a particular model that share an output type ID value may be
 assumed to represent a single sample from a joint distribution across
 multiple levels of the task ID
@@ -905,12 +914,15 @@ All output types can summarize predictions from univariate marginal
 distributions, e.g.~for a single location and time point. The sample
 output type---which represents randomly drawn values from a
 probabilistic predictive distribution---is unique in that it can
-additionally represent trajectories, i.e.~predictions from joint
-predictive distributions. This means that samples may encode dependence
-across combinations of multiple values for task ID variables, for
-example across multiple locations and/or time points. In this case, rows
-of sample predictions with the same index (specified by the
-\texttt{output\_type\_id}) from a particular model may be assumed to
+additionally represent predictions from joint predictive distributions.
+This means that samples may encode dependence across combinations of
+multiple values for task ID variables, for example across multiple
+locations and/or time points. One common example is a trajectory that
+represents a single model run across all time time points, and in such
+cases collecting predictions as samples can offer
+benefits\textsuperscript{\textbf{sherratt\_characterising\_2024?}}. In
+this case, rows of sample predictions with the same index (specified by
+the \texttt{output\_type\_id}) from a particular model may be assumed to
 correspond to a single sample from a joint distribution.
 
 For quantile predictions, the \texttt{output\_type\_id} is a numeric
@@ -1022,14 +1034,12 @@ from component model outputs by combining them via an aggregation
 function (\(C\)) within each unique combination of task ID variables,
 output types, and output type IDs. This function can be used to
 summarize predictions of output types mean, median, quantile, CDF, and
-PMF. (Samples cannot be combined using this function because their
-output type IDs are used to denote individual trajectories from a single
-model and do not carry any shared meaning across models; however,
-samples may be converted to a different, supported output type, if
-desired.) The mechanics of the ensemble calculations are the same for
-each of the output types, though the resulting statistical ensembling
-method differs for different output types
-(Table~\ref{tbl-fns-by-output-type}).
+PMF. Samples must be converted to a different output type (e.g.,
+summarized into a CDF) in order to be ensembled using this function, as
+there is no meaningful equivlant for individual predictive draws. The
+mechanics of the ensemble calculations are the same for each of the
+output types, though the resulting statistical ensembling method differs
+for different output types (Table~\ref{tbl-fns-by-output-type}).
 
 By default, \texttt{simple\_ensemble()} uses the mean for the
 aggregation function \(C\) and equal weights for all models. For point
@@ -1055,8 +1065,8 @@ Similarly, model weights can be specified to create a weighted ensemble.
 The \texttt{linear\_pool()} function implements the linear opinion pool
 (LOP) method for ensembling predictions. This function can be used to
 combine predictions with output types mean, quantile, CDF, PMF, and
-sample. (Since LOP is an average of probabilities, it does not support
-ensembles of medians.) Unlike \texttt{simple\_ensemble()}, this function
+sample. Since LOP is an average of probabilities, it does not support
+ensembles of medians. Unlike \texttt{simple\_ensemble()}, this function
 handles its computation differently based on the output type. For the
 CDF, PMF, and mean output types, the linear pool method is equivalent to
 calling \texttt{simple\_ensemble()} with a mean aggregation function
@@ -1085,11 +1095,11 @@ structure of the ensembled predictive distributions.
 
 As stated in the previous section, the sample output type is unique in
 that it can represent predictions from both marginal distributions and
-joint distributions (trajectories). Hence, samples can encode dependence
-across combinations of multiple values for task ID variables,
-e.g.~across multiple locations and/or time points. In this case, sample
-predictions with the same index (output type ID) from a given model may
-be assumed to correspond to a single trajectory.
+joint distributions. Hence, samples can encode dependence across
+combinations of multiple values for task ID variables, e.g.~across
+multiple locations and/or time points. In this case, sample predictions
+with the same index (output type ID) from a given model may be assumed
+to correspond to a single trajectory.
 
 The compound task id set consists of independent task id variables that,
 together, identify a ``compound modeling task'' corresponding to a
@@ -1154,7 +1164,7 @@ package\textsuperscript{47} for the first two:
 \item
   Draw samples from each component model distribution. To reduce Monte
   Carlo variability, we use quasi-random samples corresponding to
-  quantiles of the estimated distribution\textsuperscript{48}.
+  quantiles of the estimated distribution.\textsuperscript{48}
 \item
   Pool the samples from all component models and extract the desired
   quantiles.
@@ -1767,7 +1777,7 @@ When requesting a linear pool of quantiles, we may also change the
 distribution that \texttt{distfromq} uses to approximate the tails of
 component models' predictive distributions to either log normal or
 Cauchy using the \texttt{tail\_dist} argument (the default is
-normal)\textsuperscript{47}. This choice usually does not have a large
+normal).\textsuperscript{47} This choice usually does not have a large
 impact on the resulting ensemble distribution, though, and can only be
 seen in its outer edges. (For more details and other function options,
 see the documentation in the \texttt{distfromq} package at
@@ -1868,7 +1878,7 @@ The predictions we use to create the ensemble models are sourced from
 two seasons of the FluSight forecasting challenge. Since 2013, the US
 Centers for Disease Control and Prevention (CDC) has been soliciting
 short-term forecasts of seasonal influenza from modeling teams through
-this collaborative challenge\textsuperscript{49}. Using
+this collaborative challenge.\textsuperscript{49} Using
 \texttt{simple\_ensemble()} and \texttt{linear\_pool()}, we build four
 equally-weighted, multi-model ensembles to predict weekly influenza
 hospitalizations: a quantile (arithmetic) mean, a quantile median, a
@@ -1888,7 +1898,7 @@ generated reproducibly using data from \texttt{.rds} files stored in the
 \subsection{Data and Methods}\label{data-and-methods}
 
 We collect the predictions used to generate the four ensembles by
-querying them from Zoltar\textsuperscript{50}, a repository designed to
+querying them from Zoltar,\textsuperscript{50} a repository designed to
 archive forecasts created by the Reich Lab at UMass Amherst. For this
 analysis we only consider FluSight forecasts in a quantile format from
 the 2021-2022 and 2022-2023 influenza seasons. These quantile forecasts
@@ -2136,18 +2146,18 @@ data.
 We then evaluate the performance of the ensembles using scoring metrics
 that measure the accuracy and calibration of their forecasts. We chose
 several common metrics in forecast evaluation, including mean absolute
-error (MAE), weighted interval score (WIS)\textsuperscript{51}, 50\%
+error (MAE), weighted interval score (WIS),\textsuperscript{51} 50\%
 prediction interval (PI) coverage, and 95\% PI coverage. MAE measures
 the average absolute error of a set of point forecasts; smaller values
 of MAE indicate better forecast accuracy. WIS is a generalization of MAE
 for probabilistic forecasts and is an alternative to other common proper
 scoring rules which cannot be evaluated directly for quantile
-forecasts\textsuperscript{51}. WIS is made up of three component
+forecasts.\textsuperscript{51} WIS is made up of three component
 penalties: (1) for over-prediction, (2) for under-prediction, and (3)
 for the spread of each interval (where an interval is defined by a
 symmetric set of two quantiles). This metric is a weighted sum of these
 penalties across all prediction intervals provided. A lower WIS value
-indicates a more accurate forecast\textsuperscript{51}. PI coverage
+indicates a more accurate forecast.\textsuperscript{51} PI coverage
 provides information about whether a forecast has accurately
 characterized its uncertainty about future observations. The \(50\)\% PI
 coverage rate measures the proportion of the time that 50\% prediction
@@ -2158,12 +2168,15 @@ coverage rate is defined similarly. Achieving approximately nominal
 We also use relative versions of WIS and MAE (rWIS and rMAE,
 respectively) to understand how the ensemble performance compares to
 that of the FluSight baseline model. These metrics are calculated as
-\[\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},\]
-where model \(m\) is any given model being compared against the
-baseline. For both of these metrics, a value less than one indicates
-better performance compared to the baseline while a value greater than
-one indicates worse performance. By definition, the FluSight baseline
-itself will always have a value of one for both of these metrics.
+\[\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},\]where
+model \(m\) is any given model being compared against the baseline. For
+both of these metrics, a value less than one indicates better
+performance compared to the baseline while a value greater than one
+indicates worse performance. Because the baseline model is designed to
+represent a naive prediction, relative scores less than one indicate the
+model is outperforming a simple prediction that could be made in the
+absence of a model. By definition, the FluSight baseline itself will
+always have a value of one for both of these metrics.
 
 Each unique prediction from an ensemble model is scored against target
 data using the \texttt{score\_forecasts()}\footnote{https://reichlab.io/covidHubUtils/reference/score\_forecasts.html}
@@ -2187,7 +2200,8 @@ empirical coverage that was well above the nominal coverage rate. The
 quantile mean performs the worst of the ensembles with the highest MAE,
 which is substantially greater than that of the other ensembles. Note
 that the 2022-2023 season was especially difficult to forecast due to
-its large peak (see Figure~\ref{fig-plot-forecasts-hubVis} and
+its unusual timing and large peak (see
+Figure~\ref{fig-plot-forecasts-hubVis} and
 Figure~\ref{fig-wis-vs-forecast-date}), resulting in overall WIS and MAE
 values close to that of the baseline for even the best models. However,
 the ensembles often outperform the baseline model, despite this being
@@ -2370,7 +2384,7 @@ Multi-model ensembles are becoming the gold standard for prediction
 exercises in the public health domain. Collaborative modeling hubs can
 serve as a centralized entity to guide and elicit predictions from
 multiple independent models, as well as to generate and communicate
-ensemble results\textsuperscript{12,36}. Given the increasing popularity
+ensemble results.\textsuperscript{12,36} Given the increasing popularity
 of multi-model ensembles and collaborative hubs, there is a clear need
 for generalized data standards and software infrastructure to support
 these hubs. By addressing this need, the hubverse suite of tools can
@@ -2383,7 +2397,7 @@ to understand the methods underlying the ensemble, as methodological
 choices can have meaningful effects on the resulting ensemble and its
 performance. Although there may not be a universal ``best'' method,
 matching the properties of a given ensemble method with the features of
-the component models will likely yield best results\textsuperscript{24}.
+the component models will likely yield best results.\textsuperscript{24}
 Our case study on seasonal influenza forecasts in the US demonstrates
 this point. The quantile median ensemble performs best overall for a
 range of metrics, including weighted interval score, mean absolute

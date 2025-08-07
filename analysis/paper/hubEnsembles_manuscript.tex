@@ -602,9 +602,7 @@ different targets and time horizons will further improve utility.
 Moreover, expanding the use of these methods to other pathogens and
 countries will enable further methodological development.
 
-\begin{tcolorbox}[enhanced jigsaw, toptitle=1mm, rightrule=.15mm, opacitybacktitle=0.6, titlerule=0mm, colback=white, leftrule=.75mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and Definitions}, breakable, toprule=.15mm, arc=.35mm, colframe=quarto-callout-tip-color-frame, coltitle=black, colbacktitle=quarto-callout-tip-color!10!white, opacityback=0, left=2mm, bottomrule=.15mm, bottomtitle=1mm]
-
-\textbf{Concepts in statistical forecasting}
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, opacityback=0, bottomtitle=1mm, breakable, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, rightrule=.15mm, bottomrule=.15mm, colback=white, coltitle=black, leftrule=.75mm]
 
 \begin{itemize}
 \item
@@ -660,51 +658,6 @@ countries will enable further methodological development.
   probability distribution is defined (e.g., incident hospitalizations)
 \end{itemize}
 
-\textbf{Terminology from the hubverse}
-
-\begin{itemize}
-\item
-  \emph{Compound modeling task}: a single, modeled unit with a
-  multi-various outcome of interest, such as an epidemic trajectory
-  across multiple weeks
-\item
-  \emph{Model output}: a set of target results in tabular format
-  generated in response to some modeling task for a specific round. A
-  model might result from a single team's response to the task or from
-  an ensemble of results representing the outcomes of multiple efforts.
-\item
-  \emph{Output type}: classifications of model output that is supported
-  by the hubverse (i.e., the types of predictions that can be
-  processed). See Table Table~\ref{tbl-model-output-rep} for definitions
-  of each.
-\item
-  \emph{Round}: a time period for which a set of specific model outputs
-  are solicited. Rounds define the ``cadence'' of submission for a
-  modeling hub. For example, some hubs might accept daily submissions,
-  where each day is considered a different round. Other hubs might have
-  one round every month, with a submission period that may be open for
-  multiple days.
-\item
-  \emph{Task}: a definition of the goals of a modeling effort, possibly
-  including conditions, assumptions, and targets (collectively known as
-  task ID variables). Some tasks may be fixed across rounds, such as for
-  forecast hubs that regularly solicit predictions for a set time
-  horizon in the near-term future. Other tasks may be more variable; for
-  example, those in scenario hubs that model hypothetical futures with
-  different assumptions for different modeling rounds.
-\item
-  \emph{Task ID variables}: a collection of conditions, assumptions, and
-  potentially targets that are used to parameterize a model task. These
-  represent columns in the model output. A more detailed explanation of
-  task ID variables can be found in the documentation.
-\item
-  \emph{Target}: a quantitative outcome of interest for a modeling hub
-  (e.g., ``incident case counts''). Targets typically (and sometimes
-  implicitly) refer to a value of an observable variable in a given
-  window of time, a given location, and possibly other stratifications
-  (such as age group).
-\end{itemize}
-
 \end{tcolorbox}
 
 \section{How to implement ensemble
@@ -724,8 +677,8 @@ conventions that support the process of combining model predictions,
 supplemented by example predictions provided by the hubverse in
 \texttt{hubExamples}, then explain the implementation of the two primary
 ensembling functions included in the package,
-\texttt{simple\_ensemble()} and \texttt{linear\_pool()}. Again, Box 1
-provides a glossary of key hubverse terms and definitions for reference.
+\texttt{simple\_ensemble()} and \texttt{linear\_pool()}. Box 2 provides
+a glossary of key hubverse terms and definitions for reference.
 
 \subsection{Terminology and data standards in the
 hubverse}\label{terminology-and-data-standards-in-the-hubverse}
@@ -853,9 +806,9 @@ each valid output type are summarized in
 Table~\ref{tbl-model-output-rep}.
 
 \begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2639}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.4028}}@{}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1944}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2222}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5833}}@{}}
 \caption{A table summarizing how the model output representation columns
 are used for predictions of different output types; adapted from
 hubverse documentation.\textsuperscript{30} (*Rows of sample predictions
@@ -1026,6 +979,54 @@ bin or category probabilities at each target variable value,
 \texttt{sample} & NA & samples of the distribution are obtained by
 stratified draw from individual models' samples \\
 \end{longtable}
+
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, opacityback=0, bottomtitle=1mm, breakable, colbacktitle=quarto-callout-tip-color!10!white, colframe=quarto-callout-tip-color-frame, arc=.35mm, toprule=.15mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, toptitle=1mm, titlerule=0mm, opacitybacktitle=0.6, rightrule=.15mm, bottomrule=.15mm, colback=white, coltitle=black, leftrule=.75mm]
+
+\begin{itemize}
+\item
+  \emph{Modeling Task}: a definition of the goals of a modeling effort,
+  possibly including conditions, assumptions, and targets (collectively
+  known as task ID variables). Some tasks may be fixed across rounds,
+  such as for forecast hubs that regularly solicit predictions for a set
+  time horizon in the near-term future. Other tasks may be more
+  variable; for example, those in scenario hubs that model hypothetical
+  futures with different assumptions for different modeling rounds.
+\item
+  \emph{Compound modeling task}: a single, modeled unit with a
+  multi-various outcome of interest, such as an epidemic trajectory
+  across multiple weeks
+\item
+  \emph{Model output}: a dataset containing predictions of modeling
+  tasks in tabular format generated in response to some modeling task
+  for a specific round. A model might result from a single team's
+  response to the task or from an ensemble of results representing the
+  outcomes of multiple efforts.
+\item
+  \emph{Output type}: classifications of model output that is supported
+  by the hubverse (i.e., the types of predictions that can be
+  processed). See Table Table~\ref{tbl-model-output-rep} for definitions
+  of each.
+\item
+  \emph{Round}: a time period for which a set of specific model outputs
+  are solicited. Rounds define the ``cadence'' of submission for a
+  modeling hub. For example, some hubs might accept daily submissions,
+  where each day is considered a different round. Other hubs might have
+  one round every month, with a submission period that may be open for
+  multiple days.
+\item
+  \emph{Task ID variables}: a collection of conditions, assumptions, and
+  potentially targets that are used to parameterize a model task. These
+  represent columns in the model output. A more detailed explanation of
+  task ID variables can be found in the documentation.
+\item
+  \emph{Target}: a quantitative outcome of interest for a modeling hub
+  (e.g., ``incident case counts''). Targets typically (and sometimes
+  implicitly) refer to a value of an observable variable in a given
+  window of time, a given location, and possibly other stratifications
+  (such as age group).
+\end{itemize}
+
+\end{tcolorbox}
 
 \subsubsection{Simple ensemble}\label{sec-simple-ensemble}
 

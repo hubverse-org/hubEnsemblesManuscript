@@ -471,9 +471,7 @@ Examinations of ensemble methodology in infectious disease contexts suggest ther
 
 The growing body of literature on multi-model ensembles in public health domains emphasizes the utility of these approaches to inform response in real time. Future research on optimizing ensemble performance for different targets and time horizons will further improve utility. Moreover, expanding the use of these methods to other pathogens and countries will enable further methodological development.
 
-::: {.callout-tip title="Keywords and Definitions"}
-**Concepts in statistical forecasting**
-
+::: {.callout-tip title="Keywords and definitions: Concepts in statistical forecasting"}
 -   *Ensemble*: the combination of outputs from multiple models into a single, aggregate prediction
 
 -   *Forecast*: a specific quantified prediction of an observable event or trend that has yet to be observed, conditional on data that has been observed up to a specified time.
@@ -497,27 +495,11 @@ The growing body of literature on multi-model ensembles in public health domains
 -   *Quantile level/cumulative probability*: the $y$ value in a cumulative distribution function, representing the cumulative probability of a future value (e.g., 50% cumulative probability)
 
 -   *Value of the target variable/quantile*: the $x$ value in a cumulative distribution function, or the future values over which the probability distribution is defined (e.g., incident hospitalizations)
-
-**Terminology from the hubverse**
-
--   *Compound modeling task*: a single, modeled unit with a multi-various outcome of interest, such as an epidemic trajectory across multiple weeks
-
--   *Model output*: a set of target results in tabular format generated in response to some modeling task for a specific round. A model might result from a single team’s response to the task or from an ensemble of results representing the outcomes of multiple efforts.
-
--   *Output type*: classifications of model output that is supported by the hubverse (i.e., the types of predictions that can be processed). See Table @tbl-model-output-rep for definitions of each.
-
--   *Round*: a time period for which a set of specific model outputs are solicited. Rounds define the “cadence” of submission for a modeling hub. For example, some hubs might accept daily submissions, where each day is considered a different round. Other hubs might have one round every month, with a submission period that may be open for multiple days.
-
--   *Task*: a definition of the goals of a modeling effort, possibly including conditions, assumptions, and targets (collectively known as task ID variables). Some tasks may be fixed across rounds, such as for forecast hubs that regularly solicit predictions for a set time horizon in the near-term future. Other tasks may be more variable; for example, those in scenario hubs that model hypothetical futures with different assumptions for different modeling rounds.
-
--   *Task ID variables*: a collection of conditions, assumptions, and potentially targets that are used to parameterize a model task. These represent columns in the model output. A more detailed explanation of task ID variables can be found in the documentation.
-
--   *Target*: a quantitative outcome of interest for a modeling hub (e.g., "incident case counts"). Targets typically (and sometimes implicitly) refer to a value of an observable variable in a given window of time, a given location, and possibly other stratifications (such as age group).
 :::
 
 ## How to implement ensemble calculations {#sec-implementation}
 
-The methods described in @sec-defs are implemented via the `hubEnsembles` package in a flexible, easy-to-use framework. Importantly, `hubEnsembles` is situated within the broader hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions, [@hubverse_docs] including for example, collecting and manipulating predictions (`hubUtils`) as well as visualization (`hubVis`). In 2024-2025, the hubverse supported over a dozen collaborative modeling hubs used by public health agencies across the globe. We begin with a short overview of hubverse concepts and conventions that support the process of combining model predictions, supplemented by example predictions provided by the hubverse in `hubExamples`, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`. Again, Box 1 provides a glossary of key hubverse terms and definitions for reference.
+The methods described in @sec-defs are implemented via the `hubEnsembles` package in a flexible, easy-to-use framework. Importantly, `hubEnsembles` is situated within the broader hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions, [@hubverse_docs] including for example, collecting and manipulating predictions (`hubUtils`) as well as visualization (`hubVis`). In 2024-2025, the hubverse supported over a dozen collaborative modeling hubs used by public health agencies across the globe. We begin with a short overview of hubverse concepts and conventions that support the process of combining model predictions, supplemented by example predictions provided by the hubverse in `hubExamples`, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`. Box 2 provides a glossary of key hubverse terms and definitions for reference.
 
 ### Terminology and data standards in the hubverse
 
@@ -559,7 +541,7 @@ As mentioned previously, task ID variables are not fixed in name, number, or com
 The "model output representation" columns `output_type` and `output_type_id` contain metadata about how the predictions are conveyed. The hubverse data standards require that these columns are included in a `model_out_tbl`. The `output_type` column defines how a prediction is represented and may be `"mean"` or `"median"` for point predictions, or one of `"quantile"`, `"cdf"`, `"pmf"`, or `"sample"` for probabilistic predictions. The `output_type_id` provides additional identifying information for prediction and is specific to the particular `output_type` (see @tbl-model-output-rep). The last column, `value`, always contains the numeric value of the prediction, regardless of output type. Requirements for the values of the `output_type_id` and `value` columns associated with each valid output type are summarized in @tbl-model-output-rep.
 
 | `output_type` | `output_type_id`                                                 | `value`                                                                                                                                                       |
-|:--------------|:-----------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|:-------------|:---------------|:-----------------------------------------|
 | `mean`        | NA (not used for mean predictions)                               | Numeric: The mean of the predictive distribution                                                                                                              |
 | `median`      | NA (not used for median predictions)                             | Numeric: The median of the predictive distribution                                                                                                            |
 | `quantile`    | Numeric between 0.0 and 1.0: A quantile level                    | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
@@ -582,7 +564,7 @@ The hubverse also provides standards for target data (i.e., observed data corres
 The `hubEnsembles` package contains two functions that perform ensemble calculations: `simple_ensemble()`, which applies some function to each model prediction, and `linear_pool()`, which computes an ensemble using the linear opinion pool method. In the following sections, we outline the implementation details for each function and how these implementations correspond to the statistical ensembling methods described in @sec-defs. A short description of the calculation performed by each function is summarized by output type in @tbl-fns-by-output-type.
 
 | `output_type` | `simple_ensemble(..., agg_fun=mean)`                                                               | `linear_pool()`                                                                                                                                                               |
-|---------------|----------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|--------------|--------------------|--------------------------------------|
 | `mean`        | mean of individual model means                                                                     | mean of individual model means                                                                                                                                                |
 | `median`      | mean of individual model medians                                                                   | NA                                                                                                                                                                            |
 | `quantile`    | mean of individual model target variable values at each quantile level, $F^{-1}_Q(\theta)$         | quantiles of the distribution are obtained by computing the mean of estimated individual model cumulative probabilities at each target variable value, $F^{-1}_{LOP}(\theta)$ |
@@ -591,6 +573,25 @@ The `hubEnsembles` package contains two functions that perform ensemble calculat
 | `sample`      | NA                                                                                                 | samples of the distribution are obtained by stratified draw from individual models' samples                                                                                   |
 
 : Summary of ensemble function calculations for each output type. The ensemble function determines the operation that is performed, and in the case of probabilistic output types (quantile, CDF, PMF), this also determines what ensemble distribution is generated (quantile average, $F_{Q}^{-1}(\theta)$, or linear pool, $F_{LOP}(x)$). The ensembled predictions are returned in the same output type as the inputs. Thus, the output type determines how the resulting ensemble distribution is summarized (as a quantile, $F^{-1}(\theta)$, cumulative probability, $F(x)$, or probability $f(x)$). Estimating individual model cumulative probabilities is required to compute a `linear_pool()` for predictions of `quantile` output type; see @sec-linear-pool on the linear pool operation for details. In the case of `simple_ensemble()`, we show the calculations for the default case where `agg_fun = mean`; however, if another aggregation function is chosen (e.g., `agg_fun = median`), that calculation would be performed instead. For example, `simple_ensemble(..., agg_fun = median)` applied to predictions of mean output type would return the median of individual model means. {#tbl-fns-by-output-type}{tbl-colwidths="\[14,50,36\]"}
+
+::: {.callout-tip title="Keywords and definitions: Terminology from the hubverse"}
+
+-   *Modeling Task*: a definition of the goals of a modeling effort, possibly including conditions, assumptions, and targets (collectively known as task ID variables). Some tasks may be fixed across rounds, such as for forecast hubs that regularly solicit predictions for a set time horizon in the near-term future. Other tasks may be more variable; for example, those in scenario hubs that model hypothetical futures with different assumptions for different modeling rounds.
+
+-   *Compound modeling task*: a single, modeled unit with a multi-various outcome of interest, such as an epidemic trajectory across multiple weeks
+
+-   *Model output*: a dataset containing predictions of modeling tasks in tabular format generated in response to some modeling task for a specific round. A model might result from a single team’s response to the task or from an ensemble of results representing the outcomes of multiple efforts.
+
+-   *Output type*: classifications of model output that is supported by the hubverse (i.e., the types of predictions that can be processed). See Table @tbl-model-output-rep for definitions of each.
+
+-   *Round*: a time period for which a set of specific model outputs are solicited. Rounds define the “cadence” of submission for a modeling hub. For example, some hubs might accept daily submissions, where each day is considered a different round. Other hubs might have one round every month, with a submission period that may be open for multiple days.
+
+-   *Task ID variables*: a collection of conditions, assumptions, and potentially targets that are used to parameterize a model task. These represent columns in the model output. A more detailed explanation of task ID variables can be found in the documentation.
+
+-   *Target*: a quantitative outcome of interest for a modeling hub (e.g., "incident case counts"). Targets typically (and sometimes implicitly) refer to a value of an observable variable in a given window of time, a given location, and possibly other stratifications (such as age group).
+:::
+
+
 
 #### Simple ensemble {#sec-simple-ensemble}
 

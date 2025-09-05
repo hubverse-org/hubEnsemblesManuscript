@@ -29,7 +29,6 @@ Depends:
 Suggests:
     base (>= 4.4.0),
     bookdown (>= 0.37),
-    covidHubUtils (>= 0.1.8),
     cowplot (>= 1.1.1),
     devtools,
     distfromq (>= 1.0.4),
@@ -52,7 +51,7 @@ Suggests:
     reshape2 (>= 1.4.4),
     rmarkdown,
     scales,
-    scoringutils(== 1.0.0),
+    scoringutils(>= 1.0.0),
     testthat (>= 3.0.0),
     tools (>= 4.4.0),
     utils (>= 4.4.0),
@@ -78,7 +77,4 @@ Remotes:
     hubverse-org/hubExamples,
     hubverse-org/hubData,
     hubverse-org/hubEvals,
-    hubverse-org/hubVis,
-    reichlab/distfromq,
-    reichlab/covidHubUtils,
-    reichlab/zoltr
+    hubverse-org/hubVis

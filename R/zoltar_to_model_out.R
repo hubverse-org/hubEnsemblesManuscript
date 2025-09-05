@@ -22,7 +22,8 @@ zoltar_to_model_out <- function(zoltar_forecasts) {
       into = c("horizon", "target"), extra = "merge"
     ) |>
     dplyr::mutate(
-      target_end_date = lubridate::ceiling_date(.data[["forecast_date"]], "weeks") - lubridate::days(1)
+      target_end_date =
+        lubridate::floor_date(.data[["forecast_date"]] + 7 * .data[["horizon"]], "weeks") - lubridate::days(1)
     ) |>
     hubUtils::as_model_out_tbl(
       model_id_col = "model",

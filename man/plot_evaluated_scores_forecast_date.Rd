@@ -3,7 +3,7 @@
 \name{plot_evaluated_scores_forecast_date}
 \alias{plot_evaluated_scores_forecast_date}
 \title{Plot summarized metrics against forecast_date, with option to plot averaged
-truth data on the same graph}
+target data on the same graph}
 \usage{
 plot_evaluated_scores_forecast_date(
   summarized_scores,
@@ -12,8 +12,8 @@ plot_evaluated_scores_forecast_date(
   y_var = "wis",
   h = 1,
   main = NULL,
-  truth_data = NULL,
-  truth_scaling = 0.125
+  time_series_data = NULL,
+  time_series_scaling = 0.125
 )
 }
 \arguments{
@@ -31,12 +31,12 @@ row per model and horizon week combination plus a \code{horizon} column}
 
 \item{main}{A string specifying the plot title. Defaults to NULL.}
 
-\item{truth_data}{A data frame of truth data to plot in the same figure.
-Defaults to \code{NULL}. If provided must contain target_end_date and value
-columns.}
+\item{time_series_data}{A data frame of time series target data to plot in the
+same figure. Defaults to \code{NULL}. If provided must contain target_end_date and
+value columns.}
 
-\item{truth_scaling}{A numeric specifying a multiplier for the truth values
-so that it fits nicely on the graph.}
+\item{time_series_scaling}{A numeric specifying a multiplier for the time series
+values so that it fits nicely on the graph.}
 }
 \value{
 A scatter plot (with observations connected by lines) of the
@@ -44,5 +44,5 @@ specified summary metric vs forecast date
 }
 \description{
 Plot summarized metrics against forecast_date, with option to plot averaged
-truth data on the same graph
+target data on the same graph
 }

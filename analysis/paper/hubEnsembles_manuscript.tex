@@ -602,7 +602,7 @@ different targets and time horizons will further improve utility.
 Moreover, expanding the use of these methods to other pathogens and
 countries will enable further methodological development.
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, leftrule=.75mm, colback=white, opacityback=0, rightrule=.15mm, left=2mm, colbacktitle=quarto-callout-tip-color!10!white, toptitle=1mm, arc=.35mm, coltitle=black, bottomrule=.15mm, breakable, titlerule=0mm, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, toprule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-tip-color-frame, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, left=2mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, bottomtitle=1mm, opacityback=0, leftrule=.75mm, coltitle=black, toptitle=1mm, rightrule=.15mm, colback=white, opacitybacktitle=0.6, arc=.35mm]
 
 \begin{itemize}
 \item
@@ -980,7 +980,7 @@ bin or category probabilities at each target variable value,
 stratified draw from individual models' samples \\
 \end{longtable}
 
-\begin{tcolorbox}[enhanced jigsaw, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, leftrule=.75mm, colback=white, opacityback=0, rightrule=.15mm, left=2mm, colbacktitle=quarto-callout-tip-color!10!white, toptitle=1mm, arc=.35mm, coltitle=black, bottomrule=.15mm, breakable, titlerule=0mm, opacitybacktitle=0.6, colframe=quarto-callout-tip-color-frame, bottomtitle=1mm, toprule=.15mm]
+\begin{tcolorbox}[enhanced jigsaw, breakable, colframe=quarto-callout-tip-color-frame, titlerule=0mm, bottomrule=.15mm, toprule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, left=2mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, bottomtitle=1mm, opacityback=0, leftrule=.75mm, coltitle=black, toptitle=1mm, rightrule=.15mm, colback=white, opacitybacktitle=0.6, arc=.35mm]
 
 \begin{itemize}
 \item
@@ -2204,21 +2204,13 @@ ensembles}\label{performance-results-across-ensembles}
 
 The four ensembles rank in the top-half in terms of accuracy when
 compared to the individual component models that made predictions for
-influenza hospitalizations. The ranking of the models differed slightly
-among the four scoring metrics; the two linear pools perform the best of
-the ensembles in terms of WIS and 95\% prediction interval coverage
-while the quantile median has slightly better MAE and the best 50\%
-coverage for ensembles. The quantile mean, however, displayed the worst
-values for every metric out of the ensembles, particularly with the MAE.
-Note that the 2022-2023 season was especially difficult to forecast due
-to its unusual timing and large peak (see
-Figure~\ref{fig-plot-forecasts-hubVis} and
-Figure~\ref{fig-wis-vs-forecast-date}), resulting in overall MAE values
-close to that of the baseline for even the best ensembles. However, all
-the ensembles almost always outperform the baseline model, despite this
-being obscured by a few weeks of very poor performance when summarizing
-evaluation metrics over two seasons
-(Figure~\ref{fig-wis-vs-forecast-date}).
+influenza hospitalizations (Table~\ref{tbl-overall-evaluation}). The
+ranking of the models differ slightly among the four scoring metrics;
+the two linear opinion pools perform better than the other ensembles in
+terms of WIS and 95\% prediction interval coverage while the quantile
+median has slightly better MAE and the best 50\% coverage across
+ensembles. The quantile mean displayed the worst values for every metric
+out of the ensembles, particularly for MAE.
 
 \begin{longtable}[]{@{}
   >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.3333}}
@@ -2284,28 +2276,34 @@ Plots of the ensemble models' forecasts can aid our understanding about
 the origin of these accuracy differences
 (Figure~\ref{fig-plot-forecasts-hubVis}). For example, the linear
 opinion pools consistently have some of the widest prediction intervals,
-and consequently the highest coverage rates. This is useful for the 95\%
-prediction intervals, which better capture the fluctuations surrounding
-the especially large peak of the 2022-2023 season than any other models;
-however, it also led to 50\% interval coverage that nearly always
-exceeded the nominal level. The linear pools' substantially better 95\%
-coverage rates are likely the source of their low WIS values in the
-overall-evaluation.
+and consequently the highest coverage rates. The wider intervals
+provided by the LOP ensembles yield the best 95\% prediction interval
+coverage, however, this also leads to 50\% interval coverage that nearly
+always exceeded the nominal level. Moreover, the linear pools
+demonstrate the strongest WIS performance at both 1 week and 4 week
+ahead horizons during the 2022-2023 season (see
+Figure~\ref{fig-wis-vs-forecast-date}); this season was especially
+difficult to forecast due to its unusual timing and large peak. The
+wider prediction intervals prove useful in this uncertain context when
+other models are overconfident in their forecasts.
 
-The median ensemble, which has the best MAE and 50\% interval coverage
-of the ensembles, tended to have slightly better median (point)
-forecasts and mid-width intervals. While these intervals are properly
-calibrated outside of the large peak, they fail to appropriately capture
-uncertainty during that time, which resulted in WIS values higher than
-that of the linear opinion pools. The quantile mean's interval widths
-vary throughout both seasons, though it usually has narrower intervals
-than the linear pools. However, this model's median forecasts have a
-larger error margin compared to the other ensembles, especially at
-longer horizons. This pattern is demonstrated for the 4-week ahead
-forecast in California following the 2022-23 season peak on December 5,
-2022 (Figure~\ref{fig-plot-forecasts-hubVis}). Here, the quantile mean
-predicted a continued increase in hospitalizations, at a steeper slope
-than the other ensemble methods.
+Although the LOP ensembles provide the best scores for WIS and 95\%
+prediction interval coverage, they are not always the top ensemble
+model. The quantile median ensemble tends to have slightly better median
+(point) forecasts and mid-width intervals, including the best MAE and
+50\% interval coverage of all of the ensembles. While the quantile
+median ensemble is generally well calibrated for most of the predictions
+evaluated, it fails to appropriately capture uncertainty during the
+large peak of the 2022-2023 season which resulted in WIS values higher
+than that of the linear opinion pools. The quantile mean's interval
+widths vary throughout both seasons. Although it usually has narrower
+intervals than the linear pools, the quantile mean ensemble's median
+forecasts have a larger error margin compared to the other ensembles,
+especially at longer horizons. This pattern is demonstrated for the
+4-week ahead forecast in California following the 2022-23 season peak on
+December 5, 2022 (Figure~\ref{fig-plot-forecasts-hubVis}). Here, the
+quantile mean predicted a continued increase in hospitalizations, at a
+steeper slope than the other ensemble methods.
 
 \begin{figure}
 
@@ -2326,31 +2324,6 @@ during the 2022-2023 influenza season are shown.}
 
 \end{figure}%
 
-Averaging across all time points, the linear pools have the best scores
-for WIS and 95\% prediction interval coverage and top performance for
-MAE. (Note that we only show plots of WIS vs forecast date, faceted by
-season and horizon, as it is our principal metric. The 95\% interval
-coverage plots display similar trends, and model performance is nearly
-identical among the ensembles for MAE.) Every ensemble tends to
-substantially outperform the baseline model for WIS and MAE, except at
-the top of the 2022-2023 season peak when the baseline had much lower
-values for both metrics (see Figure~\ref{fig-wis-vs-forecast-date}). The
-linear pools demonstrated the strongest performance compared to the
-other models in the 2022-2023 season at both 1 week and 4 week ahead
-horizons for WIS and 95\% coverage. This seems to indicate that their
-wide intervals provided the greatest utility during times of rapid
-change when other models remained overconfident in their forecasts.
-
-However, the linear pools are not always the top ensemble models. There
-are a few weeks where the quantile average ensembles are slightly better
-in terms of WIS. In general, the median ensemble has the best WIS values
-for the 1 week ahead horizon during the 2021-2022 season, and the best
-MAE for both seasons' 1 week ahead forecasts. The quantile mean also
-performs the best out of the ensembles at the 4 week ahead horizon for
-the 2021-2022 season (Figure~\ref{fig-wis-vs-forecast-date}). Depending
-on the current forecasting conditions, different models may make more
-appropriate or accurate predictions.
-
 \begin{figure}
 
 \centering{
@@ -2368,18 +2341,31 @@ the entire season. Lower values indicate better performance.}
 
 \end{figure}%
 
-While usually unsuited for short-term forecasting, the linear pools'
-conservative wide intervals were suitable for making predictions for
-influenza season with an unusually large peak. Conversely, the LOP
-models did not perform as well during the milder season without any
-periods of rapid change; here, the quantile median and mean ensembles
-demonstrated better, more robust performance. Thus, while the linear
-opinion pools offer better overall performance in this analysis thanks
-to their correct assessment of uncertainty during periods of rapid
-change, there are clearly also settings in which other ensemble methods
-display better performance.
+All of the ensemble variations outperform the baseline model in this
+analysis. The linear pool ensembles improve WIS by 27\% over baseline,
+the quantile median by 20\% and the quantile mean by 16\%. Such
+improvements come mostly from the ensembles providing better calibrated
+prediction intervals, as improvements in point estimate accuracy improve
+over baseline by at most 9\% (as measured by rMAE). While the best model
+(CMU-TimeSeries) improves WIS more (by 33\%), ensembles are typically
+more robust than individual models, and thus some decrease in overall
+performance may be accepted in order to avoid extreme misses.
 
-The choice of an appropriate ensemble aggregation method may depend on
+Linear pool ensemble methods are known to generate wider, more
+conservative, prediction intervals than quantile averaging methods. In
+this context, where influenza dynamics were perturbed by the COVID-19
+pandemic interventions, the wider prediction intervals were suitable for
+making predictions for influenza season with an unusually large peak.
+However, such wide intervals will likely be detrimental in other
+short-term forecasting contexts, including for example during the milder
+season without any periods of rapid change (where the median and mean
+quantile ensembles demonstrated more robust performance). Expanding this
+evaluation to evaluate other influenza seasons will be important to
+characterize the robustness of these conclusions and test how much the
+unusual timing and magnitude of the post-pandemic seasons affected
+forecast performance.
+
+The choice of an appropriate ensemble aggregation method will depend on
 the forecast target, the goal of forecasting, and the behavior of the
 individual models contributing to an ensemble. One case may call for
 prioritizing high coverage rates while another may prioritize accurate
@@ -2420,15 +2406,15 @@ matching the properties of a given ensemble method with the features of
 the component models will likely yield best results.\textsuperscript{24}
 Our case study on seasonal influenza forecasts in the US demonstrates
 this point. The two linear opinion pools with different distributional
-tails showcase top-performance for a range of metrics, including
-weighted interval score, mean absolute error, and prediction interval
-coverage, particularly when outlying component forecasts are likely more
-important. Yet, the other ensemble methods we tested also showcased a
-clear improvement over the baseline model and even outperformed the
-linear pools during periods of greater stability and less variation. The
-accuracy gains from ensemble models motivate the use of a ``hub-based''
-approach to prediction for infectious diseases, public health, and in
-other fields.
+tails performed best for a range of metrics, including weighted interval
+score, mean absolute error, and prediction interval coverage,
+particularly when outlying component forecasts were important. Yet, the
+quantile averaging methods outperformed the linear pools during periods
+of greater stability and less variation. All ensembles showed clear
+improvement over the baseline model, demonstrating the accuracy gains
+from ensemble models that motivate the use of a ``hub-based'' approach
+to prediction for infectious diseases, public health, and in other
+fields.
 
 \section*{Code availability}\label{code-availability}
 \addcontentsline{toc}{section}{Code availability}

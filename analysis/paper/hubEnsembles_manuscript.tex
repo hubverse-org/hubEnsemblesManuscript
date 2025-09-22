@@ -602,7 +602,7 @@ different targets and time horizons will further improve utility.
 Moreover, expanding the use of these methods to other pathogens and
 countries will enable further methodological development.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, rightrule=.15mm, colback=white, opacityback=0, toprule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, opacitybacktitle=0.6, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, arc=.35mm, bottomrule=.15mm, leftrule=.75mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, titlerule=0mm, coltitle=black, leftrule=.75mm, colback=white, opacitybacktitle=0.6, arc=.35mm, opacityback=0, bottomrule=.15mm, toprule=.15mm, toptitle=1mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, colframe=quarto-callout-tip-color-frame, breakable, rightrule=.15mm, left=2mm]
 
 \begin{itemize}
 \item
@@ -763,10 +763,10 @@ multiple values for task ID variables, for example across multiple
 locations and/or time points. One common example is a trajectory that
 represents a single model run across all time time points, and in such
 cases collecting predictions as samples can offer
-benefits\textsuperscript{\textbf{sherratt\_characterising\_2024?}}. In
-this case, rows of sample predictions with the same index (specified by
-the \texttt{output\_type\_id}) from a particular model may be assumed to
-correspond to a single sample from a joint distribution.
+benefits\textsuperscript{47}. In this case, rows of sample predictions
+with the same index (specified by the \texttt{output\_type\_id}) from a
+particular model may be assumed to correspond to a single sample from a
+joint distribution.
 
 For quantile predictions, the \texttt{output\_type\_id} is a numeric
 value between 0 and 1 specifying the cumulative probability associated
@@ -804,7 +804,7 @@ ensembling methods described in Section~\ref{sec-defs}. A short
 description of the calculation performed by each function is summarized
 by output type in Table~\ref{tbl-fns-by-output-type}.
 
-\begin{tcolorbox}[enhanced jigsaw, left=2mm, rightrule=.15mm, colback=white, opacityback=0, toprule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, opacitybacktitle=0.6, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, arc=.35mm, bottomrule=.15mm, leftrule=.75mm, coltitle=black]
+\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, titlerule=0mm, coltitle=black, leftrule=.75mm, colback=white, opacitybacktitle=0.6, arc=.35mm, opacityback=0, bottomrule=.15mm, toprule=.15mm, toptitle=1mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, colframe=quarto-callout-tip-color-frame, breakable, rightrule=.15mm, left=2mm]
 
 \begin{itemize}
 \item
@@ -977,7 +977,7 @@ we must first obtain an estimate of the CDF for each component
 distribution from the provided quantiles, combine the CDFs, then
 calculate the quantiles using the ensemble's CDF. We perform this
 calculation in three main steps, assisted by the \texttt{distfromq}
-package\textsuperscript{47} for the first two:
+package\textsuperscript{48} for the first two:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -989,7 +989,7 @@ package\textsuperscript{47} for the first two:
 \item
   Draw samples from each component model distribution. To reduce Monte
   Carlo variability, we use quasi-random samples corresponding to
-  quantiles of the estimated distribution.\textsuperscript{48}
+  quantiles of the estimated distribution.\textsuperscript{49}
 \item
   Pool the samples from all component models and extract the desired
   quantiles.
@@ -1091,7 +1091,7 @@ the location and time horizons we are interested in.
 \SpecialCharTok{+}\NormalTok{ ) }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"incident hospitalizations"}\NormalTok{)}
-\SpecialCharTok{\textgreater{}} \FunctionTok{ggsave}\NormalTok{(}\StringTok{"../figures/Shandross\_fig3.tiff"}\NormalTok{, }\AttributeTok{dpi=}\DecValTok{800}\NormalTok{, }\AttributeTok{width=}\DecValTok{8}\NormalTok{, }\AttributeTok{height=}\DecValTok{3}\NormalTok{)}
+\SpecialCharTok{\textgreater{}} \FunctionTok{ggsave}\NormalTok{(}\StringTok{"../figures/Shandross\_fig3.pdf"}\NormalTok{, }\AttributeTok{dpi=}\DecValTok{800}\NormalTok{, }\AttributeTok{width=}\DecValTok{8}\NormalTok{, }\AttributeTok{height=}\DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1122,31 +1122,7 @@ epidemic trajectories, but samples can. We filter to the sample output
 type and plot. These samples are representative draws from the
 distributions plotted in Figure~\ref{fig-plot-ex-mods}.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\SpecialCharTok{\textgreater{}}\NormalTok{ plot\_samples }\OtherTok{\textless{}{-}}\NormalTok{ hubExamples}\SpecialCharTok{::}\NormalTok{forecast\_outputs }\SpecialCharTok{|\textgreater{}}
-\SpecialCharTok{+}\NormalTok{   dplyr}\SpecialCharTok{::}\FunctionTok{filter}\NormalTok{(}
-\SpecialCharTok{+}\NormalTok{     output\_type }\SpecialCharTok{==} \StringTok{"sample"}\NormalTok{, }
-\SpecialCharTok{+}\NormalTok{     reference\_date }\SpecialCharTok{==} \StringTok{"2022{-}12{-}17"}\NormalTok{,}
-\SpecialCharTok{+}\NormalTok{     location }\SpecialCharTok{==} \StringTok{"25"}
-\SpecialCharTok{+}\NormalTok{   )}
-\SpecialCharTok{\textgreater{}}   
-\ErrorTok{\textgreater{}} \FunctionTok{ggplot}\NormalTok{(}\AttributeTok{data =}\NormalTok{ plot\_samples) }\SpecialCharTok{+} 
-\SpecialCharTok{+}   \FunctionTok{geom\_point}\NormalTok{(}\AttributeTok{data =}\NormalTok{ target\_data\_plot, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ date, }\AttributeTok{y =}\NormalTok{ observation),}\AttributeTok{color =} \StringTok{"darkgray"}\NormalTok{) }\SpecialCharTok{+}
-\SpecialCharTok{+}   \FunctionTok{geom\_line}\NormalTok{(}\AttributeTok{data =}\NormalTok{ target\_data\_plot, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ date, }\AttributeTok{y =}\NormalTok{ observation), }\AttributeTok{color =} \StringTok{"darkgray"}\NormalTok{) }\SpecialCharTok{+}
-\SpecialCharTok{+}   \FunctionTok{geom\_line}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ target\_end\_date, }\AttributeTok{y =}\NormalTok{ value, }\AttributeTok{group =}\NormalTok{ output\_type\_id, }\AttributeTok{color =}\NormalTok{ model\_id), }
-\SpecialCharTok{+}             \AttributeTok{alpha =} \FloatTok{0.3}\NormalTok{) }\SpecialCharTok{+} 
-\SpecialCharTok{+}   \FunctionTok{facet\_wrap}\NormalTok{(}\FunctionTok{vars}\NormalTok{(model\_id)) }\SpecialCharTok{+} 
-\SpecialCharTok{+}   \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Date"}\NormalTok{, }\AttributeTok{y =} \StringTok{"incident hospitalizations"}\NormalTok{) }\SpecialCharTok{+}
-\SpecialCharTok{+}   \FunctionTok{scale\_color\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set2"}\NormalTok{) }\SpecialCharTok{+}
-\SpecialCharTok{+}   \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+} 
-\SpecialCharTok{+}   \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"none"}\NormalTok{)}
-\SpecialCharTok{\textgreater{}} 
-\ErrorTok{\textgreater{}} \FunctionTok{ggsave}\NormalTok{(}\StringTok{"../figures/Shandross\_fig4.tiff"}\NormalTok{, }\AttributeTok{dpi=}\DecValTok{800}\NormalTok{, }\AttributeTok{width=}\DecValTok{8}\NormalTok{, }\AttributeTok{height=}\DecValTok{3}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{figure}[H]
+\begin{figure}
 
 \centering{
 
@@ -1411,7 +1387,7 @@ When requesting a linear pool of quantiles, we may also change the
 distribution that \texttt{distfromq} uses to approximate the tails of
 component models' predictive distributions to either log normal or
 Cauchy using the \texttt{tail\_dist} argument (the default is
-normal).\textsuperscript{47} This choice usually does not have a large
+normal).\textsuperscript{48} This choice usually does not have a large
 impact on the resulting ensemble distribution, though, and can only be
 seen in its outer edges. (For more details and other function options,
 see the documentation in the \texttt{distfromq} package at
@@ -1512,7 +1488,7 @@ The predictions we use to create the ensemble models are sourced from
 two seasons of the FluSight forecasting challenge. Since 2013, the US
 Centers for Disease Control and Prevention (CDC) has been soliciting
 short-term forecasts of seasonal influenza from modeling teams through
-this collaborative challenge.\textsuperscript{49} Using
+this collaborative challenge.\textsuperscript{50} Using
 \texttt{simple\_ensemble()} and \texttt{linear\_pool()}, we build four
 equally-weighted, multi-model ensembles to predict weekly influenza
 hospitalizations: a quantile (arithmetic) mean, a quantile median, a
@@ -1532,7 +1508,7 @@ generated reproducibly using data from \texttt{.rds} files stored in the
 \subsection{Data and Methods}\label{data-and-methods}
 
 We collect the predictions used to generate the four ensembles by
-querying them from Zoltar,\textsuperscript{50} a repository designed to
+querying them from Zoltar,\textsuperscript{51} a repository designed to
 archive forecasts created by the Reich Lab at UMass Amherst. For this
 analysis we only consider FluSight forecasts in a quantile format from
 the 2021-2022 and 2022-2023 influenza seasons. These quantile forecasts
@@ -1664,18 +1640,18 @@ data.
 We then evaluate the performance of the ensembles using scoring metrics
 that measure the accuracy and calibration of their forecasts. We chose
 several common metrics in forecast evaluation, including mean absolute
-error (MAE), weighted interval score (WIS),\textsuperscript{51} 50\%
+error (MAE), weighted interval score (WIS),\textsuperscript{52} 50\%
 prediction interval (PI) coverage, and 95\% PI coverage. MAE measures
 the average absolute error of a set of point forecasts; smaller values
 of MAE indicate better forecast accuracy. WIS is a generalization of MAE
 for probabilistic forecasts and is an alternative to other common proper
 scoring rules which cannot be evaluated directly for quantile
-forecasts.\textsuperscript{51} WIS is made up of three component
+forecasts.\textsuperscript{52} WIS is made up of three component
 penalties: (1) for over-prediction, (2) for under-prediction, and (3)
 for the spread of each interval (where an interval is defined by a
 symmetric set of two quantiles). This metric is a weighted sum of these
 penalties across all prediction intervals provided. A lower WIS value
-indicates a more accurate forecast.\textsuperscript{51} PI coverage
+indicates a more accurate forecast.\textsuperscript{52} PI coverage
 provides information about whether a forecast has accurately
 characterized its uncertainty about future observations. The \(50\)\% PI
 coverage rate measures the proportion of the time that 50\% prediction
@@ -2241,31 +2217,38 @@ doi:\href{https://doi.org/10.1002/sim.9219}{10.1002/sim.9219}}
 {Disease} {Outbreak} {Forecast} {Ensembles}. 2024;30(9):1967-1969.
 doi:\href{https://doi.org/10.3201/eid3009.240026}{10.3201/eid3009.240026}}
 
-\bibitem[\citeproctext]{ref-distfromq}
+\bibitem[\citeproctext]{ref-sherratt_characterising_2024}
 \CSLLeftMargin{47. }%
+\CSLRightInline{Sherratt K, Srivastava A, Ainslie K, et al.
+Characterising information gains and losses when collecting multiple
+epidemic model outputs. \emph{Epidemics}. 2024;47:100765.
+doi:\href{https://doi.org/10.1016/j.epidem.2024.100765}{10.1016/j.epidem.2024.100765}}
+
+\bibitem[\citeproctext]{ref-distfromq}
+\CSLLeftMargin{48. }%
 \CSLRightInline{Ray EL, Gerding A. \emph{Distfromq: Reconstruct a
 Distribution from a Collection of Quantiles}.; 2024.}
 
 \bibitem[\citeproctext]{ref-niederreiter1992quasirandom}
-\CSLLeftMargin{48. }%
+\CSLLeftMargin{49. }%
 \CSLRightInline{Niederreiter H. \emph{Random Number Generation and
 Quasi-Monte Carlo Methods}. Society for Industrial; Applied Mathematics;
 1992.}
 
 \bibitem[\citeproctext]{ref-cdc_flusight}
-\CSLLeftMargin{49. }%
+\CSLLeftMargin{50. }%
 \CSLRightInline{CDC. About flu forecasting. Published online 2023.
 \url{https://www.cdc.gov/flu/weekly/flusight/how-flu-forecasting.htm}}
 
 \bibitem[\citeproctext]{ref-reich_zoltar_2021}
-\CSLLeftMargin{50. }%
+\CSLLeftMargin{51. }%
 \CSLRightInline{Reich NG, Cornell M, Ray EL, House K, Le K. The {Zoltar}
 forecast archive, a tool to standardize and store interdisciplinary
 prediction research. \emph{Sci Data}. 2021;8(1):59.
 doi:\href{https://doi.org/10.1038/s41597-021-00839-5}{10.1038/s41597-021-00839-5}}
 
 \bibitem[\citeproctext]{ref-bracher_evaluating_2021}
-\CSLLeftMargin{51. }%
+\CSLLeftMargin{52. }%
 \CSLRightInline{Bracher J, Ray EL, Gneiting T, Reich NG. Evaluating
 epidemic forecasts in an interval format. \emph{PLoS Comput Biol}.
 2021;17(2):e1008618.

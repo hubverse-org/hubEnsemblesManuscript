@@ -127,7 +127,6 @@ Generating an ensemble requires multiple predictions to be combined, and a combi
 #| fig-height: 3
 
 knitr::include_graphics("overview_fig_FULL.pdf")
-ggsave("../figures/Shandross_fig1.tiff", dpi=800, width=6, height=3)
 ```
 
 ### Mathematical definitions and properties of ensemble methods
@@ -458,8 +457,6 @@ cowplot::plot_grid(
   ),
   ncol = 1, rel_heights = c(0.95, 0.05)
 )
-
-ggsave("../figures/Shandross_fig2.tiff", dpi=800, width=10, height=4)
 ```
 
 The different averaging methods for probabilistic predictions yield different properties of the resulting ensemble distribution. For example, the variance of the linear pool is $\sigma^2_{LOP} = \sum_{i=1}^Nw_i\sigma_i^2 + \sum_{i=1}^Nw_i(\mu_i-\mu_{LOP})^2$, where $\mu_i$ is the mean and $\sigma^2_i$ is the variance of individual prediction $i$, and although there is no closed-form variance for the quantile average, the variance of the quantile average will always be less than or equal to that of the linear pool. [@lichtendahl2013] Both methods generate distributions with the same mean, $\mu_Q = \mu_{LOP} = \sum_{i=1}^Nw_i\mu_i$, which is the mean of individual model means. [@lichtendahl2013] The linear pool method preserves variation between individual models, whereas the quantile average cancels away this variation under the assumption it constitutes sampling error. [@howerton2023]
@@ -635,12 +632,12 @@ hubVis::plot_step_ahead_model_output(
 ) +
   theme_bw() +
   labs(y = "incident hospitalizations")
-ggsave("../figures/Shandross_fig3.tiff", dpi=800, width=8, height=3)
 ```
 
 Some hubs request modeling teams submit samples instead of, or in addition to, predicted distributions (@fig-plot-ex-mod-samps). Samples can be useful for capturing additional correlations across targets that are difficult to represent when predictions are summarized using quantile or CDF output types. In this example, weekly probabilistic predictions of incident influenza hospitalizations cannot capture the shape of individual epidemic trajectories, but samples can. We filter to the sample output type and plot. These samples are representative draws from the distributions plotted in @fig-plot-ex-mods.
 
 ```{r}
+#| echo: FALSE
 #| label: fig-plot-ex-mod-samps
 #| prompt: true
 #| fig-cap: "One example set of sample forecasts for weekly incident influenza
@@ -665,8 +662,6 @@ ggplot(data = plot_samples) +
   scale_color_brewer(palette = "Set2") +
   theme_bw() + 
   theme(legend.position = "none")
-
-ggsave("../figures/Shandross_fig4.tiff", dpi=800, width=8, height=3)
 ```
 
 Next, we examine the PMF forecasts for hospitalization intensity in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These four categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations except for the target, which is "wk flu hosp rate category" for these categorical predictions.
@@ -712,7 +707,6 @@ ggplot(
     legend.position = "bottom",
     panel.grid = element_blank()
   )
-ggsave("../figures/Shandross_fig5.tiff", dpi=800, width=8, height=4)
 ```
 
 ### Creating ensembles with simple_ensemble
@@ -805,7 +799,6 @@ hubVis::plot_step_ahead_model_output(
 ) +
   theme_bw() +
   labs(y = "incident hospitalizations")
-ggsave("../figures/Shandross_fig6.tiff", dpi=800, width=8, height=4)
 ```
 
 #### Weighting model contributions
@@ -939,7 +932,6 @@ cowplot::plot_grid(
   ncol = 1,
   rel_heights = c(0.95, 0.05)
 )
-ggsave("../figures/Shandross_fig7.tiff", dpi=800, width=10, height=4)
 ```
 
 #### Weighting model contributions
@@ -1266,7 +1258,6 @@ ca_plot_ensembles +
     legend.position = "none"
   ) +
   theme_bw()
-ggsave("../figures/Shandross_fig8.tiff", dpi=800, width=8, height=8)
 ```
 
 ```{r wis-vs-forecast-date}
@@ -1344,7 +1335,6 @@ time_series_states_2122 + time_series_states_2223 +
   plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
   theme(legend.position = "bottom", 
         plot.tag = element_text(face = 'bold'))
-ggsave("../figures/Shandross_fig9.tiff", dpi=800, width=10, height=12)
 ```
 
 All of the ensemble variations outperform the baseline model in this analysis. The linear pool ensembles improve WIS by 27% over baseline, the quantile median by 20% and the quantile mean by 16%. Such improvements come mostly from the ensembles providing better calibrated prediction intervals, as improvements in point estimate accuracy improve over baseline by at most 9% (as measured by rMAE). While the best model (CMU-TimeSeries) improves WIS more (by 33%), ensembles are typically more robust than individual models, and thus some decrease in overall performance may be accepted in order to avoid extreme misses.

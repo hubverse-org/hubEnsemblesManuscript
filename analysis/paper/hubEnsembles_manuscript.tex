@@ -602,7 +602,7 @@ different targets and time horizons will further improve utility.
 Moreover, expanding the use of these methods to other pathogens and
 countries will enable further methodological development.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, titlerule=0mm, coltitle=black, leftrule=.75mm, colback=white, opacitybacktitle=0.6, arc=.35mm, opacityback=0, bottomrule=.15mm, toprule=.15mm, toptitle=1mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, colframe=quarto-callout-tip-color-frame, breakable, rightrule=.15mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, breakable, toprule=.15mm, leftrule=.75mm, titlerule=0mm, colback=white, opacitybacktitle=0.6, left=2mm, colbacktitle=quarto-callout-tip-color!10!white, opacityback=0, colframe=quarto-callout-tip-color-frame, coltitle=black, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, arc=.35mm, rightrule=.15mm, bottomrule=.15mm]
 
 \begin{itemize}
 \item
@@ -633,8 +633,8 @@ countries will enable further methodological development.
   projections, and parameter estimates.
 \item
   \emph{Point prediction}: a prediction represented by one single
-  estimate, which typically represents the most likely future outcome
-  (e.g., a mean or median)
+  estimate, which generally represents a typical or common future
+  outcome (e.g., a mean or median)
 \item
   \emph{Probabilistic prediction}: a prediction that quantifies a
   probability distribution over future outcomes. This enables
@@ -804,7 +804,7 @@ ensembling methods described in Section~\ref{sec-defs}. A short
 description of the calculation performed by each function is summarized
 by output type in Table~\ref{tbl-fns-by-output-type}.
 
-\begin{tcolorbox}[enhanced jigsaw, colbacktitle=quarto-callout-tip-color!10!white, bottomtitle=1mm, titlerule=0mm, coltitle=black, leftrule=.75mm, colback=white, opacitybacktitle=0.6, arc=.35mm, opacityback=0, bottomrule=.15mm, toprule=.15mm, toptitle=1mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, colframe=quarto-callout-tip-color-frame, breakable, rightrule=.15mm, left=2mm]
+\begin{tcolorbox}[enhanced jigsaw, breakable, toprule=.15mm, leftrule=.75mm, titlerule=0mm, colback=white, opacitybacktitle=0.6, left=2mm, colbacktitle=quarto-callout-tip-color!10!white, opacityback=0, colframe=quarto-callout-tip-color-frame, coltitle=black, bottomtitle=1mm, toptitle=1mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, arc=.35mm, rightrule=.15mm, bottomrule=.15mm]
 
 \begin{itemize}
 \item
@@ -817,7 +817,7 @@ by output type in Table~\ref{tbl-fns-by-output-type}.
   futures with different assumptions for different modeling rounds.
 \item
   \emph{Compound modeling task}: a single, modeled unit with a
-  multi-various outcome of interest, such as an epidemic trajectory
+  multivariate outcome of interest, such as an epidemic trajectory
   across multiple weeks
 \item
   \emph{Model output}: a dataset containing predictions of modeling
@@ -826,13 +826,13 @@ by output type in Table~\ref{tbl-fns-by-output-type}.
   response to the task or from an ensemble of results representing the
   outcomes of multiple efforts.
 \item
-  \emph{Output type}: classifications of model output that is supported
+  \emph{Output type}: a classification of model output that is supported
   by the hubverse (i.e., the types of predictions that can be
   processed). See Table Table~\ref{tbl-model-output-rep} for definitions
   of each.
 \item
   \emph{Round}: a time period for which a set of specific model outputs
-  are solicited. Rounds define the ``cadence'' of submission for a
+  is solicited. Rounds define the ``cadence'' of submission for a
   modeling hub. For example, some hubs might accept daily submissions,
   where each day is considered a different round. Other hubs might have
   one round every month, with a submission period that may be open for
@@ -843,8 +843,8 @@ by output type in Table~\ref{tbl-fns-by-output-type}.
   represent columns in the model output. A more detailed explanation of
   task ID variables can be found in the documentation.
 \item
-  \emph{Target}: a quantitative outcome of interest for a modeling hub
-  (e.g., ``incident case counts''). Targets typically (and sometimes
+  \emph{Target}: an outcome of interest for a modeling hub (e.g.,
+  ``incident case counts''). Targets typically (and sometimes
   implicitly) refer to a value of an observable variable in a given
   window of time, a given location, and possibly other stratifications
   (such as age group).
@@ -861,7 +861,7 @@ output types, and output type IDs. This function can be used to
 summarize predictions of output types mean, median, quantile, CDF, and
 PMF. Samples must be converted to a different output type (e.g.,
 summarized into a CDF) in order to be ensembled using this function, as
-there is no meaningful equivlant for individual predictive draws. The
+there is no meaningful equivalent for individual predictive draws. The
 mechanics of the ensemble calculations are the same for each of the
 output types, though the resulting statistical ensembling method differs
 for different output types (Table~\ref{tbl-fns-by-output-type}).
@@ -890,12 +890,12 @@ Similarly, model weights can be specified to create a weighted ensemble.
 The \texttt{linear\_pool()} function implements the linear opinion pool
 (LOP) method for ensembling predictions. This function can be used to
 combine predictions with output types mean, quantile, CDF, PMF, and
-sample. Since LOP is an average of probabilities, it does not support
-ensembles of medians. Unlike \texttt{simple\_ensemble()}, this function
-handles its computation differently based on the output type. For the
-CDF, PMF, and mean output types, the linear pool method is equivalent to
-calling \texttt{simple\_ensemble()} with a mean aggregation function
-(see Table~\ref{tbl-fns-by-output-type}), since
+sample. Since the LOP is an average of probabilities, it does not
+support ensembles of medians. Unlike \texttt{simple\_ensemble()}, this
+function handles its computation differently based on the output type.
+For the CDF, PMF, and mean output types, the linear pool method is
+equivalent to calling \texttt{simple\_ensemble()} with a mean
+aggregation function (see Table~\ref{tbl-fns-by-output-type}), since
 \texttt{simple\_ensemble()} produces a linear pool prediction (an
 average of individual model cumulative or bin probabilities).
 
@@ -913,9 +913,9 @@ that output type.
 
 When requesting a subsetted ensemble of samples, it becomes important to
 distinguish between marginal and joint predictive distributions so that
-the dependence structure can be passed to \texttt{linear\_pool()}. The
-concepts of the compound task ID set and derived task ID variables are
-introduced here, as they help identify the underpinnings the dependence
+the dependence structure can be passed to \texttt{linear\_pool()}. We
+introduce the concepts of the compound task ID set and derived task ID
+variables here, as they help identify the underpinnings the dependence
 structure of the ensembled predictive distributions.
 
 As stated in the previous section, the sample output type is unique in
@@ -928,15 +928,15 @@ to correspond to a single trajectory.
 
 The compound task id set consists of independent task id variables that,
 together, identify a ``compound modeling task'' corresponding to a
-single, modeled unit with a multi-various outcome of interest. Samples
+single, modeled unit with a multivariate outcome of interest. Samples
 summarizing a marginal distribution will generally have a compound task
 ID set composed of all the task ID variables (except for derived task
 IDs). Conversely, samples summarizing a joint distribution will have a
 compound task ID set only containing task ID variables for which the
-joint distribution does not capture dependences. For example, if a joint
-distribution is estimated across multiple forecast horizons separately
-for each location (i.e., horizon-based trajectories), the task ID
-``location'' would be included in the compound task ID set but
+joint distribution does not capture dependencies. For example, if a
+joint distribution is estimated across multiple forecast horizons
+separately for each location (i.e., horizon-based trajectories), the
+task ID ``location'' would be included in the compound task ID set but
 ``horizon'' would not.
 
 Derived task IDs are another subgroup of task ID variables that must be
@@ -1091,7 +1091,6 @@ the location and time horizons we are interested in.
 \SpecialCharTok{+}\NormalTok{ ) }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"incident hospitalizations"}\NormalTok{)}
-\SpecialCharTok{\textgreater{}} \FunctionTok{ggsave}\NormalTok{(}\StringTok{"../figures/Shandross\_fig3.pdf"}\NormalTok{, }\AttributeTok{dpi=}\DecValTok{800}\NormalTok{, }\AttributeTok{width=}\DecValTok{8}\NormalTok{, }\AttributeTok{height=}\DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1116,11 +1115,12 @@ addition to, predicted distributions
 (Figure~\ref{fig-plot-ex-mod-samps}). Samples can be useful for
 capturing additional correlations across targets that are difficult to
 represent when predictions are summarized using quantile or CDF output
-types. In this example, weekly probabilistic predictions of incident
-influenza hospitalizations cannot capture the shape of individual
-epidemic trajectories, but samples can. We filter to the sample output
-type and plot. These samples are representative draws from the
-distributions plotted in Figure~\ref{fig-plot-ex-mods}.
+types. In this example, separate probabilistic predictions of incident
+influenza hospitalizations in each week cannot capture the shape of
+possible epidemic trajectories, but multivariate samples for the
+trajectory of disease incidence across weeks can. We filter to the
+sample output type and plot. These samples are representative draws from
+the distributions plotted in Figure~\ref{fig-plot-ex-mods}.
 
 \begin{figure}
 
@@ -1500,8 +1500,8 @@ Only a select portion of the code used in this analysis is shown for
 brevity, but all the functions and scripts used to generate the case
 study results can be found in the associated GitHub repository
 (\url{https://github.com/hubverse-org/hubEnsemblesManuscript}). In
-particular, the figures and tables supporting this analysis are
-generated reproducibly using data from \texttt{.rds} files stored in the
+particular, the figures and tables supporting this analysis can be
+reproduced using data from \texttt{.rds} files stored in the
 \texttt{analysis/data/raw-data} directory and scripts in the
 \texttt{inst} directory of the repository.
 
@@ -1699,7 +1699,7 @@ calculate the relative metrics.
 \subsection{Performance results across
 ensembles}\label{performance-results-across-ensembles}
 
-The four ensembles rank in the top-half in terms of accuracy when
+The four ensembles rank in the top half in terms of accuracy when
 compared to the individual component models that made predictions for
 influenza hospitalizations (Table~\ref{tbl-overall-evaluation}). The
 ranking of the models differ slightly among the four scoring metrics;
@@ -2775,7 +2775,7 @@ performance across both seasons, averaged over all locations except the
 US national location and sorted by ascending WIS. Both the individual
 FluSight component models and the resulting ensembles are included in
 the table, as long as they forecasted for at least 80\% of the two
-seasons. The ensembles rank in the top-half of models in terms of
+seasons. The ensembles rank in the top half of models in terms of
 accuracy. The two linear pools have the best WIS and 95\% coverage rates
 of the ensembles, as well as top performance for MAE and 50\% coverage
 rate.}

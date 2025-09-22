@@ -512,47 +512,9 @@ The `model_out_tbl` class is defined by four standard types of columns: (i) the 
 
 @tbl-example-forecasts provides an example of model output that stores short-term forecasts of weekly influenza hospitalizations for different US states and territories. By reading across the table, we can see that these are quantile predictions (`output_type`) of the quartiles (output type ID: `otid`) from a single model (`model_id` of "team1-mod") for four distinct forecast horizons. Here, details about the prediction related to modeling task are represented by the task ID variables `loc` (location abbreviation), `ref_date` (reference date: the "starting point" of the forecasts), `h` (horizon: how many weeks into the future, relative to the `ref_date`), and `target` (what is being predicted).
 
-```{r example-forecasts, echo=FALSE}
-#| label: tbl-example-forecasts
-#| tbl-cap: "Example of forecasts for incident influenza hospitalizations,
-#| formatted according to hubverse standards. Quantile predictions for the
-#| median and 50% prediction intervals from a single model are shown for four
-#| distinct horizons. The `output_type_id` column's name has been shortened to
-#| `otid` for brevity. These predictions are a modified subset of the
-#| `forecast_outputs` data provided by the `hubExamples` package."
-
-abbr_col <- formatted_col <- c("model_id", "loc", "ref_date", "h", "target", "output_type", "otid", "value")
-for (i in 1:length(abbr_col)) formatted_col[i] <- paste0("`", abbr_col[i], "`")
-
-hubExamples::forecast_outputs |>
-  dplyr::filter(
-    model_id == "MOBS-GLEAM_FLUH", 
-    location == "25", 
-    reference_date == "2022-12-17",
-    output_type == "quantile",
-    output_type_id %in% c(0.25, 0.5, 0.75)
-  ) |>
-  dplyr::mutate(value = round(value, 0), location = "MA", target = "wk flu hosp", model_id = "team1-mod") |>
-  dplyr::rename(loc = "location", ref_date = "reference_date", h = "horizon", otid = output_type_id) |>
-  dplyr::select(all_of(abbr_col)) |>
-  dplyr::arrange(h) |>
-  knitr::kable(col.names = formatted_col)
-```
-
 As mentioned previously, task ID variables are not fixed in name, number, or composition to incorporate flexibility in the `model_out_tbl` class. Different modeling efforts may use different sets of task ID columns with different values to define their prediction goals, or may simply choose distinct names to represent the same concept. For example, the date task column was named `ref_date` above but could easily be called `origin_date` or `forecast_date` instead. Some standard examples of task ID variables are available on the hubverse documentation website. [@hubverse_docs]
 
 The "model output representation" columns `output_type` and `output_type_id` contain metadata about how the predictions are conveyed. The hubverse data standards require that these columns are included in a `model_out_tbl`. The `output_type` column defines how a prediction is represented and may be `"mean"` or `"median"` for point predictions, or one of `"quantile"`, `"cdf"`, `"pmf"`, or `"sample"` for probabilistic predictions. The `output_type_id` provides additional identifying information for prediction and is specific to the particular `output_type` (see @tbl-model-output-rep). The last column, `value`, always contains the numeric value of the prediction, regardless of output type. Requirements for the values of the `output_type_id` and `value` columns associated with each valid output type are summarized in @tbl-model-output-rep.
-
-| `output_type` | `output_type_id`                                                 | `value`                                                                                                                                                       |
-|:-------------|:---------------|:-----------------------------------------|
-| `mean`        | NA (not used for mean predictions)                               | Numeric: The mean of the predictive distribution                                                                                                              |
-| `median`      | NA (not used for median predictions)                             | Numeric: The median of the predictive distribution                                                                                                            |
-| `quantile`    | Numeric between 0.0 and 1.0: A quantile level                    | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
-| `cdf`         | String or numeric naming a possible value of the target variable | Numeric between 0.0 and 1.0: The cumulative probability of the predictive distribution at the value of the outcome variable specified by the `output_type_id` |
-| `pmf`         | String naming a possible category of a discrete outcome variable | Numeric between 0.0 and 1.0: The probability mass of the predictive distribution when evaluated at a specified level of a categorical outcome variable        |
-| `sample`      | Integer or string identifying the sample\*                       | Numeric: A single sample value from the predictive distribution                                                                                               |
-
-: A table summarizing how the model output representation columns are used for predictions of different output types; adapted from hubverse documentation. [@hubverse_docs] (\*Rows of sample predictions from a particular model that share an output type ID value may be assumed to represent a single sample from a joint distribution across multiple levels of the task ID variables.) {#tbl-model-output-rep}
 
 In addition to these six output types mentioned above, other types of predictions not explicitly defined in the hubverse may be represented within model output. For example, trajectories may be encoded using the "sample" output type while predictions of binary events can be captured using the "pmf" output type.
 
@@ -565,17 +527,6 @@ The hubverse also provides standards for target data (i.e., observed data corres
 ### Ensemble functions in hubEnsembles {#sec-ens-fns}
 
 The `hubEnsembles` package contains two functions that perform ensemble calculations: `simple_ensemble()`, which applies some function to each model prediction, and `linear_pool()`, which computes an ensemble using the linear opinion pool method. In the following sections, we outline the implementation details for each function and how these implementations correspond to the statistical ensembling methods described in @sec-defs. A short description of the calculation performed by each function is summarized by output type in @tbl-fns-by-output-type.
-
-| `output_type` | `simple_ensemble(..., agg_fun=mean)`                                                               | `linear_pool()`                                                                                                                                                               |
-|--------------|--------------------|--------------------------------------|
-| `mean`        | mean of individual model means                                                                     | mean of individual model means                                                                                                                                                |
-| `median`      | mean of individual model medians                                                                   | NA                                                                                                                                                                            |
-| `quantile`    | mean of individual model target variable values at each quantile level, $F^{-1}_Q(\theta)$         | quantiles of the distribution are obtained by computing the mean of estimated individual model cumulative probabilities at each target variable value, $F^{-1}_{LOP}(\theta)$ |
-| `cdf`         | mean of individual model cumulative probabilities at each target variable value, $F_{LOP}(x)$      | mean of individual model cumulative probabilities at each target variable value, $F_{LOP}(x)$                                                                                 |
-| `pmf`         | mean of individual model bin or category probabilities at each target variable value, $f_{LOP}(x)$ | mean of individual model bin or category probabilities at each target variable value, $f_{LOP}(x)$                                                                            |
-| `sample`      | NA                                                                                                 | samples of the distribution are obtained by stratified draw from individual models' samples                                                                                   |
-
-: Summary of ensemble function calculations for each output type. The ensemble function determines the operation that is performed, and in the case of probabilistic output types (quantile, CDF, PMF), this also determines what ensemble distribution is generated (quantile average, $F_{Q}^{-1}(\theta)$, or linear pool, $F_{LOP}(x)$). The ensembled predictions are returned in the same output type as the inputs. Thus, the output type determines how the resulting ensemble distribution is summarized (as a quantile, $F^{-1}(\theta)$, cumulative probability, $F(x)$, or probability $f(x)$). Estimating individual model cumulative probabilities is required to compute a `linear_pool()` for predictions of `quantile` output type; see @sec-linear-pool on the linear pool operation for details. In the case of `simple_ensemble()`, we show the calculations for the default case where `agg_fun = mean`; however, if another aggregation function is chosen (e.g., `agg_fun = median`), that calculation would be performed instead. For example, `simple_ensemble(..., agg_fun = median)` applied to predictions of mean output type would return the median of individual model means. {#tbl-fns-by-output-type}{tbl-colwidths="\[14,50,36\]"}
 
 ::: {.callout-tip title="Keywords and definitions: Terminology from the hubverse"}
 
@@ -644,58 +595,7 @@ The first step in generating a multi-model ensemble is to gather the predictions
 
 The model output is stored in a data object named `forecast_outputs` and contains mean, median, quantile, and sample forecasts of future incident influenza hospitalizations, as well as CDF and PMF forecasts of hospitalization intensity. Each prediction is described by five task ID variables: the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (`target_end_date`, a combination of the date the forecast was made and the forecast horizon), and the forecast target (`target`). We begin by examining the predictions for weekly incident influenza hospitalizations, displaying a subset of each output type in @tbl-example-model-outputs.
 
-```{r}
-#| label: tbl-example-model-outputs
-#| echo: false
-#| tbl-cap: "Example model output for forecasts of weekly incident influenza
-#| hospitalizations. A subset of example model output is shown: 1-week ahead
-#| forecasts made on 2022-12-17 for Massachusetts from three distinct models;
-#| only the mean, median, select samples, and the 5th, 25th, 75th and 95th quantiles
-#| are displayed. The `location`, `reference_date` and `target_end_date`
-#| columns have been omitted for brevity. This example data is
-#| provided in the `hubExamples` package."
-
-abbr_fc_col <- formatted_fc_col <- c("model_id", "target", "horizon", "output_type", "output_type_id", "value")
-for (i in 1: length(abbr_fc_col)) formatted_fc_col[i] <- paste0("`", abbr_fc_col[i], "`")
-otid <- list(
-  mean = NA,
-  median = NA,
-  quantile = c(0.05, 0.25, 0.75, 0.95),
-  sample = c("2101", "2102", "2103")
-)
-
-hubExamples::forecast_outputs |>
-  dplyr::filter(
-    output_type %in% names(otid),
-    output_type_id %in% unlist(otid),
-    reference_date == "2022-12-17",
-    location == "25",
-    horizon == 1
-  ) |>
-  dplyr::mutate(value = round(value, 2)) |>
-  dplyr::arrange(model_id, dplyr::desc(target), output_type) |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  dplyr::slice_head(n = 12) |>
-  knitr::kable(col.names = formatted_fc_col)
-```
-
 While the `hubExamples` package provides both formats of target data, we focus on the target time series data (@tbl-example-target-time-series-data) which is convenient for making forecasts and plotting. The `forecast_target_ts` data object provides observed incident influenza hospitalizations in a given week for given location using columns `observation`, `date`, and `location`. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for this time series representation of the target data, and are thus not included as columns.
-
-```{r}
-#| label: tbl-example-target-time-series-data
-#| echo: false
-#| cols.print: 13
-#| tbl-cap: "Example target time series data for incident influenza
-#| hospitalizations. This table includes target time series data for Massachusetts 
-#| (FIPS code 25) between 2022-11-01 and 2023-02-01. The target data is provided in 
-#| the `hubExamples` package."
-hubExamples::forecast_target_ts |>
-  dplyr::filter(
-    location == "25",
-    date >= "2022-11-01", date <= "2023-02-01"
-  ) |>
-  knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
-```
 
 We can plot the quantile and median forecasts and the target time series data (@fig-plot-ex-mods) shown above using the `plot_step_ahead_model_output()` function from `hubVis`, another package in the hubverse suite for visualizing model outputs. We subset the model output data and the target data to the location and time horizons we are interested in.
 
@@ -771,29 +671,6 @@ ggsave("../figures/Shandross_fig4.tiff", dpi=800, width=8, height=3)
 
 Next, we examine the PMF forecasts for hospitalization intensity in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These four categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations except for the target, which is "wk flu hosp rate category" for these categorical predictions.
 
-```{r}
-#| label: tbl-example-forecasts-pmf
-#| echo: false
-#| cols.print: 9
-#| tbl-cap: "Example PMF model output for forecasts of incident influenza
-#| hospitalization intensity. A subset of predictions are shown: 1-week
-#| ahead PMF forecasts made on 2022-12-17 for Massachusetts from three distinct
-#| models. We round the forecasted probability (in the `value` column) to two
-#| digits. The `location`, `reference_date` and `target_end_date` columns have
-#| been omitted for brevity. This example data is provided in the
-#| `hubExamples` package."
-hubExamples::forecast_outputs |>
-  dplyr::filter(
-    output_type == "pmf",
-    reference_date == "2022-12-17",
-    location == "25",
-    horizon == 1
-  ) |>
-  dplyr::mutate(value = round(value, 3)) |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  knitr::kable(col.names = formatted_fc_col)
-```
-
 We show a representative example of the hospitalization intensity category forecasts in @tbl-example-forecasts-pmf. Because these forecasts are PMF output type, the `output_type_id` column specifies the bin of hospitalization intensity and the `value` column provides the forecasted probability of hospitalization incidence being in that category. Values sum to 1 across bins. For the MOBS-GLEAM_FLUH and PSI-DICE models, incidence is forecasted to decrease over the horizon (@fig-plot-ex-mods), and correspondingly, there is lower probability of "high" and "very high" hospitalization intensity for later horizons (@fig-plot-ex-mods-pmf).
 
 ```{r}
@@ -852,33 +729,6 @@ mean_ens <- hubExamples::forecast_outputs |>
 ```
 
 The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean"` to change the name of this ensemble in the resulting model output; if not specified, the default is "hub-ensemble".
-
-```{r}
-#| label: tbl-mean-ensemble
-#| echo: false
-#| rows.print: 9
-#| tbl-cap: "Mean ensemble model output. The values in the `model_id` column are
-#| set by the argument `simple_ensemble(..., model_id)`. Results are generated 
-#| for all output types, but only a subset are shown: 1-week ahead forecasts made 
-#| on 2022-12-17 for Massachusetts, with only the mean, median, 25th and 75th
-#| quantilesfor the quantile output type and all bins for the PMF output type. 
-#| The `location`, `reference_date` and `target_end_date` columns have been 
-#| omitted for brevity, and the `value` column is rounded to two digits."
-mean_ens |>
-  dplyr::filter(
-    output_type %in% c("quantile", "mean", "median", "pmf"),
-    output_type_id %in% c(
-      0.025, 0.25, 0.75, 0.975, NA,
-      "low", "moderate", "high", "very high"
-    ),
-    reference_date == "2022-12-17",
-    location == "25",
-    horizon == 1
-  ) |>
-  dplyr::mutate(value = round(value, 2)) |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  knitr::kable(col.names = formatted_fc_col)
-```
 
 #### Changing the aggregation function
 
@@ -1184,35 +1034,6 @@ flu_forecasts_raw_22_23 <- readr::read_rds(
 flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, flu_forecasts_raw_22_23)
 ```
 
-```{r raw flu forecasts}
-#| label: tbl-raw-flu-forecasts
-#| echo: false
-#| message: false
-#| warning: false
-#| tbl-cap: "An example prediction of weekly incident influenza
-#| hospitalizations pulled directly from Zoltar. The example forecasts were
-#| made on May 15, 2023 for California at the 1 week ahead horizon. The
-#| forecasts were generated during the FluSight forecasting challenge, then
-#| formatted according to Zoltar standards for storage. The `timezero`, 
-#| `season`, `unit`, `param1`, `param2`, and `param3` columns have been
-#| omitted for brevity. (The `season` column has a value of '2021-2022' or 
-#| '2022-2023' while the last three 'param' columns always have a value
-#| of NA.)"
-zoltar_col <- formatted_zoltar_col <- c("model", "target", "class", "value", "cat", "prob", "sample", "quantile", "family")
-for (i in 1:length(zoltar_col)) formatted_zoltar_col[i] <- paste0("`", zoltar_col[i], "`")
-
-flu_forecasts_raw |>
-  dplyr::filter(
-    model == "UMass-trends_ensemble",
-    timezero == "2023-05-15",
-    unit == "06",
-    target == "1 wk ahead inc flu hosp",
-    quantile %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
-  ) |>
-  dplyr::select(all_of(zoltar_col)) |>
-  knitr::kable(col.names = formatted_zoltar_col)
-```
-
 Although these forecasts are in a tabular format, they are not `model_out_tbl` objects and thus cannot yet be fed into either of the `hubEnsembles` functions. Thus, we must use the `as_model_out_tbl()`[^1] function from `hubUtils` to transform the raw forecasts so that they conform to hubverse standards. Below, we specify the appropriate column mappings in the call with task ID variables of `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
 
 [^1]: https://hubverse-org.github.io/hubUtils/reference/as_model_out_tbl.html
@@ -1243,28 +1064,6 @@ flu_forecasts_hubverse <- flu_forecasts_raw |>
 To ensure the quantile mean and median ensemble had consistent component forecast make-up at every quantile level, we only included predictions (defined by a unique combination of task ID variables) that contained all 23 quantiles specified by FluSight ($\theta \in \{.010, 0.025, .050, .100, ..., .900, .950, .990\}$). This requirement required no further action on our part, since it was consistent with FluSight submission guidelines. However, we did remove the baseline and median ensemble models generated by the FluSight hub from the component forecasts, a choice motivated by the desire to match the composition of models in the official FluSight ensemble. (Note, though, that the component models included in our ensembles did not always exactly match those included in the FluSight-ensemble for every forecast week as a result of slightly different inclusion criteria.)
 
 With these inclusion criteria, the final data set of component forecasts consists of predictions from 25 modeling teams and 42 distinct models, 53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target, and 23 quantiles. In the 2021-2022 season, 25 models made predictions for 22 weeks spanning from late January 2022 to late June 2022, and in the 2022-2023 season, there were 31 models making predictions for 31 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42 total models made forecasts for both seasons. Locations consist of the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the entire US; horizons 1 to 4 weeks ahead, quantiles the 23 described above, and target week ahead incident influenza hospitalization. The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
-
-```{r formatted flu forecasts}
-#| label: tbl-case-study-flu-forecasts
-#| echo: false
-#| tbl-cap: "An example prediction of weekly incident influenza
-#| hospitalizations. The example model output was made on May 15, 2023 for
-#| California at the 1 week ahead horizon. The forecast was generated during
-#| the FluSight forecasting challenge, then formatted according to hubverse
-#| standards post hoc. The `location`, `forecast_date`, and `season` columns
-#| have been omitted for brevity; quantiles representing the endpoints of the 
-#| central 50%, 80% and 95% prediction intervals are shown."
-flu_forecasts_hubverse |>
-  dplyr::filter(
-    model_id == "UMass-trends_ensemble",
-    forecast_date == "2023-05-15",
-    location == "06",
-    horizon == 1,
-    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
-  ) |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  knitr::kable(col.names = formatted_fc_col)
-```
 
 Next, we can combine the predictions into a single `model_out_tbl` object used to generate forecasts for each ensemble method. Then, we call the appropriate function in `hubEnsembles` to generate predictions for each equally-weighted ensemble, storing the results in four separate objects of model output data.
 
@@ -1382,36 +1181,6 @@ flu_baseline_ensembles_scores <- flu_baseline_forecasts |>
 ### Performance results across ensembles
 
 The four ensembles rank in the top-half in terms of accuracy when compared to the individual component models that made predictions for influenza hospitalizations (@tbl-overall-evaluation). The ranking of the models differ slightly among the four scoring metrics; the two linear opinion pools perform better than the other ensembles in terms of WIS and 95% prediction interval coverage while the quantile median has slightly better MAE and the best 50% coverage across ensembles. The quantile mean displayed the worst values for every metric out of the ensembles, particularly for MAE.
-
-```{r overall-evaluation}
-#| label: tbl-overall-evaluation
-#| echo: false
-#| message: false
-#| warning: false
-#| tbl-cap: "Summary of overall model performance across both seasons, averaged
-#| over all locations except the US national location and sorted by ascending
-#| WIS. Both the individual FluSight component models and the resulting ensembles
-#| are included in the table, as long as they forecasted for at least 80% of the two
-#| seasons. The ensembles rank in the top-half of models in terms of accuracy. The
-#| two linear pools have the best WIS and 95% coverage rates of the ensembles, as
-#| well as top performance for MAE and 50% coverage rate."
-
-metrics_col <- formatted_metrics_col <- c("model", "wis", "rwis", "mae", "rmae", "cov50", "cov95")
-for (i in 1:length(metrics_col)) formatted_metrics_col[i] <- paste0("`", metrics_col[i], "`")
-total_possible_forecasts <- 11448 # 53 locations, 54 forecast dates, 4 horizons
-
-flu_overall_states <- evaluate_flu_scores(
-  rbind(flu_baseline_ensembles_scores, flu_component_scores),
-  grouping_variables = NULL, baseline_name = "Flusight-baseline",
-  us_only = FALSE, show_num_forecasts = TRUE
-)
-
-flu_overall_states |>
-  dplyr::filter(num_forecasts > 0.8 * total_possible_forecasts) |>
-  dplyr::select(all_of(metrics_col)) |>
-  knitr::kable(col.names = formatted_metrics_col)
-
-```
 
 Plots of the ensemble models' forecasts can aid our understanding about the origin of these accuracy differences (@fig-plot-forecasts-hubVis). For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The wider intervals provided by the LOP ensembles yield the best 95% prediction interval coverage, however, this also leads to 50% interval coverage that nearly always exceeded the nominal level. Moreover, the linear pools demonstrate the strongest WIS performance at both 1 week and 4 week ahead horizons during the 2022-2023 season (see @fig-wis-vs-forecast-date); this season was especially difficult to forecast due to its unusual timing and large peak. The wider prediction intervals prove useful in this uncertain context when other models are overconfident in their forecasts. 
 
@@ -1605,3 +1374,256 @@ The authors thank all members of the hubverse community; the broader hubverse so
 Consortium of Infectious Disease Modeling Hubs authors include Alvaro J. Castro Rivadeneira (University of Massachusetts Amherst), Lucie Contamin (University of Pittsburgh), Sebastian Funk (London School of Hygiene & Tropical Medicine), Aaron Gerding (University of Massachusetts Amherst), Hugo Gruson (data.org), Harry Hochheiser (University of Pittsburgh), Emily Howerton (The Pennsylvania State University), Melissa Kerr (University of Massachusetts Amherst), Anna Krystalli (R-RSE SMPC), Sara L. Loo (Johns Hopkins University), Evan L. Ray (University of Massachusetts Amherst), Nicholas G. Reich (University of Massachusetts Amherst), Koji Sato (Johns Hopkins University), Li Shandross (University of Massachusetts Amherst), Katharine Sherratt (London School of Hygene and Tropical Medicine), Shaun Truelove (Johns Hopkins University), Martha Zorn (University of Massachusetts Amherst)
 
 ## References {.unnumbered}
+
+::: {#refs}
+:::
+
+\newpage
+
+```{r example-forecasts, echo=FALSE}
+#| label: tbl-example-forecasts
+#| tbl-cap: "Example of forecasts for incident influenza hospitalizations,
+#| formatted according to hubverse standards. Quantile predictions for the
+#| median and 50% prediction intervals from a single model are shown for four
+#| distinct horizons. The `output_type_id` column's name has been shortened to
+#| `otid` for brevity. These predictions are a modified subset of the
+#| `forecast_outputs` data provided by the `hubExamples` package."
+
+abbr_col <- formatted_col <- c("model_id", "loc", "ref_date", "h", "target", "output_type", "otid", "value")
+for (i in 1:length(abbr_col)) formatted_col[i] <- paste0("`", abbr_col[i], "`")
+
+hubExamples::forecast_outputs |>
+  dplyr::filter(
+    model_id == "MOBS-GLEAM_FLUH", 
+    location == "25", 
+    reference_date == "2022-12-17",
+    output_type == "quantile",
+    output_type_id %in% c(0.25, 0.5, 0.75)
+  ) |>
+  dplyr::mutate(value = round(value, 0), location = "MA", target = "wk flu hosp", model_id = "team1-mod") |>
+  dplyr::rename(loc = "location", ref_date = "reference_date", h = "horizon", otid = output_type_id) |>
+  dplyr::select(all_of(abbr_col)) |>
+  dplyr::arrange(h) |>
+  knitr::kable(col.names = formatted_col)
+```
+
+\newpage
+
+| `output_type` | `output_type_id`                                                 | `value`                                                                                                                                                       |
+|:-------------|:---------------|:-----------------------------------------|
+| `mean`        | NA (not used for mean predictions)                               | Numeric: The mean of the predictive distribution                                                                                                              |
+| `median`      | NA (not used for median predictions)                             | Numeric: The median of the predictive distribution                                                                                                            |
+| `quantile`    | Numeric between 0.0 and 1.0: A quantile level                    | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
+| `cdf`         | String or numeric naming a possible value of the target variable | Numeric between 0.0 and 1.0: The cumulative probability of the predictive distribution at the value of the outcome variable specified by the `output_type_id` |
+| `pmf`         | String naming a possible category of a discrete outcome variable | Numeric between 0.0 and 1.0: The probability mass of the predictive distribution when evaluated at a specified level of a categorical outcome variable        |
+| `sample`      | Integer or string identifying the sample\*                       | Numeric: A single sample value from the predictive distribution                                                                                               |
+
+: A table summarizing how the model output representation columns are used for predictions of different output types; adapted from hubverse documentation. [@hubverse_docs] (\*Rows of sample predictions from a particular model that share an output type ID value may be assumed to represent a single sample from a joint distribution across multiple levels of the task ID variables.) {#tbl-model-output-rep}
+
+\newpage
+
+| `output_type` | `simple_ensemble(..., agg_fun=mean)`                                                               | `linear_pool()`                                                                                                                                                               |
+|--------------|--------------------|--------------------------------------|
+| `mean`        | mean of individual model means                                                                     | mean of individual model means                                                                                                                                                |
+| `median`      | mean of individual model medians                                                                   | NA                                                                                                                                                                            |
+| `quantile`    | mean of individual model target variable values at each quantile level, $F^{-1}_Q(\theta)$         | quantiles of the distribution are obtained by computing the mean of estimated individual model cumulative probabilities at each target variable value, $F^{-1}_{LOP}(\theta)$ |
+| `cdf`         | mean of individual model cumulative probabilities at each target variable value, $F_{LOP}(x)$      | mean of individual model cumulative probabilities at each target variable value, $F_{LOP}(x)$                                                                                 |
+| `pmf`         | mean of individual model bin or category probabilities at each target variable value, $f_{LOP}(x)$ | mean of individual model bin or category probabilities at each target variable value, $f_{LOP}(x)$                                                                            |
+| `sample`      | NA                                                                                                 | samples of the distribution are obtained by stratified draw from individual models' samples                                                                                   |
+
+: Summary of ensemble function calculations for each output type. The ensemble function determines the operation that is performed, and in the case of probabilistic output types (quantile, CDF, PMF), this also determines what ensemble distribution is generated (quantile average, $F_{Q}^{-1}(\theta)$, or linear pool, $F_{LOP}(x)$). The ensembled predictions are returned in the same output type as the inputs. Thus, the output type determines how the resulting ensemble distribution is summarized (as a quantile, $F^{-1}(\theta)$, cumulative probability, $F(x)$, or probability $f(x)$). Estimating individual model cumulative probabilities is required to compute a `linear_pool()` for predictions of `quantile` output type; see @sec-linear-pool on the linear pool operation for details. In the case of `simple_ensemble()`, we show the calculations for the default case where `agg_fun = mean`; however, if another aggregation function is chosen (e.g., `agg_fun = median`), that calculation would be performed instead. For example, `simple_ensemble(..., agg_fun = median)` applied to predictions of mean output type would return the median of individual model means. {#tbl-fns-by-output-type}{tbl-colwidths="\[14,50,36\]"}
+
+\newpage
+
+```{r}
+#| label: tbl-example-model-outputs
+#| echo: false
+#| tbl-cap: "Example model output for forecasts of weekly incident influenza
+#| hospitalizations. A subset of example model output is shown: 1-week ahead
+#| forecasts made on 2022-12-17 for Massachusetts from three distinct models;
+#| only the mean, median, select samples, and the 5th, 25th, 75th and 95th quantiles
+#| are displayed. The `location`, `reference_date` and `target_end_date`
+#| columns have been omitted for brevity. This example data is
+#| provided in the `hubExamples` package."
+
+abbr_fc_col <- formatted_fc_col <- c("model_id", "target", "horizon", "output_type", "output_type_id", "value")
+for (i in 1: length(abbr_fc_col)) formatted_fc_col[i] <- paste0("`", abbr_fc_col[i], "`")
+otid <- list(
+  mean = NA,
+  median = NA,
+  quantile = c(0.05, 0.25, 0.75, 0.95),
+  sample = c("2101", "2102", "2103")
+)
+
+hubExamples::forecast_outputs |>
+  dplyr::filter(
+    output_type %in% names(otid),
+    output_type_id %in% unlist(otid),
+    reference_date == "2022-12-17",
+    location == "25",
+    horizon == 1
+  ) |>
+  dplyr::mutate(value = round(value, 2)) |>
+  dplyr::arrange(model_id, dplyr::desc(target), output_type) |>
+  dplyr::select(all_of(abbr_fc_col)) |>
+  dplyr::slice_head(n = 12) |>
+  knitr::kable(col.names = formatted_fc_col)
+```
+
+\newpage
+
+```{r}
+#| label: tbl-example-target-time-series-data
+#| echo: false
+#| cols.print: 13
+#| tbl-cap: "Example target time series data for incident influenza
+#| hospitalizations. This table includes target time series data for Massachusetts 
+#| (FIPS code 25) between 2022-11-01 and 2023-02-01. The target data is provided in 
+#| the `hubExamples` package."
+hubExamples::forecast_target_ts |>
+  dplyr::filter(
+    location == "25",
+    date >= "2022-11-01", date <= "2023-02-01"
+  ) |>
+  knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
+```
+
+\newpage
+
+```{r}
+#| label: tbl-example-forecasts-pmf
+#| echo: false
+#| cols.print: 9
+#| tbl-cap: "Example PMF model output for forecasts of incident influenza
+#| hospitalization intensity. A subset of predictions are shown: 1-week
+#| ahead PMF forecasts made on 2022-12-17 for Massachusetts from three distinct
+#| models. We round the forecasted probability (in the `value` column) to two
+#| digits. The `location`, `reference_date` and `target_end_date` columns have
+#| been omitted for brevity. This example data is provided in the
+#| `hubExamples` package."
+hubExamples::forecast_outputs |>
+  dplyr::filter(
+    output_type == "pmf",
+    reference_date == "2022-12-17",
+    location == "25",
+    horizon == 1
+  ) |>
+  dplyr::mutate(value = round(value, 3)) |>
+  dplyr::select(all_of(abbr_fc_col)) |>
+  knitr::kable(col.names = formatted_fc_col)
+```
+
+\newpage
+
+```{r}
+#| label: tbl-mean-ensemble
+#| echo: false
+#| rows.print: 9
+#| tbl-cap: "Mean ensemble model output. The values in the `model_id` column are
+#| set by the argument `simple_ensemble(..., model_id)`. Results are generated 
+#| for all output types, but only a subset are shown: 1-week ahead forecasts made 
+#| on 2022-12-17 for Massachusetts, with only the mean, median, 25th and 75th
+#| quantilesfor the quantile output type and all bins for the PMF output type. 
+#| The `location`, `reference_date` and `target_end_date` columns have been 
+#| omitted for brevity, and the `value` column is rounded to two digits."
+mean_ens |>
+  dplyr::filter(
+    output_type %in% c("quantile", "mean", "median", "pmf"),
+    output_type_id %in% c(
+      0.025, 0.25, 0.75, 0.975, NA,
+      "low", "moderate", "high", "very high"
+    ),
+    reference_date == "2022-12-17",
+    location == "25",
+    horizon == 1
+  ) |>
+  dplyr::mutate(value = round(value, 2)) |>
+  dplyr::select(all_of(abbr_fc_col)) |>
+  knitr::kable(col.names = formatted_fc_col)
+```
+
+\newpage
+
+```{r raw flu forecasts}
+#| label: tbl-raw-flu-forecasts
+#| echo: false
+#| message: false
+#| warning: false
+#| tbl-cap: "An example prediction of weekly incident influenza
+#| hospitalizations pulled directly from Zoltar. The example forecasts were
+#| made on May 15, 2023 for California at the 1 week ahead horizon. The
+#| forecasts were generated during the FluSight forecasting challenge, then
+#| formatted according to Zoltar standards for storage. The `timezero`, 
+#| `season`, `unit`, `param1`, `param2`, and `param3` columns have been
+#| omitted for brevity. (The `season` column has a value of '2021-2022' or 
+#| '2022-2023' while the last three 'param' columns always have a value
+#| of NA.)"
+zoltar_col <- formatted_zoltar_col <- c("model", "target", "class", "value", "cat", "prob", "sample", "quantile", "family")
+for (i in 1:length(zoltar_col)) formatted_zoltar_col[i] <- paste0("`", zoltar_col[i], "`")
+
+flu_forecasts_raw |>
+  dplyr::filter(
+    model == "UMass-trends_ensemble",
+    timezero == "2023-05-15",
+    unit == "06",
+    target == "1 wk ahead inc flu hosp",
+    quantile %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
+  ) |>
+  dplyr::select(all_of(zoltar_col)) |>
+  knitr::kable(col.names = formatted_zoltar_col)
+```
+
+\newpage
+
+```{r formatted flu forecasts}
+#| label: tbl-case-study-flu-forecasts
+#| echo: false
+#| tbl-cap: "An example prediction of weekly incident influenza
+#| hospitalizations. The example model output was made on May 15, 2023 for
+#| California at the 1 week ahead horizon. The forecast was generated during
+#| the FluSight forecasting challenge, then formatted according to hubverse
+#| standards post hoc. The `location`, `forecast_date`, and `season` columns
+#| have been omitted for brevity; quantiles representing the endpoints of the 
+#| central 50%, 80% and 95% prediction intervals are shown."
+flu_forecasts_hubverse |>
+  dplyr::filter(
+    model_id == "UMass-trends_ensemble",
+    forecast_date == "2023-05-15",
+    location == "06",
+    horizon == 1,
+    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
+  ) |>
+  dplyr::select(all_of(abbr_fc_col)) |>
+  knitr::kable(col.names = formatted_fc_col)
+```
+
+\newpage
+
+```{r overall-evaluation}
+#| label: tbl-overall-evaluation
+#| echo: false
+#| message: false
+#| warning: false
+#| tbl-cap: "Summary of overall model performance across both seasons, averaged
+#| over all locations except the US national location and sorted by ascending
+#| WIS. Both the individual FluSight component models and the resulting ensembles
+#| are included in the table, as long as they forecasted for at least 80% of the two
+#| seasons. The ensembles rank in the top-half of models in terms of accuracy. The
+#| two linear pools have the best WIS and 95% coverage rates of the ensembles, as
+#| well as top performance for MAE and 50% coverage rate."
+
+metrics_col <- formatted_metrics_col <- c("model", "wis", "rwis", "mae", "rmae", "cov50", "cov95")
+for (i in 1:length(metrics_col)) formatted_metrics_col[i] <- paste0("`", metrics_col[i], "`")
+total_possible_forecasts <- 11448 # 53 locations, 54 forecast dates, 4 horizons
+
+flu_overall_states <- evaluate_flu_scores(
+  rbind(flu_baseline_ensembles_scores, flu_component_scores),
+  grouping_variables = NULL, baseline_name = "Flusight-baseline",
+  us_only = FALSE, show_num_forecasts = TRUE
+)
+
+flu_overall_states |>
+  dplyr::filter(num_forecasts > 0.8 * total_possible_forecasts) |>
+  dplyr::select(all_of(metrics_col)) |>
+  knitr::kable(col.names = formatted_metrics_col)
+```

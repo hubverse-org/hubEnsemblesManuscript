@@ -602,7 +602,7 @@ different targets and time horizons will further improve utility.
 Moreover, expanding the use of these methods to other pathogens and
 countries will enable further methodological development.
 
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, left=2mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, breakable, coltitle=black, opacitybacktitle=0.6, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, bottomrule=.15mm, opacityback=0, colback=white, colframe=quarto-callout-tip-color-frame]
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, rightrule=.15mm, colback=white, opacityback=0, toprule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, opacitybacktitle=0.6, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Concepts in statistical forecasting}, arc=.35mm, bottomrule=.15mm, leftrule=.75mm, coltitle=black]
 
 \begin{itemize}
 \item
@@ -720,64 +720,6 @@ point'' of the forecasts), \texttt{h} (horizon: how many weeks into the
 future, relative to the \texttt{ref\_date}), and \texttt{target} (what
 is being predicted).
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1507}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0822}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1507}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0548}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1644}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1918}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0959}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1096}}@{}}
-
-\caption{\label{tbl-example-forecasts}Example of forecasts for incident
-influenza hospitalizations, formatted according to hubverse standards.
-Quantile predictions for the median and 50\% prediction intervals from a
-single model are shown for four distinct horizons. The
-\texttt{output\_type\_id} column's name has been shortened to
-\texttt{otid} for brevity. These predictions are a modified subset of
-the \texttt{forecast\_outputs} data provided by the \texttt{hubExamples}
-package.}
-
-\tabularnewline
-
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{model\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{loc}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{ref\_date}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{h}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{target}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{otid}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{value}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-team1-mod & MA & 2022-12-17 & 0 & wk flu hosp & quantile & 0.25 & 514 \\
-team1-mod & MA & 2022-12-17 & 0 & wk flu hosp & quantile & 0.5 & 596 \\
-team1-mod & MA & 2022-12-17 & 0 & wk flu hosp & quantile & 0.75 & 713 \\
-team1-mod & MA & 2022-12-17 & 1 & wk flu hosp & quantile & 0.25 & 563 \\
-team1-mod & MA & 2022-12-17 & 1 & wk flu hosp & quantile & 0.5 & 664 \\
-team1-mod & MA & 2022-12-17 & 1 & wk flu hosp & quantile & 0.75 & 803 \\
-team1-mod & MA & 2022-12-17 & 2 & wk flu hosp & quantile & 0.25 & 469 \\
-team1-mod & MA & 2022-12-17 & 2 & wk flu hosp & quantile & 0.5 & 575 \\
-team1-mod & MA & 2022-12-17 & 2 & wk flu hosp & quantile & 0.75 & 705 \\
-team1-mod & MA & 2022-12-17 & 3 & wk flu hosp & quantile & 0.25 & 324 \\
-team1-mod & MA & 2022-12-17 & 3 & wk flu hosp & quantile & 0.5 & 408 \\
-team1-mod & MA & 2022-12-17 & 3 & wk flu hosp & quantile & 0.75 & 512 \\
-
-\end{longtable}
-
 As mentioned previously, task ID variables are not fixed in name,
 number, or composition to incorporate flexibility in the
 \texttt{model\_out\_tbl} class. Different modeling efforts may use
@@ -804,58 +746,6 @@ prediction, regardless of output type. Requirements for the values of
 the \texttt{output\_type\_id} and \texttt{value} columns associated with
 each valid output type are summarized in
 Table~\ref{tbl-model-output-rep}.
-
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1944}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2222}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5833}}@{}}
-\caption{A table summarizing how the model output representation columns
-are used for predictions of different output types; adapted from
-hubverse documentation.\textsuperscript{30} (*Rows of sample predictions
-from a particular model that share an output type ID value may be
-assumed to represent a single sample from a joint distribution across
-multiple levels of the task ID
-variables.)}\label{tbl-model-output-rep}\tabularnewline
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{value}
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{value}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{mean} & NA (not used for mean predictions) & Numeric: The mean
-of the predictive distribution \\
-\texttt{median} & NA (not used for median predictions) & Numeric: The
-median of the predictive distribution \\
-\texttt{quantile} & Numeric between 0.0 and 1.0: A quantile level &
-Numeric: The quantile of the predictive distribution at the quantile
-level specified by the \texttt{output\_type\_id} \\
-\texttt{cdf} & String or numeric naming a possible value of the target
-variable & Numeric between 0.0 and 1.0: The cumulative probability of
-the predictive distribution at the value of the outcome variable
-specified by the \texttt{output\_type\_id} \\
-\texttt{pmf} & String naming a possible category of a discrete outcome
-variable & Numeric between 0.0 and 1.0: The probability mass of the
-predictive distribution when evaluated at a specified level of a
-categorical outcome variable \\
-\texttt{sample} & Integer or string identifying the sample* & Numeric: A
-single sample value from the predictive distribution \\
-\end{longtable}
 
 In addition to these six output types mentioned above, other types of
 predictions not explicitly defined in the hubverse may be represented
@@ -914,73 +804,7 @@ ensembling methods described in Section~\ref{sec-defs}. A short
 description of the calculation performed by each function is summarized
 by output type in Table~\ref{tbl-fns-by-output-type}.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1400}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5000}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3600}}@{}}
-\caption{Summary of ensemble function calculations for each output type.
-The ensemble function determines the operation that is performed, and in
-the case of probabilistic output types (quantile, CDF, PMF), this also
-determines what ensemble distribution is generated (quantile average,
-\(F_{Q}^{-1}(\theta)\), or linear pool, \(F_{LOP}(x)\)). The ensembled
-predictions are returned in the same output type as the inputs. Thus,
-the output type determines how the resulting ensemble distribution is
-summarized (as a quantile, \(F^{-1}(\theta)\), cumulative probability,
-\(F(x)\), or probability \(f(x)\)). Estimating individual model
-cumulative probabilities is required to compute a
-\texttt{linear\_pool()} for predictions of \texttt{quantile} output
-type; see Section~\ref{sec-linear-pool} on the linear pool operation for
-details. In the case of \texttt{simple\_ensemble()}, we show the
-calculations for the default case where \texttt{agg\_fun\ =\ mean};
-however, if another aggregation function is chosen (e.g.,
-\texttt{agg\_fun\ =\ median}), that calculation would be performed
-instead. For example,
-\texttt{simple\_ensemble(...,\ agg\_fun\ =\ median)} applied to
-predictions of mean output type would return the median of individual
-model means.}\label{tbl-fns-by-output-type}\tabularnewline
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{simple\_ensemble(...,\ agg\_fun=mean)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{linear\_pool()}
-\end{minipage} \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{simple\_ensemble(...,\ agg\_fun=mean)}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{linear\_pool()}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-\texttt{mean} & mean of individual model means & mean of individual
-model means \\
-\texttt{median} & mean of individual model medians & NA \\
-\texttt{quantile} & mean of individual model target variable values at
-each quantile level, \(F^{-1}_Q(\theta)\) & quantiles of the
-distribution are obtained by computing the mean of estimated individual
-model cumulative probabilities at each target variable value,
-\(F^{-1}_{LOP}(\theta)\) \\
-\texttt{cdf} & mean of individual model cumulative probabilities at each
-target variable value, \(F_{LOP}(x)\) & mean of individual model
-cumulative probabilities at each target variable value,
-\(F_{LOP}(x)\) \\
-\texttt{pmf} & mean of individual model bin or category probabilities at
-each target variable value, \(f_{LOP}(x)\) & mean of individual model
-bin or category probabilities at each target variable value,
-\(f_{LOP}(x)\) \\
-\texttt{sample} & NA & samples of the distribution are obtained by
-stratified draw from individual models' samples \\
-\end{longtable}
-
-\begin{tcolorbox}[enhanced jigsaw, titlerule=0mm, left=2mm, rightrule=.15mm, colbacktitle=quarto-callout-tip-color!10!white, breakable, coltitle=black, opacitybacktitle=0.6, toprule=.15mm, leftrule=.75mm, bottomtitle=1mm, toptitle=1mm, arc=.35mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, bottomrule=.15mm, opacityback=0, colback=white, colframe=quarto-callout-tip-color-frame]
+\begin{tcolorbox}[enhanced jigsaw, left=2mm, rightrule=.15mm, colback=white, opacityback=0, toprule=.15mm, breakable, colframe=quarto-callout-tip-color-frame, colbacktitle=quarto-callout-tip-color!10!white, opacitybacktitle=0.6, bottomtitle=1mm, toptitle=1mm, titlerule=0mm, title=\textcolor{quarto-callout-tip-color}{\faLightbulb}\hspace{0.5em}{Keywords and definitions: Terminology from the hubverse}, arc=.35mm, bottomrule=.15mm, leftrule=.75mm, coltitle=black]
 
 \begin{itemize}
 \item
@@ -1220,58 +1044,6 @@ made and the forecast horizon), and the forecast target
 incident influenza hospitalizations, displaying a subset of each output
 type in Table~\ref{tbl-example-model-outputs}.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2169}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1928}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1205}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1687}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2048}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0964}}@{}}
-
-\caption{\label{tbl-example-model-outputs}Example model output for
-forecasts of weekly incident influenza hospitalizations. A subset of
-example model output is shown: 1-week ahead forecasts made on 2022-12-17
-for Massachusetts from three distinct models; only the mean, median,
-select samples, and the 5th, 25th, 75th and 95th quantiles are
-displayed. The \texttt{location}, \texttt{reference\_date} and
-\texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the \texttt{hubExamples} package.}
-
-\tabularnewline
-
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{model\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{target}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{horizon}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{value}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Flusight-baseline & wk inc flu hosp & 1 & mean & NA & 582.07 \\
-Flusight-baseline & wk inc flu hosp & 1 & median & NA & 582.00 \\
-Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.05 & 496.00 \\
-Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.25 & 566.00 \\
-Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.75 & 598.00 \\
-Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.95 & 668.00 \\
-Flusight-baseline & wk inc flu hosp & 1 & sample & 2101 & 606.00 \\
-Flusight-baseline & wk inc flu hosp & 1 & sample & 2102 & 576.00 \\
-Flusight-baseline & wk inc flu hosp & 1 & sample & 2103 & 578.00 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & mean & NA & 704.73 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & median & NA & 664.00 \\
-MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.05 & 446.00 \\
-
-\end{longtable}
-
 While the \texttt{hubExamples} package provides both formats of target
 data, we focus on the target time series data
 (Table~\ref{tbl-example-target-time-series-data}) which is convenient
@@ -1282,38 +1054,6 @@ given week for given location using columns \texttt{observation},
 variables \texttt{reference\_date} and \texttt{horizon} are not relevant
 for this time series representation of the target data, and are thus not
 included as columns.
-
-\begin{longtable}[]{@{}llr@{}}
-
-\caption{\label{tbl-example-target-time-series-data}Example target time
-series data for incident influenza hospitalizations. This table includes
-target time series data for Massachusetts (FIPS code 25) between
-2022-11-01 and 2023-02-01. The target data is provided in the
-\texttt{hubExamples} package.}
-
-\tabularnewline
-
-\toprule\noalign{}
-\texttt{date} & \texttt{location} & \texttt{observation} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-2022-11-05 & 25 & 31 \\
-2022-11-12 & 25 & 43 \\
-2022-11-19 & 25 & 79 \\
-2022-11-26 & 25 & 221 \\
-2022-12-03 & 25 & 446 \\
-2022-12-10 & 25 & 578 \\
-2022-12-17 & 25 & 694 \\
-2022-12-24 & 25 & 769 \\
-2022-12-31 & 25 & 733 \\
-2023-01-07 & 25 & 466 \\
-2023-01-14 & 25 & 238 \\
-2023-01-21 & 25 & 122 \\
-2023-01-28 & 25 & 71 \\
-
-\end{longtable}
 
 We can plot the quantile and median forecasts and the target time series
 data (Figure~\ref{fig-plot-ex-mods}) shown above using the
@@ -1351,6 +1091,7 @@ the location and time horizons we are interested in.
 \SpecialCharTok{+}\NormalTok{ ) }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{labs}\NormalTok{(}\AttributeTok{y =} \StringTok{"incident hospitalizations"}\NormalTok{)}
+\SpecialCharTok{\textgreater{}} \FunctionTok{ggsave}\NormalTok{(}\StringTok{"../figures/Shandross\_fig3.tiff"}\NormalTok{, }\AttributeTok{dpi=}\DecValTok{800}\NormalTok{, }\AttributeTok{width=}\DecValTok{8}\NormalTok{, }\AttributeTok{height=}\DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1400,6 +1141,8 @@ distributions plotted in Figure~\ref{fig-plot-ex-mods}.
 \SpecialCharTok{+}   \FunctionTok{scale\_color\_brewer}\NormalTok{(}\AttributeTok{palette =} \StringTok{"Set2"}\NormalTok{) }\SpecialCharTok{+}
 \SpecialCharTok{+}   \FunctionTok{theme\_bw}\NormalTok{() }\SpecialCharTok{+} 
 \SpecialCharTok{+}   \FunctionTok{theme}\NormalTok{(}\AttributeTok{legend.position =} \StringTok{"none"}\NormalTok{)}
+\SpecialCharTok{\textgreater{}} 
+\ErrorTok{\textgreater{}} \FunctionTok{ggsave}\NormalTok{(}\StringTok{"../figures/Shandross\_fig4.tiff"}\NormalTok{, }\AttributeTok{dpi=}\DecValTok{800}\NormalTok{, }\AttributeTok{width=}\DecValTok{8}\NormalTok{, }\AttributeTok{height=}\DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1432,63 +1175,6 @@ predicted. These forecasts are made for the same task ID variables as
 the \texttt{quantile} forecasts of incident hospitalizations except for
 the target, which is ``wk flu hosp rate category'' for these categorical
 predictions.
-
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1935}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2796}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1075}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1505}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1828}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0860}}@{}}
-
-\caption{\label{tbl-example-forecasts-pmf}Example PMF model output for
-forecasts of incident influenza hospitalization intensity. A subset of
-predictions are shown: 1-week ahead PMF forecasts made on 2022-12-17 for
-Massachusetts from three distinct models. We round the forecasted
-probability (in the \texttt{value} column) to two digits. The
-\texttt{location}, \texttt{reference\_date} and
-\texttt{target\_end\_date} columns have been omitted for brevity. This
-example data is provided in the \texttt{hubExamples} package.}
-
-\tabularnewline
-
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{model\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{target}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{horizon}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{value}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Flusight-baseline & wk flu hosp rate category & 1 & pmf & low & 0.000 \\
-Flusight-baseline & wk flu hosp rate category & 1 & pmf & moderate &
-0.003 \\
-Flusight-baseline & wk flu hosp rate category & 1 & pmf & high &
-0.073 \\
-Flusight-baseline & wk flu hosp rate category & 1 & pmf & very high &
-0.924 \\
-MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & low & 0.000 \\
-MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & moderate &
-0.002 \\
-MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & high & 0.163 \\
-MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & very high &
-0.835 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & low & 0.013 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & moderate & 0.065 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & high & 0.218 \\
-PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.704 \\
-
-\end{longtable}
 
 We show a representative example of the hospitalization intensity
 category forecasts in Table~\ref{tbl-example-forecasts-pmf}. Because
@@ -1547,59 +1233,6 @@ task ID variables, output type, output type ID, and value. We also use
 \texttt{model\_id\ =\ "simple-ensemble-mean"} to change the name of this
 ensemble in the resulting model output; if not specified, the default is
 ``hub-ensemble''.
-
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2188}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2708}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1042}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1458}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1771}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0833}}@{}}
-
-\caption{\label{tbl-mean-ensemble}Mean ensemble model output. The values
-in the \texttt{model\_id} column are set by the argument
-\texttt{simple\_ensemble(...,\ model\_id)}. Results are generated for
-all output types, but only a subset are shown: 1-week ahead forecasts
-made on 2022-12-17 for Massachusetts, with only the mean, median, 25th
-and 75th quantilesfor the quantile output type and all bins for the PMF
-output type. The \texttt{location}, \texttt{reference\_date} and
-\texttt{target\_end\_date} columns have been omitted for brevity, and
-the \texttt{value} column is rounded to two digits.}
-
-\tabularnewline
-
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{model\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{target}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{horizon}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{value}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & high &
-0.15 \\
-simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & low &
-0.00 \\
-simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & moderate &
-0.02 \\
-simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & very high &
-0.82 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & mean & NA & 627.09 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & median & NA & 619.67 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.25 & 541.67 \\
-simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.75 & 704.33 \\
-
-\end{longtable}
 
 \subsubsection{Changing the aggregation
 function}\label{changing-the-aggregation-function}
@@ -1921,69 +1554,6 @@ Table~\ref{tbl-raw-flu-forecasts}.
 \end{Highlighting}
 \end{Shaded}
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.2095}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.2286}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0857}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0762}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0571}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0667}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0857}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1048}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0857}}@{}}
-
-\caption{\label{tbl-raw-flu-forecasts}An example prediction of weekly
-incident influenza hospitalizations pulled directly from Zoltar. The
-example forecasts were made on May 15, 2023 for California at the 1 week
-ahead horizon. The forecasts were generated during the FluSight
-forecasting challenge, then formatted according to Zoltar standards for
-storage. The \texttt{timezero}, \texttt{season}, \texttt{unit},
-\texttt{param1}, \texttt{param2}, and \texttt{param3} columns have been
-omitted for brevity. (The \texttt{season} column has a value of
-`2021-2022' or `2022-2023' while the last three `param' columns always
-have a value of NA.)}
-
-\tabularnewline
-
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{model}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{target}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{class}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{value}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{cat}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{prob}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{sample}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{quantile}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{family}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 12 & NA &
-NA & NA & 0.025 & NA \\
-UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 17 & NA &
-NA & NA & 0.100 & NA \\
-UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 25 & NA &
-NA & NA & 0.250 & NA \\
-UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 46 & NA &
-NA & NA & 0.750 & NA \\
-UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 56 & NA &
-NA & NA & 0.900 & NA \\
-UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 68 & NA &
-NA & NA & 0.975 & NA \\
-
-\end{longtable}
-
 Although these forecasts are in a tabular format, they are not
 \texttt{model\_out\_tbl} objects and thus cannot yet be fed into either
 of the \texttt{hubEnsembles} functions. Thus, we must use the
@@ -2047,58 +1617,6 @@ values for the forecasts are always non-negative. In
 Table~\ref{tbl-case-study-flu-forecasts}, we provide an example of these
 predictions, showing select quantiles from a single model, forecast
 date, horizon, and location.
-
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1075}}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1505}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1828}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0860}}@{}}
-
-\caption{\label{tbl-case-study-flu-forecasts}An example prediction of
-weekly incident influenza hospitalizations. The example model output was
-made on May 15, 2023 for California at the 1 week ahead horizon. The
-forecast was generated during the FluSight forecasting challenge, then
-formatted according to hubverse standards post hoc. The
-\texttt{location}, \texttt{forecast\_date}, and \texttt{season} columns
-have been omitted for brevity; quantiles representing the endpoints of
-the central 50\%, 80\% and 95\% prediction intervals are shown.}
-
-\tabularnewline
-
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{model\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{target}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{horizon}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
-\texttt{output\_type}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{output\_type\_id}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{value}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.025 &
-12 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.100 &
-17 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.250 &
-25 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.750 &
-46 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.900 &
-56 \\
-UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.975 &
-68 \\
-
-\end{longtable}
 
 Next, we can combine the predictions into a single
 \texttt{model\_out\_tbl} object used to generate forecasts for each
@@ -2215,66 +1733,6 @@ median has slightly better MAE and the best 50\% coverage across
 ensembles. The quantile mean displayed the worst values for every metric
 out of the ensembles, particularly for MAE.
 
-\begin{longtable}[]{@{}
-  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.3333}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1061}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1061}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1061}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1061}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1212}}
-  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1212}}@{}}
-
-\caption{\label{tbl-overall-evaluation}Summary of overall model
-performance across both seasons, averaged over all locations except the
-US national location and sorted by ascending WIS. Both the individual
-FluSight component models and the resulting ensembles are included in
-the table, as long as they forecasted for at least 80\% of the two
-seasons. The ensembles rank in the top-half of models in terms of
-accuracy. The two linear pools have the best WIS and 95\% coverage rates
-of the ensembles, as well as top performance for MAE and 50\% coverage
-rate.}
-
-\tabularnewline
-
-\toprule\noalign{}
-\begin{minipage}[b]{\linewidth}\raggedright
-\texttt{model}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{wis}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{rwis}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{mae}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{rmae}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{cov50}
-\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
-\texttt{cov95}
-\end{minipage} \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-CMU-TimeSeries & 31.866 & 0.677 & 47.325 & 0.827 & 0.403 & 0.850 \\
-MOBS-GLEAM\_FLUH & 33.371 & 0.709 & 45.256 & 0.791 & 0.332 & 0.699 \\
-PSI-DICE & 34.338 & 0.729 & 46.227 & 0.808 & 0.390 & 0.781 \\
-lp-normal & 34.393 & 0.730 & 52.359 & 0.915 & 0.574 & 0.960 \\
-lp-lognormal & 34.394 & 0.730 & 52.360 & 0.915 & 0.574 & 0.960 \\
-median-ensemble & 37.672 & 0.800 & 52.053 & 0.909 & 0.478 & 0.811 \\
-UMass-trends\_ensemble & 38.554 & 0.819 & 57.212 & 0.999 & 0.666 &
-0.917 \\
-mean-ensemble & 39.480 & 0.838 & 54.615 & 0.954 & 0.461 & 0.779 \\
-SGroup-RandomForest & 39.694 & 0.843 & 56.338 & 0.984 & 0.463 & 0.871 \\
-CU-ensemble & 41.972 & 0.891 & 52.318 & 0.914 & 0.423 & 0.703 \\
-GT-FluFNP & 42.045 & 0.893 & 51.992 & 0.908 & 0.426 & 0.698 \\
-SigSci-TSENS & 45.865 & 0.974 & 58.231 & 1.017 & 0.485 & 0.726 \\
-Flusight-baseline & 47.095 & 1.000 & 57.244 & 1.000 & 0.499 & 0.776 \\
-UVAFluX-Ensemble & 57.242 & 1.215 & 68.383 & 1.195 & 0.208 & 0.448 \\
-SigSci-CREG & 60.227 & 1.279 & 67.644 & 1.182 & 0.298 & 0.545 \\
-
-\end{longtable}
-
 Plots of the ensemble models' forecasts can aid our understanding about
 the origin of these accuracy differences
 (Figure~\ref{fig-plot-forecasts-hubVis}). For example, the linear
@@ -2366,7 +1824,7 @@ milder season without any periods of rapid change (where the median and
 mean quantile ensembles demonstrated more robust performance). Expanding
 this evaluation to include other influenza seasons will be important to
 characterize the robustness of these conclusions and test how much the
-unusual timing and magnitude of these seasons affected forecast
+unusual timing and magnitude of the analyzed seasons affected forecast
 performance.
 
 The choice of an appropriate ensemble aggregation method will depend on
@@ -2814,6 +2272,571 @@ epidemic forecasts in an interval format. \emph{PLoS Comput Biol}.
 doi:\href{https://doi.org/10.1371/journal.pcbi.1008618}{10.1371/journal.pcbi.1008618}}
 
 \end{CSLReferences}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1507}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0822}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1507}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0548}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1644}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1918}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.0959}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1096}}@{}}
+
+\caption{\label{tbl-example-forecasts}Example of forecasts for incident
+influenza hospitalizations, formatted according to hubverse standards.
+Quantile predictions for the median and 50\% prediction intervals from a
+single model are shown for four distinct horizons. The
+\texttt{output\_type\_id} column's name has been shortened to
+\texttt{otid} for brevity. These predictions are a modified subset of
+the \texttt{forecast\_outputs} data provided by the \texttt{hubExamples}
+package.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{model\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{loc}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{ref\_date}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{h}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{otid}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{value}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+team1-mod & MA & 2022-12-17 & 0 & wk flu hosp & quantile & 0.25 & 514 \\
+team1-mod & MA & 2022-12-17 & 0 & wk flu hosp & quantile & 0.5 & 596 \\
+team1-mod & MA & 2022-12-17 & 0 & wk flu hosp & quantile & 0.75 & 713 \\
+team1-mod & MA & 2022-12-17 & 1 & wk flu hosp & quantile & 0.25 & 563 \\
+team1-mod & MA & 2022-12-17 & 1 & wk flu hosp & quantile & 0.5 & 664 \\
+team1-mod & MA & 2022-12-17 & 1 & wk flu hosp & quantile & 0.75 & 803 \\
+team1-mod & MA & 2022-12-17 & 2 & wk flu hosp & quantile & 0.25 & 469 \\
+team1-mod & MA & 2022-12-17 & 2 & wk flu hosp & quantile & 0.5 & 575 \\
+team1-mod & MA & 2022-12-17 & 2 & wk flu hosp & quantile & 0.75 & 705 \\
+team1-mod & MA & 2022-12-17 & 3 & wk flu hosp & quantile & 0.25 & 324 \\
+team1-mod & MA & 2022-12-17 & 3 & wk flu hosp & quantile & 0.5 & 408 \\
+team1-mod & MA & 2022-12-17 & 3 & wk flu hosp & quantile & 0.75 & 512 \\
+
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1944}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.2222}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5833}}@{}}
+\caption{A table summarizing how the model output representation columns
+are used for predictions of different output types; adapted from
+hubverse documentation.\textsuperscript{30} (*Rows of sample predictions
+from a particular model that share an output type ID value may be
+assumed to represent a single sample from a joint distribution across
+multiple levels of the task ID
+variables.)}\label{tbl-model-output-rep}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{value}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{value}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{mean} & NA (not used for mean predictions) & Numeric: The mean
+of the predictive distribution \\
+\texttt{median} & NA (not used for median predictions) & Numeric: The
+median of the predictive distribution \\
+\texttt{quantile} & Numeric between 0.0 and 1.0: A quantile level &
+Numeric: The quantile of the predictive distribution at the quantile
+level specified by the \texttt{output\_type\_id} \\
+\texttt{cdf} & String or numeric naming a possible value of the target
+variable & Numeric between 0.0 and 1.0: The cumulative probability of
+the predictive distribution at the value of the outcome variable
+specified by the \texttt{output\_type\_id} \\
+\texttt{pmf} & String naming a possible category of a discrete outcome
+variable & Numeric between 0.0 and 1.0: The probability mass of the
+predictive distribution when evaluated at a specified level of a
+categorical outcome variable \\
+\texttt{sample} & Integer or string identifying the sample* & Numeric: A
+single sample value from the predictive distribution \\
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.1400}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.5000}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3600}}@{}}
+\caption{Summary of ensemble function calculations for each output type.
+The ensemble function determines the operation that is performed, and in
+the case of probabilistic output types (quantile, CDF, PMF), this also
+determines what ensemble distribution is generated (quantile average,
+\(F_{Q}^{-1}(\theta)\), or linear pool, \(F_{LOP}(x)\)). The ensembled
+predictions are returned in the same output type as the inputs. Thus,
+the output type determines how the resulting ensemble distribution is
+summarized (as a quantile, \(F^{-1}(\theta)\), cumulative probability,
+\(F(x)\), or probability \(f(x)\)). Estimating individual model
+cumulative probabilities is required to compute a
+\texttt{linear\_pool()} for predictions of \texttt{quantile} output
+type; see Section~\ref{sec-linear-pool} on the linear pool operation for
+details. In the case of \texttt{simple\_ensemble()}, we show the
+calculations for the default case where \texttt{agg\_fun\ =\ mean};
+however, if another aggregation function is chosen (e.g.,
+\texttt{agg\_fun\ =\ median}), that calculation would be performed
+instead. For example,
+\texttt{simple\_ensemble(...,\ agg\_fun\ =\ median)} applied to
+predictions of mean output type would return the median of individual
+model means.}\label{tbl-fns-by-output-type}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{simple\_ensemble(...,\ agg\_fun=mean)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{linear\_pool()}
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{simple\_ensemble(...,\ agg\_fun=mean)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{linear\_pool()}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\texttt{mean} & mean of individual model means & mean of individual
+model means \\
+\texttt{median} & mean of individual model medians & NA \\
+\texttt{quantile} & mean of individual model target variable values at
+each quantile level, \(F^{-1}_Q(\theta)\) & quantiles of the
+distribution are obtained by computing the mean of estimated individual
+model cumulative probabilities at each target variable value,
+\(F^{-1}_{LOP}(\theta)\) \\
+\texttt{cdf} & mean of individual model cumulative probabilities at each
+target variable value, \(F_{LOP}(x)\) & mean of individual model
+cumulative probabilities at each target variable value,
+\(F_{LOP}(x)\) \\
+\texttt{pmf} & mean of individual model bin or category probabilities at
+each target variable value, \(f_{LOP}(x)\) & mean of individual model
+bin or category probabilities at each target variable value,
+\(f_{LOP}(x)\) \\
+\texttt{sample} & NA & samples of the distribution are obtained by
+stratified draw from individual models' samples \\
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2169}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1928}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1205}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1687}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2048}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0964}}@{}}
+
+\caption{\label{tbl-example-model-outputs}Example model output for
+forecasts of weekly incident influenza hospitalizations. A subset of
+example model output is shown: 1-week ahead forecasts made on 2022-12-17
+for Massachusetts from three distinct models; only the mean, median,
+select samples, and the 5th, 25th, 75th and 95th quantiles are
+displayed. The \texttt{location}, \texttt{reference\_date} and
+\texttt{target\_end\_date} columns have been omitted for brevity. This
+example data is provided in the \texttt{hubExamples} package.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{model\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{horizon}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{value}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Flusight-baseline & wk inc flu hosp & 1 & mean & NA & 582.07 \\
+Flusight-baseline & wk inc flu hosp & 1 & median & NA & 582.00 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.05 & 496.00 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.25 & 566.00 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.75 & 598.00 \\
+Flusight-baseline & wk inc flu hosp & 1 & quantile & 0.95 & 668.00 \\
+Flusight-baseline & wk inc flu hosp & 1 & sample & 2101 & 606.00 \\
+Flusight-baseline & wk inc flu hosp & 1 & sample & 2102 & 576.00 \\
+Flusight-baseline & wk inc flu hosp & 1 & sample & 2103 & 578.00 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & mean & NA & 704.73 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & median & NA & 664.00 \\
+MOBS-GLEAM\_FLUH & wk inc flu hosp & 1 & quantile & 0.05 & 446.00 \\
+
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}llr@{}}
+
+\caption{\label{tbl-example-target-time-series-data}Example target time
+series data for incident influenza hospitalizations. This table includes
+target time series data for Massachusetts (FIPS code 25) between
+2022-11-01 and 2023-02-01. The target data is provided in the
+\texttt{hubExamples} package.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\texttt{date} & \texttt{location} & \texttt{observation} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2022-11-05 & 25 & 31 \\
+2022-11-12 & 25 & 43 \\
+2022-11-19 & 25 & 79 \\
+2022-11-26 & 25 & 221 \\
+2022-12-03 & 25 & 446 \\
+2022-12-10 & 25 & 578 \\
+2022-12-17 & 25 & 694 \\
+2022-12-24 & 25 & 769 \\
+2022-12-31 & 25 & 733 \\
+2023-01-07 & 25 & 466 \\
+2023-01-14 & 25 & 238 \\
+2023-01-21 & 25 & 122 \\
+2023-01-28 & 25 & 71 \\
+
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1935}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2796}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1075}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1505}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1828}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0860}}@{}}
+
+\caption{\label{tbl-example-forecasts-pmf}Example PMF model output for
+forecasts of incident influenza hospitalization intensity. A subset of
+predictions are shown: 1-week ahead PMF forecasts made on 2022-12-17 for
+Massachusetts from three distinct models. We round the forecasted
+probability (in the \texttt{value} column) to two digits. The
+\texttt{location}, \texttt{reference\_date} and
+\texttt{target\_end\_date} columns have been omitted for brevity. This
+example data is provided in the \texttt{hubExamples} package.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{model\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{horizon}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{value}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & low & 0.000 \\
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & moderate &
+0.003 \\
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & high &
+0.073 \\
+Flusight-baseline & wk flu hosp rate category & 1 & pmf & very high &
+0.924 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & low & 0.000 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & moderate &
+0.002 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & high & 0.163 \\
+MOBS-GLEAM\_FLUH & wk flu hosp rate category & 1 & pmf & very high &
+0.835 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & low & 0.013 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & moderate & 0.065 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & high & 0.218 \\
+PSI-DICE & wk flu hosp rate category & 1 & pmf & very high & 0.704 \\
+
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2188}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2708}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1042}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1458}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1771}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0833}}@{}}
+
+\caption{\label{tbl-mean-ensemble}Mean ensemble model output. The values
+in the \texttt{model\_id} column are set by the argument
+\texttt{simple\_ensemble(...,\ model\_id)}. Results are generated for
+all output types, but only a subset are shown: 1-week ahead forecasts
+made on 2022-12-17 for Massachusetts, with only the mean, median, 25th
+and 75th quantilesfor the quantile output type and all bins for the PMF
+output type. The \texttt{location}, \texttt{reference\_date} and
+\texttt{target\_end\_date} columns have been omitted for brevity, and
+the \texttt{value} column is rounded to two digits.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{model\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{horizon}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{value}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & high &
+0.15 \\
+simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & low &
+0.00 \\
+simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & moderate &
+0.02 \\
+simple-ensemble-mean & wk flu hosp rate category & 1 & pmf & very high &
+0.82 \\
+simple-ensemble-mean & wk inc flu hosp & 1 & mean & NA & 627.09 \\
+simple-ensemble-mean & wk inc flu hosp & 1 & median & NA & 619.67 \\
+simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.25 & 541.67 \\
+simple-ensemble-mean & wk inc flu hosp & 1 & quantile & 0.75 & 704.33 \\
+
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.2095}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.2286}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0857}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0762}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0571}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0667}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0857}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.1048}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 16\tabcolsep) * \real{0.0857}}@{}}
+
+\caption{\label{tbl-raw-flu-forecasts}An example prediction of weekly
+incident influenza hospitalizations pulled directly from Zoltar. The
+example forecasts were made on May 15, 2023 for California at the 1 week
+ahead horizon. The forecasts were generated during the FluSight
+forecasting challenge, then formatted according to Zoltar standards for
+storage. The \texttt{timezero}, \texttt{season}, \texttt{unit},
+\texttt{param1}, \texttt{param2}, and \texttt{param3} columns have been
+omitted for brevity. (The \texttt{season} column has a value of
+`2021-2022' or `2022-2023' while the last three `param' columns always
+have a value of NA.)}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{model}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{class}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{value}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{cat}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{prob}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{sample}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{quantile}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{family}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 12 & NA &
+NA & NA & 0.025 & NA \\
+UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 17 & NA &
+NA & NA & 0.100 & NA \\
+UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 25 & NA &
+NA & NA & 0.250 & NA \\
+UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 46 & NA &
+NA & NA & 0.750 & NA \\
+UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 56 & NA &
+NA & NA & 0.900 & NA \\
+UMass-trends\_ensemble & 1 wk ahead inc flu hosp & quantile & 68 & NA &
+NA & NA & 0.975 & NA \\
+
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2366}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1075}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1505}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1828}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0860}}@{}}
+
+\caption{\label{tbl-case-study-flu-forecasts}An example prediction of
+weekly incident influenza hospitalizations. The example model output was
+made on May 15, 2023 for California at the 1 week ahead horizon. The
+forecast was generated during the FluSight forecasting challenge, then
+formatted according to hubverse standards post hoc. The
+\texttt{location}, \texttt{forecast\_date}, and \texttt{season} columns
+have been omitted for brevity; quantiles representing the endpoints of
+the central 50\%, 80\% and 95\% prediction intervals are shown.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{model\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{target}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{horizon}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\texttt{output\_type}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{output\_type\_id}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{value}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.025 &
+12 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.100 &
+17 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.250 &
+25 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.750 &
+46 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.900 &
+56 \\
+UMass-trends\_ensemble & wk ahead inc flu hosp & 1 & quantile & 0.975 &
+68 \\
+
+\end{longtable}
+
+\newpage
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.3333}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1061}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1061}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1061}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1061}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1212}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1212}}@{}}
+
+\caption{\label{tbl-overall-evaluation}Summary of overall model
+performance across both seasons, averaged over all locations except the
+US national location and sorted by ascending WIS. Both the individual
+FluSight component models and the resulting ensembles are included in
+the table, as long as they forecasted for at least 80\% of the two
+seasons. The ensembles rank in the top-half of models in terms of
+accuracy. The two linear pools have the best WIS and 95\% coverage rates
+of the ensembles, as well as top performance for MAE and 50\% coverage
+rate.}
+
+\tabularnewline
+
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+\texttt{model}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{wis}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{rwis}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{mae}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{rmae}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{cov50}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+\texttt{cov95}
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+CMU-TimeSeries & 31.866 & 0.677 & 47.325 & 0.827 & 0.403 & 0.850 \\
+MOBS-GLEAM\_FLUH & 33.371 & 0.709 & 45.256 & 0.791 & 0.332 & 0.699 \\
+PSI-DICE & 34.338 & 0.729 & 46.227 & 0.808 & 0.390 & 0.781 \\
+lp-normal & 34.393 & 0.730 & 52.359 & 0.915 & 0.574 & 0.960 \\
+lp-lognormal & 34.394 & 0.730 & 52.360 & 0.915 & 0.574 & 0.960 \\
+median-ensemble & 37.672 & 0.800 & 52.053 & 0.909 & 0.478 & 0.811 \\
+UMass-trends\_ensemble & 38.554 & 0.819 & 57.212 & 0.999 & 0.666 &
+0.917 \\
+mean-ensemble & 39.480 & 0.838 & 54.615 & 0.954 & 0.461 & 0.779 \\
+SGroup-RandomForest & 39.694 & 0.843 & 56.338 & 0.984 & 0.463 & 0.871 \\
+CU-ensemble & 41.972 & 0.891 & 52.318 & 0.914 & 0.423 & 0.703 \\
+GT-FluFNP & 42.045 & 0.893 & 51.992 & 0.908 & 0.426 & 0.698 \\
+SigSci-TSENS & 45.865 & 0.974 & 58.231 & 1.017 & 0.485 & 0.726 \\
+Flusight-baseline & 47.095 & 1.000 & 57.244 & 1.000 & 0.499 & 0.776 \\
+UVAFluX-Ensemble & 57.242 & 1.215 & 68.383 & 1.195 & 0.208 & 0.448 \\
+SigSci-CREG & 60.227 & 1.279 & 67.644 & 1.182 & 0.298 & 0.545 \\
+
+\end{longtable}
 
 
 

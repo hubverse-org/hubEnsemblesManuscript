@@ -1,60 +1,81 @@
 ---
-title: "[hubEnsembles]{.pkg}: Ensembling Methods in [R]{.proglang}"
+title: "Multi-model ensembles in infectious disease and public health: Methods, interpretation, and implementation in R"
 format:
-  jss-pdf:
+  pdf:
+    template-partials:
+      - before-body.tex
+      - title.tex
+    include-in-header:
+      text: |
+        \usepackage{authblk}
+        \setcounter{Maxaffil}{1}
+    number-sections: true
     keep-tex: true
+    geometry:
+      - top=30mm
+      - left=20mm
     journal:
       type: article
       cite-shortnames: true
       suppress: [title]
-      include-jss-default: false
 author:
   - name: Li Shandross
-    affiliations:
-      - name: University of Massachusetts Amherst
+    affil-id: 1,*
     orcid: 0009-0008-1348-1954
     attributes:
       equal-contributor: true
     email: lshandross@umass.edu
   - name: Emily Howerton
-    affiliations:
-      - The Pennsylvania State University
+    affil-id: 2,*,a
     orcid: 0000-0002-0639-3728
     attributes:
       equal-contributor: true
+      corresponding: true
   - name: Lucie Contamin
-    affiliations:
-      - University of Pittsburgh
+    affil-id: 3
     orcid: 0000-0001-5797-1279
   - name: Harry Hochheiser
-    affiliations:
-      - University of Pittsburgh
+    affil-id: 3 
     orcid: 0000-0001-8793-9982
   - name: Anna Krystalli
-    affiliations:
-      - R-RSE SMPC
+    affil-id: 4
     orcid: 0000-0002-2378-4915
-  - name: |
-      | Consortium of 
-      | Infectious Disease Modeling Hubs
-    affiliations:
-      - A list of authors and their affiliations appears at the end of the paper
+  - name: Consortium of Infectious Disease Modeling Hubs
+    affil-id: 5 
   - name: Nicholas G. Reich
-    affiliations:
-      - University of Massachusetts Amherst
+    affil-id: 1
     orcid: 0000-0003-3503-9899
   - name: Evan L. Ray
-    affiliations:
-      - University of Massachusetts Amherst
+    affil-id: 1
     orcid: 0000-0003-4035-0243
+
+affiliations: 
+  - id: 1
+    name: University of Massachusetts Amherst
+  - id: 2
+    name: The Pennsylvania State University
+  - id: 3
+    name: University of Pittsburgh
+  - id: 4
+    name: R-RSE SMPC
+  - id: 5
+    name: A list of authors and affiliations appears at the end of the paper
+  - id: '*'
+    name: Equal contributors
+  - id: a
+    name: Corresponding author, ehowerton@psu.edu
+    
 execute:
   echo: true
   warning: false
   message: false
 bibliography: references.bib
+csl: american-medical-association.csl
 abstract: |
-  Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. The [R]{.proglang} package [hubEnsembles]{.pkg} provides a flexible framework for ensembling various types of predictions, including point estimates and probabilistic predictions. A range of common methods for generating ensembles are supported, including weighted averages, quantile averages, and linear pools. The [hubEnsembles]{.pkg} package fits within a broader framework of open-source software and data tools called the "hubverse", which facilitates the development and management of collaborative modelling exercises.
 
+  Combining predictions from multiple models into an ensemble is a widely used practice across many fields with demonstrated performance benefits. Popularized through domains such as weather forecasting and climate modeling, multi-model ensembles are becoming increasingly common in public health and biological applications. For example, multi-model outbreak forecasting provides more accurate and reliable information about the timing and burden of infectious disease outbreaks to public health officials and medical practitioners. Yet, understanding and interpreting multi-model ensemble results can be difficult, as there are a diversity of methods proposed in the literature with no clear consensus on which is best. Moreover, a lack of standard, easy-to-use software implementations impedes the generation of multi-model ensembles in practice. To address these challenges, we provide an introduction to the statistical foundations of applied probabilistic forecasting, including the role of multi-model ensembles. We introduce the `hubEnsembles` package, a flexible framework for ensembling various types of predictions using a range of methods. Finally, we present a tutorial and case-study of ensemble methods using the `hubEnsembles` package on a subset of real, publicly available data from the FluSight Forecast Hub. 
+  
+  
 keywords: [multiple models, aggregation, forecast, prediction]
 keywords-formatted: [multiple models, aggregation, forecast, prediction]
 ---
@@ -80,162 +101,73 @@ library(cowplot)
 
 ## Introduction {#sec-intro}
 
-Predictions of future outcomes are essential to planning and decision making, yet generating reliable predictions of the future is challenging. One method for overcoming this challenge is combining predictions across multiple, independent models. These combination methods (also called aggregation or ensembling) have been repeatedly shown to produce predictions that are more accurate [@clemen1989; @timmermann2006] and more consistent [@hibon2005] than individual models. Because of the clear performance benefits, multi-model ensembles are commonplace across fields, including weather [@alley2019], climate [@tebaldi2007], and economics [@aastveit2018]. More recently, multi-model ensembles have been used to improve predictions of infectious disease outbreaks [@viboud2018; @johansson2019; @mcgowan2019; @reich_accuracy_2019; @cramer2022].
+Predictions of future outcomes are essential to planning and decision making, yet generating reliable predictions of the future is challenging. One method for overcoming this challenge is combining predictions across multiple, independent models. These combination methods (also called aggregation or ensembling) have been repeatedly shown to produce predictions that are more accurate [@clemen1989; @timmermann2006] and more consistent [@hibon2005] than individual models. Because of the clear performance benefits, multi-model ensembles are a widely used statistical tool across fields, including weather forecasting, [@alley2019] climate modeling, [@tebaldi2007] and economics. [@aastveit2018] In the last decade, the number of multi-model ensemble predictions generated and used in real time for public health planning and response has grown rapidly.
 
-In the rapidly growing field of outbreak forecasting, there are many proposed methods for generating ensembles. Generally, these methods differ in at least one of two ways: (1) the function used to combine or "average" predictions, and (2) how predictions are weighted when performing the combination. No one method is universally "the best"; a simple average of predictions works surprisingly well across a range of settings [@mcgowan2019; @paireau_ensemble_2022; @ray_comparing_2023] for established theoretical reasons [@winkler2015]. However, more complex approaches have also been shown to have benefits in some settings [@yamana_superensemble_2016; @ray_prediction_2018; @reich_accuracy_2019; @colon-gonzalez_probabilistic_2021]. Here, we present the [hubEnsembles]{.pkg} package, which provides a flexible framework for generating ensemble predictions from multiple models. Complementing other software for combining predictions from multiple models (e.g., @pedregosa_scikit-learn_2011; @weiss2019; @bosse_stackr_2023; @couch_stacks_2023), [hubEnsembles]{.pkg} supports multiple types of predictions, including point estimates and different kinds of probabilistic predictions. Throughout, we will use the term "prediction" to refer to any kind of model output that may be combined including a forecast, a scenario projection, or a parameter estimate.
+In particular, predicting infectious disease outbreaks and anticipating the effects of potential interventions has demonstrated utility for public health officials and medical practitioners. Underlying these predictions are mathematical models that use historical disease incidence data, including cases, hospitalizations, and deaths, to make probabilistic predictions of incidence in the future. [@shaman_improved_2015; @held_probabilistic_2017; @ray_infectious_2017; @reich_accuracy_2019; @rodriguez_machine_2024] Given the performance benefits of multi-model ensembles, it is becoming increasingly common to convene multiple modeling teams into a collaborative "hub", [@reich2022] where each team generates independent predictions that are aggregated to collectively produce an ensemble. For example, this approach has been used to make real-time, multi-model predictions for seasonal influenza, [@mcgowan2019; @reich_accuracy_2019] dengue, [@johansson2019] West Nile virus, [@holcomb_evaluation_2023] and more recently SARS-CoV-2. [@cramer2022; @sherratt_predictive_2023; @howerton_evaluation_2023]
 
-The [hubEnsembles]{.pkg} package is part of the "hubverse" collection of open-source software and data tools. The hubverse project facilitates the development and management of collaborative modelling exercises [@hubverse_docs]. The broader hubverse initiative is motivated by the demonstrated benefits of collaborative hubs [@reich2022; @borchering_public_2023], including performance benefits of multi-model ensembles and the desire for standardization across such hubs. In this paper, we focus specifically on the functionality encompassed in [hubEnsembles]{.pkg}. We provide an overview of the methods implemented, including mathematical definitions and properties (@sec-defs) as well as implementation details (@sec-implementation), a basic demonstration of functionality with simple examples (@sec-simple-ex), and a more in-depth analysis using real influenza forecasts (@sec-case-study) that motivates a discussion and comparison of the various methods (@sec-conclusions).
+Generating multi-model ensembles or interpreting the resulting predictions depends on understanding the underlying statistical methodology. There are many proposed methods for generating ensembles, and these methods differ in at least one of two ways: (1) the function used to combine or "average" predictions, and (2) how predictions are weighted when performing the combination. A few methodological papers have discussed theory of multi-model ensembles and tested various ensembling methods in public health applications specifically, [@yamana_superensemble_2016; @ray_prediction_2018; @viboud2018; @colon-gonzalez_probabilistic_2021; @paireau_ensemble_2022; @howerton2023; @ray_comparing_2023] yet there is no consensus on which method should be favored. There are software packages that support various aspects of multi-model ensembling. [@pedregosa_scikit-learn_2011; @weiss2019; @bosse_stackr_2023; @couch_stacks_2023] However, these packages only support a subset of methods and prediction types, illustrating the need for standard, easy-to-use implementations of common methods.
 
-## Mathematical definitions and properties of ensemble methods {#sec-defs}
+Here, we provide an introduction to the statistical foundations of multi-model ensembles in applied probabilistic forecasting (@sec-defs). In addition, to improve accessibility, reproducibility, and interoperability, we have developed a comprehensive R package `hubEnsembles` that implements these methods (@sec-implementation). The `hubEnsembles` package provides a flexible framework for generating ensemble predictions from multiple models across a range of common methods and prediction types, including both discrete and continuous outcomes. It is situated within the broader "hubverse" collection of open-source software and data tools to facilitate the development and management of collaborative modeling exercises. [@hubverse_docs] These two factors together, a simple implementation framework across methods and integration with hubverse data standards and tools, make `hubEnsembles` accessible and easy to use.
 
-The [hubEnsembles]{.pkg} package supports both point predictions and probabilistic predictions of different formats. A point prediction gives a single estimate of a future outcome while a probabilistic prediction provides an estimated probability distribution over a set of future outcomes. We use $N$ to denote the total number of individual predictions that the ensemble will combine. For example, these predictions will often be produced by different statistical or mathematical models, and $N$ is the total number of models that have provided predictions. Individual predictions will be indexed by the subscript $i$. Optionally, the package allows for calculating ensembles that use a weight $w_i$ for each prediction; we define the set of model-specific weights as $\pmb{w} = \{w_i | i \in 1, ..., N\}$. Informally, predictions with a larger weight have a greater influence on the ensemble prediction, though the details of this depend on the ensemble method (described further below).
+Finally, we present a basic demonstration of multi-model ensemble generation and interpretation (@sec-simple-ex), and a more in-depth analysis using real influenza forecasts (@sec-case-study). The case studies demonstrate the utility of hubEnsembles to support a range of prediction types, and together motivate a discussion and comparison of the various methods (@sec-conclusions). While the case studies focus on infectious disease applications, the software and tools presented are general and could be used for applications in other areas of biomedical and public health research, or other domains. By reviewing multi-model ensemble methodology and synthesizing these methods into an easy-to use implementation, this tutorial provides guidance on understanding, interpreting, and implementing multi-model ensembles.
 
-For a set of $N$ point predictions, $\pmb{p} = \{p_i|i \in 1, ..., N\}$, each from a distinct model $i$, the [hubEnsembles]{.pkg} package can compute an ensemble of these predictions
+## How to generate a multi-model ensemble {#sec-defs}
+
+In this section, we provide an overview of the process to generate a multi-model ensemble, including an outline of key statistical concepts in probabilistic forecasting, and an overview of the classes of methods that are typically used for generating a multi-model ensemble. See Box 1 for a glossary of key terms and definitions.
+
+### Key statistical concepts in forecasting
+
+Generating an ensemble requires multiple predictions to be combined, and a combination method for calculating the ensemble from these predictions (@fig-ensemble-schematic). These predictions will often be produced by different statistical or mathematical models, and the output from these models (referred to as "model output" from here on) will vary based on the setting. For example, some public health questions, such as short-term resource allocation, may depend on a forecast of public health outcomes weeks into the future, whereas longer-term decisions about vaccination schedules may require projections months into the future across multiple possible scenarios. Some intervention decisions, such as quarantine and isolation policy, may depend on estimates of key biological parameters such as the generation interval for an infectious pathogen. Throughout, we will use the general term "prediction" to encapsulate all such outcomes that could be modeled, encompassing short-term forecasts, scenario projections, and parameter estimates. Predictions can also capture varying degrees of uncertainty in the outcome. A *point prediction* gives a single estimate of an outcome while a *probabilistic prediction* provides an estimated probability distribution over a set of outcomes. In either case, the basic steps required to generate an ensemble are the same.
+
+```{r}
+#| label: fig-ensemble-schematic
+#| echo: false
+#| fig-cap: "Overview of process to generate a multi-model ensemble. Predictions, $p_i$ are generated from $N$ independent models (step 1). Then those predictions, $\\pmb{p} = \\{p_i|i \\in 1, ..., N\\}$, are combined with some function, $C$, and set of weights, $\\pmb{w} = \\{w_i|i \\in 1, ..., N\\}$. This figure illustrates example probabilistic forecasts for incident influenza hospitalizations, where the median (line) and 90% prediction interval are shown. In this case, the ensemble is constructed using the linear pool method ($F_{LOP}(x)$})."
+#| fig-width: 6
+#| fig-height: 3
+
+knitr::include_graphics("overview_fig_FULL.pdf")
+```
+
+### Mathematical definitions and properties of ensemble methods
+
+Here, we use $N$ to denote the total number of individual predictions that the ensemble will combine. For example, if predictions are produced by different models, $N$ is the total number of models that have provided predictions. Individual predictions will be indexed by the subscript $i$. Optionally, one can calculate an ensemble that uses a weight $w_i$ for each prediction; we define the set of model-specific weights as $\pmb{w} = \{w_i | i \in 1, ..., N\}$. Informally, predictions with a larger weight have a greater influence on the ensemble prediction, though the details of this depend on the ensemble method (described further below).
+
+Then, for a set of $N$ point predictions, $\pmb{p} = \{p_i|i \in 1, ..., N\}$, each from a distinct model $i$, an ensemble of these predictions is
 
 $$
 p_E = C(\pmb{p}, \pmb{w}) 
 $$
 
-using any function $C$ and any set of model-specific weights $\pmb{w}$. For example, an arithmetic average of predictions yields $p_E = \sum_{i=1}^Np_iw_i$, where the weights are non-negative and sum to 1. If $w_i = 1/N$ for all $i$, all predictions will be equally weighted. This framework can also support more complex functions for aggregation, such as a (weighted) median or geometric mean.
+using any function $C$ and any set of model-specific weights $\pmb{w}$. For example, an arithmetic average of predictions yields $p_E = \sum_{i=1}^Np_iw_i$, where the weights are non-negative and sum to 1. If $w_i = 1/N$ for all $i$, all predictions will be equally weighted. More complex functions for aggregation are also possible, such as a (weighted) median or geometric mean.
 
-For probabilistic predictions, there are two commonly used classes of methods to average or ensemble multiple predictions: quantile averaging (also called a Vincent average [@vincent1912]) and probability averaging (also called a distributional mixture or linear opinion pool [@stone1961]) [@lichtendahl2013]. To define these two classes of methods, let $F(x)$ be a cumulative density function (CDF) defined over values $x$ of the target variable for the prediction, and $F^{-1}(\theta)$ be the corresponding quantile function defined over quantile levels $\theta \in [0, 1]$. Throughout this article, we may refer to $x$ as either a 'value of the target variable' or a 'quantile' depending on the context, and similarly we may refer to $\theta$ as either a 'quantile level' or a '(cumulative) probability'. Additionally, we will use $f(x)$ to denote a probability mass function (PMF) for a prediction of a discrete variable or a discretization (such as binned values) of a continuous variable.
+For probabilistic predictions, there are two commonly used classes of methods to average or ensemble multiple predictions: quantile averaging (also called a Vincent average [@vincent1912]) and probability averaging (also called a distributional mixture or linear opinion pool [@stone1961]). [@lichtendahl2013] To define these two classes of methods, let $F(x)$ be a cumulative density function (CDF) defined over values $x$ of the target variable for the prediction, and $F^{-1}(\theta)$ be the corresponding quantile function defined over quantile levels $\theta \in [0, 1]$. Throughout this article, we may refer to $x$ as either a 'value of the target variable' or a 'quantile' depending on the context, and similarly we may refer to $\theta$ as either a 'quantile level' or a '(cumulative) probability'. Additionally, we will use $f(x)$ to denote a probability mass function (PMF) for a prediction of a discrete variable or a discretization (such as binned values) of a continuous variable.
 
 The quantile average combines a set of quantile functions, $\mathcal{Q} = \{F_i^{-1}(\theta)| i \in 1,...,N \}$, with a given set of weights, $\pmb{w}$, as $$
 F^{-1}_Q(\theta) = C_Q(\mathcal{Q}, \pmb{w}) = \sum_{i = 1}^Nw_iF^{-1}_i(\theta).
 $$
 
-This computes the average value of predictions across different models for each fixed quantile level $\theta$. For a normal distribution or any distribution with a shape and scale parameter, the resulting quantile average will be the same type of distribution, with shape and scale parameters that are the average of the shape and scale parameters from the individual distributions (@fig-example-quantile-average-and-linear-pool, panel B). In other words, this method inteprets the predictive probability distributions that are being combined as uncertain estimates of a single true distribution. It is also possible to use other combination functions, such as a weighted median, to combine quantile predictions.
+This computes the average value of predictions across different models for each fixed quantile level $\theta$. For a normal distribution or any distribution with a location and scale parameter, the resulting quantile average will be the same type of distribution, with location and scale parameters that are the average of the location and scale parameters from the individual distributions (@fig-example-quantile-average-and-linear-pool, panel B). In other words, this method interprets the predictive probability distributions that are being combined as uncertain estimates of a single true distribution. It is also possible to use other combination functions, such as a weighted median, to combine quantile predictions.
 
-The probability average or linear pool is calculated by averaging probabilities across predictions for a fixed value of the target variable, $x$. In other words, for a set $\mathcal{F} = \{F_i(x)| i \in 1,...,N \}$ containing the values of CDFs at the point $x$ and weights $\pmb{w}$, the linear pool is calculated as
+The probability average or linear opinion pool (LOP, or simply linear pool) is calculated by averaging probabilities across predictions for a fixed value of the target variable, $x$. In other words, for a set of CDFs $\mathcal{F} = \{F_i(x)| i \in 1,...,N \}$ and weights $\pmb{w}$, the linear pool is calculated as
 
 $$
 F_{LOP}(x) = C_{LOP}(\mathcal{F}, \pmb{w}) = \sum_{i = 1}^Nw_iF_i(x). 
 $$
 
-For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be equivalently calculated: $f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)$. Statistically this amounts to a mixture of the probability distributions, and the resulting probability distribution can be interpreted as one where the constituent probability distributions represent alternative predictions of the future, each of which has a probability $w_i$ of being the true one. For a visual depiction of these equations, see @fig-example-quantile-average-and-linear-pool below.
+For a set of PMF values, $\{f_i(x)|i \in 1, ..., N\}$, the linear pool can be equivalently calculated as $f_{LOP}(x) = \sum_{i = 1}^N w_i f_i(x)$. Statistically this amounts to a mixture of the probability distributions, and the resulting probability distribution can be interpreted as one where the constituent probability distributions represent alternative predictions of the future, each of which has a probability $w_i$ of being the true one. If individual samples (trajectories) from the predictive distributions are collected, the LOP is equivalent to collecting samples across all models and pooling them into a single distribution. For a visual depiction of these equations, see @fig-example-quantile-average-and-linear-pool below.
 
-The different averaging methods for probabilistic predictions yield different properties of the resulting ensemble distribution. For example, the variance of the linear pool is $\sigma^2_{LOP} = \sum_{i=1}^Nw_i\sigma_i^2 + \sum_{i=1}^Nw_i(\mu_i-\mu_{LOP})^2$, where $\mu_i$ is the mean and $\sigma^2_i$ is the variance of individual prediction $i$, and although there is no closed-form variance for the quantile average, the variance of the quantile average will always be less than or equal to that of the linear pool [@lichtendahl2013]. Both methods generate distributions with the same mean, $\mu_Q = \mu_{LOP} = \sum_{i=1}^Nw_i\mu_i$, which is the mean of individual model means [@lichtendahl2013]. The linear pool method preserves variation between individual models, whereas the quantile average cancels away this variation under the assumption it constitutes sampling error [@howerton2023].
-
-## Model implementation details {#sec-implementation}
-
-To understand how these methods are implemented in [hubEnsembles]{.pkg}, we first must define the conventions employed by the hubverse and its packages for representing and working with model predictions. We begin with a short overview of concepts and conventions needed to utilize the [hubEnsembles]{.pkg} package, supplemented by example predictions provided by the hubverse, then explain the implementation of the two ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`.
-
-### Hubverse terminology and conventions
-
-A central concept in the hubverse effort is "model output". Model output is a specially formatted tabular representation of predictions. Each row represents a single, unique prediction with each column providing information about what is being predicted, its scope, and its value. Per hubverse convention, each column serves one of three purposes: (i) denote which model has produced the prediction (called the "model ID"), (ii) provide details about what is being predicted (called the "task IDs"), or (iii) specify the prediction itself and how it is represented (called the "model output representation") [@hubverse_docs].
-
-Predictions are assumed to be generated by distinct models, typically developed and run by a modeling team of one or more individuals. Each model should have a unique identifier that is stored in the `model_id` column. Then, the details of the outcome being predicted can be stored in a series of task ID columns, the second type of column. These task ID columns may also include additional information, such as any conditions or assumptions that were used to generate the predictions [@hubverse_docs]. For example, short-term forecasts of incident influenza hospitalizations in the US at different locations and amounts of time in the future might represent this information using a `target` column with the value "wk inc flu hosp", a `location` column identifying the location being predicted (not shown), a `reference_date` column with the "starting point" of the forecasts (not shown), and a `horizon` column with the number of steps ahead that the forecast is predicting relative to the `reference_date` (@tbl-example-forecasts). All these variables make up the task ID columns.
-
-```{r example-forecasts, echo=FALSE}
-#| label: tbl-example-forecasts
-#| tbl-cap: "Example of forecasts for incident influenza hospitalizations,
-#| formatted according to hubverse standards. Quantile predictions for the
-#| median and 50% prediction intervals from a single model are shown for four
-#| distinct horizons. The `location` and `reference_date` columns have been
-#| omitted for brevity; all forecasts in this example were made on 2022-12-17
-#| for Massachusetts. These predictions are a modified subset of the
-#| `forecast_outputs` data provided by the [hubExamples]{.pkg} package."
-
-abbr_fc_col <- formatted_fc_col <- c("model_id", "target", "horizon", "output_type", "output_type_id", "value")
-for (i in 1: length(abbr_fc_col)) formatted_fc_col[i] <- paste0("`", abbr_fc_col[i], "`")
-
-hubExamples::forecast_outputs |>
-  dplyr::filter(
-    model_id == "MOBS-GLEAM_FLUH", 
-    location == "25", 
-    reference_date == "2022-12-17",
-    output_type == "quantile",
-    output_type_id %in% c(0.25, 0.5, 0.75)
-  ) |>
-  dplyr::mutate(value=round(value, 2), 
-                model_id = "model-X") |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  dplyr::arrange(horizon) |>
-  knitr::kable(col.names = formatted_fc_col)
-```
-
-Alternatively, longer-term scenario projections may require different task ID columns. For example, projections of incident COVID-19 cases in the US at different locations, amounts of time in the future, and under different assumed conditions may use a `target` column of "inc case", a `location` column specifying the location being predicted (not shown), an `origin_date` column specifying the date on which the projections were made (not shown), a `horizon` column describing the number of steps ahead that the projection is predicting relative to the `origin_date`, and a `scenario_id` column denoting the future conditions that were modeled and are projected to result in the specified number of incident cases (@tbl-example-scenarios). Different modeling efforts may use different sets of task ID columns and values to specify their prediction goals, or may simply choose distinct names to represent the same concept (e.g., `reference_date` versus `origin_date` for a date task ID). Additional examples of task ID variables are available on the hubverse documentation website [@hubverse_docs].
-
-\newpage
-
-```{r example-scenarios, echo=FALSE}
-#| label: tbl-example-scenarios
-#| tbl-cap: "Example of scenario projections for incident COVID-19 cases,
-#| formatted according to hubverse standards. Quantile predictions for the
-#| median and 50% prediction intervals from a single model are shown for four
-#| distinct scenarios. The `location` and `origin_date` columns have been
-#| omitted for brevity; all forecasts in this example were made on 2021-03-07
-#| for the US. These predictions are a modified subset of the `scenario_outputs`
-#| data provided by the [hubExamples]{.pkg} package."
-
-abbr_scn_col <- formatted_scn_col <- c("model_id", "target", "horizon", "scenario_id", "output_type", "output_type_id", "value")
-for (i in 1: length(abbr_scn_col)) formatted_scn_col[i] <- paste0("`", abbr_scn_col[i], "`")
-
-hubExamples::scenario_outputs |>
-  dplyr::filter(
-    model_id == "HUBuni-simexamp", 
-    location == "US", 
-    horizon == "26", 
-    output_type_id %in% c(0.25, 0.5, 0.75)
-  ) |>
-  dplyr::select(all_of(abbr_scn_col)) |>
-  dplyr::mutate(model_id = "model-Y", 
-                scenario_id = substr(scenario_id,1,1)) |>
-  knitr::kable(col.names = formatted_scn_col)
-```
-
-The third group of columns in model output specify the model predictions and details about how the predictions are represented. This "model output representation" includes the predicted values along with metadata that specifies how the predictions are conveyed and always consists of the same three columns: (1) `output_type`, (2) `output_type_id`, and (3) `value`. The `output_type` column defines how the prediction is represented and may be one of `"mean"` or `"median"` for point predictions, or `"quantile"`, `"cdf"`, `"pmf"`, or `"sample"` for probabilistic predictions. (The sample output type is not yet directly supported by the [hubEnsembles]{.pkg} package and should be converted to another output type before computing an ensemble.) The `output_type_id` provides additional identifying information for a prediction and is specific to the particular `output_type` (see @tbl-model-output-rep). For quantile predictions, the `output_type_id` is a numeric value between 0 and 1 specifying the cumulative probability associated with the quantile prediction. In the notation we defined above, the `output_type_id` corresponds to $\theta$ and the `value` is the quantile prediction $F^{-1}(\theta)$. For CDF or PMF predictions, the `output_type_id` is the target variable value $x$ at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the `value` column contains the predicted $F(x)$ or $f(x)$, respectively. Requirements for the values of the `output_type_id` and `value` columns associated with each valid output type are summarized in @tbl-model-output-rep.
-
-This representation of predictive model output is codified by the `model_out_tbl` S3 class in the [hubUtils]{.pkg} package, one of the foundational hubverse packages. Although this S3 class is required for all [hubEnsembles]{.pkg} functions, model predictions in other formats can easily be transformed using the `as_model_out_tbl()` function from [hubUtils]{.pkg}. An example of this transformation is provided in @sec-case-study.
-
-| `output_type` | `output_type_id`                                                                            | `value`                                                                                                                                                       |
-|:-----------------|:----------------------|:------------------------------|
-| `mean`        | NA (not used for mean predictions)                                                          | Numeric: The mean of the predictive distribution                                                                                                              |
-| `median`      | NA (not used for median predictions)                                                        | Numeric: The median of the predictive distribution                                                                                                            |
-| `quantile`    | Numeric between 0.0 and 1.0: A quantile level                                               | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
-| `cdf`         | String or numeric naming a possible value of the target variable | Numeric between 0.0 and 1.0: The cumulative probability of the predictive distribution at the value of the outcome variable specified by the `output_type_id` |
-| `pmf`         | String naming a possible category of a discrete outcome variable                            | Numeric between 0.0 and 1.0: The probability mass of the predictive distribution when evaluated at a specified level of a discrete outcome variable           |
-| `sample`*      | Integer or string specifying the sample index                                               | Numeric: A sample from the predictive distribution                                                                                                            |
-
-: A table summarizing how the model output representation columns are used for predictions of different output types. *Sample output types are not yet supported by the [hubEnsembles]{.pkg} package. Adapted from <https://hubverse.io/en/latest/user-guide/model-output.html#formats-of-model-output> {#tbl-model-output-rep}
-
-### Ensemble functions in hubEnsembles {#sec-ens-fns}
-
-The [hubEnsembles]{.pkg} package includes two functions that perform ensemble calculations: `simple_ensemble()`, which applies some function to each model prediction, and `linear_pool()`, which computes an ensemble using the linear opinion pool method. In the following sections, we outline the implementation details for each function and how these implementations correspond to the statistical ensembling methods described in @sec-defs. A short description of the calculation performed by each function is summarized by output type in @tbl-fns-by-output-type.
-
-#### Simple ensemble {#sec-simple-ensemble}
-
-The `simple_ensemble()` function directly computes an ensemble from component model outputs by combining them via some function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type).
-
-| `output_type` | `simple_ensemble(..., agg_fun=mean)`                                                          | `linear_pool()`                                                                                                                                                          |
-|------------------|---------------------------|---------------------------|
-| `mean`        | mean of individual model means                                                                | mean of individual model means                                                                                                                                           |
-| `median`      | mean of individual model medians                                                              | NA                                                                                                                                                                       |
-| `quantile`    | mean of individual model target variable values at each quantile level, $F^{-1}_Q(\theta)$    | quantile of the distribution obtained by computing the mean of estimated individual model cumulative probabilities at each target variable value, $F^{-1}_{LOP}(\theta)$ |
-| `cdf`         | mean of individual model cumulative probabilities at each target variable value, $F_{LOP}(x)$ | mean of individual model cumulative probabilities at each target variable value, $F_{LOP}(x)$                                                                            |
-| `pmf`         | mean of individual model bin or category probabilities at each target variable value, $f_{LOP}(x)$        | mean of individual model bin or category probabilities at each target variable value, $f_{LOP}(x)$                                                                                   |
-
-: Summary of ensemble function calculations for each output type. The ensemble function determines the operation that is performed, and in the case of probabilistic output types (quantile, CDF, PMF), this also determines what ensemble distribution is generated (quantile average, $F_{Q}^{-1}(\theta)$, or linear pool, $F_{LOP}(x)$). The ensembled predictions are returned in the same output type as the inputs. Thus, the output type determines how the resulting ensemble distribution is summarized (as a quantile, $F^{-1}(\theta)$, cumulative probability, $F(x)$, or probability $f(x)$). Estimating individual model cumulative probabilities is required to compute a `linear_pool()` for predictions of `quantile` output type; see @sec-linear-pool on the linear pool operation for details. In the case of `simple_ensemble()`, we show the calculations for the default case where `agg_fun = mean`; however, if another aggregation function is chosen (e.g., `agg_fun = median`), that calculation would be performed instead. For example, `simple_ensemble(..., agg_fun = median)` applied to predictions of mean output type would return the median of individual model means. {#tbl-fns-by-output-type}{tbl-colwidths="\[14,50,36\]"}
-
-By default, `simple_ensemble()` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble()` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble()` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear pool method.
-
-Any aggregation function $C$ may be specified by the user. For example, a median ensemble may also be created by specifying `median` as the aggregation function, or a custom function may be passed to the `agg_fun` argument to create other ensemble types. Similarly, model weights can be specified to create a weighted ensemble.
-
-#### Linear pool {#sec-linear-pool}
-
-The `linear_pool()` function implements the linear opinion pool (LOP) method for ensembling predictions. Currently, this function can be used to combine predictions with output types mean, quantile, CDF, and PMF. Unlike `simple_ensemble()`, this function handles its computation differently based on the output type. For the CDF, PMF, and mean output types, the linear pool method is equivalent to calling `simple_ensemble()` with a mean aggregation function (see @tbl-fns-by-output-type), since `simple_ensemble()` produces a linear pool prediction (an average of individual model cumulative or bin probabilities).
-
-However, implementation of LOP is less straightforward for the quantile output type. This is because LOP averages cumulative probabilities at each value of the target variable, but the predictions are given as quantiles (on the scale of the target variable) for fixed quantile levels. The value for these quantile predictions will generally differ between models; hence, we are typically not provided cumulative probabilities at the same values of the target variable for all component predictions. This lack of alignment between cumulative probabilities for the same target variable values impedes computation of LOP from quantile predictions and is illustrated in panel A of @fig-example-quantile-average-and-linear-pool.
-
-```{r example-quantile-average-and-linear-pool, echo=FALSE}
+```{r example-quantile-average-and-linear-pool}
 #| label: fig-example-quantile-average-and-linear-pool
-#| fig-cap: "(Panel A) Example of quantile output type predictions. Solid
-#| points show model output collected for seven fixed quantile levels
-#| ($\\theta$ = 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99) from two distributions
-#| ($N(100, 10)$ in purple and $N(120, 5)$ in green), with the underlying
-#| cumulative distribution functions (CDFs) shown with curves. The y-axis ticks
-#| show each of the fixed quantile levels. The associated values for each fixed
-#| quantile level do not align across distributions (vertical lines).
+#| echo: false
+#| fig-cap: "(Panel A) Example predictions from two distributions ($N(100, 10)$
+#| in purple and $N(120, 5)$ in green) shown as cumulative distribution
+#| functions (CDFs). To ease submission to a hub, the prediction can
+#| be summarized at a fixed number of points along the distribution. Here, the
+#| solid points show model output for seven fixed quantile levels ($\\theta$ =
+#| 0.01, 0.1, 0.3, 0.5, 0.7, 0.9, and 0.99). The y-axis ticks show each of the 
+#| fixed quantile levels. The associated values for each fixed quantile level
+#| are shown with vertical lines.
 #| (Panel B) Quantile average ensemble, which is calculated by
 #| averaging values for each fixed quantile level (represented by horizontal
 #| dashed gray lines). The distributions and corresponding model outputs from
@@ -244,11 +176,12 @@ However, implementation of LOP is less straightforward for the quantile output t
 #| (PDFs). (Panel C) Linear pool ensemble, which is calculated by averaging
 #| cumulative probabilities for each fixed value (represented by vertical
 #| dashed gray lines). The distributions and corresponding model outputs from
-#| panel A are re-plotted. To calculate the linear pool in this case, where
-#| model outputs are not defined for the same values, the model outputs are used
-#| to interpolate the full CDF for each distribution from which quantiles can be
-#| extracted for fixed values (shown with open circles). The black line shows
-#| the resulting linear pool average ensemble. Inset shows corresponding PDFs."
+#| panel A are re-plotted. To calculate the linear pool in this case, where model
+#| outputs are not defined for the same values (i.e., vertical lines in Panel A
+#| do not line up), the model outputs are used to interpolate the full CDF for each
+#| distribution from which predicted cumulative probabilities can be extracted for
+#| fixed values (shown with open circles). The black line shows the resulting linear
+#| pool average ensemble. Inset shows corresponding PDFs."
 #| fig-width: 10
 #| fig-height: 4
 
@@ -337,8 +270,9 @@ pa <- ggplot(
   coord_cartesian(xlim = c(75, 140)) +
   labs(
     x = "value", y = "cumulative probability (quantile)",
-    subtitle = "quantile predictions from two distributions"
+    subtitle = "two predictions to ensemble"
   ) +
+  facet_wrap(vars(distribution), ncol = 1) + 
   scale_color_manual(
     name = "distributions",
     labels = c("N(100, 10)", "N(120, 5)"),
@@ -351,6 +285,8 @@ pa <- ggplot(
   theme_bw() +
   theme(
     legend.position = "bottom",
+    strip.background = element_blank(),
+    strip.text = element_blank(),
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank()
   )
@@ -513,7 +449,7 @@ l2 <- cowplot::get_plot_component(pc, "guide-box", return_all = TRUE)[[3]]
 cowplot::plot_grid(
   cowplot::plot_grid(
     pa + theme(legend.position = "none"), pb_fin, pc_fin,
-    labels = LETTERS[1:3], nrow = 1, rel_widths = c(0.34, 0.33, 0.33)
+    labels = LETTERS[1:3], nrow = 1, rel_widths = c(0.3, 0.35, 0.35)
   ),
   cowplot::plot_grid(
     NULL, l, l2, NULL,
@@ -523,63 +459,142 @@ cowplot::plot_grid(
 )
 ```
 
-Given that LOP cannot be directly calculated from quantile predictions, we must first obtain an estimate of the CDF for each component distribution from the provided quantiles, combine the CDFs, then calculate the quantiles using the ensemble's CDF. We perform this calculation in three main steps, assisted by the [distfromq]{.pkg} package [@distfromq] for the first two:
+The different averaging methods for probabilistic predictions yield different properties of the resulting ensemble distribution. For example, the variance of the linear pool is $\sigma^2_{LOP} = \sum_{i=1}^Nw_i\sigma_i^2 + \sum_{i=1}^Nw_i(\mu_i-\mu_{LOP})^2$, where $\mu_i$ is the mean and $\sigma^2_i$ is the variance of individual prediction $i$, and although there is no closed-form variance for the quantile average, the variance of the quantile average will always be less than or equal to that of the linear pool. [@lichtendahl2013] Both methods generate distributions with the same mean, $\mu_Q = \mu_{LOP} = \sum_{i=1}^Nw_i\mu_i$, which is the mean of individual model means. [@lichtendahl2013] The linear pool method preserves variation between individual models, whereas the quantile average cancels away this variation under the assumption it constitutes sampling error. [@howerton2023]
+
+### Applications in public health and infectious disease outbreaks
+
+Multi-model ensembles have become the gold standard for forecasting and prediction efforts that support public health in real time. [@hollingsworth_learning_2017; @shea_harnessing_2020; @reich2022; @borchering_public_2023] One prominent domain is forecasting key characteristics of infectious disease outbreaks, including weekly disease incidence or healthcare demand over future weeks, disease burden for the entire season, and timing and magnitude of the outbreak peak. [@johansson2019; @reich_collaborative_2019; @cramer2022; @paireau_ensemble_2022; @holcomb_evaluation_2023] Projections of disease outcomes under multiple possible future scenarios have also been used to estimate intervention effectiveness to inform policy, [@borchering_impact_2023; @loo_us_2024; @jung_potential_2024] and it has been proposed to use short-term forecasts of disease incidence to inform vaccine efficacy trials. [@dean_ensemble_2020] Standard guidelines for reporting of prediction efforts in outbreak and public health settings have also been established. [@pollett_recommended_2021]
+
+Across a variety of pathogens and outbreak settings, multi-model ensembles have been shown to produce forecasts that are as good or better than the individual models that compose the ensemble. [@yamana_superensemble_2016; @johansson2019; @mcgowan2019; @reich_accuracy_2019; @cramer2022; @paireau_ensemble_2022; @howerton_evaluation_2023; @sherratt_predictive_2023] Notably, the ensemble does not always outperform the best model, but typically offers improved consistency and robustness over individual models. [@ray_prediction_2018; @oidtman_trade-offs_2021; @cramer2022; @sherratt_predictive_2023] However, in one instance, a baseline historical average of West Nile Virus cases in the US outperformed most model predictions, including the ensemble. [@holcomb_evaluation_2023]
+
+Examinations of ensemble methodology in infectious disease contexts suggest there is not one method that universally performs best. In short-term forecasting settings, a simple linear pool average of component predictions tends to produce prediction intervals that are too wide (i.e., suggesting outcomes are more uncertain than in reality); beta-transformation [@wattanachit_comparison_2023] and dynamic weighting [@mcandrew_adaptively_2021] have been suggested to mitigate this problem. A median quantile average has been shown to provide similar performance to a weighted mean in short-term forecasting challenges, while also offering robustness to changes in performance across individuals models, [@ray_comparing_2023] and was thus used as the primary ensemble for short-term forecasts of COVID-19. [@cramer2022; @sherratt_predictive_2023] For longer-term predictions of COVID-19, a trimmed LOP ensemble performed best, as models tended to be more overconfident in this setting. [@howerton_evaluation_2023] The number of models submitting real-time predictions has varied dramatically (from as few as four models for longer-term predictions of COVID-19 [@howerton_evaluation_2023] to more than 40 for short-term forecasts of COVID-19 [@cramer2022]). Research including applications across influenza and COVID-19 suggests that at least 3 models are needed, with diminishing returns for every model that is added. [@fox_optimizing_2024]
+
+The growing body of literature on multi-model ensembles in public health domains emphasizes the utility of these approaches to inform response in real time. Future research on optimizing ensemble performance for different targets and time horizons will further improve utility. Moreover, expanding the use of these methods to other pathogens and countries will enable further methodological development.
+
+::: {.callout-tip title="Keywords and definitions: Concepts in statistical forecasting"}
+-   *Ensemble*: the combination of outputs from multiple models into a single, aggregate prediction
+
+-   *Forecast*: a specific quantified prediction of an observable event or trend that has yet to be observed, conditional on data that has been observed up to a specified time.
+
+-   *Horizon*: time frame over which predictions are generated (e.g., 4 weeks ahead)
+
+-   *Linear opinion pool*: method for ensembling probabilistic predictions, which treats constituent probability distributions as alternative predictions of the future. Also called probability average.
+
+-   *Scenario projection*: estimates of future observations of future trends conditional on specific assumptions about a given scenario. Scenarios describe possible future conditions in terms of model parameters that might be varied, such as transmissibility, vaccine adoption, vaccine efficacy, the emergence of a new variant, etc.
+
+-   *Prediction*: estimate of current or future outcomes, typically generated from a model. Here, used to encapsulate a range of outcomes that could be modeled, encompassing short-term forecasts, scenario projections, and parameter estimates.
+
+-   *Point prediction*: a prediction represented by one single estimate, which generally represents a typical or common future outcome (e.g., a mean or median)
+
+-   *Probabilistic prediction*: a prediction that quantifies a probability distribution over future outcomes. This enables quantification of most likely outcomes and the risk of extreme events.
+
+-   *Model weighting*: a set of real numbers that defines the relative contribution of each constituent prediction in the ensemble (e.g., equal weighting or performance-based weighting).
+
+-   *Quantile average*: method for ensembling probabilistic predictions, which treats constituent probability distributions as uncertain estimates of a single true distribution. Also called Vincent average.
+
+-   *Quantile level/cumulative probability*: the $y$ value in a cumulative distribution function, representing the cumulative probability of a future value (e.g., 50% cumulative probability)
+
+-   *Value of the target variable/quantile*: the $x$ value in a cumulative distribution function, or the future values over which the probability distribution is defined (e.g., incident hospitalizations)
+:::
+
+## How to implement ensemble calculations {#sec-implementation}
+
+The methods described in @sec-defs are implemented via the `hubEnsembles` package in a flexible, easy-to-use framework. Importantly, `hubEnsembles` is situated within the broader hubverse software infrastructure, which provides data standards and conventions for representing and working with model predictions, [@hubverse_docs] including for example, collecting and manipulating predictions (`hubUtils`) as well as visualization (`hubVis`). In 2024-2025, the hubverse supported over a dozen collaborative modeling hubs used by public health agencies across the globe. We begin with a short overview of hubverse concepts and conventions that support the process of combining model predictions, supplemented by example predictions provided by the hubverse in `hubExamples`, then explain the implementation of the two primary ensembling functions included in the package, `simple_ensemble()` and `linear_pool()`. Box 2 provides a glossary of key hubverse terms and definitions for reference.
+
+### Terminology and data standards in the hubverse
+
+In the hubverse, predictions are always represented in a standardized tabular format called "model output", codified by the `model_out_tbl` S3 class in `hubUtils` (a package of basic utility functions). Each row represents a single, unique prediction while the columns provide information about what is being predicted, its scope, and value. A single model output object can store and organize many predictions while remaining easy to parse at a glance, which is particularly useful when collecting predictions from multiple models to combine into an ensemble. Any tabular predictions can be transformed into model output using the `as_model_out_tbl()` function from `hubUtils` (see @sec-case-study for an example).
+
+The `model_out_tbl` class is defined by four standard types of columns: (i) the model ID, which denotes which model has produced the prediction; (ii) the task IDs (also referred to as "task ID variables" or "task ID columns"), which provide details about what is being predicted; (iii) the model output representation, which specify the type of prediction and other identifying information; and (iv) the value of the prediction itself. While most of these columns are always required and have standardized column names, the task ID variables may vary according to the needs of the modeling hub or modeling task. [@hubverse_docs]
+
+@tbl-example-forecasts provides an example of model output that stores short-term forecasts of weekly influenza hospitalizations for different US states and territories. By reading across the table, we can see that these are quantile predictions (`output_type`) of the quartiles (output type ID: `otid`) from a single model (`model_id` of "team1-mod") for four distinct forecast horizons. Here, details about the prediction related to modeling task are represented by the task ID variables `loc` (location abbreviation), `ref_date` (reference date: the "starting point" of the forecasts), `h` (horizon: how many weeks into the future, relative to the `ref_date`), and `target` (what is being predicted).
+
+As mentioned previously, task ID variables are not fixed in name, number, or composition to incorporate flexibility in the `model_out_tbl` class. Different modeling efforts may use different sets of task ID columns with different values to define their prediction goals, or may simply choose distinct names to represent the same concept. For example, the date task column was named `ref_date` above but could easily be called `origin_date` or `forecast_date` instead. Some standard examples of task ID variables are available on the hubverse documentation website. [@hubverse_docs]
+
+The "model output representation" columns `output_type` and `output_type_id` contain metadata about how the predictions are conveyed. The hubverse data standards require that these columns are included in a `model_out_tbl`. The `output_type` column defines how a prediction is represented and may be `"mean"` or `"median"` for point predictions, or one of `"quantile"`, `"cdf"`, `"pmf"`, or `"sample"` for probabilistic predictions. The `output_type_id` provides additional identifying information for prediction and is specific to the particular `output_type` (see @tbl-model-output-rep). The last column, `value`, always contains the numeric value of the prediction, regardless of output type. Requirements for the values of the `output_type_id` and `value` columns associated with each valid output type are summarized in @tbl-model-output-rep.
+
+In addition to these six output types mentioned above, other types of predictions not explicitly defined in the hubverse may be represented within model output. For example, trajectories may be encoded using the "sample" output type while predictions of binary events can be captured using the "pmf" output type.
+
+All output types can summarize predictions from univariate marginal distributions, e.g. for a single location and time point. The sample output type---which represents randomly drawn values from a probabilistic predictive distribution---is unique in that it can additionally represent predictions from joint predictive distributions. This means that samples may encode dependence across combinations of multiple values for task ID variables, for example across multiple locations and/or time points. One common example is a trajectory that represents a single model run across all time time points, and in such cases collecting predictions as samples can offer benefits [@sherratt_characterising_2024]. In this case, rows of sample predictions with the same index (specified by the `output_type_id`) from a particular model may be assumed to correspond to a single sample from a joint distribution.
+
+For quantile predictions, the `output_type_id` is a numeric value between 0 and 1 specifying the cumulative probability associated with the quantile prediction. In the notation we defined in @sec-defs, the `output_type_id` corresponds to $\theta$ and the `value` is the quantile prediction $F^{-1}(\theta)$. For CDF or PMF predictions, the `output_type_id` is the target variable value $x$ at which the cumulative distribution function or probability mass function for the predictive distribution should be evaluated, and the `value` column contains the predicted $F(x)$ or $f(x)$, respectively.
+
+The hubverse also provides standards for target data (i.e., observed data corresponding to each prediction target), which can be stored in one of two formats: target time series or oracle output. The two tabular representations differ in terms of columns and purposes. Target time series data is a more traditional representation of the observed "truth" in a time series format with minimal columns; this format usually serves as calibration data for generating forecasts or might be used for visualization of predictions. Oracle output, on the other hand, represents prediction that an "oracle model" would have made had it known the observed values in advance. This format resembles model output data and is suited for evaluating forecasts. Some examples of target data are given in @sec-simple-ex.
+
+### Ensemble functions in hubEnsembles {#sec-ens-fns}
+
+The `hubEnsembles` package contains two functions that perform ensemble calculations: `simple_ensemble()`, which applies some function to each model prediction, and `linear_pool()`, which computes an ensemble using the linear opinion pool method. In the following sections, we outline the implementation details for each function and how these implementations correspond to the statistical ensembling methods described in @sec-defs. A short description of the calculation performed by each function is summarized by output type in @tbl-fns-by-output-type.
+
+::: {.callout-tip title="Keywords and definitions: Terminology from the hubverse"}
+
+-   *Modeling Task*: a definition of the goals of a modeling effort, possibly including conditions, assumptions, and targets (collectively known as task ID variables). Some tasks may be fixed across rounds, such as for forecast hubs that regularly solicit predictions for a set time horizon in the near-term future. Other tasks may be more variable; for example, those in scenario hubs that model hypothetical futures with different assumptions for different modeling rounds.
+
+-   *Compound modeling task*: a single, modeled unit with a multivariate outcome of interest, such as an epidemic trajectory across multiple weeks
+
+-   *Model output*: a dataset containing predictions of modeling tasks in tabular format generated in response to some modeling task for a specific round. A model might result from a single team’s response to the task or from an ensemble of results representing the outcomes of multiple efforts.
+
+-   *Output type*: a classification of model output that is supported by the hubverse (i.e., the types of predictions that can be processed). See @tbl-model-output-rep for definitions of each.
+
+-   *Round*: a time period for which a set of specific model outputs is solicited. Rounds define the “cadence” of submission for a modeling hub. For example, some hubs might accept daily submissions, where each day is considered a different round. Other hubs might have one round every month, with a submission period that may be open for multiple days.
+
+-   *Task ID variables*: a collection of conditions, assumptions, and potentially targets that are used to parameterize a model task. These represent columns in the model output. A more detailed explanation of task ID variables can be found in the documentation.
+
+-   *Target*: an outcome of interest for a modeling hub (e.g., "incident case counts"). Targets typically (and sometimes implicitly) refer to a value of an observable variable in a given window of time, a given location, and possibly other stratifications (such as age group).
+:::
+
+
+
+#### Simple ensemble {#sec-simple-ensemble}
+
+The `simple_ensemble()` function directly computes an ensemble from component model outputs by combining them via an aggregation function ($C$) within each unique combination of task ID variables, output types, and output type IDs. This function can be used to summarize predictions of output types mean, median, quantile, CDF, and PMF. Samples must be converted to a different output type (e.g., summarized into a CDF) in order to be ensembled using this function, as there is no meaningful equivalent for individual predictive draws. The mechanics of the ensemble calculations are the same for each of the output types, though the resulting statistical ensembling method differs for different output types (@tbl-fns-by-output-type).
+
+By default, `simple_ensemble()` uses the mean for the aggregation function $C$ and equal weights for all models. For point predictions with a mean or median output type, the resulting ensemble prediction is an equally weighted average of the individual models' predictions. For probabilistic predictions in a quantile format, by default `simple_ensemble()` calculates an equally weighted average of individual model target variable values at each quantile level, which is equivalent to a quantile average. For model outputs in a CDF or PMF format, by default `simple_ensemble()` computes an equally weighted average of individual model (cumulative or bin) probabilities at each target variable value, which is equivalent to the linear pool method.
+
+Any aggregation function $C$ may be specified by the user. For example, a median ensemble may also be created by specifying `median` as the aggregation function, or a custom function may be passed to the `agg_fun` argument to create other ensemble types. Similarly, model weights can be specified to create a weighted ensemble.
+
+#### Linear pool {#sec-linear-pool}
+
+The `linear_pool()` function implements the linear opinion pool (LOP) method for ensembling predictions. This function can be used to combine predictions with output types mean, quantile, CDF, PMF, and sample. Since the LOP is an average of probabilities, it does not support ensembles of medians. Unlike `simple_ensemble()`, this function handles its computation differently based on the output type. For the CDF, PMF, and mean output types, the linear pool method is equivalent to calling `simple_ensemble()` with a mean aggregation function (see @tbl-fns-by-output-type), since `simple_ensemble()` produces a linear pool prediction (an average of individual model cumulative or bin probabilities).
+
+##### Linear pool of samples
+
+For the sample output type, the LOP method collects a stratified draw of the individual models' predictions and pools them into a single ensemble distribution. By default, all samples are used to create this ensemble. Additionally, only equally-weighted linear pools of samples are supported by the `hubEnsembles` package during this time. Samples may also be converted to another common output type such as quantiles or bin probabilities (as the main scientific interest often concerns a summary of samples), and other ensemble methods may then be utilized for that output type.
+
+When requesting a subsetted ensemble of samples, it becomes important to distinguish between marginal and joint predictive distributions so that the dependence structure can be passed to `linear_pool()`. We introduce the concepts of the compound task ID set and derived task ID variables here, as they help identify the underpinnings the dependence structure of the ensembled predictive distributions.
+
+As stated in the previous section, the sample output type is unique in that it can represent predictions from both marginal distributions and joint distributions. Hence, samples can encode dependence across combinations of multiple values for task ID variables, e.g. across multiple locations and/or time points. In this case, sample predictions with the same index (output type ID) from a given model may be assumed to correspond to a single trajectory.
+
+The compound task id set consists of independent task id variables that, together, identify a "compound modeling task" corresponding to a single, modeled unit with a multivariate outcome of interest. Samples summarizing a marginal distribution will generally have a compound task ID set composed of all the task ID variables (except for derived task IDs). Conversely, samples summarizing a joint distribution will have a compound task ID set only containing task ID variables for which the joint distribution does not capture dependencies. For example, if a joint distribution is estimated across multiple forecast horizons separately for each location (i.e., horizon-based trajectories), the task ID "location" would be included in the compound task ID set but "horizon" would not.
+
+Derived task IDs are another subgroup of task ID variables that must be specified in a call to `linear_pool()` for a subsetted sample ensemble; their values are derived from a combination of the values from other task ID variables (which may or may not be part of the compound task ID set). A common example of a derived task ID variable is the target date for a prediction, which is a deterministic function of the reference date of the prediction and the prediction horizon. Generally, the derived task IDs won't be included in the compound task ID set because they are not needed to identify a single modeled unit for an outcome of interest, *unless* all of the task ID variables their values depend on are already a part of the compound task ID set.
+
+Not all model outputs will contain derived task IDs, in which case the argument may be set to `NULL` (the default value). However, it is important to provide the `linear_pool()` function with any derived task IDs when calculating an ensemble of (subsetted) samples, as they are used to check that the provided compound task ID set is compatible with the input predictions and the resulting LOP is valid.
+
+##### Linear pool of quantiles
+
+For the quantile output type, calculation of LOP requires a few extra steps. This is because LOP averages cumulative probabilities at each value of the target variable, but the predictions are given as quantiles (on the scale of the target variable) for fixed quantile levels. The value for these quantile predictions will generally differ between models; hence, we are typically not provided cumulative probabilities at the same values of the target variable for all component predictions. This lack of alignment between cumulative probabilities for the same target variable values impedes computation of LOP from quantile predictions and is illustrated in panel A of @fig-example-quantile-average-and-linear-pool.
+
+Given that LOP cannot be directly calculated from quantile predictions, we must first obtain an estimate of the CDF for each component distribution from the provided quantiles, combine the CDFs, then calculate the quantiles using the ensemble's CDF. We perform this calculation in three main steps, assisted by the `distfromq` package [@distfromq] for the first two:
 
 1.  Interpolate and extrapolate from the provided quantiles for each component model to obtain an estimate of the CDF of that particular distribution.
-2.  Draw samples from each component model distribution. To reduce Monte Carlo variability, we use quasi-random samples corresponding to quantiles of the estimated distribution [@niederreiter1992quasirandom].
+2.  Draw samples from each component model distribution. To reduce Monte Carlo variability, we use quasi-random samples corresponding to quantiles of the estimated distribution. [@niederreiter1992quasirandom]
 3.  Pool the samples from all component models and extract the desired quantiles.
 
-For step 1, functionality in the [distfromq]{.pkg} package uses a monotonic cubic spline for interpolation on the interior of the provided quantiles. The user may choose one of several distributions to perform extrapolation of the CDF tails. These include normal, lognormal, and cauchy distributions, with "normal" set as the default. A location-scale parameterization is used, with separate location and scale parameters chosen in the lower and upper tails so as to match the two most extreme quantiles. The sampling process described in steps 2 and 3 approximates the linear pool calculation described in @sec-defs.
+For step 1, functionality in the `distfromq` package uses a monotonic cubic spline for interpolation on the interior of the provided quantiles. The user may choose one of several distributions to perform extrapolation of the CDF tails. These include normal, lognormal, and Cauchy distributions, with "normal" set as the default. A location-scale parameterization is used, with separate location and scale parameters chosen in the lower and upper tails so as to match the two most extreme quantiles. The sampling process described in steps 2 and 3 approximates the linear pool calculation described in @sec-defs.
 
-## Basic demonstration of functionality {#sec-simple-ex}
+## A simple demonstration of multi-model ensembles {#sec-simple-ex}
 
-In this section, we provide a simple example to illustrate the two main functions in [hubEnsembles]{.pkg}, `simple_ensemble()` and `linear_pool()`.
+In this section, we provide a simple example to illustrate how to compute a multi-model ensemble and compare the methods supported by the functions of `hubEnsembles`. In doing so, we use a number of other packages available through the hubverse, including to access example data and to visualize outputs. See the Code Availability Statement for details about implementation and required package versions.
 
 ### Example data: a forecast hub
 
-```{r, cols.print=12}
-#| label: tbl-example-model-outputs
-#| echo: false
-#| tbl-cap: "Example model output for forecasts of incident influenza
-#| hospitalizations. A subset of example model output is shown: 1-week ahead
-#| quantile forecasts made on 2022-12-17 for Massachusetts from three distinct
-#| models; only the median and 5th, 25th, 75th and 95th quantiles are displayed. 
-#| The `location`, `reference_date` and `target_end_date`
-#| columns have been omitted for brevity. This example data is
-#| provided in the [hubExamples]{.pkg} package."
-hubExamples::forecast_outputs |>
-  dplyr::filter(
-    output_type %in% c("quantile", "median"),
-    output_type_id %in% c(0.05, 0.25, 0.75, 0.75, 0.95, NA),
-    reference_date == "2022-12-17",
-    location == "25",
-    horizon == 1
-  ) |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  knitr::kable(col.names = formatted_fc_col)
-```
+The first step in generating a multi-model ensemble is to gather the predictions we wish to combine. In this example, we use some short-term forecasts already formatted as model output data from the `hubExamples` package. These model outputs are from a larger example modeling hub, created using a modified subset of predictions from the FluSight Forecasting challenge (discussed in further detail in @sec-case-study). In addition to toy model output data, the example hub also includes observed data in the form of target time series data and oracle output.
 
-We will use an example hub provided by the hubverse to demonstrate the functionality of the [hubEnsembles]{.pkg} package [@hubverse_docs]. This hub was generated using modified forecasts from the FluSight forecasting challenge (discussed in further detail in @sec-case-study). The example hub includes both example model output data and target data (sometimes known as "truth" data), which are stored in the [hubExamples]{.pkg} package as data objects named `forecast_outputs` and `forecast_target_ts`. Note that this model outputs data contain only a small subset of predictions for select dates, locations, and output type IDs, far fewer than an actual modeling hub would typically collect.
+The model output is stored in a data object named `forecast_outputs` and contains mean, median, quantile, and sample forecasts of future incident influenza hospitalizations, as well as CDF and PMF forecasts of hospitalization intensity. Each prediction is described by five task ID variables: the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (`target_end_date`, a combination of the date the forecast was made and the forecast horizon), and the forecast target (`target`). We begin by examining the predictions for weekly incident influenza hospitalizations, displaying a subset of each output type in @tbl-example-model-outputs.
 
-The model output data includes quantile, mean and median forecasts of future incident influenza hospitalizations and PMF forecasts of hospitalization intensity. Each forecast is made for five task ID variables, including the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (a combination of the date the forecast was made and the forecast horizon, `target_end_date`), and the forecast target (`target`). @tbl-example-model-outputs provides an example set of quantile forecasts included in this example model output. In @tbl-example-model-outputs, we show only the median, the 50%, and 90% prediction intervals, although other intervals and mean forecasts are included in the example model output data.
+While the `hubExamples` package provides both formats of target data, we focus on the target time series data (@tbl-example-target-time-series-data) which is convenient for making forecasts and plotting. The `forecast_target_ts` data object provides observed incident influenza hospitalizations in a given week for given location using columns `observation`, `date`, and `location`. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for this time series representation of the target data, and are thus not included as columns.
 
-The [hubExamples]{.pkg} package also provides corresponding target data (@tbl-example-target-data) that contains incident influenza hospitalizations (`observation`) in a given week (`date`) for a given location (`location`). This target data can be used as calibration data for generating forecasts or for evaluating the forecasts post hoc. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for the target data.
-
-```{r, cols.print=13}
-#| label: tbl-example-target-data
-#| echo: false
-#| tbl-cap: "Example target data for incident influenza hospitalizations. This
-#| table includes target data from 2022-11-01 and 2023-02-01. The target data
-#| is provided in the [hubExamples]{.pkg} package."
-hubExamples::forecast_target_ts |>
-  dplyr::filter(
-    location == "25",
-    date >= "2022-11-01", date <= "2023-02-01"
-  ) |>
-  knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
-```
-
-We can plot these forecasts and the target data using the `plot_step_ahead_model_output()` function from [hubVis]{.pkg}, another package for visualizing model outputs from the hubverse suite (@fig-plot-ex-mods). We subset the model output data and the target data to the location and time horizons we are interested in.
+We can plot the quantile and median forecasts and the target time series data (@fig-plot-ex-mods) shown above using the `plot_step_ahead_model_output()` function from `hubVis`, another package in the hubverse suite for visualizing model outputs. We subset the model output data and the target data to the location and time horizons we are interested in.
 
 ```{r plot-ex-mods}
 #| label: fig-plot-ex-mods
@@ -589,59 +604,67 @@ We can plot these forecasts and the target data using the `plot_step_ahead_model
 #| Forecasts are represented by a median (line), 50% and 90% prediction
 #| intervals (ribbons). Gray points represent observed incident hospitalizations."
 #| fig-width: 8
-#| fig-height: 4
+#| fig-height: 3
 model_outputs_plot <- hubExamples::forecast_outputs |>
-    hubUtils::as_model_out_tbl() |>
-    dplyr::filter(
-      location == "25",
-      output_type %in% c("median", "mean", "quantile"),
-      reference_date == "2022-12-17"
-    )
+  hubUtils::as_model_out_tbl() |>
+  dplyr::filter(
+    location == "25",
+    output_type %in% c("median", "quantile"),
+    reference_date == "2022-12-17"
+  ) |>
+  dplyr::mutate(output_type_id = as.double(output_type_id))
 target_data_plot <- hubExamples::forecast_target_ts |>
-    dplyr::filter(
-      location == "25",
-      date >= "2022-11-01", date <= "2023-02-01"
-    )
+  dplyr::filter(
+    location == "25",
+    date >= "2022-11-01", date <= "2023-02-01"
+  )
 
 hubVis::plot_step_ahead_model_output(
-    model_out_tbl = model_outputs_plot,
-    target_data = target_data_plot,
-    facet = "model_id",
-    facet_nrow = 1,
-    interactive = FALSE,
-    intervals = c(0.5, 0.9),
-    show_legend = FALSE,
-    use_median_as_point = TRUE,
-    x_col_name = "target_end_date", 
-    x_target_col_name = "date"
-  ) +
-    theme_bw() +
-    labs(y = "incident hospitalizations")
+  model_out_tbl = model_outputs_plot,
+  target_data = target_data_plot,
+  facet = "model_id",
+  facet_nrow = 1,
+  interactive = FALSE,
+  intervals = c(0.5, 0.9),
+  show_legend = FALSE,
+  use_median_as_point = TRUE,
+  x_col_name = "target_end_date"
+) +
+  theme_bw() +
+  labs(y = "incident hospitalizations")
 ```
 
-Next, we examine the PMF target in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These hospitalization intensity categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations, other than the target, which is "wk flu hosp rate category" for these categorical predictions. 
+Some hubs request modeling teams submit samples instead of, or in addition to, predicted distributions (@fig-plot-ex-mod-samps). Samples can be useful for capturing additional correlations across targets that are difficult to represent when predictions are summarized using quantile or CDF output types. In this example, separate probabilistic predictions of incident influenza hospitalizations in each week cannot capture the shape of possible epidemic trajectories, but multivariate samples for the trajectory of disease incidence across weeks can. We filter to the sample output type and plot. These samples are representative draws from the distributions plotted in @fig-plot-ex-mods.
 
-```{r, cols.print=9}
-#| label: tbl-example-forecasts-pmf
-#| echo: false
-#| tbl-cap: "Example PMF model output for forecasts of incident influenza
-#| hospitalization intensity. A subset of predictions are shown: 1-week
-#| ahead PMF forecasts made on 2022-12-17 for Massachusetts from three distinct
-#| models. We round the forecasted probability (in the `value` column) to two
-#| digits. The `location`, `reference_date` and `target_end_date` columns have
-#| been omitted for brevity. This example data is provided in the
-#| [hubExamples]{.pkg} package."
-hubExamples::forecast_outputs |>
+```{r}
+#| echo: FALSE
+#| label: fig-plot-ex-mod-samps
+#| prompt: true
+#| fig-cap: "One example set of sample forecasts for weekly incident influenza
+#| hospitalizations in Massachusetts from each of three models (panels).
+#| Each sample is represented by a single line. Gray points represent observed incident hospitalizations."
+#| fig-width: 8
+#| fig-height: 3
+plot_samples <- hubExamples::forecast_outputs |>
   dplyr::filter(
-    output_type %in% c("pmf"),
+    output_type == "sample", 
     reference_date == "2022-12-17",
-    location == "25",
-    horizon == 1
-  ) |>
-  dplyr::mutate(value = round(value, 2)) |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  knitr::kable(col.names = formatted_fc_col)
+    location == "25"
+  )
+  
+ggplot(data = plot_samples) + 
+  geom_point(data = target_data_plot, aes(x = date, y = observation),color = "darkgray") +
+  geom_line(data = target_data_plot, aes(x = date, y = observation), color = "darkgray") +
+  geom_line(aes(x = target_end_date, y = value, group = output_type_id, color = model_id), 
+            alpha = 0.3) + 
+  facet_wrap(vars(model_id)) + 
+  labs(x = "Date", y = "incident hospitalizations") +
+  scale_color_brewer(palette = "Set2") +
+  theme_bw() + 
+  theme(legend.position = "none")
 ```
+
+Next, we examine the PMF forecasts for hospitalization intensity in the example model output data. For this target, teams forecasted the probability that hospitalization intensity will be "low", "moderate", "high", or "very high". These four categories are determined by thresholds for weekly hospital admissions per 100,000 population. In other words, "low" hospitalization intensity in a given week means few incident influenza hospitalizations per 100,000 population are predicted, whereas "very high" hospitalization intensity means many hospitalizations per 100,000 population are predicted. These forecasts are made for the same task ID variables as the `quantile` forecasts of incident hospitalizations except for the target, which is "wk flu hosp rate category" for these categorical predictions.
 
 We show a representative example of the hospitalization intensity category forecasts in @tbl-example-forecasts-pmf. Because these forecasts are PMF output type, the `output_type_id` column specifies the bin of hospitalization intensity and the `value` column provides the forecasted probability of hospitalization incidence being in that category. Values sum to 1 across bins. For the MOBS-GLEAM_FLUH and PSI-DICE models, incidence is forecasted to decrease over the horizon (@fig-plot-ex-mods), and correspondingly, there is lower probability of "high" and "very high" hospitalization intensity for later horizons (@fig-plot-ex-mods-pmf).
 
@@ -658,12 +681,13 @@ We show a representative example of the hospitalization intensity category forec
 model_outputs_plot_pmf <- hubExamples::forecast_outputs |>
   dplyr::filter(
     location == "25",
-    output_type %in% c("pmf"),
+    output_type == "pmf",
     reference_date == "2022-12-17"
   ) |>
   # Reorder bin names to be in correct order
   dplyr::mutate(
-    output_type_id = factor(output_type_id,
+    output_type_id = factor(
+      output_type_id,
       levels = c("low", "moderate", "high", "very high")
     )
   )
@@ -674,7 +698,6 @@ ggplot(
 ) +
   geom_tile() + 
   facet_grid(cols = vars(model_id)) +
-  scale_alpha_discrete(name = "probability") +
   scale_fill_distiller(palette = "YlOrBr", direction = 0, name = "bin probability") +
   scale_x_continuous(expand = c(0, 0), name = "horizon (weeks)") +
   scale_y_discrete(expand = c(0, 0), name = "hospitalization intensity") +
@@ -686,50 +709,20 @@ ggplot(
   )
 ```
 
-\newpage
-
 ### Creating ensembles with simple_ensemble
 
-Using the default options for `simple_ensemble()`, we can generate an equally weighted mean ensemble for each unique combination of values for the task ID variables, the `output_type` and the `output_type_id`. Recall that this function uses different ensemble methods for different output types: for the quantile output type in our example data, the resulting ensemble is a quantile average, while for the PMF output type, the ensemble is a linear pool.
+Using the default options for `simple_ensemble()`, we can generate an equally weighted mean ensemble for each unique combination of values for the task ID variables, the `output_type` and the `output_type_id`. Recall that this function corresponds to different statistical ensemble methods for different output types: for the quantile output type in our example data, the resulting ensemble is a quantile average, while for the CDF and PMF output types, the ensemble is a linear pool (@tbl-fns-by-output-type).
 
 ```{r}
 #| prompt: true
 mean_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "sample") |>
-    hubEnsembles::simple_ensemble(
-      model_id = "simple-ensemble-mean"
-    )
+  dplyr::filter(output_type != "sample") |>
+  hubEnsembles::simple_ensemble(
+    model_id = "simple-ensemble-mean"
+  )
 ```
 
 The resulting model output has the same structure as the original model output data (@tbl-mean-ensemble), with columns for model ID, task ID variables, output type, output type ID, and value. We also use `model_id = "simple-ensemble-mean"` to change the name of this ensemble in the resulting model output; if not specified, the default is "hub-ensemble".
-
-\newpage
-
-```{r, rows.print = 9}
-#| label: tbl-mean-ensemble
-#| echo: false
-#| tbl-cap: "Mean ensemble model output. The values in the `model_id` column are
-#| set by the argument `simple_ensemble(..., model_id)`. Results are generated 
-#| for all output types, but only a subset are shown: 1-week ahead forecasts made 
-#| on 2022-12-17 for Massachusetts, with only the median, 25th and 75th quantiles
-#| for the quantile output type and all bins for the PMF output type. The 
-#| `location`, `reference_date` and `target_end_date` columns have been omitted 
-#| for brevity, and the `value` column is rounded to two digits."
-mean_ens |>
-  dplyr::filter(
-    output_type %in% c("quantile", "median", "pmf"),
-    output_type_id %in% c(
-      0.025, 0.25, 0.75, 0.975, NA,
-      "low", "moderate", "high", "very high"
-    ),
-    reference_date == "2022-12-17",
-    location == "25",
-    horizon == 1
-  ) |>
-  dplyr::mutate(value = round(value, 2)) |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  knitr::kable(col.names = formatted_fc_col)
-```
 
 #### Changing the aggregation function
 
@@ -738,11 +731,11 @@ We can change the function that is used to aggregate model outputs. For example,
 ```{r}
 #| prompt: true
 median_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "sample") |>
-    hubEnsembles::simple_ensemble(
-      agg_fun = median,
-      model_id = "simple-ensemble-median"
-    )
+  dplyr::filter(output_type != "sample") |>
+  hubEnsembles::simple_ensemble(
+    agg_fun = median,
+    model_id = "simple-ensemble-median"
+  )
 ```
 
 Custom functions can also be passed into the `agg_fun` argument. We illustrate this by defining a custom function to compute the ensemble prediction as a geometric mean of the component model predictions. Any custom function to be used must have an argument `x` for the vector of numeric values to summarize, and if relevant, an argument `w` of numeric weights.
@@ -750,15 +743,15 @@ Custom functions can also be passed into the `agg_fun` argument. We illustrate t
 ```{r}
 #| prompt: true
 geometric_mean <- function(x) {
-    n <- length(x)
-    return(prod(x)^(1 / n))
-  }
+  n <- length(x)
+  prod(x)^(1 / n)
+}
 geometric_mean_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "sample") |>
-    hubEnsembles::simple_ensemble(
-      agg_fun = geometric_mean,
-      model_id = "simple-ensemble-geometric"
-    )
+  dplyr::filter(output_type != "sample") |>
+  hubEnsembles::simple_ensemble(
+    agg_fun = geometric_mean,
+    model_id = "simple-ensemble-geometric"
+  )
 ```
 
 As expected, the mean, median, and geometric mean each give us slightly different resulting ensembles. The median point estimates, 50% prediction intervals, and 90% prediction intervals in @fig-plot-ensembles demonstrate this.
@@ -785,7 +778,8 @@ model_output_plot <- dplyr::bind_rows(
     output_type %in% c("median", "mean", "quantile"),
     reference_date == "2022-12-17"
   ) |>
-  dplyr::mutate(target_date = reference_date + horizon)
+  dplyr::mutate(target_date = reference_date + horizon, 
+                output_type_id = as.double(output_type_id))
 
 target_data_plot <- hubExamples::forecast_target_ts |>
   dplyr::filter(
@@ -800,8 +794,8 @@ hubVis::plot_step_ahead_model_output(
   interactive = FALSE,
   intervals = c(0.5, 0.90),
   show_legend = TRUE,
-  x_col_name = "target_end_date", 
-  x_target_col_name = "date"
+  pal_color = "Accent",
+  x_col_name = "target_end_date"
 ) +
   theme_bw() +
   labs(y = "incident hospitalizations")
@@ -814,26 +808,26 @@ We can weight the contributions of each model in the ensemble using the `weights
 ```{r}
 #| prompt: true
 model_weights <- data.frame(
-    model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "simple_hub-baseline"),
-    weight = c(0.4, 0.4, 0.2)
-  )
+  model_id = c("MOBS-GLEAM_FLUH", "PSI-DICE", "Flusight-baseline"),
+  weight = c(0.4, 0.4, 0.2)
+)
 weighted_mean_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(output_type != "sample") |>
-    hubEnsembles::simple_ensemble(
-      weights = model_weights,
-      model_id = "simple-ensemble-weighted-mean"
-    )
+  dplyr::filter(output_type != "sample") |>
+  hubEnsembles::simple_ensemble(
+    weights = model_weights,
+    model_id = "simple-ensemble-weighted-mean"
+  )
 ```
 
 ### Creating ensembles with linear_pool
 
-We can also generate a linear pool ensemble, or distributional mixture, using the `linear_pool()` function; this function can be applied to predictions with an `output_type` of mean, quantile, CDF, or PMF. Our example hub includes median output type, so we exclude it from the calculation.
+We can also generate a linear pool ensemble, or distributional mixture, using the `linear_pool()` function; this function can be applied to predictions with an `output_type` of mean, quantile, sample, CDF, or PMF. Our example hub includes the median output type, so we exclude it from the calculation.
 
 ```{r}
 #| prompt: true
 linear_pool_ens <- hubExamples::forecast_outputs |>
-    dplyr::filter(!output_type %in% c("median", "sample")) |>
-    hubEnsembles::linear_pool(model_id = "linear-pool")
+  dplyr::filter(output_type != "median") |>
+  hubEnsembles::linear_pool(model_id = "linear-pool")
 ```
 
 As described above, for `quantile` model outputs, the `linear_pool` function approximates the full probability distribution for each component prediction using the value-quantile pairs provided by that model, and then obtains quasi-random samples from that distributional estimate. The number of samples drawn from the distribution of each component model defaults to `1e4`, but this can be changed using the `n_samples` argument.
@@ -918,8 +912,7 @@ p2 <-
     intervals = c(0.5, 0.9),
     pal_color = "Set1",
     show_legend = TRUE,
-    x_col_name = "target_end_date", 
-    x_target_col_name = "date"
+    x_col_name = "target_end_date"
   ) +
   theme_bw() +
   labs(y = "incident hospitalizations")
@@ -941,147 +934,169 @@ cowplot::plot_grid(
 )
 ```
 
+#### Weighting model contributions
+
+Like with `simple_ensemble()`, we can change the default function settings. For example, weights that determine a model's contribution to the resulting ensemble may be provided. (Note that we must exclude the sample output type here because it cannot yet be combined into weighted ensembles.)
+
+```{r weighted-linear-pool}
+#| prompt: true
+weighted_linear_pool_norm <- hubExamples::forecast_outputs |>
+  dplyr::filter(!output_type %in% c("median", "sample")) |>
+  hubEnsembles::linear_pool(
+    weights = model_weights,
+    model_id = "linear-pool-weighted"
+)
+```
+
+#### Changing the parametric family used for extrapolation into distribution tails
+
+When requesting a linear pool of quantiles, we may also change the distribution that `distfromq` uses to approximate the tails of component models' predictive distributions to either log normal or Cauchy using the `tail_dist` argument (the default is normal). [@distfromq] This choice usually does not have a large impact on the resulting ensemble distribution, though, and can only be seen in its outer edges. (For more details and other function options, see the documentation in the `distfromq` package at <https://reichlab.io/distfromq/>.)
+
+```{r quantile-linear-pool-tails}
+#| prompt: true
+linear_pool_lnorm <- hubExamples::forecast_outputs |>
+  dplyr::filter(output_type == "quantile") |>
+  hubEnsembles::linear_pool(
+    model_id = "linear-pool-lognormal",
+    tail_dist = "lnorm"
+  )
+linear_pool_cauchy <- hubExamples::forecast_outputs |>
+  dplyr::filter(output_type == "quantile") |>
+  hubEnsembles::linear_pool(
+    model_id = "linear-pool-cauchy",
+    tail_dist = "cauchy"
+  )
+```
+
+#### Requesting a subset of input sample predictions to be ensembled
+
+Recall that for the sample output type, `linear_pool()` simply collects and pools the input sample predictions into a single distribution. By default, the resulting ensemble model output contains all provided sample predictions so that the total number of samples for the ensemble is equal to the sum of the number of samples from all individual models.
+
+```{r joint-linear-pool-default}
+#| prompt: true
+joint_lp_default <- hubExamples::forecast_outputs |>
+  dplyr::filter(output_type == "sample") |>
+  hubEnsembles::linear_pool(
+    weights = NULL,
+    model_id = "linear-pool-joint-subset",
+    task_id_cols =
+      c("reference_date", "location", "horizon", "target", "target_end_date")
+  )
+```
+
+To change this behavior, the user may instead specify a number of sample predictions for the ensemble to return using the `n_output_samples` argument. Then, a random subset of predictions from individual models will be selected to construct a LOP of samples so that all component models are represented equally. This random selection of samples is stratified by model to ensure approximately the same number of samples from each individual model is included in the ensemble.
+
+The compound task ID set and any derived task IDs must also be specified to ensure the function returns a valid ensemble. For example, one compound task we are predicting for in the model output is the number of weekly incident influenza hospitalizations ("target") in Massachusetts ("location") starting on December 5, 2022 ("reference_date"). Here, "horizon" is not part of the compound task ID set, indicating that sample predictions made at each horizon depend on those for the other horizons within every compound task for the sample output type. Each sample can therefore be interpreted as a trajectory giving a possible path of hospitalizations over time. These three task id variables ("reference_date", "location", and "target") make up the compound task ID set that is specified in the call to linear_pool(). The remaining task ID variable "target_end_date" is a derived task ID since its value is a function of "reference_date" and "horizon".
+
+```{r joint-linear-pool-subset}
+#| prompt: true
+joint_lp_subset <- hubExamples::forecast_outputs |>
+  dplyr::filter(output_type == "sample") |>
+  hubEnsembles::linear_pool(
+    weights = NULL,
+    model_id = "linear-pool-joint-subset",
+    task_id_cols =
+      c("reference_date", "location", "horizon", "target", "target_end_date"),
+    compound_taskid_set = c("reference_date", "location", "target"),
+    derived_task_ids = "target_end_date",
+    n_output_samples = 100
+  )
+```
 
 ## Example: in-depth analysis of forecast data {#sec-case-study}
 
-To further demonstrate the utility of the [hubEnsembles]{.pkg} package and the differences between the two ensembling functions, we examine a more complex example. Unlike the previous section's basic showcase of functionality, we use this case study to provide a more complete analysis that compares and evaluates ensemble model performance using real forecasts collected by a modeling hub, with an overarching goal of choosing a single best ensembling approach for the application.
+To further demonstrate the differences between the two ensemble functions and the utility of the `hubEnsembles` package, we provide a more complex example that walks through the full process of generating multi-model ensembles. This case study gathers real forecasts collected by a modeling hub to create four equally-weighted ensembles, then evaluates their performance to determine the best approach for the application.
 
-Since 2013, the US Centers for Disease Control and Prevention (CDC) has been soliciting forecasts of seasonal influenza from modeling teams through a collaborative challenge called FluSight [@cdc_flusight]. We use a subset of these predictions to create four equally-weighted ensembles with `simple_ensemble()` and `linear_pool()` and compare the resulting ensembles' performance. The ensembling methods chosen for this case study consist of a quantile (arithmetic) mean, a quantile median, a linear pool with normal tails, and a linear pool with lognormal tails. Note that only a select portion of the code is shown in this manuscript for brevity, although all the functions and scripts used to generate the case study results can be found in the associated GitHub repository (<https://github.com/hubverse-org/hubEnsemblesManuscript>). More specifically, the figures and tables supporting this analysis are generated reproducibly using data from rds files stored in the `analysis/data/raw-data` directory and scripts in the `inst` directory of the repository.
+The predictions we use to create the ensemble models are sourced from two seasons of the FluSight forecasting challenge. Since 2013, the US Centers for Disease Control and Prevention (CDC) has been soliciting short-term forecasts of seasonal influenza from modeling teams through this collaborative challenge. [@cdc_flusight] Using `simple_ensemble()` and `linear_pool()`, we build four equally-weighted, multi-model ensembles to predict weekly influenza hospitalizations: a quantile (arithmetic) mean, a quantile median, a linear pool with normal tails, and a linear pool with lognormal tails. Then, we compare the resulting ensembles' performance through plotting and scoring their forecasts.
+
+Only a select portion of the code used in this analysis is shown for brevity, but all the functions and scripts used to generate the case study results can be found in the associated GitHub repository (<https://github.com/hubverse-org/hubEnsemblesManuscript>). In particular, the figures and tables supporting this analysis can be reproduced using data from `.rds` files stored in the `analysis/data/raw-data` directory and scripts in the `inst` directory of the repository.
 
 ### Data and Methods
 
-We begin by querying the component forecasts used to generate the four ensembles from Zoltar [@reich_zoltar_2021], a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. For this analysis we only consider FluSight predictions in a quantile format from the 2021-2022 and 2022-2023 seasons. These forecasts were stored in two data objects, split by season, called `flu_forecasts-zoltar_21-22.rds` and `flu_forecasts-zoltar_22-23.rds`, and a subset is shown below in @tbl-raw-flu-forecasts.
+We collect the predictions used to generate the four ensembles by querying them from Zoltar, [@reich_zoltar_2021] a repository designed to archive forecasts created by the Reich Lab at UMass Amherst. For this analysis we only consider FluSight forecasts in a quantile format from the 2021-2022 and 2022-2023 influenza seasons. These quantile forecasts are stored in two data objects, split by season, called `flu_forecasts-zoltar_21-22.rds` and `flu_forecasts-zoltar_22-23.rds`, which are then joined together into a single data frame. A subset is shown below in @tbl-raw-flu-forecasts.
 
-```{r read in raw data, eval=TRUE}
+```{r read in raw data}
 #| prompt: true
 flu_forecasts_raw_21_22 <- readr::read_rds(
-    here::here("analysis/data/raw_data/flu_forecasts-zoltar_21-22.rds")
-  )
+  here::here("analysis/data/raw_data/flu_forecasts-zoltar_21-22.rds")
+)
 flu_forecasts_raw_22_23 <- readr::read_rds(
-    here::here("analysis/data/raw_data/flu_forecasts-zoltar_22-23.rds")
-  )
+  here::here("analysis/data/raw_data/flu_forecasts-zoltar_22-23.rds")
+)
 flu_forecasts_raw <- rbind(flu_forecasts_raw_21_22, flu_forecasts_raw_22_23)
 ```
 
-```{r raw flu forecasts, message=FALSE, warning=FALSE, echo=FALSE}
-#| label: tbl-raw-flu-forecasts
-#| tbl-cap: "An example prediction of weekly incident influenza
-#| hospitalizations pulled directly from Zoltar. The example forecasts were
-#| made on May 15, 2023 for California at the 1 week ahead horizon. The
-#| forecasts were generated during the FluSight forecasting challenge, then
-#| formatted according to Zoltar standards for storage. The `timezero`, 
-#| `season`, `unit`, `param1`, `param2`, and `param3` columns have been
-#| omitted for brevity. (The `season` column has a value of '2021-2022' or 
-#| '2022-2023' while the last three 'param' columns always have a value
-#| of NA.)"
-zoltar_col <- formatted_zoltar_col <- c("model", "target", "class", "value", "cat", "prob", "sample", "quantile", "family")
-for (i in 1:length(zoltar_col)) formatted_zoltar_col[i] <- paste0("`", zoltar_col[i], "`")
-
-flu_forecasts_raw |>
-  dplyr::filter(
-    model == "UMass-trends_ensemble",
-    timezero == "2023-05-15",
-    unit == "06",
-    target == "1 wk ahead inc flu hosp",
-    quantile %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
-  ) |>
-  dplyr::select(all_of(zoltar_col)) |>
-  knitr::kable(col.names = formatted_zoltar_col)
-```
-
-Forecasts must conform to hubverse standards to be fed into either of the ensembling functions, so we first transform the raw forecasts using the  `as_model_out_tbl()`[^1] function from the [hubUtils]{.pkg} package. Here, we specify the task ID variables `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
+Although these forecasts are in a tabular format, they are not `model_out_tbl` objects and thus cannot yet be fed into either of the `hubEnsembles` functions. Thus, we must use the `as_model_out_tbl()`[^1] function from `hubUtils` to transform the raw forecasts so that they conform to hubverse standards. Below, we specify the appropriate column mappings in the call with task ID variables of `forecast_date` (when the forecast was made), `location`, `horizon`, and `target`.
 
 [^1]: https://hubverse-org.github.io/hubUtils/reference/as_model_out_tbl.html
 
-```{r transform data, eval=TRUE}
+```{r transform data}
 #| prompt: true
 flu_forecasts_hubverse <- flu_forecasts_raw |>
-    dplyr::rename(forecast_date = timezero, location = unit) |>
-    tidyr::separate(target, sep = " ", convert = TRUE,
-                    into = c("horizon", "target"), extra = "merge") |>
-    dplyr::mutate(target_end_date = 
-                    ceiling_date(forecast_date + weeks(horizon), "weeks") -
-                      days(1)) |>
-    as_model_out_tbl(
-      model_id_col = "model",
-      output_type_col = "class",
-      output_type_id_col = "quantile",
-      value_col = "value",
-      sep = "-",
-      trim_to_task_ids = FALSE,
-      hub_con = NULL,
-      task_id_cols = 
-        c("forecast_date", "location", "horizon", "target", target_end_date),
-      remove_empty = TRUE
-    )
-```
-
-Prior to ensemble calculation (shown later in this section), we filter out any predictions (defined by a unique combination of task ID variables) that did not include all 23 quantiles specified by FluSight ($\theta \in \{.010, 0.025, .050, .100, ..., .900, .950, .990\}$). The FluSight baseline and median ensemble models generated by the FluSight hub are also excluded from the component forecasts. We chose to remove the baseline to match the composition of models used to create the official FluSight ensemble.
-
-With these inclusion criteria, the final data set of component forecasts consists of predictions from 25 modeling teams and 42 distinct models, 53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target, and 23 quantiles. In the 2021-2022 season, 25 models made predictions for 22 weeks spanning from late January 2022 to late June 2022, and in the 2022-2023 season, there were 31 models making predictions for 31 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42 total models made forecasts for both seasons.
-
-In both seasons, forecasts were made for the same locations (the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the US as a whole), horizons (1 to 4 weeks ahead), quantiles (the 23 described above), and target (week ahead incident flu hospitalization). The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
-
-```{r formatted flu forecasts, eval=TRUE}
-#| label: tbl-case-study-flu-forecasts
-#| echo: false
-#| tbl-cap: "An example prediction of weekly incident influenza
-#| hospitalizations. The example model output was made on May 15, 2023 for
-#| California at the 1 week ahead horizon. The forecast was generated during
-#| the FluSight forecasting challenge, then formatted according to hubverse
-#| standards post hoc. The `location`, `forecast_date`, and `season` columns
-#| have been omitted for brevity; quantiles representing the endpoints of the 
-#| central 50%, 80% and 95% prediction intervals are shown."
-flu_forecasts_hubverse |>
-  dplyr::filter(
-    model_id == "UMass-trends_ensemble",
-    forecast_date == "2023-05-15",
-    location == "06",
-    horizon == 1,
-    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
-  ) |>
-  dplyr::select(all_of(abbr_fc_col)) |>
-  knitr::kable(col.names = formatted_fc_col)
-```
-
-Next, we combine the component model outputs to generate predictions from each ensemble model. We begin by excluding the baseline model from the set of predictions that will be combined. Then, we create one object to store the ensemble results generated from each method we are interested in comparing.
-
-```{r construct ensembles, eval=FALSE}
-#| prompt: true
-flu_forecasts_component <- dplyr::filter(
-    flu_forecasts_hubverse,
-    !model_id %in% c("Flusight-baseline", "Flusight-ensemble")
+  dplyr::rename(forecast_date = timezero, location = unit) |>
+  tidyr::separate(target, sep = " ", convert = TRUE,
+                  into = c("horizon", "target"), extra = "merge") |>
+  dplyr::mutate(target_end_date = 
+                  round_date(forecast_date + weeks(horizon), "weeks") -
+                    days(1)) |>
+  as_model_out_tbl(
+    model_id_col = "model",
+    output_type_col = "class",
+    output_type_id_col = "quantile",
+    value_col = "value",
+    sep = "-",
+    trim_to_task_ids = FALSE,
+    hub_con = NULL,
+    task_id_cols = 
+      c("forecast_date", "location", "horizon", "target", target_end_date),
+    remove_empty = TRUE
   )
-
-mean_ensemble <- flu_forecasts_component |>
-    hubEnsembles::simple_ensemble(
-      weights = NULL,
-      agg_fun = mean,
-      model_id = "mean-ensemble"
-    )
-median_ensemble <- flu_forecasts_component |>
-    hubEnsembles::simple_ensemble(
-      weights = NULL,
-      agg_fun = median,
-      model_id = "median-ensemble"
-    )
-lp_normal <- flu_forecasts_component |>
-    hubEnsembles::linear_pool(
-      weights = NULL,
-      n_samples = 1e5,
-      model_id = "lp-normal",
-      tail_dist = "norm"
-    )
-lp_lognormal <- flu_forecasts_component |>
-    hubEnsembles::linear_pool(
-      weights = NULL,
-      n_samples = 1e5,
-      model_id = "lp-lognormal",
-      tail_dist = "lnorm"
-    ) 
 ```
 
-```{r write ensembles, eval=FALSE, echo=FALSE}
+To ensure the quantile mean and median ensemble had consistent component forecast make-up at every quantile level, we only included predictions (defined by a unique combination of task ID variables) that contained all 23 quantiles specified by FluSight ($\theta \in \{.010, 0.025, .050, .100, ..., .900, .950, .990\}$). This requirement required no further action on our part, since it was consistent with FluSight submission guidelines. However, we did remove the baseline and median ensemble models generated by the FluSight hub from the component forecasts, a choice motivated by the desire to match the composition of models in the official FluSight ensemble. (Note, though, that the component models included in our ensembles did not always exactly match those included in the FluSight-ensemble for every forecast week as a result of slightly different inclusion criteria.)
+
+With these inclusion criteria, the final data set of component forecasts consists of predictions from 25 modeling teams and 42 distinct models, 53 forecast dates (one per week), 54 US locations, 4 horizons, 1 target, and 23 quantiles. In the 2021-2022 season, 25 models made predictions for 22 weeks spanning from late January 2022 to late June 2022, and in the 2022-2023 season, there were 31 models making predictions for 31 weeks spanning mid-October 2022 to mid-May 2023. Fourteen of the 42 total models made forecasts for both seasons. Locations consist of the 50 US states, Washington DC, Puerto Rico, the Virgin Islands, and the entire US; horizons 1 to 4 weeks ahead, quantiles the 23 described above, and target week ahead incident influenza hospitalization. The values for the forecasts are always non-negative. In @tbl-case-study-flu-forecasts, we provide an example of these predictions, showing select quantiles from a single model, forecast date, horizon, and location.
+
+Next, we can combine the predictions into a single `model_out_tbl` object used to generate forecasts for each ensemble method. Then, we call the appropriate function in `hubEnsembles` to generate predictions for each equally-weighted ensemble, storing the results in four separate objects of model output data.
+
+```{r construct ensembles}
+#| eval: false
+flu_forecasts_component <- dplyr::filter(
+  flu_forecasts_hubverse,
+  !model_id %in% c("Flusight-baseline", "Flusight-ensemble")
+)
+
+mean_ensemble <- hubEnsembles::simple_ensemble(
+  flu_forecasts_component,
+  weights = NULL,
+  agg_fun = mean,
+  model_id = "mean-ensemble"
+)
+median_ensemble <- hubEnsembles::simple_ensemble(
+  flu_forecasts_component,
+    weights = NULL,
+    agg_fun = median,
+    model_id = "median-ensemble"
+  )
+lp_normal <- hubEnsembles::linear_pool(
+  flu_forecasts_component,
+  weights = NULL,
+  n_samples = 1e5,
+  model_id = "lp-normal",
+  tail_dist = "norm"
+)
+lp_lognormal <- hubEnsembles::linear_pool(
+  flu_forecasts_component,
+  weights = NULL,
+  n_samples = 1e5,
+  model_id = "lp-lognormal",
+  tail_dist = "lnorm"
+) 
+```
+
+```{r write ensembles}
+#| echo: false
+#| eval: false
 # save forecasts
 readr::write_rds(
   mean_ensemble,
@@ -1105,17 +1120,20 @@ readr::write_rds(
 )
 ```
 
-We evaluate the performance of these ensembles using scoring metrics that measure the accuracy and calibration of their forecasts. Here, we choose several common metrics in forecast evaluation, including mean absolute error (MAE), weighted interval score (WIS) [@bracher_evaluating_2021], 50% prediction interval (PI) coverage, and 95% PI coverage. MAE measures the average absolute error of a set of point forecasts; smaller values of MAE indicate better forecast accuracy. WIS is a generalization of MAE for probabilistic forecasts and is an alternative to other common proper scoring rules which cannot be evaluated directly for quantile forecasts [@bracher_evaluating_2021]. WIS is made up of three component penalties: (1) for over-prediction, (2) for under-prediction, and (3) for the spread of each interval (where an interval is defined by a symmetric set of two quantiles). This metric weights these penalties across all prediction intervals provided. A lower WIS value indicates a more accurate forecast [@bracher_evaluating_2021]. PI coverage provides information about whether a forecast has accurately characterized its uncertainty about future observations. The $50$% PI coverage rate measures the proportion of the time that 50% prediction intervals at that nominal level included the observed value; the 95% PI coverage rate is defined similarly. Achieving approximately nominal (50% or 95%) coverage indicates a well-calibrated forecast.
+We then evaluate the performance of the ensembles using scoring metrics that measure the accuracy and calibration of their forecasts. We chose several common metrics in forecast evaluation, including mean absolute error (MAE), weighted interval score (WIS), [@bracher_evaluating_2021] 50% prediction interval (PI) coverage, and 95% PI coverage. MAE measures the average absolute error of a set of point forecasts; smaller values of MAE indicate better forecast accuracy. WIS is a generalization of MAE for probabilistic forecasts and is an alternative to other common proper scoring rules which cannot be evaluated directly for quantile forecasts. [@bracher_evaluating_2021] WIS is made up of three component penalties: (1) for over-prediction, (2) for under-prediction, and (3) for the spread of each interval (where an interval is defined by a symmetric set of two quantiles). This metric is a weighted sum of these penalties across all prediction intervals provided. A lower WIS value indicates a more accurate forecast. [@bracher_evaluating_2021] PI coverage provides information about whether a forecast has accurately characterized its uncertainty about future observations. The $50$% PI coverage rate measures the proportion of the time that 50% prediction intervals at that nominal level included the observed value; the 95% PI coverage rate is defined similarly. Achieving approximately nominal (50% or 95%) coverage indicates a well-calibrated forecast.
 
-```{r read in forecasts and scores, echo=FALSE}
-flu_truth_all <- readr::read_rds(
-  here::here("analysis/data/raw_data/flu_truth-zoltar.rds")
-) |>
-  dplyr::rename(location = unit, forecast_date = timezero) |>
-  dplyr::mutate(model = "flu-truth", target_variable = "inc flu hosp",
-                target_end_date = ceiling_date(forecast_date, "weeks") - days(1)) |>
-  dplyr::select(model, target_variable, target_end_date, location, value)
-  
+```{r read in forecasts and scores}
+#| echo: false
+flu_time_series <- readr::read_rds(
+  here::here("analysis/data/derived_data/flu_time_series.rds")
+)
+flu_oracle_output <- readr::read_rds(
+  here::here("analysis/data/derived_data/flu_oracle_output.rds")
+)
+
+flu_baseline_forecasts <- flu_forecasts_hubverse |>
+  dplyr::filter(model_id == "Flusight-baseline")
+
 flu_files <- list.files(
   path = here::here("analysis/data/derived_data"),
   pattern = "forecasts",
@@ -1123,61 +1141,57 @@ flu_files <- list.files(
 )
 flu_ensembles_forecasts <- purrr::map_dfr(flu_files, .f = readr::read_rds)
 
-flu_baseline_forecasts <- flu_forecasts_hubverse |>
-  dplyr::filter(model_id == "Flusight-baseline")
-flu_baseline_scores <- readr::read_rds(
-  here::here("analysis/data/derived_data/flu_baseline_scores.rds")
+flu_baseline_ensembles_scores <- readr::read_rds(
+  here::here("analysis/data/derived_data/flu_baseline_ensembles_scores.rds")
 )
-flu_ensembles_scores <- readr::read_rds(
-  here::here("analysis/data/derived_data/flu_ensembles_scores.rds")
+flu_component_scores <- readr::read_rds(
+  here::here("analysis/data/derived_data/flu_component_scores.rds")
 )
-flu_scores_all <- rbind(flu_ensembles_scores, flu_baseline_scores)
 ```
 
-We also use relative versions of WIS and MAE (rWIS and rMAE, respectively) to understand how the ensemble performance compares to that of the FluSight baseline model. These metrics are calculated as $$\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},$$ where model $m$ is any given model being compared against the baseline. For both of these metrics, a value less than one indicates better performance compared to the baseline while a value greater than one indicates worse performance. By definition, the FluSight baseline itself will always have a value of one for both of these metrics.
+We also use relative versions of WIS and MAE (rWIS and rMAE, respectively) to understand how the ensemble performance compares to that of the FluSight baseline model. These metrics are calculated as $$\textrm{rWIS} = \frac{\textrm{WIS}_{\textrm{model }m}}{\textrm{WIS}_{\textrm{baseline}}} \hspace{3cm} \textrm{rMAE} = \frac{\textrm{MAE}_{\textrm{model }m}}{\textrm{MAE}_{\textrm{baseline}}},$$where model $m$ is any given model being compared against the baseline. For both of these metrics, a value less than one indicates better performance compared to the baseline while a value greater than one indicates worse performance. Because the baseline model is designed to represent a naive prediction, relative scores less than one indicate the model is outperforming a simple prediction that could be made in the absence of a model. By definition, the FluSight baseline itself will always have a value of one for both of these metrics.
 
-Each unique prediction from an ensemble model is scored against target data using the `score_forecasts()`[^2] function from the [covidHubUtils]{.pkg} package, as a hubverse package for scoring and evaluation has not yet been fully implemented. This function outputs each of the metrics described above. We use median forecasts taken from the 0.5 quantile for the MAE evaluation.
+Each unique prediction from an ensemble model is scored against target data in the oracle output format using the `score_model_out()` function from the `hubEvals` package, made for scoring hubverse model outputs with commonly used evaluation metrics including those mentioned above. We use median forecasts taken from the 0.5 quantile for the MAE evaluation. Example code scoring the ensembles' forecasts can be seen below. We attach forecasts from the baseline model in order to calculate the relative metrics.
 
-[^2]: https://reichlab.io/covidHubUtils/reference/score_forecasts.html
+```{r score ensemble forecasts}
+#| echo: true
+#| eval: false
+#| message: false
+#| warning: false
+flu_baseline_ensembles_scores <- flu_baseline_forecasts |>
+  rbind(flu_ensembles_forecasts) |>
+  hubEvals::score_model_out(
+    flu_oracle_output,
+    metrics = c("wis", "overprediction", "underprediction", "dispersion", "bias",
+                "ae_median", "interval_coverage_50", "interval_coverage_95"),
+    relative_metrics = c("wis", "ae_median"),
+    baseline = "Flusight-baseline",
+    summarize = FALSE
+  )
+```
 
 ### Performance results across ensembles
 
-The quantile median ensemble has the best overall performance in terms of WIS and MAE (and the relative versions of these metrics), and has coverage rates that were close to the nominal levels (@tbl-overall-evaluation). The two linear opinion pools have very similar performance to each other. These methods have the second-best performance as measured by WIS and MAE, but they have the highest 50% and 95% coverage rates, with empirical coverage that was well above the nominal coverage rate. The quantile mean performs the worst of the ensembles with the highest MAE, which is substantially different from that of the other ensembles.
+The four ensembles rank in the top half in terms of accuracy when compared to the individual component models that made predictions for influenza hospitalizations (@tbl-overall-evaluation). The ranking of the models differs slightly among the four scoring metrics; the two linear opinion pools perform better than the other ensembles in terms of WIS and 95% prediction interval coverage while the quantile median has slightly better MAE and the best 50% coverage across ensembles. The quantile mean displayed the worst values for every metric out of the ensembles, particularly for MAE.
 
-```{r overall-evaluation, message=FALSE, warning=FALSE, echo=FALSE}
-#| label: tbl-overall-evaluation
-#| tbl-cap: "Summary of overall model performance across both seasons, averaged
-#| over all locations except the US national location and sorted by ascending
-#| WIS. The quantile median ensemble has the best value for every metric except
-#| 50% coverage rate, though metric values are often quite similar among
-#| the models."
+Plots of the ensemble models' forecasts can aid our understanding about the origin of these accuracy differences (@fig-plot-forecasts-hubVis). For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The wider intervals provided by the LOP ensembles yield the best 95% prediction interval coverage, however, this also leads to 50% interval coverage that nearly always exceeded the nominal level. Moreover, the linear pools demonstrate the strongest WIS performance at both 1 week and 4 week ahead horizons during the 2022-2023 season (see @fig-wis-vs-forecast-date); this season was especially difficult to forecast due to its unusual timing and large peak. The wider prediction intervals prove useful in this uncertain context when other models are overconfident in their forecasts. 
 
-metrics_col <- formatted_metrics_col <- c("model", "wis", "rwis", "mae", "rmae", "cov50", "cov95")
-for (i in 1:length(metrics_col)) formatted_metrics_col[i] <- paste0("`", metrics_col[i], "`")
+Although the LOP ensembles provide the best scores for WIS and 95% PI coverage, they are not always the top ensemble model. The quantile median ensemble tends to have slightly better median (point) forecasts and mid-width intervals, including the best MAE and 50% interval coverage of all of the ensembles. While the quantile median ensemble is generally well calibrated for most of the predictions evaluated, it fails to appropriately capture uncertainty during the large peak of the 2022-2023 season which resulted in WIS values higher than that of the linear opinion pools (@fig-wis-vs-forecast-date). The quantile mean's interval widths vary throughout both seasons. Although it usually has narrower intervals than the linear pools, the quantile mean ensemble's median forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022 (@fig-plot-forecasts-hubVis). Here, the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
 
-flu_overall_states <- flu_scores_all |>
-  evaluate_flu_scores(
-    grouping_variables = NULL,
-    baseline_name = "Flusight-baseline", us_only = FALSE
-  )
-
-flu_overall_states |>
-  dplyr::select(all_of(metrics_col)) |>
-  knitr::kable(col.names = formatted_metrics_col)
-```
-
-Plots of the models' forecasts can aid our understanding about the origin of these accuracy differences. For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The median ensemble, which has the best WIS, balanced interval width with calibration best overall, with narrower intervals than the linear pools that still achieved near-nominal coverage on average across all time points. The quantile mean's interval widths vary, though it usually has narrower intervals than the linear pools. However, this model's point forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated in @fig-plot-forecasts-hubVis for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022. Here, the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
-
-```{r plot-forecasts-hubVis, warning=FALSE, message=FALSE}
+```{r plot-forecasts-hubVis}
 #| label: fig-plot-forecasts-hubVis
 #| echo: false
-#| fig-cap: "One to four week ahead forecasts for select dates plotted against
-#| target data for California. The first panel shows all models on the same 
-#| scale. All other panels show forecasts for each individual model, with
-#| varying y-axis scales, and their prediction accuracy as compared to
-#| observed influenza hospitalizations."
-#| fig-width: 9
-#| fig-height: 12
+#| message: false
+#| warning: false
+#| fig-cap: "One to four week ahead forecasts plotted against target data for
+#| California. Each panel shows the baseline and four ensembles being evaluated. 
+#| All plots show the various models' forecasts summarized by the median
+#| (line) and 50% and 95% prediction intervals (darker and lighter ribbon, 
+#| repsectively), as compared to observed influenza hospitalizations
+#| (gray points and line). For simplicity, only predictions from select four-week
+#| periods during the 2022-2023 influenza season are shown."
+#| fig-width: 8
+#| fig-height: 8
 
 model_names <- c(
   "Flusight-baseline", "lp-lognormal", "lp-normal",
@@ -1192,226 +1206,65 @@ forecasts_ca <- flu_ensembles_forecasts |>
   rbind(flu_baseline_forecasts) |>
   dplyr::filter(
     location == "06",
-    forecast_date %in% all_flu_dates[seq(1, 69, 4)] # dates once every 4 weeks
+    forecast_date %in% all_flu_dates[seq(1, 69, 4)], # dates once every 4 weeks
+    target_end_date >= as.Date("2022-11-01"), # only show subset of 2022-2023 season
+    target_end_date <= as.Date("2023-02-15")
   ) |>
   dplyr::group_by(forecast_date)
 
-# Add non-forecasted weeks with NA value 
-# prevents erroneous line connecting seasons
-truth_ca <- flu_truth_all |>
-  dplyr::filter(location == "06") |>
-  dplyr::rename(observation = value) |>
-  rbind(expand.grid(
-    model = "flu-truth",
-    target_variable = "inc flu hosp",
-    target_end_date = flu_dates_21_22[22] + lubridate::weeks(1:16),
-    location = unique(flu_truth_all$location),
-    observation = NA
-  ))
+time_series_ca <- flu_time_series |>
+  dplyr::filter(location == "06", 
+                target_end_date >= as.Date("2022-11-01"), # only show subset of 2022-2023 season
+                target_end_date <= as.Date("2023-02-15")
+  )
 
 
-# Plot ensembles' forecasts only
+# Plot ensemble and baseline forecasts only
 ca_plot_ensembles <-
   plot_step_ahead_model_output(
-    forecasts_ca |> filter(model_id != "Flusight-baseline"),
-    truth_ca,
+    forecasts_ca,
+    time_series_ca,
     use_median_as_point = TRUE,
     show_plot = FALSE,
     x_col_name = "target_end_date",
     x_target_col_name = "target_end_date",
     show_legend = FALSE,
     facet = "model_id",
-    facet_scales = "free_y",
     facet_nrow = 3,
     interactive = FALSE,
     pal_color = "Set2",
     fill_transparency = 0.45,
     intervals = c(0.5, 0.95),
-    title = NULL,
+    title = "Weekly Incident Hospitalizations for Influenza in California",
     group = "forecast_date"
   )
 
-ca_plot_ensembles <- ca_plot_ensembles +
+ca_plot_ensembles +
   scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
+    name = NULL, date_breaks = "1 months", date_labels = "%b '%y"
   ) +
   scale_color_manual(
-    breaks = model_names[2:5],
-    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
+    breaks = model_names,
+    values = RColorBrewer::brewer.pal(6, "Set2")
   ) +
   scale_fill_manual(
-    breaks = model_names[2:5],
-    values = RColorBrewer::brewer.pal(5, "Set2")[2:5]
+    breaks = model_names,
+    values = RColorBrewer::brewer.pal(6, "Set2")
   ) +
   theme(
     axis.ticks.length.x = unit(0.5, "cm"),
     axis.text.x = element_text(vjust = 7, hjust = -0.2),
     axis.title.y = element_blank(),
     legend.position = "none"
-  )
-
-# Plot separate baseline "facet"
-ca_plot_baseline <-
-  plot_step_ahead_model_output(
-    forecasts_ca |> filter(model_id == "Flusight-baseline"),
-    truth_ca,
-    use_median_as_point = TRUE,
-    show_plot = TRUE,
-    x_col_name = "target_end_date",
-    x_target_col_name = "target_end_date",
-    show_legend = FALSE,
-    facet = "model_id",
-    facet_scales = "free_y",
-    facet_nrow = 1,
-    interactive = FALSE,
-    fill_transparency = 0.45,
-    intervals = c(0.5, 0.95),
-    title = NULL,
-    group = "forecast_date"
   ) +
-  scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
-  ) +
-  theme_bw() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.ticks.length.x = unit(0, "cm"),
-    axis.text.x = element_blank(),
-    axis.title.y = element_blank(),
-    legend.position = "none"
-  )
-
-# Plot all models on same graph (for scale comparison)
-ca_plot_all <-
-  plot_step_ahead_model_output(
-    forecasts_ca |> mutate(facet_name = "All models, same scale"),
-    truth_ca,
-    use_median_as_point = TRUE,
-    show_plot = TRUE,
-    x_col_name = "target_end_date",
-    x_target_col_name = "target_end_date",
-    show_legend = FALSE,
-    facet = "facet_name",
-    interactive = FALSE,
-    fill_transparency = 0.45,
-    intervals = c(0.5, 0.95),
-    title = NULL,
-    group = "forecast_date"
-  ) +
-  scale_x_date(
-    name = NULL, limits = c(
-      as.Date("2022-01-01"),
-      as.Date("2023-06-08")
-    ),
-    date_breaks = "4 months", date_labels = "%b '%y"
-  ) +
-  theme_bw() +
-  theme(
-    axis.title.x = element_blank(),
-    axis.text.x = element_blank(),
-    axis.ticks.length.x = unit(0, "cm"),
-    axis.title.y = element_blank(),
-    legend.position = "none"
-  )
-
-# Assemble plots
-((ca_plot_all | ca_plot_baseline) / ca_plot_ensembles) +
-  theme_bw() +
-  plot_layout(guides = "collect", heights = c(1, 2)) +
-  plot_annotation(title = paste0(
-    "Weekly Incident ",
-    "Hospitalizations for Influenza ",
-    "in California"
-  ))
+  theme_bw()
 ```
 
-Averaging across all time points, the median model can be seen to have the best scores for every metric. It outperforms the mean ensemble by a similar amount for both MAE and WIS, particularly around local times of change (see @fig-mae-vs-forecast-date and @fig-wis-vs-forecast-date). The median ensemble also has better coverage rates than the mean ensemble in the tails of the distribution (95% intervals, see @fig-cov95-vs-forecast-date) and similar coverage in the center (50% intervals). The median model also outperforms the linear pools for most weeks, with the greatest differences in scores being for WIS and coverage rates (@fig-wis-vs-forecast-date and @fig-cov95-vs-forecast-date). This seems to indicate that the linear pools' estimates are usually too conservative, with their wide intervals and higher-than-nominal coverage rates being penalized by WIS. However, during the 2022-2023 season there are several localized times when the linear pools showcased better one-week-ahead forecasts than the median ensemble (@fig-wis-vs-forecast-date). These localized instances are characterized by similar MAE values (@fig-wis-vs-forecast-date) for the two methods and poor median ensemble coverage rates (@fig-cov95-vs-forecast-date). In these instances, the wide intervals from the linear pools were useful in capturing the eventually-observed hospitalizations, usually during times of rapid change.
-
-```{r mae-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
-#| label: fig-mae-vs-forecast-date
-#| prompt: true
-#| fig-cap: "Mean absolute error (MAE) averaged across all locations. Average
-#| target data across all locations for 2021-2022 (A) and 2022-2023 (B)
-#| seasons for reference. For each season, average MAE is shown for 1-week (C-D)
-#| and 4-week ahead (E-F) forecasts. Results are plotted for each ensemble model 
-#| (colors) across the entire season. Lower values indicate better performance."
-#| fig-width: 10
-#| fig-height: 12
-model_names <- c(model_names, "average target data")
-model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
-
-# Summarize flu scores by horizon, forecast_date, and season
-flu_date_horizon_season_states <- flu_scores_all |>
-  evaluate_flu_scores(
-    grouping_variables = c("horizon", "forecast_date", "season"),
-    baseline_name = "Flusight-baseline", us_only = FALSE
-  )
-
-# Plot truth data, faceted by season
-truth_states_2122 <- flu_truth_all |>
-  plot_flu_truth(
-    date_range = flu_dates_21_22[c(1, 22)],
-    main = "Target Data 2021-22 (wk inc flu hosp)"
-  )
-truth_states_2223 <- flu_truth_all |>
-  plot_flu_truth(
-    date_range = flu_dates_22_23[c(1, 31)],
-    main = "Target Data 2022-23 (wk inc flu hosp)"
-  )
-
-mae_date_plot_states1_2122 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 1, y_var = "mae",
-    main = "MAE 2021-2022, 1 week ahead"
-  )
-mae_date_plot_states4_2122 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 4, y_var = "mae",
-    main = "MAE 2021-2022, 4 week ahead"
-  )
-
-# Plot MAE by forecast_date, faceted by horizon and season
-mae_date_plot_states1_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 1, y_var = "mae",
-    main = "MAE 2022-2023, 1 week ahead"
-  )
-mae_date_plot_states4_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 4, y_var = "mae",
-    main = "MAE 2022-2023, 4 week ahead"
-  )
-
-# Assemble plots into larger MAE figure
-truth_states_2122 + truth_states_2223 +
-  mae_date_plot_states1_2122 + mae_date_plot_states1_2223 +
-  mae_date_plot_states4_2122 + mae_date_plot_states4_2223 +
-  theme_bw() +
-  plot_annotation(tag_levels = "A") + 
-  plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
-  theme(legend.position = "bottom", 
-        plot.tag = element_text(face = 'bold'))
-```
-
-```{r wis-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
+```{r wis-vs-forecast-date}
 #| label: fig-wis-vs-forecast-date
-#| prompt: true
+#| echo: false
+#| message: false
+#| warning: false
 #| fig-cap: "Weighted interval score (WIS) averaged across all locations.
 #| Average target data across all locations for 2021-2022 (A) and 2022-2023 (B)
 #| seasons for reference. For each season, average WIS is shown for 1-week (C-D)
@@ -1420,6 +1273,27 @@ truth_states_2122 + truth_states_2223 +
 #| 
 #| fig-width: 10
 #| fig-height: 12
+model_names <- c(model_names, "average target data")
+model_colors <- c(RColorBrewer::brewer.pal(5, "Set2"), "black")
+
+# Summarize flu scores by horizon, forecast_date, and season
+flu_date_horizon_season_states <- evaluate_flu_scores(
+  flu_baseline_ensembles_scores,
+  grouping_variables = c("horizon", "forecast_date", "season"),
+  baseline_name = "Flusight-baseline", us_only = FALSE
+)
+
+# Plot truth data, faceted by season
+time_series_states_2122 <- plot_flu_time_series(
+  flu_time_series,
+  date_range = flu_dates_21_22[c(1, 22)],
+  main = "Target Data 2021-22 (wk inc flu hosp)"
+)
+time_series_states_2223 <- plot_flu_time_series(
+  flu_time_series,
+  date_range = flu_dates_22_23[c(1, 31)],
+  main = "Target Data 2022-23 (wk inc flu hosp)"
+)
 
 # Plot WIS by forecast_date, faceted by horizon and season
 wis_date_plot_states1_2122 <- flu_date_horizon_season_states |>
@@ -1453,7 +1327,7 @@ wis_date_plot_states4_2223 <- flu_date_horizon_season_states |>
   )
 
 # Assemble plots into larger WIS figure
-truth_states_2122 + truth_states_2223 +
+time_series_states_2122 + time_series_states_2223 +
   wis_date_plot_states1_2122 + wis_date_plot_states1_2223 +
   wis_date_plot_states4_2122 + wis_date_plot_states4_2223 +
   theme_bw() +
@@ -1463,85 +1337,283 @@ truth_states_2122 + truth_states_2223 +
         plot.tag = element_text(face = 'bold'))
 ```
 
-```{r cov95-vs-forecast-date, message=FALSE, warning=FALSE, echo=FALSE}
-#| label: fig-cov95-vs-forecast-date
-#| prompt: true
-#| fig-cap: "95% prediction interval (PI) coverage averaged across all
-#| locations. Average target data across all locations for 2021-2022 (A) 
-#| and 2022-2023 (B) seasons for reference. For each season, average coverage is
-#| shown for 1-week (C-D) and 4-week ahead (E-F) forecasts. Results are plotted
-#| for each ensemble model (colors) across the entire season. Ideal coverage of
-#| 95% is shown (black horizontal line); values closer to 95% indicate better 
-#| performance."
-#| fig-width: 9
-#| fig-height: 12
+All of the ensemble variations outperform the baseline model in this analysis. The linear pool ensembles improve WIS by 27% over baseline, the quantile median by 20% and the quantile mean by 16%. Such improvements come mostly from the ensembles providing better calibrated prediction intervals, as improvements in point estimate accuracy improve over baseline by at most 9% (as measured by rMAE). While the best model (CMU-TimeSeries) improves WIS more (by 33%), ensembles are typically more robust than individual models, and thus some decrease in overall performance may be accepted in order to avoid extreme misses.
 
-# Plot 95% coverage by forecast_date, faceted by horizon and season
-cov95_date_plot_states1_2122 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 1, y_var = "cov95",
-    main = "95% Coverage 2021-22, 1 week ahead"
-  ) +
-  coord_cartesian(ylim = c(0, 1.05))
-cov95_date_plot_states4_2122 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2021-2022") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 4, y_var = "cov95",
-    main = "95% Coverage 2021-22, 4 week ahead"
-  ) +
-  coord_cartesian(ylim = c(0, 1.05))
+Linear pool ensemble methods are known to generate wider, more conservative, prediction intervals than quantile averaging methods. In this context, where influenza dynamics were perturbed by the COVID-19 pandemic interventions, the wider prediction intervals were suitable when making predictions for an influenza season with an unusually large peak. However, such wide intervals will likely be detrimental in other short-term forecasting contexts, including, for example, during the milder season without any periods of rapid change (where the median and mean quantile ensembles demonstrated more robust performance). Expanding this evaluation to include other influenza seasons will be important to characterize the robustness of these conclusions and test how much the unusual timing and magnitude of the analyzed seasons affected forecast performance.
 
-cov95_date_plot_states1_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 1, y_var = "cov95",
-    main = "95% Coverage 2022-23, 1 week ahead"
-  ) +
-  coord_cartesian(ylim = c(0, 1.05))
-cov95_date_plot_states4_2223 <- flu_date_horizon_season_states |>
-  dplyr::filter(season == "2022-2023") |>
-  plot_evaluated_scores_forecast_date(
-    model_names, model_colors,
-    h = 4, y_var = "cov95",
-    main = "95% Coverage 2022-23, 4 week ahead"
-  ) +
-  coord_cartesian(ylim = c(0, 1.05))
-
-# Assemble plots into larger 95% coverage figure
-truth_states_2122 + truth_states_2223 +
-  cov95_date_plot_states1_2122 + cov95_date_plot_states1_2223 +
-  cov95_date_plot_states4_2122 + cov95_date_plot_states4_2223 +
-  theme_bw() +
-  plot_annotation(tag_levels = "A") + 
-  plot_layout(ncol = 2, guides = "collect", heights = c(1, 2, 2)) &
-  theme(legend.position = "bottom", 
-        plot.tag = element_text(face = 'bold'))
-```
-
-In this analysis, all of the ensemble variations outperform the baseline model; yet, different ensembling methods perform best under different circumstances. While the quantile median has the best overall results for WIS, MAE, 50% PI coverage, and 95% PI coverage, other models may perform better from week-to-week for each metric. Around the 2022-2023 season's peak in early December, the remaining four models (including the baseline) each have instances in which they achieve the lowest WIS, like the linear pool ensembles for the one week ahead horizon over several weeks of this period.
-
-The choice of an appropriate ensemble aggregation method may depend on the forecast target, the goal of forecasting, and the behavior of the individual models contributing to an ensemble. One case may call for prioritizing high coverage rates while another may prioritize accurate point forecasts. The `simple_ensemble()` and `linear_pool()` functions and the ability to specify component model weights and an aggregation function for `simple_ensemble()` allow users to implement a variety of ensemble methods.
+The choice of an appropriate ensemble aggregation method will depend on the forecast target, the goal of forecasting, and the behavior of the individual models contributing to an ensemble. One case may call for prioritizing high coverage rates while another may prioritize accurate point forecasts. The `simple_ensemble()` and `linear_pool()` functions and the ability to specify component model weights and an aggregation function for `simple_ensemble()` allow users to implement a variety of ensemble methods.
 
 ## Summary and discussion {#sec-conclusions}
 
-Ensembles of independent models are a powerful tool to generate more accurate and more reliable predictions of future outcomes than a single model alone. Here, we have demonstrated how to utilize [hubEnsembles]{.pkg}, a simple and flexible framework to combine individual model predictions into an ensemble.
+Ensembles of independent models are a powerful tool to generate more accurate and more reliable predictions of future outcomes than those from a single model alone. Here, we have provided an overview of multi-model ensemble methodology with the goal of improving use of ensemble results in public health and biomedical research settings, as well as other domains that use probabilistic forecasting. Moreover, we have demonstrated how to utilize `hubEnsembles`, a simple and flexible framework to combine individual model predictions into an ensemble.
 
-The [hubEnsembles]{.pkg} package is situated within the larger hubverse collection of open-source software and data tools to support collaborative modeling exercises [@hubverse_docs]. Collaborative hubs offer many benefits, including serving as a centralized entity to guide and elicit predictions from multiple independent models [@reich2022]. Given the increasing popularity of multi-model ensembles and collaborative hubs, there is a clear need for generalized data standards and software infrastructure to support these hubs. By addressing this need, the hubverse suite of tools can reduce duplicative efforts across existing hubs, support other communities engaged in collaborative efforts, and enable the adoption of multi-model approaches in new domains.
+Multi-model ensembles are becoming the gold standard for prediction exercises in the public health domain. Collaborative modeling hubs can serve as a centralized entity to guide and elicit predictions from multiple independent models, as well as to generate and communicate ensemble results. [@reich2022; @borchering_public_2023] Given the increasing popularity of multi-model ensembles and collaborative hubs, there is a clear need for generalized data standards and software infrastructure to support these hubs. By addressing this need, the hubverse suite of tools can reduce duplicative efforts across existing hubs, support other communities engaged in collaborative efforts, and enable the adoption of multi-model approaches in new domains.
 
-When using [hubEnsembles]{.pkg}, it is important to carefully choose an ensemble method that is well suited for the situation. Although there may not be a universal "best" method, matching the properties of a given ensemble method with the features of the component models will likely yield best results [@howerton2023]. Our case study on seasonal influenza forecasts in the US demonstrates this point. The quantile median ensemble performs best overall for a range of metrics, including weighted interval score, mean absolute error, and prediction interval coverage. Yet, the linear pool method, which generates an ensemble with wider prediction intervals, demonstrates performance advantages during periods of rapid change, when outlying component forecasts are likely more important. Notably, all ensemble methods outperform the baseline model. The performance improvements from ensemble models motivate the use of a "hub-based" approach to prediction for infectious diseases and in other fields.
+When generating and interpreting an ensemble prediction, it is important to understand the methods underlying the ensemble, as methodological choices can have meaningful effects on the resulting ensemble and its performance. Although there may not be a universal "best" method, matching the properties of a given ensemble method with the features of the component models will likely yield best results. [@howerton2023] Our case study on seasonal influenza forecasts in the US demonstrates this point. The two linear opinion pools with different distributional tails performed best for many of the metrics we evaluated---weighted interval score, mean absolute error, and prediction interval coverage---particularly when outlying component forecasts were important. Yet, the quantile averaging methods outperformed the linear pools during periods of greater stability and less variation. All ensembles showed clear improvement over the baseline model, demonstrating the accuracy gains from ensemble models that motivate the use of a "hub-based" approach to prediction for infectious diseases, public health, and in other fields.
 
-Ongoing development of the [hubEnsembles]{.pkg} package and the larger suite of hubverse tools will continue to support multi-model predictions in new ways, including for example supporting additional types of predictions, enabling scoring and evaluation of those predictions, and allowing for cloud-based data storage. All such infrastructure will ultimately provide a comprehensive suite of open-source software tools for leveraging the power of collaborative hubs and multi-model ensembles.
+## Code availability {.unnumbered}
+
+All code necessary to reproduce this manuscript can be found in a GitHub repository available at <https://github.com/hubverse-org/hubEnsemblesManuscript>, including required package versions which are available in the DESCRIPTION file.
 
 ## Acknowledgements {.unnumbered}
 
-The authors thank all members of the hubverse community; the broader hubverse software infrastructure made this package possible. L. Shandross, A. Krystalli, N. G. Reich, and E. L. Ray were supported by the National Institutes of General Medical Sciences (R35GM119582) and the US Centers for Disease Control and Prevention (U01IP001122 and NU38FT000008). E. Howerton was supported by NSF RAPID awards DEB-2126278 and DEB-2220903, as well as the Eberly College of Science Barbara McClintock Science Achievement Graduate Scholarship in Biology at the Pennsylvania State University. L. Contamin and H. Hochheiser were supported by NIGMS grant U24GM132013. The content is solely the responsibility of the authors and does not necessarily represent the official views of NIGMS, the National Institutes of Health, or CDC.
+The authors thank all members of the hubverse community; the broader hubverse software infrastructure made this package possible. L. Shandross, A. Krystalli, N. G. Reich, and E. L. Ray were supported by the National Institutes of General Medical Sciences (R35GM119582) and the US Centers for Disease Control and Prevention (U01IP001122 and NU38FT000008). E. Howerton was supported by NSF RAPID awards DEB-2126278 and DEB-2220903, as well as the Eberly College of Science Barbara McClintock Science Achievement Graduate Scholarship in Biology at the Pennsylvania State University. L. Contamin and H. Hochheiser were supported by NIGMS grants U24GM132013 and R24GM153920. The content is solely the responsibility of the authors and does not necessarily represent the official views of NIGMS, the National Institutes of Health, or CDC.
 
 ## Consortium of Infectious Disease Modeling Hubs {.unnumbered}
 
 Consortium of Infectious Disease Modeling Hubs authors include Alvaro J. Castro Rivadeneira (University of Massachusetts Amherst), Lucie Contamin (University of Pittsburgh), Sebastian Funk (London School of Hygiene & Tropical Medicine), Aaron Gerding (University of Massachusetts Amherst), Hugo Gruson (data.org), Harry Hochheiser (University of Pittsburgh), Emily Howerton (The Pennsylvania State University), Melissa Kerr (University of Massachusetts Amherst), Anna Krystalli (R-RSE SMPC), Sara L. Loo (Johns Hopkins University), Evan L. Ray (University of Massachusetts Amherst), Nicholas G. Reich (University of Massachusetts Amherst), Koji Sato (Johns Hopkins University), Li Shandross (University of Massachusetts Amherst), Katharine Sherratt (London School of Hygene and Tropical Medicine), Shaun Truelove (Johns Hopkins University), Martha Zorn (University of Massachusetts Amherst)
 
 ## References {.unnumbered}
+
+::: {#refs}
+:::
+
+\newpage
+
+```{r example-forecasts, echo=FALSE}
+#| label: tbl-example-forecasts
+#| tbl-cap: "Example of forecasts for incident influenza hospitalizations,
+#| formatted according to hubverse standards. Quantile predictions for the
+#| median and 50% prediction intervals from a single model are shown for four
+#| distinct horizons. The `output_type_id` column's name has been shortened to
+#| `otid` for brevity. These predictions are a modified subset of the
+#| `forecast_outputs` data provided by the `hubExamples` package."
+
+abbr_col <- formatted_col <- c("model_id", "loc", "ref_date", "h", "target", "output_type", "otid", "value")
+for (i in 1:length(abbr_col)) formatted_col[i] <- paste0("`", abbr_col[i], "`")
+
+hubExamples::forecast_outputs |>
+  dplyr::filter(
+    model_id == "MOBS-GLEAM_FLUH", 
+    location == "25", 
+    reference_date == "2022-12-17",
+    output_type == "quantile",
+    output_type_id %in% c(0.25, 0.5, 0.75)
+  ) |>
+  dplyr::mutate(value = round(value, 0), location = "MA", target = "wk flu hosp", model_id = "team1-mod") |>
+  dplyr::rename(loc = "location", ref_date = "reference_date", h = "horizon", otid = output_type_id) |>
+  dplyr::select(all_of(abbr_col)) |>
+  dplyr::arrange(h) |>
+  knitr::kable(col.names = formatted_col)
+```
+
+\newpage
+
+| `output_type` | `output_type_id`                                                 | `value`                                                                                                                                                       |
+|:-------------|:---------------|:-----------------------------------------|
+| `mean`        | NA (not used for mean predictions)                               | Numeric: The mean of the predictive distribution                                                                                                              |
+| `median`      | NA (not used for median predictions)                             | Numeric: The median of the predictive distribution                                                                                                            |
+| `quantile`    | Numeric between 0.0 and 1.0: A quantile level                    | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
+| `cdf`         | String or numeric naming a possible value of the target variable | Numeric between 0.0 and 1.0: The cumulative probability of the predictive distribution at the value of the outcome variable specified by the `output_type_id` |
+| `pmf`         | String naming a possible category of a discrete outcome variable | Numeric between 0.0 and 1.0: The probability mass of the predictive distribution when evaluated at a specified level of a categorical outcome variable        |
+| `sample`      | Integer or string identifying the sample\*                       | Numeric: A single sample value from the predictive distribution                                                                                               |
+
+: A table summarizing how the model output representation columns are used for predictions of different output types; adapted from hubverse documentation. [@hubverse_docs] (\*Rows of sample predictions from a particular model that share an output type ID value may be assumed to represent a single sample from a joint distribution across multiple levels of the task ID variables.) {#tbl-model-output-rep}
+
+\newpage
+
+| `output_type` | `simple_ensemble(..., agg_fun=mean)`                                                               | `linear_pool()`                                                                                                                                                               |
+|--------------|--------------------|--------------------------------------|
+| `mean`        | mean of individual model means                                                                     | mean of individual model means                                                                                                                                                |
+| `median`      | mean of individual model medians                                                                   | NA                                                                                                                                                                            |
+| `quantile`    | mean of individual model target variable values at each quantile level, $F^{-1}_Q(\theta)$         | quantiles of the distribution are obtained by computing the mean of estimated individual model cumulative probabilities at each target variable value, $F^{-1}_{LOP}(\theta)$ |
+| `cdf`         | mean of individual model cumulative probabilities at each target variable value, $F_{LOP}(x)$      | mean of individual model cumulative probabilities at each target variable value, $F_{LOP}(x)$                                                                                 |
+| `pmf`         | mean of individual model bin or category probabilities at each target variable value, $f_{LOP}(x)$ | mean of individual model bin or category probabilities at each target variable value, $f_{LOP}(x)$                                                                            |
+| `sample`      | NA                                                                                                 | samples of the distribution are obtained by stratified draw from individual models' samples                                                                                   |
+
+: Summary of ensemble function calculations for each output type. The ensemble function determines the operation that is performed, and in the case of probabilistic output types (quantile, CDF, PMF), this also determines what ensemble distribution is generated (quantile average, $F_{Q}^{-1}(\theta)$, or linear pool, $F_{LOP}(x)$). The ensembled predictions are returned in the same output type as the inputs. Thus, the output type determines how the resulting ensemble distribution is summarized (as a quantile, $F^{-1}(\theta)$, cumulative probability, $F(x)$, or probability $f(x)$). Estimating individual model cumulative probabilities is required to compute a `linear_pool()` for predictions of `quantile` output type; see @sec-linear-pool on the linear pool operation for details. In the case of `simple_ensemble()`, we show the calculations for the default case where `agg_fun = mean`; however, if another aggregation function is chosen (e.g., `agg_fun = median`), that calculation would be performed instead. For example, `simple_ensemble(..., agg_fun = median)` applied to predictions of mean output type would return the median of individual model means. {#tbl-fns-by-output-type}{tbl-colwidths="\[14,50,36\]"}
+
+\newpage
+
+```{r}
+#| label: tbl-example-model-outputs
+#| echo: false
+#| tbl-cap: "Example model output for forecasts of weekly incident influenza
+#| hospitalizations. A subset of example model output is shown: 1-week ahead
+#| forecasts made on 2022-12-17 for Massachusetts from three distinct models;
+#| only the mean, median, select samples, and the 5th, 25th, 75th and 95th quantiles
+#| are displayed. The `location`, `reference_date` and `target_end_date`
+#| columns have been omitted for brevity. This example data is
+#| provided in the `hubExamples` package."
+
+abbr_fc_col <- formatted_fc_col <- c("model_id", "target", "horizon", "output_type", "output_type_id", "value")
+for (i in 1: length(abbr_fc_col)) formatted_fc_col[i] <- paste0("`", abbr_fc_col[i], "`")
+otid <- list(
+  mean = NA,
+  median = NA,
+  quantile = c(0.05, 0.25, 0.75, 0.95),
+  sample = c("2101", "2102", "2103")
+)
+
+hubExamples::forecast_outputs |>
+  dplyr::filter(
+    output_type %in% names(otid),
+    output_type_id %in% unlist(otid),
+    reference_date == "2022-12-17",
+    location == "25",
+    horizon == 1
+  ) |>
+  dplyr::mutate(value = round(value, 2)) |>
+  dplyr::arrange(model_id, dplyr::desc(target), output_type) |>
+  dplyr::select(all_of(abbr_fc_col)) |>
+  dplyr::slice_head(n = 12) |>
+  knitr::kable(col.names = formatted_fc_col)
+```
+
+\newpage
+
+```{r}
+#| label: tbl-example-target-time-series-data
+#| echo: false
+#| cols.print: 13
+#| tbl-cap: "Example target time series data for incident influenza
+#| hospitalizations. This table includes target time series data for Massachusetts 
+#| (FIPS code 25) between 2022-11-01 and 2023-02-01. The target data is provided in 
+#| the `hubExamples` package."
+hubExamples::forecast_target_ts |>
+  dplyr::filter(
+    location == "25",
+    date >= "2022-11-01", date <= "2023-02-01"
+  ) |>
+  knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
+```
+
+\newpage
+
+```{r}
+#| label: tbl-example-forecasts-pmf
+#| echo: false
+#| cols.print: 9
+#| tbl-cap: "Example PMF model output for forecasts of incident influenza
+#| hospitalization intensity. A subset of predictions are shown: 1-week
+#| ahead PMF forecasts made on 2022-12-17 for Massachusetts from three distinct
+#| models. We round the forecasted probability (in the `value` column) to two
+#| digits. The `location`, `reference_date` and `target_end_date` columns have
+#| been omitted for brevity. This example data is provided in the
+#| `hubExamples` package."
+hubExamples::forecast_outputs |>
+  dplyr::filter(
+    output_type == "pmf",
+    reference_date == "2022-12-17",
+    location == "25",
+    horizon == 1
+  ) |>
+  dplyr::mutate(value = round(value, 3)) |>
+  dplyr::select(all_of(abbr_fc_col)) |>
+  knitr::kable(col.names = formatted_fc_col)
+```
+
+\newpage
+
+```{r}
+#| label: tbl-mean-ensemble
+#| echo: false
+#| rows.print: 9
+#| tbl-cap: "Mean ensemble model output. The values in the `model_id` column are
+#| set by the argument `simple_ensemble(..., model_id)`. Results are generated 
+#| for all output types, but only a subset are shown: 1-week ahead forecasts made 
+#| on 2022-12-17 for Massachusetts, with only the mean, median, 25th and 75th
+#| quantilesfor the quantile output type and all bins for the PMF output type. 
+#| The `location`, `reference_date` and `target_end_date` columns have been 
+#| omitted for brevity, and the `value` column is rounded to two digits."
+mean_ens |>
+  dplyr::filter(
+    output_type %in% c("quantile", "mean", "median", "pmf"),
+    output_type_id %in% c(
+      0.025, 0.25, 0.75, 0.975, NA,
+      "low", "moderate", "high", "very high"
+    ),
+    reference_date == "2022-12-17",
+    location == "25",
+    horizon == 1
+  ) |>
+  dplyr::mutate(value = round(value, 2)) |>
+  dplyr::select(all_of(abbr_fc_col)) |>
+  knitr::kable(col.names = formatted_fc_col)
+```
+
+\newpage
+
+```{r raw flu forecasts}
+#| label: tbl-raw-flu-forecasts
+#| echo: false
+#| message: false
+#| warning: false
+#| tbl-cap: "An example prediction of weekly incident influenza
+#| hospitalizations pulled directly from Zoltar. The example forecasts were
+#| made on May 15, 2023 for California at the 1 week ahead horizon. The
+#| forecasts were generated during the FluSight forecasting challenge, then
+#| formatted according to Zoltar standards for storage. The `timezero`, 
+#| `season`, `unit`, `param1`, `param2`, and `param3` columns have been
+#| omitted for brevity. (The `season` column has a value of '2021-2022' or 
+#| '2022-2023' while the last three 'param' columns always have a value
+#| of NA.)"
+zoltar_col <- formatted_zoltar_col <- c("model", "target", "class", "value", "cat", "prob", "sample", "quantile", "family")
+for (i in 1:length(zoltar_col)) formatted_zoltar_col[i] <- paste0("`", zoltar_col[i], "`")
+
+flu_forecasts_raw |>
+  dplyr::filter(
+    model == "UMass-trends_ensemble",
+    timezero == "2023-05-15",
+    unit == "06",
+    target == "1 wk ahead inc flu hosp",
+    quantile %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
+  ) |>
+  dplyr::select(all_of(zoltar_col)) |>
+  knitr::kable(col.names = formatted_zoltar_col)
+```
+
+\newpage
+
+```{r formatted flu forecasts}
+#| label: tbl-case-study-flu-forecasts
+#| echo: false
+#| tbl-cap: "An example prediction of weekly incident influenza
+#| hospitalizations. The example model output was made on May 15, 2023 for
+#| California at the 1 week ahead horizon. The forecast was generated during
+#| the FluSight forecasting challenge, then formatted according to hubverse
+#| standards post hoc. The `location`, `forecast_date`, and `season` columns
+#| have been omitted for brevity; quantiles representing the endpoints of the 
+#| central 50%, 80% and 95% prediction intervals are shown."
+flu_forecasts_hubverse |>
+  dplyr::filter(
+    model_id == "UMass-trends_ensemble",
+    forecast_date == "2023-05-15",
+    location == "06",
+    horizon == 1,
+    output_type_id %in% c(0.025, 0.1, 0.25, 0.75, 0.9, 0.975)
+  ) |>
+  dplyr::select(all_of(abbr_fc_col)) |>
+  knitr::kable(col.names = formatted_fc_col)
+```
+
+\newpage
+
+```{r overall-evaluation}
+#| label: tbl-overall-evaluation
+#| echo: false
+#| message: false
+#| warning: false
+#| tbl-cap: "Summary of overall model performance across both seasons, averaged
+#| over all locations except the US national location and sorted by ascending
+#| WIS. Both the individual FluSight component models and the resulting ensembles
+#| are included in the table, as long as they forecasted for at least 80% of the two
+#| seasons. The ensembles rank in the top half of models in terms of accuracy. The
+#| two linear pools have the best WIS and 95% coverage rates of the ensembles, as
+#| well as top performance for MAE and 50% coverage rate."
+
+metrics_col <- formatted_metrics_col <- c("model", "wis", "rwis", "mae", "rmae", "cov50", "cov95")
+for (i in 1:length(metrics_col)) formatted_metrics_col[i] <- paste0("`", metrics_col[i], "`")
+total_possible_forecasts <- 11448 # 53 locations, 54 forecast dates, 4 horizons
+
+flu_overall_states <- evaluate_flu_scores(
+  rbind(flu_baseline_ensembles_scores, flu_component_scores),
+  grouping_variables = NULL, baseline_name = "Flusight-baseline",
+  us_only = FALSE, show_num_forecasts = TRUE
+)
+
+flu_overall_states |>
+  dplyr::filter(num_forecasts > 0.8 * total_possible_forecasts) |>
+  dplyr::select(all_of(metrics_col)) |>
+  knitr::kable(col.names = formatted_metrics_col)
+```

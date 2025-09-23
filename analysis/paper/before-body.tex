@@ -1,0 +1,19 @@
+$if(has-frontmatter)$
+\frontmatter
+$endif$
+$if(title)$
+\maketitle
+$endif$
+
+%% an abstract and keywords
+$if(abstract)$
+\abstract{$abstract$}
+$endif$
+
+%% at least one keyword must be supplied
+$if(keywords-formatted)$
+\hfill
+
+\noindent
+\textbf{Keywords:} $for(keywords-formatted)$$it$$sep$, $endfor$
+$endif$

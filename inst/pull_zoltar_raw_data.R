@@ -21,24 +21,28 @@ flu_dates_all <- c(flu_dates_21_22, flu_dates_22_23)
 
 
 # Get truth data
-flu_truth_raw <- purrr::map_dfr(flu_dates_all, .f = function(dates_vector) {
+# Dates added to capture the last forecast date's predictions for each season
+flu_truth_raw <- purrr::map(flu_dates_all, .f = function(dates_vector) {
   do_zoltar_query(zoltar_connection, project_url, query_type = "truth",
                   timezeros = dates_vector, types = "quantile")
-})
+}) |>
+  purrr::list_rbind()
 
 readr::write_rds(flu_truth_raw, "analysis/data/raw_data/flu_truth-zoltar.rds", "xz", compression = 9L)
 
 
 # Query raw forecasts
-flu_forecasts_raw_21_22 <- purrr::map_dfr(flu_dates_21_22, .f = function(dates_vector) {
+flu_forecasts_raw_21_22 <- purrr::map(flu_dates_21_22, .f = function(dates_vector) {
   do_zoltar_query(zoltar_connection, project_url, query_type = "forecasts",
                   timezeros = dates_vector, types = "quantile")
-})
+}) |>
+  purrr::list_rbind()
 
-flu_forecasts_raw_22_23 <- purrr::map_dfr(flu_dates_22_23, .f = function(dates_vector) {
+flu_forecasts_raw_22_23 <- purrr::map(flu_dates_22_23, .f = function(dates_vector) {
   do_zoltar_query(zoltar_connection, project_url, query_type = "forecasts",
                   timezeros = dates_vector, types = "quantile")
-})
+}) |>
+  purrr::list_rbind()
 
 # save forecasts
 readr::write_rds(flu_forecasts_raw_21_22, "analysis/data/raw_data/flu_forecasts-zoltar_21-22.rds", "xz", compression = 9L)

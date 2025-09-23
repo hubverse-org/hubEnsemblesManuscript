@@ -482,7 +482,7 @@ The growing body of literature on multi-model ensembles in public health domains
 
 -   *Scenario projection*: estimates of future observations of future trends conditional on specific assumptions about a given scenario. Scenarios describe possible future conditions in terms of model parameters that might be varied, such as transmissibility, vaccine adoption, vaccine efficacy, the emergence of a new variant, etc.
 
--   *Prediction*: estimate of current or future outcomes, typically generated from a model. Here, used to encompass a range of outcomes that could be modeled, encompassing short-term forecasts, scenario projections, and parameter estimates.
+-   *Prediction*: estimate of current or future outcomes, typically generated from a model. Here, used to encapsulate a range of outcomes that could be modeled, encompassing short-term forecasts, scenario projections, and parameter estimates.
 
 -   *Point prediction*: a prediction represented by one single estimate, which generally represents a typical or common future outcome (e.g., a mean or median)
 
@@ -533,7 +533,7 @@ The `hubEnsembles` package contains two functions that perform ensemble calculat
 
 -   *Model output*: a dataset containing predictions of modeling tasks in tabular format generated in response to some modeling task for a specific round. A model might result from a single team’s response to the task or from an ensemble of results representing the outcomes of multiple efforts.
 
--   *Output type*: a classification of model output that is supported by the hubverse (i.e., the types of predictions that can be processed). See Table @tbl-model-output-rep for definitions of each.
+-   *Output type*: a classification of model output that is supported by the hubverse (i.e., the types of predictions that can be processed). See @tbl-model-output-rep for definitions of each.
 
 -   *Round*: a time period for which a set of specific model outputs is solicited. Rounds define the “cadence” of submission for a modeling hub. For example, some hubs might accept daily submissions, where each day is considered a different round. Other hubs might have one round every month, with a submission period that may be open for multiple days.
 
@@ -1172,7 +1172,7 @@ flu_baseline_ensembles_scores <- flu_baseline_forecasts |>
 
 ### Performance results across ensembles
 
-The four ensembles rank in the top half in terms of accuracy when compared to the individual component models that made predictions for influenza hospitalizations (@tbl-overall-evaluation). The ranking of the models differ slightly among the four scoring metrics; the two linear opinion pools perform better than the other ensembles in terms of WIS and 95% prediction interval coverage while the quantile median has slightly better MAE and the best 50% coverage across ensembles. The quantile mean displayed the worst values for every metric out of the ensembles, particularly for MAE.
+The four ensembles rank in the top half in terms of accuracy when compared to the individual component models that made predictions for influenza hospitalizations (@tbl-overall-evaluation). The ranking of the models differs slightly among the four scoring metrics; the two linear opinion pools perform better than the other ensembles in terms of WIS and 95% prediction interval coverage while the quantile median has slightly better MAE and the best 50% coverage across ensembles. The quantile mean displayed the worst values for every metric out of the ensembles, particularly for MAE.
 
 Plots of the ensemble models' forecasts can aid our understanding about the origin of these accuracy differences (@fig-plot-forecasts-hubVis). For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The wider intervals provided by the LOP ensembles yield the best 95% prediction interval coverage, however, this also leads to 50% interval coverage that nearly always exceeded the nominal level. Moreover, the linear pools demonstrate the strongest WIS performance at both 1 week and 4 week ahead horizons during the 2022-2023 season (see @fig-wis-vs-forecast-date); this season was especially difficult to forecast due to its unusual timing and large peak. The wider prediction intervals prove useful in this uncertain context when other models are overconfident in their forecasts. 
 

@@ -592,9 +592,9 @@ The first step in generating a multi-model ensemble is to gather the predictions
 
 The model output is stored in a data object named `forecast_outputs` and contains mean, median, quantile, and sample forecasts of future incident influenza hospitalizations, as well as CDF and PMF forecasts of hospitalization intensity. Each prediction is described by five task ID variables: the location for which the forecast was made (`location`), the date on which the forecast was made (`reference_date`), the number of steps ahead (`horizon`), the date of the forecast prediction (`target_end_date`, a combination of the date the forecast was made and the forecast horizon), and the forecast target (`target`). We begin by examining the predictions for weekly incident influenza hospitalizations, displaying a subset of each output type in @tbl-example-model-outputs.
 
-While the `hubExamples` package provides both formats of target data, we focus on the target time series data (@tbl-example-target-time-series-data) which is convenient for making forecasts and plotting. The `forecast_target_ts` data object provides observed incident influenza hospitalizations in a given week for given location using columns `observation`, `date`, and `location`. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for this time series representation of the target data, and are thus not included as columns.
+While the `hubExamples` package provides both formats of target data, we focus on the target time series data (@tbl-example-target-time-series-data) which is convenient for making forecasts and plotting. The `forecast_target_ts` data object provides observed values for weekly incident influenza hospitalizations and weekly rate change of influenza hospitalizations in a given week for a particular location using columns `observation`, `target_end_date`, `location`, and `target`. The forecast-specific task ID variables `reference_date` and `horizon` are not relevant for this time series representation of the target data, and are thus not included as columns.
 
-We can plot the quantile and median forecasts and the target time series data (@fig-plot-ex-mods) shown above using the `plot_step_ahead_model_output()` function from `hubVis`, another package in the hubverse suite for visualizing model outputs. We subset the model output data and the target data to the location and time horizons we are interested in.
+We can plot the quantile and median forecasts and the target time series data (@fig-plot-ex-mods) shown above using the `plot_step_ahead_model_output()` function from `hubVis`, another package in the hubverse suite for visualizing model outputs. We subset the model output data and the target data to the target, location, and time horizons we are interested in.
 
 ```{r plot-ex-mods}
 #| label: fig-plot-ex-mods
@@ -615,8 +615,9 @@ model_outputs_plot <- hubExamples::forecast_outputs |>
   dplyr::mutate(output_type_id = as.double(output_type_id))
 target_data_plot <- hubExamples::forecast_target_ts |>
   dplyr::filter(
+    target == "wk inc flu hosp",
     location == "25",
-    date >= "2022-11-01", date <= "2023-02-01"
+    target_end_date >= "2022-11-01", target_end_date <= "2023-03-01"
   )
 
 hubVis::plot_step_ahead_model_output(
@@ -628,6 +629,7 @@ hubVis::plot_step_ahead_model_output(
   intervals = c(0.5, 0.9),
   show_legend = FALSE,
   use_median_as_point = TRUE,
+  x_target_col_name = "target_end_date",
   x_col_name = "target_end_date"
 ) +
   theme_bw() +
@@ -653,8 +655,8 @@ plot_samples <- hubExamples::forecast_outputs |>
   )
   
 ggplot(data = plot_samples) + 
-  geom_point(data = target_data_plot, aes(x = date, y = observation),color = "darkgray") +
-  geom_line(data = target_data_plot, aes(x = date, y = observation), color = "darkgray") +
+  geom_point(data = target_data_plot, aes(x = target_end_date, y = observation),color = "darkgray") +
+  geom_line(data = target_data_plot, aes(x = target_end_date, y = observation), color = "darkgray") +
   geom_line(aes(x = target_end_date, y = value, group = output_type_id, color = model_id), 
             alpha = 0.3) + 
   facet_wrap(vars(model_id)) + 
@@ -784,7 +786,8 @@ model_output_plot <- dplyr::bind_rows(
 target_data_plot <- hubExamples::forecast_target_ts |>
   dplyr::filter(
     location == "25", 
-    date >= "2022-11-01", date <= "2023-03-01"
+    target == "wk inc flu hosp",
+    target_end_date >= "2022-11-01", target_end_date <= "2023-03-01"
   )
 
 hubVis::plot_step_ahead_model_output(
@@ -795,6 +798,7 @@ hubVis::plot_step_ahead_model_output(
   intervals = c(0.5, 0.90),
   show_legend = TRUE,
   pal_color = "Accent",
+  x_target_col_name = "target_end_date",
   x_col_name = "target_end_date"
 ) +
   theme_bw() +
@@ -898,8 +902,9 @@ model_output_plot <- dplyr::bind_rows(mean_ens, model_output_plot) |>
   )
 target_data_plot <- hubExamples::forecast_target_ts |>
   dplyr::filter(
+    target == "wk inc flu hosp",
     location == "25", 
-    date >= "2022-11-01", date <= "2023-03-01"
+    target_end_date >= "2022-11-01", target_end_date <= "2023-03-01"
   )
 
 # Generate plot of incidence forecasts 0-3 week horizons
@@ -912,6 +917,7 @@ p2 <-
     intervals = c(0.5, 0.9),
     pal_color = "Set1",
     show_legend = TRUE,
+    x_target_col_name = "target_end_date",
     x_col_name = "target_end_date"
   ) +
   theme_bw() +
@@ -1212,11 +1218,12 @@ forecasts_ca <- flu_ensembles_forecasts |>
   ) |>
   dplyr::group_by(forecast_date)
 
-time_series_ca <- flu_time_series |>
-  dplyr::filter(location == "06", 
-                target_end_date >= as.Date("2022-11-01"), # only show subset of 2022-2023 season
-                target_end_date <= as.Date("2023-02-15")
-  )
+time_series_ca <- dplyr::filter(
+  flu_time_series,
+  location == "06", 
+  target_end_date >= as.Date("2022-11-01"), # only show subset of 2022-2023 season
+  target_end_date <= as.Date("2023-02-15")
+)
 
 
 # Plot ensemble and baseline forecasts only
@@ -1466,16 +1473,20 @@ hubExamples::forecast_outputs |>
 #| label: tbl-example-target-time-series-data
 #| echo: false
 #| cols.print: 13
-#| tbl-cap: "Example target time series data for incident influenza
-#| hospitalizations. This table includes target time series data for Massachusetts 
-#| (FIPS code 25) between 2022-11-01 and 2023-02-01. The target data is provided in 
-#| the `hubExamples` package."
+#| tbl-cap: "Example target time series data for incident influenza hospitalizations
+#| and (weekly) influenza hospitalization rate change. We round the latter target's
+#| observed values (in the `observation` column) to three digits for readability.
+#| This table displays target time series data for Massachusetts
+#| (FIPS code 25) between 2022-11-01 and 2023-02-01. The target data 
+#| is provided in the `hubExamples` package."
+target_ts_col_names <- c("`target_end_date`", "`target`", "`location`", "`observation`")
 hubExamples::forecast_target_ts |>
   dplyr::filter(
     location == "25",
-    date >= "2022-11-01", date <= "2023-02-01"
+    target_end_date >= "2022-11-01", target_end_date <= "2023-02-01"
   ) |>
-  knitr::kable(col.names = c("`date`", "`location`", "`observation`"))
+  dplyr::mutate(observation = round(observation, 3)) |> # for readability
+  knitr::kable(col.names = target_ts_col_names)
 ```
 
 \newpage

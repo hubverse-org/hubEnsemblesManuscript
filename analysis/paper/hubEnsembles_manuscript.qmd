@@ -526,7 +526,6 @@ The hubverse also provides standards for target data (i.e., observed data corres
 The `hubEnsembles` package contains two functions that perform ensemble calculations: `simple_ensemble()`, which applies some function to each model prediction, and `linear_pool()`, which computes an ensemble using the linear opinion pool method. In the following sections, we outline the implementation details for each function and how these implementations correspond to the statistical ensembling methods described in @sec-defs. A short description of the calculation performed by each function is summarized by output type in @tbl-fns-by-output-type.
 
 ::: {.callout-tip title="Keywords and definitions: Terminology from the hubverse"}
-
 -   *Modeling Task*: a definition of the goals of a modeling effort, possibly including conditions, assumptions, and targets (collectively known as task ID variables). Some tasks may be fixed across rounds, such as for forecast hubs that regularly solicit predictions for a set time horizon in the near-term future. Other tasks may be more variable; for example, those in scenario hubs that model hypothetical futures with different assumptions for different modeling rounds.
 
 -   *Compound modeling task*: a single, modeled unit with a multivariate outcome of interest, such as an epidemic trajectory across multiple weeks
@@ -541,8 +540,6 @@ The `hubEnsembles` package contains two functions that perform ensemble calculat
 
 -   *Target*: an outcome of interest for a modeling hub (e.g., "incident case counts"). Targets typically (and sometimes implicitly) refer to a value of an observable variable in a given window of time, a given location, and possibly other stratifications (such as age group).
 :::
-
-
 
 #### Simple ensemble {#sec-simple-ensemble}
 
@@ -1180,7 +1177,7 @@ flu_baseline_ensembles_scores <- flu_baseline_forecasts |>
 
 The four ensembles rank in the top half in terms of accuracy when compared to the individual component models that made predictions for influenza hospitalizations (@tbl-overall-evaluation). The ranking of the models differs slightly among the four scoring metrics; the two linear opinion pools perform better than the other ensembles in terms of WIS and 95% prediction interval coverage while the quantile median has slightly better MAE and the best 50% coverage across ensembles. The quantile mean displayed the worst values for every metric out of the ensembles, particularly for MAE.
 
-Plots of the ensemble models' forecasts can aid our understanding about the origin of these accuracy differences (@fig-plot-forecasts-hubVis). For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The wider intervals provided by the LOP ensembles yield the best 95% prediction interval coverage, however, this also leads to 50% interval coverage that nearly always exceeded the nominal level. Moreover, the linear pools demonstrate the strongest WIS performance at both 1 week and 4 week ahead horizons during the 2022-2023 season (see @fig-wis-vs-forecast-date); this season was especially difficult to forecast due to its unusual timing and large peak. The wider prediction intervals prove useful in this uncertain context when other models are overconfident in their forecasts. 
+Plots of the ensemble models' forecasts can aid our understanding about the origin of these accuracy differences (@fig-plot-forecasts-hubVis). For example, the linear opinion pools consistently have some of the widest prediction intervals, and consequently the highest coverage rates. The wider intervals provided by the LOP ensembles yield the best 95% prediction interval coverage, however, this also leads to 50% interval coverage that nearly always exceeded the nominal level. Moreover, the linear pools demonstrate the strongest WIS performance at both 1 week and 4 week ahead horizons during the 2022-2023 season (see @fig-wis-vs-forecast-date); this season was especially difficult to forecast due to its unusual timing and large peak. The wider prediction intervals prove useful in this uncertain context when other models are overconfident in their forecasts.
 
 Although the LOP ensembles provide the best scores for WIS and 95% PI coverage, they are not always the top ensemble model. The quantile median ensemble tends to have slightly better median (point) forecasts and mid-width intervals, including the best MAE and 50% interval coverage of all of the ensembles. While the quantile median ensemble is generally well calibrated for most of the predictions evaluated, it fails to appropriately capture uncertainty during the large peak of the 2022-2023 season which resulted in WIS values higher than that of the linear opinion pools (@fig-wis-vs-forecast-date). The quantile mean's interval widths vary throughout both seasons. Although it usually has narrower intervals than the linear pools, the quantile mean ensemble's median forecasts have a larger error margin compared to the other ensembles, especially at longer horizons. This pattern is demonstrated for the 4-week ahead forecast in California following the 2022-23 season peak on December 5, 2022 (@fig-plot-forecasts-hubVis). Here, the quantile mean predicted a continued increase in hospitalizations, at a steeper slope than the other ensemble methods.
 
@@ -1360,7 +1357,7 @@ When generating and interpreting an ensemble prediction, it is important to unde
 
 ## Code availability {.unnumbered}
 
-All code necessary to reproduce this manuscript can be found in a GitHub repository available at <https://github.com/hubverse-org/hubEnsemblesManuscript>, including required package versions which are available in the DESCRIPTION file.
+All code necessary to reproduce this manuscript can be found in a GitHub repository available at <https://github.com/hubverse-org/hubEnsemblesManuscript> and archived at **ADD HERE**, including required package versions which are available in the `renv.lock` file.
 
 ## Acknowledgements {.unnumbered}
 
@@ -1407,7 +1404,7 @@ hubExamples::forecast_outputs |>
 \newpage
 
 | `output_type` | `output_type_id`                                                 | `value`                                                                                                                                                       |
-|:-------------|:---------------|:-----------------------------------------|
+|:----------------|:----------------|:--------------------------------------|
 | `mean`        | NA (not used for mean predictions)                               | Numeric: The mean of the predictive distribution                                                                                                              |
 | `median`      | NA (not used for median predictions)                             | Numeric: The median of the predictive distribution                                                                                                            |
 | `quantile`    | Numeric between 0.0 and 1.0: A quantile level                    | Numeric: The quantile of the predictive distribution at the quantile level specified by the `output_type_id`                                                  |
@@ -1420,7 +1417,7 @@ hubExamples::forecast_outputs |>
 \newpage
 
 | `output_type` | `simple_ensemble(..., agg_fun=mean)`                                                               | `linear_pool()`                                                                                                                                                               |
-|--------------|--------------------|--------------------------------------|
+|-----------------|-------------------|------------------------------------|
 | `mean`        | mean of individual model means                                                                     | mean of individual model means                                                                                                                                                |
 | `median`      | mean of individual model medians                                                                   | NA                                                                                                                                                                            |
 | `quantile`    | mean of individual model target variable values at each quantile level, $F^{-1}_Q(\theta)$         | quantiles of the distribution are obtained by computing the mean of estimated individual model cumulative probabilities at each target variable value, $F^{-1}_{LOP}(\theta)$ |

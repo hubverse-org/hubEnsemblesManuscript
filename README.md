@@ -3,14 +3,16 @@
 
 # hubEnsemblesManuscript
 
+[![DOI](https://zenodo.org/badge/756408646.svg)](https://doi.org/10.5281/zenodo.17259775)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/hubverse-org/hubEnsemblesManuscript/master?urlpath=rstudio)
 
 This repository contains the data and code for our paper:
 
 > Li Shandross, Emily Howerton, Lucie Contamin, Harry Hochheiser, Anna
 > Krystalli, Consortium of Infectious Disease Modeling Hubs, Nicholas G.
-> Reich, Evan L. Ray (in prep). *`hubEnsembles`: Ensembling Methods in
-> R*.
+> Reich, Evan L. Ray (in prep). *Multi-model ensembles in infectious
+> disease and public health: Methods, interpretation, and implementation
+> in R*. <https://doi.org/10.1101/2024.06.24.24309416v2>
 
 ### How to cite
 
@@ -19,8 +21,9 @@ Please cite this compendium as:
 > Li Shandross, Emily Howerton, Lucie Contamin, Harry Hochheiser, Anna
 > Krystalli, Consortium of Infectious Disease Modeling Hubs, Nicholas G.
 > Reich, Evan L. Ray (in prep). *Compendium of R code and data for
-> `hubEnsembles`: Ensembling Methods in R*. Accessed 12 Apr 2024. Online
-> at <https://doi.org/10.1101/2024.06.24.24309416>
+> Multi-model ensembles in infectious disease and public health:
+> Methods, interpretation, and implementation in R*. Accessed 06 Oct
+> 2025. Online at <https://doi.org/10.5281/zenodo.17259775>
 
 ## Contents
 
@@ -46,12 +49,14 @@ Desktop](https://rstudio.com/products/rstudio/download/).
 You can download the compendium as a zip from from this URL:
 [master.zip](/archive/master.zip). After unzipping:
 
-- open the `.Rproj` file in RStudio
-- run `devtools::install(dependencies = TRUE)` to ensure you have the
+- Open the `.Rproj` file in RStudio
+- Run `devtools::install(dependencies = TRUE)` to ensure you have the
   packages this analysis depends on (also listed in the
   [DESCRIPTION](/DESCRIPTION) file). You might need to install
   `devtools` first by running `install.packages("devtools")`.
-- finally, open `analysis/paper/hubEnsembles_manuscript.qmd` and knit to
+  - A `renv.lock` with the exact versions of packages used is also
+    present in the repository
+- Finally, open `analysis/paper/hubEnsembles_manuscript.qmd` and knit to
   produce the `hubEnsembles_manuscript.html`, or run
   `rmarkdown::render("analysis/paper/hubEnsembles_manuscript.qmd")` in
   the R console
@@ -61,7 +66,7 @@ You can download the compendium as a zip from from this URL:
 **Text and figures :**
 [CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/)
 
-**Code :** See the [DESCRIPTION](DESCRIPTION) file and [renv.lock](renv.lock) file for pacakge dependencies
+**Code :** See the [DESCRIPTION](DESCRIPTION) file
 
 **Data :** [CC-0](http://creativecommons.org/publicdomain/zero/1.0/)
 attribution requested in reuse

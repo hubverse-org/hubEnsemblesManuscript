@@ -1357,7 +1357,7 @@ When generating and interpreting an ensemble prediction, it is important to unde
 
 ## Code availability {.unnumbered}
 
-All code necessary to reproduce this manuscript can be found in a GitHub repository available at <https://github.com/hubverse-org/hubEnsemblesManuscript> and archived at **ADD HERE**, including required package versions which are available in the `renv.lock` file.
+All code necessary to reproduce this manuscript can be found in a GitHub repository available at <https://github.com/hubverse-org/hubEnsemblesManuscript> and archived at <https://doi.org/10.5281/zenodo.17259775>, including required package versions which are available in the `renv.lock` file.
 
 ## Acknowledgements {.unnumbered}
 
